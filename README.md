@@ -189,7 +189,7 @@ This repository contains **10 locked constitutions** that govern every aspect of
 
 ### For a New System
 
-```bash
+
 # Step 1: Clone this repository into your project
 git clone https://github.com/MALULEKE-KS/system-design-template.git .system-design
 
@@ -273,4 +273,6 @@ Copyright (c) 2026 MALULEKE-KS
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction...
+
+<p align="center"> <img src="https://capsule-render.vercel.app/api?type=waving&color=2563EB&height=100&section=footer" alt="Footer wave" /> </p><p align="center"> <i>Built with African roots • Designed for global impact</i> </p><p align="center"> <img src="https://img.shields.io/badge/Locked-2026--04--08-2563EB?style=for-the-badge" alt="Locked Date" /> <img src="https://img.shields.io/badge/Next_Review-2026--07--07-FF6F00?style=for-the-badge" alt="Next Review" /> </p> 
 <p align="center"> <img src="https://capsule-render.vercel.app/api?type=waving&color=2563EB&height=100&section=footer" alt="Footer wave" /> </p><p align="center"> <i>Built with African roots • Designed for global impact</i> </p><p align="center"> <img src="https://img.shields.io/badge/Locked-2026--04--08-2563EB?style=for-the-badge" alt="Locked Date" /> <img src="https://img.shields.io/badge/Next_Review-2026--07--07-FF6F00?style=for-the-badge" alt="Next Review" /> </p> 

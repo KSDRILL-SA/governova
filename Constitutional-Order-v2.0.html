@@ -1,0 +1,2568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Constitutional Order v2.0 — Build Constitutions in the Order Your System Would Fail Without Them</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:      #0e0e0e;
+  --paper:    #f5f0e8;
+  --paper2:   #ede8de;
+  --paper3:   #e4ddd0;
+  --rule:     #c8bfa8;
+  --gold:     #b8860b;
+  --gold2:    #d4a017;
+  --amber:    #e8a020;
+  --red:      #9b1c1c;
+  --orange:   #c05a00;
+  --green:    #1a5c2e;
+  --blue:     #1a3a6e;
+  --muted:    #5a5040;
+  --mono:     'IBM Plex Mono', monospace;
+  --serif:    'Playfair Display', serif;
+  --sans:     'IBM Plex Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: .6;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0; opacity: .12;
+}
+
+.page { max-width: 1140px; margin: 0 auto; padding: 0 32px 48px; position: relative; z-index: 1; }
+
+/* ══ MASTHEAD ══ */
+.masthead {
+  border-top: 7px solid var(--ink);
+  border-bottom: 3px double var(--ink);
+}
+
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .08em;
+}
+
+.masthead-main {
+  text-align: center;
+  padding: 28px 0 18px;
+}
+
+.masthead-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.masthead-title {
+  font-family: var(--serif);
+  font-size: clamp(34px, 5.5vw, 68px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+
+.masthead-title span { color: var(--gold); font-style: italic; }
+
+.masthead-tagline {
+  margin-top: 16px;
+  font-family: var(--serif);
+  font-size: 14px;
+  font-style: italic;
+  color: var(--muted);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 8px 0;
+}
+
+.masthead-meta {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding: 10px 0 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .06em;
+  flex-wrap: wrap;
+}
+
+.masthead-meta .pill {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 2px 8px;
+  font-size: 9px;
+  letter-spacing: .1em;
+}
+
+/* ══ TOC ══ */
+.toc-band {
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper2);
+  padding: 12px 0;
+  margin-bottom: 40px;
+}
+
+.toc-inner {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .07em;
+  color: var(--muted);
+}
+
+.toc-inner strong { color: var(--ink); font-size: 9px; text-transform: uppercase; letter-spacing: .15em; }
+.toc-inner a { color: var(--ink); text-decoration: none; transition: color .15s; }
+.toc-inner a:hover { color: var(--gold); }
+.toc-sep { color: var(--rule); }
+
+/* ══ SECTION HEADERS ══ */
+.section { margin-bottom: 52px; }
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  border-top: 3px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 10px 0;
+  margin-bottom: 22px;
+}
+
+.section-num { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .1em; }
+.section-title { font-family: var(--serif); font-size: 24px; font-weight: 700; flex: 1; line-height: 1.1; }
+.section-badge {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .1em;
+  text-transform: uppercase; border: 1px solid var(--ink); padding: 2px 8px; white-space: nowrap;
+}
+
+/* ══ SUMMARY TABLE ══ */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.summary-table thead tr { background: var(--ink); color: var(--paper); }
+.summary-table th { padding: 9px 14px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; text-align: left; }
+.summary-table td { padding: 8px 14px; border-bottom: 1px solid var(--rule); }
+.summary-table tr:nth-child(even) td { background: var(--paper2); }
+.summary-table tr:hover td { background: var(--paper3); }
+.summary-table .phase-0 { border-left: 4px solid var(--gold); }
+.summary-table .phase-1 { border-left: 4px solid var(--blue); }
+.summary-table .phase-2 { border-left: 4px solid var(--orange); }
+.summary-table .phase-3 { border-left: 4px solid var(--green); }
+.summary-table .total { background: var(--ink) !important; color: var(--paper); font-weight: 700; }
+.summary-table .total td { color: var(--paper); border-bottom: none; }
+
+/* ══ GOLDEN RULE TABLE ══ */
+.golden-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 10.5px;
+}
+
+.golden-table thead tr { background: var(--ink); color: var(--paper); }
+.golden-table th { padding: 9px 14px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; text-align: left; }
+.golden-table td { padding: 8px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.golden-table tr:nth-child(even) td { background: var(--paper2); }
+.golden-table .p0 { color: var(--gold); font-weight: 700; }
+.golden-table .p1 { color: var(--blue); font-weight: 700; }
+.golden-table .p2 { color: var(--orange); font-weight: 700; }
+.golden-table .p3 { color: var(--green); font-weight: 700; }
+.golden-table .highlighted td { background: var(--paper3) !important; }
+
+/* ══ AMENDMENT PROTOCOL ══ */
+.amendment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  border: 2px solid var(--ink);
+}
+
+.amendment-col {
+  padding: 0;
+  border-right: 1px solid var(--rule);
+}
+
+.amendment-col:last-child { border-right: none; }
+
+.amendment-col-head {
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-bottom: 1px solid var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.amendment-col-head.micro { background: var(--blue); color: var(--paper); }
+.amendment-col-head.quarterly { background: var(--orange); color: var(--paper); }
+.amendment-col-head.emergency { background: var(--red); color: var(--paper); }
+
+.amendment-col-body { padding: 12px 14px; }
+
+.amendment-step {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.amendment-step:last-child { margin-bottom: 0; }
+
+.a-num {
+  width: 18px; height: 18px;
+  background: var(--ink); color: var(--paper);
+  font-size: 9px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+
+.a-text { color: var(--muted); }
+.a-text strong { color: var(--ink); }
+
+/* ══ PHASE HEADER BAND ══ */
+.phase-band {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.phase-band.p0 { background: #4a3800; border-left: 5px solid var(--gold); }
+.phase-band.p1 { background: var(--blue); border-left: 5px solid #6a9fd8; }
+.phase-band.p2 { background: var(--orange); border-left: 5px solid #e89060; }
+.phase-band.p3 { background: var(--green); border-left: 5px solid #4a9c6a; }
+
+.phase-band-title {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.phase-band-meta {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  opacity: .8;
+}
+
+/* ══ CONSTITUTION CARD ══ */
+.constitution-card {
+  border: 2px solid var(--ink);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.card-head {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  align-items: stretch;
+  border-bottom: 1px solid var(--ink);
+}
+
+.card-num {
+  background: var(--ink);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 900;
+  padding: 16px;
+}
+
+.card-num.p0 { background: #4a3800; }
+.card-num.p1 { background: var(--blue); }
+.card-num.p2 { background: var(--orange); }
+.card-num.p3 { background: var(--green); }
+
+.card-title-area {
+  padding: 12px 16px;
+  border-right: 1px solid var(--rule);
+}
+
+.card-constitution-title {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 3px;
+  line-height: 1.2;
+}
+
+.card-why {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.card-stats {
+  padding: 12px 16px;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+}
+
+.card-stat {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: .06em;
+}
+
+.card-stat strong { color: var(--ink); font-size: 12px; }
+
+.card-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+}
+
+.card-section {
+  padding: 12px 16px;
+  border-right: 1px solid var(--rule);
+  border-top: 1px solid var(--rule);
+}
+
+.card-section:last-child { border-right: none; }
+
+.card-section-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.card-section-content {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.card-section-content .highlight { color: var(--gold); font-weight: 700; }
+.card-section-content .danger { color: var(--red); }
+.card-section-content .good { color: var(--green); }
+
+.validation-bar {
+  border-top: 1px solid var(--ink);
+  background: var(--paper3);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.validation-label {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 2px 8px;
+  font-size: 9px;
+  letter-spacing: .1em;
+  white-space: nowrap;
+}
+
+.validation-text { color: var(--muted); }
+.validation-text strong { color: var(--ink); }
+
+/* ══ ITERATIVE LOOP BOX ══ */
+.loop-box {
+  border: 1.5px solid var(--gold);
+  background: var(--paper);
+  margin-top: 0;
+  overflow: hidden;
+}
+
+.loop-head {
+  background: var(--gold);
+  color: var(--ink);
+  padding: 7px 14px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+}
+
+.loop-body {
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.loop-steps { }
+
+.loop-step {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.l-num {
+  width: 18px; height: 18px;
+  background: var(--gold); color: var(--ink);
+  font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.l-text { color: var(--muted); }
+.l-text strong { color: var(--ink); }
+
+.loop-outcome {
+  border-left: 3px solid var(--green);
+  padding: 8px 12px;
+  font-family: var(--mono);
+  font-size: 10px;
+  background: var(--paper2);
+  align-self: start;
+}
+
+.loop-outcome-title {
+  color: var(--green);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: .08em;
+  margin-bottom: 6px;
+}
+
+.loop-outcome-items { color: var(--muted); line-height: 1.7; }
+.loop-outcome-items strong { color: var(--ink); }
+
+/* ══ LIVING DOCUMENT ══ */
+.living-box {
+  border: 1.5px solid var(--orange);
+  background: var(--paper);
+  overflow: hidden;
+  margin-top: 0;
+}
+
+.living-head {
+  background: var(--orange);
+  color: var(--paper);
+  padding: 7px 14px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.living-body {
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.living-expected {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.living-lock {
+  border-left: 3px solid var(--orange);
+  padding: 8px 12px;
+  background: var(--paper2);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* ══ DEPENDENCY MAP ══ */
+.dep-map {
+  border: 2px solid var(--ink);
+  overflow: hidden;
+}
+
+.dep-map-header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 9px 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dep-map-body {
+  padding: 24px;
+  background: var(--paper2);
+}
+
+.dep-phase-row {
+  margin-bottom: 20px;
+}
+
+.dep-phase-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.dep-nodes {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dep-node {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.dep-node.p0 { border-color: var(--gold); }
+.dep-node.p1 { border-color: var(--blue); }
+.dep-node.p2 { border-color: var(--orange); }
+.dep-node.p3 { border-color: var(--green); }
+.dep-node.living { border-style: dashed; border-color: var(--orange); }
+
+.dep-node-num { font-weight: 700; font-size: 12px; }
+.dep-node-name { color: var(--muted); font-size: 9px; }
+.dep-node-valid { color: var(--green); font-size: 9px; margin-top: 2px; }
+
+.dep-arrow {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.dep-arrow-down {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--muted);
+  padding: 6px 0;
+}
+
+/* ══ CHECKLIST ══ */
+.checklist-phases {
+  display: grid;
+  gap: 0;
+}
+
+.checklist-phase {
+  border: 1.5px solid var(--ink);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.checklist-phase-head {
+  padding: 9px 16px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checklist-phase-head.p0 { background: #4a3800; color: var(--paper); }
+.checklist-phase-head.p1 { background: var(--blue); color: var(--paper); }
+.checklist-phase-head.p2 { background: var(--orange); color: var(--paper); }
+.checklist-phase-head.p3 { background: var(--green); color: var(--paper); }
+
+.checklist-items {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.checklist-constitution {
+  padding: 12px 16px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.checklist-constitution:nth-child(even) { border-right: none; }
+.checklist-constitution:nth-last-child(-n+2) { border-bottom: none; }
+
+.cc-title {
+  font-family: var(--serif);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cc-num {
+  width: 20px; height: 20px;
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.cc-num.p0 { background: #4a3800; }
+.cc-num.p1 { background: var(--blue); }
+.cc-num.p2 { background: var(--orange); }
+.cc-num.p3 { background: var(--green); }
+
+.cc-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 5px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.checkbox {
+  width: 12px; height: 12px;
+  border: 1.5px solid var(--rule);
+  flex-shrink: 0; margin-top: 1px;
+}
+
+.cc-check-item .val { color: var(--green); }
+.cc-check-item .warn { color: var(--orange); }
+
+/* ══ MICRO-REVIEWS ══ */
+.review-timeline {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0;
+  border: 1.5px solid var(--ink);
+}
+
+.review-node {
+  padding: 12px;
+  border-right: 1px solid var(--rule);
+  text-align: center;
+}
+
+.review-node:last-child { border-right: none; }
+.review-node.quarterly { background: var(--ink); color: var(--paper); }
+
+.review-date {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+  letter-spacing: .06em;
+}
+
+.review-node.quarterly .review-date { color: var(--gold); }
+
+.review-focus {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.review-node.quarterly .review-focus { color: var(--rule); }
+
+.review-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 6px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: .08em;
+  border: 1px solid var(--rule);
+  color: var(--muted);
+}
+
+.review-node.quarterly .review-badge { border-color: var(--gold); color: var(--gold); }
+
+/* ══ FORBIDDEN PATTERNS ══ */
+.forbidden-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 2px solid var(--red);
+}
+
+.forbidden-header {
+  grid-column: 1 / -1;
+  background: var(--red);
+  color: var(--paper);
+  padding: 9px 16px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.forbidden-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 14px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.forbidden-item:nth-child(even) { border-right: none; }
+
+.f-code {
+  color: var(--red);
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.f-text { color: var(--muted); line-height: 1.5; }
+.f-text strong { color: var(--ink); }
+.f-fix { color: var(--green); font-size: 9px; margin-top: 2px; }
+
+/* ══ NEXT ACTIONS ══ */
+.actions-timeline {
+  border: 2px solid var(--ink);
+  overflow: hidden;
+}
+
+.actions-header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.day-group {
+  border-bottom: 1px solid var(--rule);
+}
+
+.day-group:last-child { border-bottom: none; }
+
+.day-header {
+  background: var(--paper3);
+  padding: 6px 16px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--rule);
+}
+
+.day-items {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.day-item {
+  padding: 10px 16px;
+  border-right: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.day-item:nth-child(even) { border-right: none; }
+
+.di-arrow { color: var(--gold); flex-shrink: 0; }
+.di-text { color: var(--muted); line-height: 1.5; }
+.di-text strong { color: var(--ink); }
+.di-text .code { color: var(--blue); }
+
+/* ══ LOCK STATEMENT ══ */
+.lock-statement {
+  border: 2px solid var(--ink);
+  overflow: hidden;
+  margin-top: 0;
+}
+
+.lock-header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .12em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lock-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.lock-col {
+  padding: 16px;
+  border-right: 1px solid var(--rule);
+}
+
+.lock-col:last-child { border-right: none; }
+
+.lock-col-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.lock-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.lock-stat-row:last-child { border-bottom: none; }
+.ls-key { color: var(--muted); }
+.ls-val { font-weight: 700; }
+.ls-val.gold { color: var(--gold); }
+
+.lock-order-list {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+
+.lock-order-list .num { font-weight: 700; color: var(--ink); }
+.lock-order-list .phase { font-size: 9px; letter-spacing: .1em; }
+.lock-order-list .p0 { color: var(--gold); }
+.lock-order-list .p1 { color: var(--blue); }
+.lock-order-list .p2 { color: var(--orange); }
+.lock-order-list .p3 { color: var(--green); }
+.lock-order-list .new { color: var(--red); }
+
+.lock-footer {
+  border-top: 2px solid var(--ink);
+  background: var(--paper2);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lock-tagline {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.lock-meta {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: .08em;
+  text-align: right;
+  line-height: 1.8;
+}
+
+.lock-meta strong { color: var(--ink); }
+
+/* ══ UTILITY ══ */
+.callout {
+  border-left: 4px solid var(--gold);
+  background: var(--paper2);
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 14px 0;
+}
+
+.callout strong { color: var(--ink); }
+.callout .warn { color: var(--red); }
+.callout .good { color: var(--green); }
+
+.divider { height: 1px; background: var(--rule); margin: 28px 0; }
+
+/* ══ CHANGES TABLE ══ */
+.changes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 10.5px;
+}
+
+.changes-table thead tr { background: var(--ink); color: var(--paper); }
+.changes-table th { padding: 9px 14px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; text-align: left; }
+.changes-table td { padding: 8px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.changes-table tr:nth-child(even) td { background: var(--paper2); }
+.changes-table .issue { color: var(--red); }
+.changes-table .rec { color: var(--blue); }
+.changes-table .impl { color: var(--green); }
+
+/* ══ LOCK BAND ══ */
+.final-lock-band {
+  border-top: 3px double var(--ink);
+  border-bottom: 7px solid var(--ink);
+  padding: 16px 0;
+  margin-top: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.final-lock-tagline {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.final-lock-meta {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-align: right;
+  line-height: 1.8;
+}
+
+.final-lock-meta strong { color: var(--ink); }
+
+@media (max-width: 900px) {
+  .amendment-grid,
+  .card-body,
+  .loop-body,
+  .living-body,
+  .lock-body,
+  .checklist-items,
+  .day-items,
+  .forbidden-grid { grid-template-columns: 1fr; }
+  .review-timeline { grid-template-columns: 1fr 1fr 1fr; }
+  .card-head { grid-template-columns: 50px 1fr; }
+  .card-stats { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ MASTHEAD ══ -->
+  <header class="masthead">
+    <div class="masthead-top">
+      <span>CONSTITUTIONAL ORDER v2.0 — FINAL LOCK · 2026-04-08</span>
+      <span>MICRO-REVIEW: 2026-04-22 · QUARTERLY: 2026-07-07</span>
+      <span>10 CONSTITUTIONS · 355 RULES · 4 PHASES</span>
+    </div>
+    <div class="masthead-main">
+      <div class="masthead-eyebrow">The Professional Build Sequence — From Zero to Production</div>
+      <h1 class="masthead-title">Constitutional<br><span>Order v2.0</span></h1>
+      <div class="masthead-tagline">
+        "Build constitutions in the order your system would fail without them. Validate with code. Refine. Then lock."
+      </div>
+      <div class="masthead-meta">
+        <span class="pill">PHASE 0</span><span>Foundation — Before ANY Code</span>
+        <span>·</span>
+        <span class="pill">PHASE 1</span><span>Core Architecture — With Validation Loops</span>
+        <span>·</span>
+        <span class="pill">PHASE 2</span><span>Quality &amp; Reliability</span>
+        <span>·</span>
+        <span class="pill">PHASE 3</span><span>Product &amp; Improvement</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ TOC ══ -->
+  <div class="toc-band">
+    <div class="toc-inner">
+      <strong>Contents:</strong>
+      <a href="#changes">§1 v2.0 Changes</a><span class="toc-sep">·</span>
+      <a href="#golden">§2 Golden Rule</a><span class="toc-sep">·</span>
+      <a href="#amendment">§3 Amendment Protocol</a><span class="toc-sep">·</span>
+      <a href="#phase0">§4 Phase 0</a><span class="toc-sep">·</span>
+      <a href="#phase1">§5 Phase 1</a><span class="toc-sep">·</span>
+      <a href="#phase2">§6 Phase 2</a><span class="toc-sep">·</span>
+      <a href="#phase3">§7 Phase 3</a><span class="toc-sep">·</span>
+      <a href="#depmap">§8 Dependency Map</a><span class="toc-sep">·</span>
+      <a href="#checklist">§9 Checklist</a><span class="toc-sep">·</span>
+      <a href="#reviews">§10 Micro-Reviews</a><span class="toc-sep">·</span>
+      <a href="#forbidden">§11 Forbidden Patterns</a><span class="toc-sep">·</span>
+      <a href="#actions">§12 Next Actions</a>
+    </div>
+  </div>
+
+  <!-- ══ §1 v2.0 CHANGES ══ -->
+  <section class="section" id="changes">
+    <div class="section-header">
+      <span class="section-num">§ 01</span>
+      <h2 class="section-title">Integrated Improvements — v2.0 Changes</h2>
+      <span class="section-badge">Executive Summary</span>
+    </div>
+
+    <table class="changes-table">
+      <thead>
+        <tr>
+          <th>Issue Identified</th>
+          <th>Recommendation</th>
+          <th>Implementation in v2.0</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="issue">Paralysis by analysis</td>
+          <td class="rec">Allow incremental code during Phase 1</td>
+          <td class="impl">Added "Iterative Build Loops" after each Phase 1 constitution</td>
+        </tr>
+        <tr>
+          <td class="issue">Testing placed too late</td>
+          <td class="rec">Define test strategy alongside code</td>
+          <td class="impl">Testing Constitution moved to Order #4 (split: Strategy + Implementation)</td>
+        </tr>
+        <tr>
+          <td class="issue">90-day review too rigid</td>
+          <td class="rec">2-week mini-review cycle</td>
+          <td class="impl">Added Micro-Review checkpoints every 2 weeks</td>
+        </tr>
+        <tr>
+          <td class="issue">Waterfall planning vs. agile reality</td>
+          <td class="rec">Feedback loops between phases</td>
+          <td class="impl">Explicit Amendment Protocol added to Team Constitution</td>
+        </tr>
+        <tr>
+          <td class="issue">DB schema locked before code</td>
+          <td class="rec">Schema fluid until Auth is built</td>
+          <td class="impl">Database Constitution marked "Living Document" until Auth code complete</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:16px;">
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Phase</th>
+            <th>Constitutions</th>
+            <th>Key Change</th>
+            <th>Est. Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="phase-0">Phase 0: Foundation</td>
+            <td>2</td>
+            <td>Added Amendment Protocol</td>
+            <td>4–7 hours</td>
+          </tr>
+          <tr>
+            <td class="phase-1">Phase 1: Core Architecture</td>
+            <td>5</td>
+            <td>Testing moved here; Iterative Build Loops added</td>
+            <td>14–20 hours</td>
+          </tr>
+          <tr>
+            <td class="phase-2">Phase 2: Quality &amp; Reliability</td>
+            <td>2</td>
+            <td>Testing Implementation split from Strategy</td>
+            <td>5–7 hours</td>
+          </tr>
+          <tr>
+            <td class="phase-3">Phase 3: Product &amp; Improvement</td>
+            <td>1</td>
+            <td>No change</td>
+            <td>2–3 hours</td>
+          </tr>
+          <tr class="total">
+            <td><strong>TOTAL</strong></td>
+            <td><strong>10</strong></td>
+            <td><strong>355 rules + Auth Spec + Iteration Protocol</strong></td>
+            <td><strong>25–37 hours</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ §2 GOLDEN RULE ══ -->
+  <section class="section" id="golden">
+    <div class="section-header">
+      <span class="section-num">§ 02</span>
+      <h2 class="section-title">The Golden Rule — Refined</h2>
+      <span class="section-badge">Priority Matrix</span>
+    </div>
+
+    <div class="callout" style="margin-bottom:16px;">
+      <strong>The Rule:</strong> Build constitutions in the order your system would fail without them.<br>
+      <strong>The Refinement:</strong> Validate with code. Refine. Then lock. Each constitution answers three questions:<br>
+      1. What breaks if I don't have this? &nbsp;·&nbsp; 2. What code must I write to validate this? &nbsp;·&nbsp; 3. When can this be locked permanently?
+    </div>
+
+    <table class="golden-table">
+      <thead>
+        <tr>
+          <th>Priority</th>
+          <th>Question</th>
+          <th>Constitution</th>
+          <th>Validation Required</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="p0">P0</td>
+          <td>Without this, can the team function?</td>
+          <td>Team &amp; Process</td>
+          <td>First retrospective completed</td>
+        </tr>
+        <tr>
+          <td class="p0">P0</td>
+          <td>Without this, can code be consistent?</td>
+          <td>Code Quality</td>
+          <td>First PR merged following these rules</td>
+        </tr>
+        <tr>
+          <td class="p1">P1</td>
+          <td>Without this, can the system exist?</td>
+          <td>Backend</td>
+          <td>First API endpoint working</td>
+        </tr>
+        <tr class="highlighted">
+          <td class="p1">P1 ⭐</td>
+          <td><strong>Without this, can we trust the code?</strong></td>
+          <td><strong>Testing Strategy</strong></td>
+          <td><strong>First test passes</strong></td>
+        </tr>
+        <tr>
+          <td class="p1">P1</td>
+          <td>Without this, can users exist?</td>
+          <td>Auth Domain</td>
+          <td>Login flow working</td>
+        </tr>
+        <tr>
+          <td class="p1">P1</td>
+          <td>Without this, can users interact?</td>
+          <td>Frontend</td>
+          <td>UI renders with real data</td>
+        </tr>
+        <tr>
+          <td class="p1">P1</td>
+          <td>Without this, can data be trusted?</td>
+          <td>Database</td>
+          <td>Schema survives Auth build</td>
+        </tr>
+        <tr>
+          <td class="p2">P2</td>
+          <td>Without this, can we deploy safely?</td>
+          <td>Infrastructure</td>
+          <td>First deployment succeeds</td>
+        </tr>
+        <tr>
+          <td class="p2">P2</td>
+          <td>Without this, can we handle failure?</td>
+          <td>Incident Response</td>
+          <td>First simulated incident</td>
+        </tr>
+        <tr>
+          <td class="p3">P3</td>
+          <td>Without this, can we build the right things?</td>
+          <td>Product &amp; Feature</td>
+          <td>First feature ships</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══ §3 AMENDMENT PROTOCOL ══ -->
+  <section class="section" id="amendment">
+    <div class="section-header">
+      <span class="section-num">§ 03</span>
+      <h2 class="section-title">Amendment Protocol</h2>
+      <span class="section-badge">NEW — Added to Constitution #1</span>
+    </div>
+
+    <div class="callout">
+      Constitutions are <strong>LOCKED</strong> but not <strong>RIGID</strong>. Amendments follow a defined process. Three tracks exist based on urgency and impact.
+    </div>
+
+    <div class="amendment-grid">
+      <div class="amendment-col">
+        <div class="amendment-col-head micro">Micro-Review — Every 2 Weeks</div>
+        <div class="amendment-col-body">
+          <div class="amendment-step">
+            <div class="a-num">1</div>
+            <div class="a-text">Team member identifies friction in a locked rule</div>
+          </div>
+          <div class="amendment-step">
+            <div class="a-num">2</div>
+            <div class="a-text"><strong>Document:</strong> What rule? What friction? Proposed change?</div>
+          </div>
+          <div class="amendment-step">
+            <div class="a-num">3</div>
+            <div class="a-text">Team votes (simple majority)</div>
+          </div>
+          <div class="amendment-step">
+            <div class="a-num">4</div>
+            <div class="a-text">If approved: Rule amended, version incremented (v2.0 → v2.1)</div>
+          </div>
+          <div class="amendment-step">
+            <div class="a-num">5</div>
+            <div class="a-text">Amendment logged in <strong>CHANGELOG.md</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="amendment-col">
+        <div class="amendment-col-head quarterly">Quarterly Review — Every 90 Days</div>
+        <div class="amendment-col-body">
+          <div class="amendment-step">
+            <div class="a-num">1</div>
+            <div class="a-text">Full constitution audit across all 10 documents</div>
+          </div>
+          <div class="amendment-step">
+            <div class="a-num">2</div>
+            <div class="a-text">Remove obsolete rules that no longer apply</div>
+          </div>
+          <div class="amendment-step">
+            <div class="a-num">3</div>
+            <div class="a-text">Add rules based on production incidents &amp; learnings</div>
+          </div>
+          <div class="amendment-step">
+            <div class="a-num">4</div>
+            <div class="a-text">Version major increment (v2.0 → v3.0)</div>
+          </div>
+          <div class="amendment-step" style="opacity:.4;">
+            <div class="a-num">—</div>
+            <div class="a-text">Next: 2026-07-07</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="amendment-col">
+        <div class="amendment-col-head emergency">Emergency Amendment — SEV0/SEV1</div>
+        <div class="amendment-col-body">
+          <div class="amendment-step">
+            <div class="a-num">1</div>
+            <div class="a-text">Rule caused or <strong>failed to prevent</strong> a SEV0/SEV1 incident</div>
+          </div>
+          <div class="amendment-step">
+            <div class="a-num">2</div>
+            <div class="a-text">Immediate amendment during post-mortem session</div>
+          </div>
+          <div class="amendment-step">
+            <div class="a-num">3</div>
+            <div class="a-text"><strong>No vote required</strong> — Incident Commander authority</div>
+          </div>
+          <div class="amendment-step" style="opacity:.4;">
+            <div class="a-num">—</div>
+            <div class="a-text">Bypasses Micro-Review cycle entirely</div>
+          </div>
+          <div class="amendment-step" style="opacity:.4;">
+            <div class="a-num">—</div>
+            <div class="a-text">Logged in post-mortem document + CHANGELOG.md</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ §4 PHASE 0 ══ -->
+  <section class="section" id="phase0">
+    <div class="section-header">
+      <span class="section-num">§ 04</span>
+      <h2 class="section-title">Phase 0 — Foundation</h2>
+      <span class="section-badge">Before ANY Code</span>
+    </div>
+
+    <div class="phase-band p0">
+      <span class="phase-band-title">Phase 0: Foundation</span>
+      <span class="phase-band-meta">2 Constitutions · 4–7 Hours · Build Before ANY Code</span>
+    </div>
+
+    <!-- Constitution #1 -->
+    <div class="constitution-card">
+      <div class="card-head">
+        <div class="card-num p0">1</div>
+        <div class="card-title-area">
+          <div class="card-constitution-title">Team &amp; Process Constitution</div>
+          <div class="card-why">Without team process, no other constitution will be followed. Chaos. No decision framework. No improvement loop.</div>
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><strong>24</strong> Rules</div>
+          <div class="card-stat"><strong>2–4 hrs</strong></div>
+          <div class="card-stat">Order <strong>1</strong> of 10</div>
+          <div class="card-stat">P<strong>0</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-section">
+          <div class="card-section-label">What Breaks Without It</div>
+          <div class="card-section-content">
+            <span class="danger">Chaos.</span> No decision framework. No improvement loop. No retrospectives. Tech debt from day zero with no mechanism to address it.
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Key Rules Included</div>
+          <div class="card-section-content">
+            · Roles documented<br>
+            · Meeting cadence established<br>
+            · Decision-making framework<br>
+            · <span class="highlight">Amendment Protocol (NEW)</span><br>
+            · Conflict resolution process
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Professional Sources</div>
+          <div class="card-section-content">
+            Google SRE "Human Factors"<br>
+            Amazon "Single-Threaded Owner"<br>
+            Basecamp "Calm"
+          </div>
+        </div>
+      </div>
+      <div class="validation-bar">
+        <span class="validation-label">VALIDATION REQUIRED</span>
+        <span class="validation-text"><strong>First retrospective completed</strong> — Did the team follow the process? If not, amend before proceeding to #2.</span>
+      </div>
+    </div>
+
+    <!-- Constitution #2 -->
+    <div class="constitution-card">
+      <div class="card-head">
+        <div class="card-num p0">2</div>
+        <div class="card-title-area">
+          <div class="card-constitution-title">Code Quality &amp; Review Constitution</div>
+          <div class="card-why">Before writing ANY code, lock how code is written and reviewed. Formatting debates kill momentum. No review process = no standards.</div>
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><strong>32</strong> Rules</div>
+          <div class="card-stat"><strong>2–3 hrs</strong></div>
+          <div class="card-stat">Order <strong>2</strong> of 10</div>
+          <div class="card-stat">P<strong>0</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-section">
+          <div class="card-section-label">What Breaks Without It</div>
+          <div class="card-section-content">
+            <span class="danger">Formatting debates.</span> No review process. Tech debt from day one. Every developer writes differently. No shared standards.
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Key Rules Included</div>
+          <div class="card-section-content">
+            · Prettier + ESLint configured<br>
+            · TypeScript strict mode enabled<br>
+            · PR template created<br>
+            · Branch naming conventions<br>
+            · Commit message format
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Professional Sources</div>
+          <div class="card-section-content">
+            Google "Code Review Guidelines"<br>
+            Stripe "Engineering Standards"<br>
+            Conventional Commits spec
+          </div>
+        </div>
+      </div>
+      <div class="validation-bar">
+        <span class="validation-label">VALIDATION REQUIRED</span>
+        <span class="validation-text"><strong>First PR merged following these rules</strong> — Did the review process work? Was Prettier clean? Did TypeScript strict mode catch issues?</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ §5 PHASE 1 ══ -->
+  <section class="section" id="phase1">
+    <div class="section-header">
+      <span class="section-num">§ 05</span>
+      <h2 class="section-title">Phase 1 — Core Architecture</h2>
+      <span class="section-badge">Build WITH Validation Code</span>
+    </div>
+
+    <div class="phase-band p1">
+      <span class="phase-band-title">Phase 1: Core Architecture</span>
+      <span class="phase-band-meta">5 Constitutions · 14–20 Hours · Each Constitution Validated With Real Code</span>
+    </div>
+
+    <div class="callout">
+      <strong>CRITICAL CHANGE in v2.0:</strong> Each constitution in Phase 1 now includes an <strong>Iterative Build Loop</strong>. You write just enough code to validate the constitution before locking it. <span class="warn">Never lock a constitution you haven't tested against reality.</span>
+    </div>
+
+    <!-- Constitution #3 Backend -->
+    <div class="constitution-card">
+      <div class="card-head">
+        <div class="card-num p1">3</div>
+        <div class="card-title-area">
+          <div class="card-constitution-title">Backend Constitution (v2.2 — 61 Rules)</div>
+          <div class="card-why">Backend is the foundation. APIs, error handling, and rate limiting must be locked before anything else is built on top.</div>
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><strong>61</strong> Rules</div>
+          <div class="card-stat"><strong>4–6 hrs</strong> + 2 code</div>
+          <div class="card-stat">Order <strong>3</strong> of 10</div>
+          <div class="card-stat">P<strong>1</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-section">
+          <div class="card-section-label">What Breaks Without It</div>
+          <div class="card-section-content">
+            <span class="danger">API chaos.</span> No contract. Security holes. No standard error format. Frontend can't be built reliably.
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Critical Rules</div>
+          <div class="card-section-content">
+            · <span class="highlight">B7</span> OpenAPI First<br>
+            · <span class="highlight">B8</span> ApiResponse&lt;T&gt;<br>
+            · <span class="highlight">B9</span> 9 Error Codes locked<br>
+            · <span class="highlight">B26</span> Rate limit tiers<br>
+            · <span class="highlight">B2</span> Single Gateway
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Professional Sources</div>
+          <div class="card-section-content">
+            AWS Well-Architected<br>
+            Stripe "API First"<br>
+            OpenAPI Specification 3.1
+          </div>
+        </div>
+      </div>
+      <div class="validation-bar">
+        <span class="validation-label">VALIDATION REQUIRED</span>
+        <span class="validation-text"><strong>GET /health returns correct B9 error format</strong> — One endpoint, one test, one verification.</span>
+      </div>
+    </div>
+
+    <div class="loop-box">
+      <div class="loop-head">
+        <span>Iterative Build Loop — Backend Validation</span>
+        <span>Before Locking Constitution #3</span>
+      </div>
+      <div class="loop-body">
+        <div class="loop-steps">
+          <div class="loop-step"><div class="l-num">1</div><div class="l-text">Write ONE endpoint: <strong>GET /health</strong></div></div>
+          <div class="loop-step"><div class="l-num">2</div><div class="l-text">Implement <strong>B9 error format</strong> exactly as specified</div></div>
+          <div class="loop-step"><div class="l-num">3</div><div class="l-text">Write ONE test that hits the endpoint and verifies the shape</div></div>
+          <div class="loop-step"><div class="l-num">4</div><div class="l-text">Verify: Does the code match the constitution exactly?</div></div>
+          <div class="loop-step"><div class="l-num">5</div><div class="l-text">If YES → <strong class="good">Lock Backend Constitution</strong></div></div>
+          <div class="loop-step"><div class="l-num">6</div><div class="l-text">If NO → Amend constitution based on reality, then lock</div></div>
+        </div>
+        <div class="loop-outcome">
+          <div class="loop-outcome-title">Validation Complete When:</div>
+          <div class="loop-outcome-items">
+            <strong>GET /health</strong> returns 200<br>
+            Error shape matches <strong>B9</strong> exactly<br>
+            One test is green in CI<br>
+            B9 codes are documented<br><br>
+            <strong>→ Backend Constitution LOCKED</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Constitution #4 Testing -->
+    <div class="constitution-card">
+      <div class="card-head">
+        <div class="card-num p1">4</div>
+        <div class="card-title-area">
+          <div class="card-constitution-title">Testing Strategy Constitution ⭐ MOVED TO #4</div>
+          <div class="card-why">You cannot write reliable code without knowing how you'll test it. Strategy must be locked BEFORE building Auth or Frontend — not after.</div>
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><strong>20</strong> Strategy Rules</div>
+          <div class="card-stat"><strong>2–3 hrs</strong></div>
+          <div class="card-stat">Order <strong>4</strong> of 10</div>
+          <div class="card-stat">P<strong>1 NEW</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-section">
+          <div class="card-section-label">What Breaks Without It</div>
+          <div class="card-section-content">
+            <span class="danger">Untested assumptions.</span> Flaky tests bolted on later. No test pyramid. Auth ships with no coverage. Frontend has no contract guarantees.
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Phase 1 Strategy (NOW — 20 Rules)</div>
+          <div class="card-section-content">
+            · Unit test framework (Jest/Vitest)<br>
+            · Integration test framework (Supertest/MSW)<br>
+            · <span class="highlight">Coverage targets: 70% unit, 100% API</span><br>
+            · Test data factory pattern<br>
+            · Contract testing strategy (OpenAPI → TS)
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Phase 2 Implementation (LATER — 14 Rules)</div>
+          <div class="card-section-content">
+            · E2E tests (max 10 for v1)<br>
+            · CI pipeline test execution<br>
+            · Flaky test quarantine process<br>
+            · Performance test thresholds
+          </div>
+        </div>
+      </div>
+      <div class="validation-bar">
+        <span class="validation-label">VALIDATION REQUIRED</span>
+        <span class="validation-text"><strong>First unit test passes AND first integration test passes</strong> — Framework is wired, CI runs green.</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Constitution #5 Auth -->
+    <div class="constitution-card">
+      <div class="card-head">
+        <div class="card-num p1">5</div>
+        <div class="card-title-area">
+          <div class="card-constitution-title">Auth Domain Specification</div>
+          <div class="card-why">Auth is the first feature. Build immediately after Backend + Testing Strategy. Without user identity, nothing else can be built.</div>
+        </div>
+        <div class="card-stats">
+          <div class="card-stat">Spec + Code</div>
+          <div class="card-stat"><strong>2–3 hrs</strong> spec</div>
+          <div class="card-stat"><strong>4–6 hrs</strong> code</div>
+          <div class="card-stat">P<strong>1</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-section">
+          <div class="card-section-label">What Breaks Without It</div>
+          <div class="card-section-content">
+            <span class="danger">No user identity.</span> Can't build anything else. No sessions, no roles, no permissions. The entire system depends on users existing.
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Endpoints Required</div>
+          <div class="card-section-content">
+            · <span class="highlight">POST /auth/register</span><br>
+            · <span class="highlight">POST /auth/login</span><br>
+            · <span class="highlight">POST /auth/logout</span><br>
+            · <span class="highlight">GET /auth/me</span><br>
+            · Session: stateful JWT + DB<br>
+            · Passwords: NIST 2023
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Professional Sources</div>
+          <div class="card-section-content">
+            OWASP Authentication Cheatsheet<br>
+            NIST 800-63B (2023)<br>
+            Auth0 Security Best Practices<br>
+            RFC 6749 (OAuth 2.0)
+          </div>
+        </div>
+      </div>
+      <div class="validation-bar">
+        <span class="validation-label">VALIDATION REQUIRED</span>
+        <span class="validation-text"><strong>Working login/register/logout/me flow with tests</strong> — All 4 endpoints pass. Session cookie is HTTP-only. Deployed to dev.</span>
+      </div>
+    </div>
+
+    <div class="loop-box">
+      <div class="loop-head">
+        <span>Iterative Build Loop — Auth Validation</span>
+        <span>Before Locking Database Constitution #7</span>
+      </div>
+      <div class="loop-body">
+        <div class="loop-steps">
+          <div class="loop-step"><div class="l-num">1</div><div class="l-text">Implement all 4 Auth endpoints with tests (using Strategy #4)</div></div>
+          <div class="loop-step"><div class="l-num">2</div><div class="l-text">Deploy to dev environment — real database connections</div></div>
+          <div class="loop-step"><div class="l-num">3</div><div class="l-text"><strong>Discover what the database ACTUALLY needed</strong></div></div>
+          <div class="loop-step"><div class="l-num">4</div><div class="l-text">Use discoveries to inform Database Constitution (#7)</div></div>
+          <div class="loop-step"><div class="l-num">5</div><div class="l-text">Note any schema surprises (indexes, column types, missing timestamps)</div></div>
+        </div>
+        <div class="loop-outcome">
+          <div class="loop-outcome-title">Validation Complete When:</div>
+          <div class="loop-outcome-items">
+            All 4 endpoints return correct shapes<br>
+            Tests pass in CI<br>
+            <strong>HTTP-only cookie</strong> is set<br>
+            bcrypt comparison works<br>
+            Schema surprises documented<br><br>
+            <strong>→ Proceed to Frontend (#6)</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Constitution #6 Frontend -->
+    <div class="constitution-card">
+      <div class="card-head">
+        <div class="card-num p1">6</div>
+        <div class="card-title-area">
+          <div class="card-constitution-title">Frontend Constitution (v16.0 — 66 Rules)</div>
+          <div class="card-why">Frontend depends on real Auth endpoints. Build after Auth works — not before. Prevents UI built against mocked data that doesn't match reality.</div>
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><strong>66</strong> Rules</div>
+          <div class="card-stat"><strong>3–5 hrs</strong> + 3 code</div>
+          <div class="card-stat">Order <strong>6</strong> of 10</div>
+          <div class="card-stat">P<strong>1</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-section">
+          <div class="card-section-label">What Breaks Without It</div>
+          <div class="card-section-content">
+            <span class="danger">Inconsistent UI.</span> Accessibility failures. No state patterns. Each developer implements loading/error states differently.
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Critical Rules</div>
+          <div class="card-section-content">
+            · <span class="highlight">Rule 1</span> One adaptive system<br>
+            · <span class="highlight">Rule 2</span> Mobile-first 320px<br>
+            · <span class="highlight">Rule 11</span> Touch targets 44×44<br>
+            · <span class="highlight">Rule 28</span> Skeleton/error/success<br>
+            · <span class="highlight">Rule 61</span> X-Request-ID tracing
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Professional Sources</div>
+          <div class="card-section-content">
+            WCAG 2.1 AA Standard<br>
+            Google "Mobile-First Indexing"<br>
+            React/Next.js best practices<br>
+            Nielsen Norman Group UX research
+          </div>
+        </div>
+      </div>
+      <div class="validation-bar">
+        <span class="validation-label">VALIDATION REQUIRED</span>
+        <span class="validation-text"><strong>Login screen renders, calls real API, handles 3 states</strong> — Skeleton visible, error state shows correct message, success redirects correctly.</span>
+      </div>
+    </div>
+
+    <div class="loop-box">
+      <div class="loop-head">
+        <span>Iterative Build Loop — Frontend Validation</span>
+        <span>Before Locking Constitution #6</span>
+      </div>
+      <div class="loop-body">
+        <div class="loop-steps">
+          <div class="loop-step"><div class="l-num">1</div><div class="l-text">Build <strong>Login page ONLY</strong> — nothing else</div></div>
+          <div class="loop-step"><div class="l-num">2</div><div class="l-text">Implement 3-state pattern: loading skeleton, error state, success redirect</div></div>
+          <div class="loop-step"><div class="l-num">3</div><div class="l-text">Test on <strong>320px width</strong> (mobile-first validation)</div></div>
+          <div class="loop-step"><div class="l-num">4</div><div class="l-text">Verify X-Request-ID tracing works with real backend</div></div>
+          <div class="loop-step"><div class="l-num">5</div><div class="l-text">If UI patterns work → <strong>Lock Frontend Constitution</strong></div></div>
+          <div class="loop-step"><div class="l-num">6</div><div class="l-text">If patterns fail → Amend based on reality, then lock</div></div>
+        </div>
+        <div class="loop-outcome">
+          <div class="loop-outcome-title">Validation Complete When:</div>
+          <div class="loop-outcome-items">
+            Login renders at <strong>320px</strong><br>
+            3-state pattern works<br>
+            Error codes map to messages<br>
+            X-Request-ID flows end-to-end<br>
+            Touch targets pass 44×44 check<br><br>
+            <strong>→ Frontend Constitution LOCKED</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Constitution #7 Database -->
+    <div class="constitution-card">
+      <div class="card-head">
+        <div class="card-num p1">7</div>
+        <div class="card-title-area">
+          <div class="card-constitution-title">Database Constitution — Living Document</div>
+          <div class="card-why">After Auth code is written, you know what the schema actually needs. Locking this too early creates refactoring debt before production.</div>
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><strong>38</strong> Rules</div>
+          <div class="card-stat"><strong>3–4 hrs</strong></div>
+          <div class="card-stat">Order <strong>7</strong> of 10</div>
+          <div class="card-stat"><strong style="color:var(--orange)">LIVING</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-section">
+          <div class="card-section-label">What Breaks Without It</div>
+          <div class="card-section-content">
+            <span class="danger">Data inconsistency.</span> Missing indexes discovered in production. No backup strategy. Schema that worked in theory fails against real auth queries.
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Key Rules</div>
+          <div class="card-section-content">
+            · Plural table names, snake_case<br>
+            · Foreign key indexes required<br>
+            · Soft delete + 30-day purge<br>
+            · <span class="highlight">Prisma as source of truth (B13)</span><br>
+            · Timestamps on all tables (B14)
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Dependencies</div>
+          <div class="card-section-content">
+            Depends on: Backend (#3)<br>
+            <span class="highlight">Depends on: Auth Implementation (#5)</span><br><br>
+            Cannot be locked until Auth code exists and schema has been tested against real queries.
+          </div>
+        </div>
+      </div>
+      <div class="validation-bar">
+        <span class="validation-label" style="background:var(--orange)">LIVING DOCUMENT</span>
+        <span class="validation-text"><strong>Schema survives Auth + Frontend builds without major refactor</strong> · Locked after: first production deployment completes.</span>
+      </div>
+    </div>
+
+    <div class="living-box">
+      <div class="living-head">Database Constitution — Living Document Status · Expected Changes During Living Period</div>
+      <div class="living-body">
+        <div class="living-expected">
+          <strong style="color:var(--ink)">Expected to Change:</strong><br><br>
+          · Adding indexes discovered during query performance testing<br>
+          · Adjusting column types (e.g., VARCHAR length for tokens)<br>
+          · Adding missing timestamps (created_at, updated_at) discovered during auth build<br>
+          · Refining soft delete implementation after seeing real delete patterns<br>
+          · Adding composite indexes after running real JOIN queries
+        </div>
+        <div class="living-lock">
+          <strong style="color:var(--orange)">Lock Conditions (all must be true):</strong><br><br>
+          · Auth code is complete and tested<br>
+          · Frontend auth flows are working<br>
+          · At least one non-auth feature is built<br>
+          · No schema changes in last 5 days<br><br>
+          <strong style="color:var(--ink)">Lock After:</strong> First production deployment completes successfully
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ §6 PHASE 2 ══ -->
+  <section class="section" id="phase2">
+    <div class="section-header">
+      <span class="section-num">§ 06</span>
+      <h2 class="section-title">Phase 2 — Quality &amp; Reliability</h2>
+      <span class="section-badge">Complete Before Production</span>
+    </div>
+
+    <div class="phase-band p2">
+      <span class="phase-band-title">Phase 2: Quality &amp; Reliability</span>
+      <span class="phase-band-meta">2 Constitutions · 5–7 Hours · Required Before Production Deploy</span>
+    </div>
+
+    <!-- Constitution #8 Infrastructure -->
+    <div class="constitution-card">
+      <div class="card-head">
+        <div class="card-num p2">8</div>
+        <div class="card-title-area">
+          <div class="card-constitution-title">Infrastructure Constitution</div>
+          <div class="card-why">After core system works, lock how it deploys. No CI/CD means no reproducible deployments. No rollback means a bad deploy is a crisis.</div>
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><strong>40</strong> Rules</div>
+          <div class="card-stat"><strong>3–4 hrs</strong></div>
+          <div class="card-stat">Order <strong>8</strong> of 10</div>
+          <div class="card-stat">P<strong>2</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-section">
+          <div class="card-section-label">What Breaks Without It</div>
+          <div class="card-section-content">
+            <span class="danger">No CI/CD.</span> No rollback. No monitoring. Deployments are manual and unreliable. One bad push takes down production with no recovery path.
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Key Rules</div>
+          <div class="card-section-content">
+            · 3 environments: dev/staging/prod<br>
+            · Zero-downtime deployment<br>
+            · <span class="highlight">5-minute rollback guarantee</span><br>
+            · Automated CI on every PR<br>
+            · Environment parity enforced
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Professional Sources</div>
+          <div class="card-section-content">
+            AWS Well-Architected<br>
+            Google SRE "Automation"<br>
+            12-Factor App methodology<br>
+            GitHub Actions best practices
+          </div>
+        </div>
+      </div>
+      <div class="validation-bar">
+        <span class="validation-label" style="background:var(--orange)">VALIDATION REQUIRED</span>
+        <span class="validation-text"><strong>Successful zero-downtime deployment of Auth + Frontend to staging</strong> — Rollback tested and confirmed to complete in under 5 minutes.</span>
+      </div>
+    </div>
+
+    <!-- Constitution #9 Incident Response -->
+    <div class="constitution-card">
+      <div class="card-head">
+        <div class="card-num p2">9</div>
+        <div class="card-title-area">
+          <div class="card-constitution-title">Incident Response Constitution</div>
+          <div class="card-why">Now that you have a deployed system, lock how you handle failure. Without this, every incident is improvised. Teams burn out. Learning doesn't happen.</div>
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><strong>36</strong> Rules</div>
+          <div class="card-stat"><strong>2–3 hrs</strong></div>
+          <div class="card-stat">Order <strong>9</strong> of 10</div>
+          <div class="card-stat">P<strong>2</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-section">
+          <div class="card-section-label">What Breaks Without It</div>
+          <div class="card-section-content">
+            <span class="danger">No on-call.</span> No post-mortems. No learning. Every incident is handled differently. Teams burn out from chaos. Same mistakes repeat.
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Key Rules</div>
+          <div class="card-section-content">
+            · <span class="highlight">SEV0/SEV1/SEV2/SEV3/SEV4 defined</span><br>
+            · Incident Commander + Scribe roles<br>
+            · 5-day post-mortem timeline<br>
+            · Blameless culture mandate<br>
+            · On-call rotation rules
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Professional Sources</div>
+          <div class="card-section-content">
+            Google SRE "Post-Mortem Culture"<br>
+            Atlassian "Incident Management"<br>
+            PagerDuty Maturity Model<br>
+            Charity Majors on on-call
+          </div>
+        </div>
+      </div>
+      <div class="validation-bar">
+        <span class="validation-label" style="background:var(--orange)">VALIDATION REQUIRED</span>
+        <span class="validation-text"><strong>First simulated incident (tabletop exercise) completed</strong> — "Auth service returning 500 errors." SEV2→SEV1 escalation practiced. Mock post-mortem written.</span>
+      </div>
+    </div>
+
+    <div class="loop-box" style="border-color:var(--orange);">
+      <div class="loop-head" style="background:var(--orange);">
+        <span>Iterative Validation — Incident Response</span>
+        <span>30-Minute Tabletop Exercise</span>
+      </div>
+      <div class="loop-body">
+        <div class="loop-steps">
+          <div class="loop-step"><div class="l-num" style="background:var(--orange)">1</div><div class="l-text">Run a <strong>30-minute tabletop exercise</strong></div></div>
+          <div class="loop-step"><div class="l-num" style="background:var(--orange)">2</div><div class="l-text">Simulate: "Auth service returning 500 errors"</div></div>
+          <div class="loop-step"><div class="l-num" style="background:var(--orange)">3</div><div class="l-text">Assign <strong>Incident Commander</strong> and Scribe</div></div>
+          <div class="loop-step"><div class="l-num" style="background:var(--orange)">4</div><div class="l-text">Practice SEV2 → SEV1 escalation path</div></div>
+          <div class="loop-step"><div class="l-num" style="background:var(--orange)">5</div><div class="l-text">Write a mock post-mortem document</div></div>
+          <div class="loop-step"><div class="l-num" style="background:var(--orange)">6</div><div class="l-text">If process works → Lock · If fails → Amend, then lock</div></div>
+        </div>
+        <div class="loop-outcome" style="border-left-color:var(--orange)">
+          <div class="loop-outcome-title" style="color:var(--orange)">Validation Complete When:</div>
+          <div class="loop-outcome-items">
+            Team knows their role<br>
+            Escalation path is clear<br>
+            Communication channel agreed<br>
+            Post-mortem template exists<br>
+            Blameless culture modeled<br><br>
+            <strong>→ Incident Response LOCKED</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ §7 PHASE 3 ══ -->
+  <section class="section" id="phase3">
+    <div class="section-header">
+      <span class="section-num">§ 07</span>
+      <h2 class="section-title">Phase 3 — Product &amp; Continuous Improvement</h2>
+      <span class="section-badge">After Launch</span>
+    </div>
+
+    <div class="phase-band p3">
+      <span class="phase-band-title">Phase 3: Product &amp; Continuous Improvement</span>
+      <span class="phase-band-meta">1 Constitution · 2–3 Hours · After System is Reliable</span>
+    </div>
+
+    <!-- Constitution #10 Product -->
+    <div class="constitution-card">
+      <div class="card-head">
+        <div class="card-num p3">10</div>
+        <div class="card-title-area">
+          <div class="card-constitution-title">Product &amp; Feature Constitution</div>
+          <div class="card-why">After system is reliable, lock how you decide what to build next. Without this, you build the loudest request instead of the most valuable feature.</div>
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><strong>24</strong> Rules</div>
+          <div class="card-stat"><strong>2–3 hrs</strong></div>
+          <div class="card-stat">Order <strong>10</strong> of 10</div>
+          <div class="card-stat">P<strong>3</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-section">
+          <div class="card-section-label">What Breaks Without It</div>
+          <div class="card-section-content">
+            <span class="danger">Building wrong features.</span> No metrics. No deprecation plan. Roadmap driven by whoever shouted loudest in the last meeting.
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Key Rules</div>
+          <div class="card-section-content">
+            · Feature lifecycle documented<br>
+            · <span class="highlight">Success metrics required before launch</span><br>
+            · 30/90-day deprecation notice<br>
+            · Working backwards from user need<br>
+            · Beta / GA / Deprecated stages
+          </div>
+        </div>
+        <div class="card-section">
+          <div class="card-section-label">Professional Sources</div>
+          <div class="card-section-content">
+            Amazon "Working Backwards"<br>
+            Basecamp "Shape Up"<br>
+            Teresa Torres "Opportunity Solution Trees"<br>
+            Marty Cagan "INSPIRED"
+          </div>
+        </div>
+      </div>
+      <div class="validation-bar">
+        <span class="validation-label" style="background:var(--green)">VALIDATION REQUIRED</span>
+        <span class="validation-text"><strong>First feature ships with defined success metrics</strong> — Feature has a success metric defined before it launched. Metric is being measured.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ §8 DEPENDENCY MAP ══ -->
+  <section class="section" id="depmap">
+    <div class="section-header">
+      <span class="section-num">§ 08</span>
+      <h2 class="section-title">Complete Dependency Map v2.0</h2>
+      <span class="section-badge">With Validation Loops</span>
+    </div>
+
+    <div class="dep-map">
+      <div class="dep-map-header">
+        <span>CONSTITUTIONAL ORDER v2.0 — DEPENDENCY MAP</span>
+        <span>Each node requires validation before proceeding</span>
+      </div>
+      <div class="dep-map-body">
+
+        <div class="dep-phase-row">
+          <div class="dep-phase-label">Phase 0 — Foundation (Before ANY Code)</div>
+          <div class="dep-nodes">
+            <div class="dep-node p0">
+              <div class="dep-node-num">#1</div>
+              <div class="dep-node-name">Team &amp; Process</div>
+              <div class="dep-node-valid">✓ 1st retro</div>
+            </div>
+            <div class="dep-arrow">→</div>
+            <div class="dep-node p0">
+              <div class="dep-node-num">#2</div>
+              <div class="dep-node-name">Code Quality</div>
+              <div class="dep-node-valid">✓ 1st PR</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep-arrow-down">↓</div>
+
+        <div class="dep-phase-row">
+          <div class="dep-phase-label">Phase 1 — Core Architecture (With Validation Code)</div>
+          <div class="dep-nodes">
+            <div class="dep-node p1">
+              <div class="dep-node-num">#3</div>
+              <div class="dep-node-name">Backend</div>
+              <div class="dep-node-valid">✓ /health works</div>
+            </div>
+            <div class="dep-arrow">→</div>
+            <div class="dep-node p1" style="border-color:var(--red)">
+              <div class="dep-node-num">#4 ⭐</div>
+              <div class="dep-node-name">Testing Strategy</div>
+              <div class="dep-node-valid">✓ 1st test passes</div>
+            </div>
+            <div class="dep-arrow">→</div>
+            <div class="dep-node p1">
+              <div class="dep-node-num">#5</div>
+              <div class="dep-node-name">Auth Domain</div>
+              <div class="dep-node-valid">✓ Login flow works</div>
+            </div>
+            <div class="dep-arrow">→</div>
+            <div class="dep-node p1">
+              <div class="dep-node-num">#6</div>
+              <div class="dep-node-name">Frontend</div>
+              <div class="dep-node-valid">✓ Login UI works</div>
+            </div>
+            <div class="dep-arrow">→</div>
+            <div class="dep-node living">
+              <div class="dep-node-num">#7</div>
+              <div class="dep-node-name">Database</div>
+              <div class="dep-node-valid" style="color:var(--orange)">⚠ Living Doc</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep-arrow-down">↓ (After Auth + Frontend working)</div>
+
+        <div class="dep-phase-row">
+          <div class="dep-phase-label">Phase 2 — Quality &amp; Reliability (Before Production)</div>
+          <div class="dep-nodes">
+            <div class="dep-node p2">
+              <div class="dep-node-num">#8</div>
+              <div class="dep-node-name">Infrastructure</div>
+              <div class="dep-node-valid">✓ Deploy works</div>
+            </div>
+            <div class="dep-arrow">→</div>
+            <div class="dep-node p2">
+              <div class="dep-node-num">#9</div>
+              <div class="dep-node-name">Incident Response</div>
+              <div class="dep-node-valid">✓ Tabletop done</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep-arrow-down">↓ (After Production Deployed)</div>
+
+        <div class="dep-phase-row">
+          <div class="dep-phase-label">Phase 3 — Product (After Launch)</div>
+          <div class="dep-nodes">
+            <div class="dep-node p3">
+              <div class="dep-node-num">#10</div>
+              <div class="dep-node-name">Product &amp; Feature</div>
+              <div class="dep-node-valid">✓ Feature ships</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep-arrow-down">↓</div>
+
+        <div style="display:flex; gap:24px; font-family:var(--mono); font-size:10px; color:var(--muted);">
+          <div style="border:1.5px solid var(--blue); padding:6px 16px; text-align:center;">
+            Micro-Review<br><strong style="color:var(--ink)">Every 2 Weeks</strong>
+          </div>
+          <div style="font-size:16px; display:flex; align-items:center;">+</div>
+          <div style="border:1.5px solid var(--orange); padding:6px 16px; text-align:center;">
+            Quarterly Review<br><strong style="color:var(--ink)">Every 90 Days</strong>
+          </div>
+          <div style="font-size:16px; display:flex; align-items:center;">=</div>
+          <div style="border:1.5px solid var(--gold); background:var(--paper3); padding:6px 16px; text-align:center;">
+            Living System<br><strong style="color:var(--ink)">That Improves</strong>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ §9 CHECKLIST ══ -->
+  <section class="section" id="checklist">
+    <div class="section-header">
+      <span class="section-num">§ 09</span>
+      <h2 class="section-title">Build Order Checklist v2.0</h2>
+      <span class="section-badge">All 4 Phases</span>
+    </div>
+
+    <div class="checklist-phases">
+
+      <div class="checklist-phase">
+        <div class="checklist-phase-head p0">
+          <span>Phase 0 — Foundation (Before ANY Code)</span>
+          <span>4–7 hrs</span>
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-constitution">
+            <div class="cc-title"><div class="cc-num p0">1</div>Team &amp; Process Constitution — 24 rules</div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Roles documented</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Meeting cadence established</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Decision-making framework defined</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Amendment Protocol understood by all</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: First retrospective completed</span></div>
+          </div>
+          <div class="checklist-constitution">
+            <div class="cc-title"><div class="cc-num p0">2</div>Code Quality &amp; Review — 32 rules</div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Prettier + ESLint configured</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>TypeScript strict mode enabled</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>PR template created</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Branch naming conventions locked</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: First PR merged following rules</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="checklist-phase">
+        <div class="checklist-phase-head p1">
+          <span>Phase 1 — Core Architecture (Build WITH Validation)</span>
+          <span>14–20 hrs</span>
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-constitution">
+            <div class="cc-title"><div class="cc-num p1">3</div>Backend Constitution — 61 rules</div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Next.js API Routes vs FastAPI separation defined</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>OpenAPI contract-first established (B7)</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Error codes (B9) — 9 codes locked</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION CODE: GET /health returns B9 format</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: Constitution LOCKED</span></div>
+          </div>
+          <div class="checklist-constitution">
+            <div class="cc-title"><div class="cc-num p1">4</div>Testing Strategy — 20 strategy rules</div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Unit test framework chosen (Jest/Vitest)</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Integration test framework chosen</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Coverage targets defined (70% unit, 100% API)</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION CODE: First unit + integration test pass</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: Strategy LOCKED</span></div>
+          </div>
+          <div class="checklist-constitution">
+            <div class="cc-title"><div class="cc-num p1">5</div>Auth Domain Specification</div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Endpoints: register, login, logout, me defined</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Session strategy: stateful JWT + DB</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Passwords: NIST 2023 compliant</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION CODE: All 4 endpoints working with tests</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: Login flow works, Auth Spec LOCKED</span></div>
+          </div>
+          <div class="checklist-constitution">
+            <div class="cc-title"><div class="cc-num p1">6</div>Frontend Constitution — 66 rules</div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Mobile-first 320px established (Rule 2)</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>No emojis in UI (Rule 16)</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>3 states: skeleton/error/success (Rule 28)</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION CODE: Login page with real API</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: 3-state pattern works, LOCKED</span></div>
+          </div>
+          <div class="checklist-constitution" style="grid-column:1/-1;">
+            <div class="cc-title"><div class="cc-num" style="background:var(--orange)">7</div>Database Constitution — 38 rules <span style="color:var(--orange); font-size:10px; font-family:var(--mono)">LIVING DOCUMENT</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Plural table names, snake_case columns</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Foreign key indexes required (B13)</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Soft delete + 30-day purge (B39)</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="warn">⚠ STATUS: Living document — schema may evolve during Auth + Frontend builds</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: Schema survives Auth + Frontend without major refactor</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>🔒 LOCK AFTER: First production deployment</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="checklist-phase">
+        <div class="checklist-phase-head p2">
+          <span>Phase 2 — Quality &amp; Reliability (Before Production)</span>
+          <span>5–7 hrs</span>
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-constitution">
+            <div class="cc-title"><div class="cc-num p2">8</div>Infrastructure Constitution — 40 rules</div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>3 environments: dev/staging/prod</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Zero-downtime deployment</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>5-minute rollback guaranteed</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: Successful staging deployment</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: Constitution LOCKED</span></div>
+          </div>
+          <div class="checklist-constitution">
+            <div class="cc-title"><div class="cc-num p2">9</div>Incident Response — 36 rules</div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>SEV0–SEV4 severity levels defined</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Incident Commander + Scribe roles</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>5-day post-mortem timeline</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: Tabletop exercise completed</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: Constitution LOCKED</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="checklist-phase">
+        <div class="checklist-phase-head p3">
+          <span>Phase 3 — Product (After Launch)</span>
+          <span>2–3 hrs</span>
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-constitution" style="grid-column:1/-1;">
+            <div class="cc-title"><div class="cc-num p3">10</div>Product &amp; Feature Constitution — 24 rules</div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Feature lifecycle documented</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>Success metrics required before launch</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span>30/90-day deprecation notice policy</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: First feature ships with defined metrics</span></div>
+            <div class="cc-check-item"><div class="checkbox"></div><span class="val">✓ VALIDATION: Constitution LOCKED</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ §10 MICRO-REVIEWS ══ -->
+  <section class="section" id="reviews">
+    <div class="section-header">
+      <span class="section-num">§ 10</span>
+      <h2 class="section-title">Micro-Review Checkpoints</h2>
+      <span class="section-badge">Every 2 Weeks</span>
+    </div>
+
+    <div class="review-timeline">
+      <div class="review-node">
+        <div class="review-date">2026-04-22</div>
+        <div class="review-focus">Phase 0–1 friction<br>Team process,<br>code quality rules</div>
+        <div class="review-badge">MR-01</div>
+      </div>
+      <div class="review-node">
+        <div class="review-date">2026-05-06</div>
+        <div class="review-focus">Auth + Frontend<br>API contracts,<br>UI patterns</div>
+        <div class="review-badge">MR-02</div>
+      </div>
+      <div class="review-node">
+        <div class="review-date">2026-05-20</div>
+        <div class="review-focus">Database schema<br>Indexes,<br>column types</div>
+        <div class="review-badge">MR-03</div>
+      </div>
+      <div class="review-node">
+        <div class="review-date">2026-06-03</div>
+        <div class="review-focus">Pre-production<br>Infrastructure,<br>incident response</div>
+        <div class="review-badge">MR-04</div>
+      </div>
+      <div class="review-node">
+        <div class="review-date">2026-06-17</div>
+        <div class="review-focus">Post-launch<br>Product metrics,<br>monitoring thresholds</div>
+        <div class="review-badge">MR-05</div>
+      </div>
+      <div class="review-node quarterly">
+        <div class="review-date">2026-07-07</div>
+        <div class="review-focus">QUARTERLY<br>REVIEW<br>v3.0</div>
+        <div class="review-badge">Q-01</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ §11 FORBIDDEN PATTERNS ══ -->
+  <section class="section" id="forbidden">
+    <div class="section-header">
+      <span class="section-num">§ 11</span>
+      <h2 class="section-title">Forbidden Order Patterns v2.0</h2>
+      <span class="section-badge">Never Do These</span>
+    </div>
+
+    <div class="forbidden-grid">
+      <div class="forbidden-header">CONSTITUTIONAL ORDER FORBIDDEN PATTERNS — COF01 through COF10</div>
+      <div class="forbidden-item">
+        <div class="f-code">COF01</div>
+        <div>
+          <div class="f-text"><strong>Building Frontend before Backend</strong></div>
+          <div class="f-fix">→ Backend first (#3 → #6)</div>
+        </div>
+      </div>
+      <div class="forbidden-item">
+        <div class="f-code">COF02</div>
+        <div>
+          <div class="f-text"><strong>Building Auth before Testing Strategy</strong></div>
+          <div class="f-fix">→ Testing Strategy first (#4 → #5)</div>
+        </div>
+      </div>
+      <div class="forbidden-item">
+        <div class="f-code">COF03</div>
+        <div>
+          <div class="f-text"><strong>Locking Database before building Auth</strong></div>
+          <div class="f-fix">→ Database is living document until Auth complete (#5 → #7)</div>
+        </div>
+      </div>
+      <div class="forbidden-item">
+        <div class="f-code">COF04</div>
+        <div>
+          <div class="f-text"><strong>Building Infrastructure before Auth works</strong></div>
+          <div class="f-fix">→ Auth must deploy first (#5 → #8)</div>
+        </div>
+      </div>
+      <div class="forbidden-item">
+        <div class="f-code">COF05</div>
+        <div>
+          <div class="f-text"><strong>Skipping Validation Loops</strong></div>
+          <div class="f-fix">→ Every Phase 1 constitution requires validation code</div>
+        </div>
+      </div>
+      <div class="forbidden-item">
+        <div class="f-code">COF06</div>
+        <div>
+          <div class="f-text"><strong>Skipping Micro-Reviews</strong></div>
+          <div class="f-fix">→ 2-week checkpoints are mandatory, not optional</div>
+        </div>
+      </div>
+      <div class="forbidden-item">
+        <div class="f-code">COF07</div>
+        <div>
+          <div class="f-text"><strong>Building Product before all technical constitutions</strong></div>
+          <div class="f-fix">→ Need reliable system before deciding features (#10 is last)</div>
+        </div>
+      </div>
+      <div class="forbidden-item">
+        <div class="f-code">COF08</div>
+        <div>
+          <div class="f-text"><strong>Treating constitutions as immutable</strong></div>
+          <div class="f-fix">→ Amendment Protocol exists — use it. Constitutions must evolve.</div>
+        </div>
+      </div>
+      <div class="forbidden-item">
+        <div class="f-code">COF09</div>
+        <div>
+          <div class="f-text"><strong>Building in random order without dependency map</strong></div>
+          <div class="f-fix">→ Follow dependency map in §8 exactly</div>
+        </div>
+      </div>
+      <div class="forbidden-item">
+        <div class="f-code">COF10</div>
+        <div>
+          <div class="f-text"><strong>Deploying to production before Phase 2 complete</strong></div>
+          <div class="f-fix">→ Infrastructure + Incident Response required before prod</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ §12 NEXT ACTIONS ══ -->
+  <section class="section" id="actions">
+    <div class="section-header">
+      <span class="section-num">§ 12</span>
+      <h2 class="section-title">Next Actions — Day-by-Day</h2>
+      <span class="section-badge">24 Days to Production</span>
+    </div>
+
+    <div class="actions-timeline">
+      <div class="actions-header">
+        <span>IMMEDIATE NEXT STEPS — BASED ON LOCKED ORDER</span>
+        <span>25–37 Hours Total · 4–6 Weeks Part-Time</span>
+      </div>
+
+      <div class="day-group">
+        <div class="day-header">Days 1–2 · Phase 0</div>
+        <div class="day-items">
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Build <strong>Constitution #1</strong>: Team &amp; Process (including Amendment Protocol)</div></div>
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Run first retrospective · Validate Amendment Protocol works</div></div>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-header">Days 3–4 · Phase 0</div>
+        <div class="day-items">
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Build <strong>Constitution #2</strong>: Code Quality &amp; Review</div></div>
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Configure Prettier + ESLint + TypeScript strict · Merge first PR</div></div>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-header">Days 5–7 · Phase 1 Begins</div>
+        <div class="day-items">
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Build <strong>Constitution #3</strong>: Backend (61 rules)</div></div>
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text"><span class="code">VALIDATION CODE:</span> <strong>GET /health</strong> returns B9 error format correctly</div></div>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-header">Day 8 · Testing Strategy</div>
+        <div class="day-items">
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Build <strong>Constitution #4</strong>: Testing Strategy (20 strategy rules)</div></div>
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text"><span class="code">VALIDATION CODE:</span> First unit test + first integration test both green in CI</div></div>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-header">Days 9–12 · Auth</div>
+        <div class="day-items">
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Build <strong>Constitution #5</strong>: Auth Domain Specification</div></div>
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text"><span class="code">VALIDATION CODE:</span> Full login / register / logout / me flow with tests passing</div></div>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-header">Days 13–15 · Frontend</div>
+        <div class="day-items">
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Build <strong>Constitution #6</strong>: Frontend (66 rules)</div></div>
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text"><span class="code">VALIDATION CODE:</span> Login UI at 320px with skeleton/error/success 3-state pattern</div></div>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-header">Days 16–17 · Database</div>
+        <div class="day-items">
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Refine <strong>Constitution #7</strong>: Database (Living Document)</div></div>
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Apply schema learnings from Auth + Frontend builds · Document all surprises</div></div>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-header">Days 18–20 · Infrastructure</div>
+        <div class="day-items">
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Build <strong>Constitution #8</strong>: Infrastructure (40 rules)</div></div>
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text"><span class="code">VALIDATION:</span> Zero-downtime deploy to staging · Rollback completes under 5 minutes</div></div>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-header">Days 21–22 · Incident Response</div>
+        <div class="day-items">
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Build <strong>Constitution #9</strong>: Incident Response (36 rules)</div></div>
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text"><span class="code">VALIDATION:</span> 30-minute tabletop exercise · Mock post-mortem written</div></div>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-header">Day 23 · Product</div>
+        <div class="day-items">
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Build <strong>Constitution #10</strong>: Product &amp; Feature (24 rules)</div></div>
+          <div class="day-item"><div class="di-arrow">→</div><div class="di-text">Define success metrics for first feature · Ship with metrics tracked</div></div>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-header">Day 24+ · Production</div>
+        <div class="day-items">
+          <div class="day-item"><div class="di-arrow" style="color:var(--green)">→</div><div class="di-text"><strong>DEPLOY TO PRODUCTION</strong> · All 10 constitutions locked (except DB — locks after this)</div></div>
+          <div class="day-item"><div class="di-arrow" style="color:var(--blue)">→</div><div class="di-text">Begin 2-week micro-review cycle · First micro-review: 2026-04-22</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ LOCK STATEMENT ══ -->
+  <div class="lock-statement">
+    <div class="lock-header">
+      <span>CONSTITUTIONAL ORDER v2.0 — FINAL LOCK STATEMENT</span>
+      <span>2026-04-08</span>
+    </div>
+    <div class="lock-body">
+      <div class="lock-col">
+        <div class="lock-col-title">Summary Statistics</div>
+        <div class="lock-stat-row"><span class="ls-key">Total Constitutions</span><span class="ls-val gold">10</span></div>
+        <div class="lock-stat-row"><span class="ls-key">Total Phases</span><span class="ls-val">4</span></div>
+        <div class="lock-stat-row"><span class="ls-key">Total Rules (locked)</span><span class="ls-val gold">355</span></div>
+        <div class="lock-stat-row"><span class="ls-key">Validation Requirements</span><span class="ls-val">10</span></div>
+        <div class="lock-stat-row"><span class="ls-key">Estimated Time</span><span class="ls-val">25–37 hrs</span></div>
+        <div class="lock-stat-row"><span class="ls-key">Micro-Review Cadence</span><span class="ls-val">Every 2 weeks</span></div>
+        <div class="lock-stat-row"><span class="ls-key">Quarterly Review</span><span class="ls-val">2026-07-07</span></div>
+        <div class="lock-stat-row"><span class="ls-key">Version</span><span class="ls-val gold">2.0 FINAL</span></div>
+      </div>
+      <div class="lock-col">
+        <div class="lock-col-title">The 10-Step Order (LOCKED)</div>
+        <div class="lock-order-list">
+          <div><span class="p0 phase">PHASE 0 — FOUNDATION</span></div>
+          <div><span class="num">1.</span> Team &amp; Process Constitution</div>
+          <div><span class="num">2.</span> Code Quality &amp; Review Constitution</div>
+          <br>
+          <div><span class="p1 phase">PHASE 1 — CORE ARCHITECTURE + VALIDATION</span></div>
+          <div><span class="num">3.</span> Backend Constitution</div>
+          <div><span class="num">4.</span> Testing Strategy Constitution <span class="new">⭐ MOVED</span></div>
+          <div><span class="num">5.</span> Auth Domain Specification</div>
+          <div><span class="num">6.</span> Frontend Constitution</div>
+          <div><span class="num">7.</span> Database Constitution <span style="color:var(--orange)">LIVING</span></div>
+          <br>
+          <div><span class="p2 phase">PHASE 2 — QUALITY &amp; RELIABILITY</span></div>
+          <div><span class="num">8.</span> Infrastructure Constitution</div>
+          <div><span class="num">9.</span> Incident Response Constitution</div>
+          <br>
+          <div><span class="p3 phase">PHASE 3 — PRODUCT</span></div>
+          <div><span class="num">10.</span> Product &amp; Feature Constitution</div>
+        </div>
+      </div>
+    </div>
+    <div class="lock-footer">
+      <div class="lock-tagline">"Build constitutions in the order your system would fail without them.<br>Validate with code. Refine. Then lock."</div>
+      <div class="lock-meta">
+        <strong>CONSTITUTIONAL ORDER v2.0 — FINAL</strong><br>
+        Locked: 2026-04-08 · Micro-Review: 2026-04-22<br>
+        Quarterly Review: 2026-07-07 · Version: 2.0
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FINAL LOCK BAND ══ -->
+  <div class="final-lock-band">
+    <div class="final-lock-tagline">"One order. Ten constitutions. Zero shortcuts."</div>
+    <div class="final-lock-meta">
+      <strong>CONSTITUTIONAL ORDER v2.0</strong><br>
+      355 rules · 10 constitutions · 4 phases · 5 v2.0 improvements<br>
+      Locked 2026-04-08 · Next review 2026-04-22
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

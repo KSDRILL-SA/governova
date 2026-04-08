@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Product & Feature Constitution v1.0 — LOCKED — The Final Constitution</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:      #0a0a0a;
+  --paper:    #faf8f2;
+  --paper2:   #f0ede4;
+  --paper3:   #e6e2d6;
+  --rule:     #d4cdbc;
+  --gold:     #c6a43a;
+  --gold2:    #e6c358;
+  --gold3:    #f5e6a0;
+  --amber:    #e8a020;
+  --red:      #9b1c1c;
+  --orange:   #c05a00;
+  --green:    #1a6e3a;
+  --blue:     #1a3a6e;
+  --blue2:    #2a5a9e;
+  --teal:     #0f6e6e;
+  --purple:   #6a3e6e;
+  --violet:   #8b5cf6;
+  --rose:     #e11d48;
+  --muted:    #6b6b5e;
+  --mono:     'IBM Plex Mono', monospace;
+  --serif:    'Playfair Display', serif;
+  --sans:     'IBM Plex Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: .6;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0; opacity: .08;
+}
+
+.page { max-width: 1200px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+.masthead {
+  border-top: 8px solid var(--gold);
+  border-bottom: 4px double var(--gold);
+  margin-bottom: 0;
+  position: relative;
+  background: linear-gradient(135deg, rgba(198,164,58,0.03) 0%, rgba(198,164,58,0) 100%);
+}
+
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .08em;
+}
+
+.masthead-main {
+  text-align: center;
+  padding: 48px 0 40px;
+}
+
+.masthead-eyebrow {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--ink);
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .25em;
+  padding: 6px 20px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.masthead-title {
+  font-family: var(--serif);
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -.02em;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 50%, var(--amber) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 8px;
+}
+
+.masthead-tagline {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-style: italic;
+  color: var(--muted);
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+
+.masthead-meta {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.masthead-meta strong { color: var(--gold); }
+
+.masthead-bottom {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border-top: 1px solid var(--rule);
+  background: linear-gradient(135deg, var(--paper2) 0%, var(--paper) 100%);
+}
+
+.stat-box {
+  padding: 16px 20px;
+  border-right: 1px solid var(--rule);
+  text-align: center;
+}
+.stat-box:last-child { border-right: none; }
+
+.stat-num {
+  font-family: var(--serif);
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--gold), var(--amber));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: block;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.section-runner {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--ink);
+  padding: 8px 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 700;
+}
+
+.part-nav {
+  display: flex;
+  border-top: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  background: var(--paper2);
+  overflow-x: auto;
+}
+
+.pn-item {
+  flex: 1;
+  min-width: 80px;
+  padding: 10px 6px;
+  border-right: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--muted);
+  transition: all .2s ease;
+}
+.pn-item:last-child { border-right: none; }
+.pn-item:hover { background: var(--gold); color: var(--ink); }
+.pn-num  { font-family: var(--mono); font-size: 7px; color: var(--gold); letter-spacing: .1em; display: block; }
+.pn-name { font-family: var(--serif); font-size: 9px; font-weight: 700; line-height: 1.3; display: block; margin-top: 2px; }
+.pn-count { font-family: var(--mono); font-size: 7px; color: var(--muted); display: block; margin-top: 1px; }
+.pn-item:hover .pn-num { color: var(--ink); }
+.pn-item:hover .pn-count { color: var(--ink); }
+
+.col-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 0;
+  border-left: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+}
+
+.col-sidebar {
+  border-right: 1px solid var(--rule);
+  padding: 28px 22px;
+  background: linear-gradient(135deg, var(--paper2) 0%, var(--paper) 100%);
+}
+
+.col-main {
+  padding: 32px 36px;
+}
+
+.part-section {
+  border-left: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+}
+
+.part-banner {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--ink);
+  padding: 24px 32px;
+  margin: -32px -36px 32px;
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.part-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--ink);
+  flex-shrink: 0;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.part-title {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.1;
+  flex: 1;
+  color: var(--ink);
+}
+
+.part-desc {
+  font-size: 11px;
+  color: rgba(0,0,0,.5);
+  text-align: right;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.rule-card {
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--gold);
+  background: #fff;
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+.rule-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+.rule-card.critical { border-left-color: var(--rose); }
+.rule-card.high     { border-left-color: var(--orange); }
+.rule-card.medium   { border-left-color: var(--gold); }
+
+.rule-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper2);
+}
+
+.rule-num-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.rule-title {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 700;
+  flex: 1;
+  line-height: 1.3;
+}
+
+.sev-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.sev-critical { background: var(--rose); color: #fff; }
+.sev-high     { background: var(--orange); color: #fff; }
+.sev-medium   { background: var(--gold); color: #fff; }
+
+.rule-card-body {
+  padding: 14px 18px;
+}
+
+.rule-statement {
+  font-size: 13px;
+  line-height: 1.65;
+  margin-bottom: 12px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.rule-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.rule-meta-item {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  padding: 8px 10px;
+  font-size: 10.5px;
+  border-radius: 4px;
+}
+
+.rule-meta-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.rule-meta-val { font-size: 10.5px; line-height: 1.45; }
+
+.code-block {
+  background: #1a1a2e;
+  border: 1px solid var(--gold);
+  margin: 12px 0 0;
+  overflow: hidden;
+  border-radius: 6px;
+}
+.code-bar {
+  background: #0f0f1a;
+  padding: 6px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #2a2a3e;
+}
+.code-filename {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--gold2);
+}
+.code-dots { display: flex; gap: 6px; }
+.cd { width: 10px; height: 10px; border-radius: 50%; }
+.cd-r { background: #f87171; } .cd-y { background: #fbbf24; } .cd-g { background: #34d399; }
+.code-block pre {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.65;
+  padding: 14px 16px;
+  color: #d4d4d4;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.ck  { color: #c678dd; }
+.cs  { color: #98c379; }
+.cc  { color: #5c6370; font-style: italic; }
+.ct  { color: #e5c07b; }
+.cf  { color: #61afef; }
+.cn  { color: #d19a66; }
+
+.const-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.5px;
+}
+.const-table thead tr { background: linear-gradient(135deg, var(--gold), var(--gold2)); color: var(--ink); }
+.const-table th {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 700;
+}
+.const-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.const-table tbody tr:nth-child(even) { background: var(--paper2); }
+
+.fp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5px;
+  border: 2px solid var(--gold);
+}
+.fp-table thead tr { background: var(--rose); }
+.fp-table th {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 8px 10px;
+  color: #fff;
+  text-align: left;
+}
+.fp-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.fp-table tbody tr:hover { background: rgba(225,29,72,0.05); }
+.fp-code { font-family: var(--mono); font-size: 8px; color: var(--rose); font-weight: 700; }
+.fp-ref  { font-family: var(--mono); font-size: 8px; color: var(--gold); }
+
+.callout {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  margin: 14px 0;
+  font-size: 11px;
+  border-left: 4px solid;
+  background: var(--paper2);
+  border-radius: 4px;
+}
+.callout-critical { border-color: var(--rose); background: rgba(225,29,72,0.05); }
+.callout-warn     { border-color: var(--orange); background: rgba(192,90,0,0.05); }
+.callout-info     { border-color: var(--gold); background: rgba(198,164,58,0.05); }
+.callout-good     { border-color: var(--green); background: rgba(26,110,58,0.05); }
+.callout-icon { font-family: var(--mono); font-size: 11px; flex-shrink: 0; font-weight: 700; }
+.callout-body { line-height: 1.6; }
+.callout-body strong { color: var(--ink); }
+
+.feature-lifecycle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--paper2);
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  border: 1px solid var(--rule);
+}
+.lifecycle-stage {
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+.lifecycle-stage::after {
+  content: '→';
+  position: absolute;
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 14px;
+}
+.lifecycle-stage:last-child::after { display: none; }
+.lifecycle-name {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.lifecycle-icon {
+  font-size: 24px;
+  margin: 8px 0;
+}
+.lifecycle-desc {
+  font-size: 9px;
+  color: var(--muted);
+}
+
+.metrics-showcase {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+.metric-card {
+  background: linear-gradient(135deg, var(--paper2), #fff);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+.metric-number {
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.metric-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.lock-section {
+  border: 4px double var(--gold);
+  margin-top: 40px;
+  background: linear-gradient(135deg, var(--paper), var(--paper2));
+}
+.lock-banner {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--ink);
+  text-align: center;
+  padding: 36px 24px;
+  border-bottom: 4px double rgba(0,0,0,.1);
+}
+.lock-title-main {
+  font-family: var(--serif);
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 900;
+  letter-spacing: -.02em;
+  margin-bottom: 8px;
+}
+.lock-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  opacity: 0.7;
+}
+.lock-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0;
+  border-top: 1px solid rgba(0,0,0,.1);
+  margin-top: 24px;
+}
+.ls-item {
+  padding: 14px;
+  border-right: 1px solid rgba(0,0,0,.1);
+  text-align: center;
+}
+.ls-item:last-child { border-right: none; }
+.ls-num {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--ink);
+  display: block;
+}
+.ls-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: rgba(0,0,0,.5);
+  display: block;
+  margin-top: 2px;
+}
+
+.lock-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.lock-col {
+  padding: 28px 32px;
+  border-right: 2px solid var(--gold);
+}
+.lock-col:last-child { border-right: none; }
+.lock-col-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .25em;
+  color: var(--muted);
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 6px;
+  font-weight: 700;
+}
+
+.parts-breakdown { display: flex; flex-direction: column; gap: 6px; }
+.pb-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9.5px;
+  padding: 6px 10px;
+  border: 1px solid var(--rule);
+  background: var(--paper2);
+  border-radius: 4px;
+}
+.pb-part { font-family: var(--mono); font-size: 8px; color: var(--gold); font-weight: 700; min-width: 35px; }
+.pb-name { flex: 1; font-size: 9px; }
+.pb-rules { font-family: var(--mono); font-size: 8px; color: var(--muted); }
+.pb-crit { background: var(--rose); color: #fff; padding: 1px 4px; font-family: var(--mono); font-size: 7px; border-radius: 3px; }
+
+.lock-final {
+  border-top: 2px solid var(--gold);
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--ink);
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.lock-final-left { font-family: var(--mono); font-size: 9px; color: var(--ink); letter-spacing: .08em; font-weight: 700; opacity: 0.8; }
+.lock-final-motto { font-family: var(--serif); font-size: 16px; font-style: italic; font-weight: 700; }
+.lock-final-right { font-family: var(--mono); font-size: 8px; color: var(--ink); text-align: right; opacity: 0.7; }
+
+.divider { border: none; border-top: 2px solid var(--gold); margin: 0; }
+.divider-double { border: none; border-top: 3px double var(--gold); margin: 0; }
+
+@media (max-width: 860px) {
+  .col-layout { grid-template-columns: 1fr; }
+  .col-sidebar { border-right: none; border-bottom: 1px solid var(--rule); }
+  .lock-body { grid-template-columns: 1fr; }
+  .lock-col { border-right: none; border-bottom: 2px solid var(--gold); }
+  .masthead-bottom { grid-template-columns: repeat(3, 1fr); }
+  .metrics-showcase { grid-template-columns: repeat(2, 1fr); }
+  .feature-lifecycle { flex-direction: column; gap: 16px; }
+  .lifecycle-stage::after { display: none; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page > * { animation: fadeIn .4s ease both; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="masthead">
+  <div class="masthead-top">
+    <span>FINAL CONSTITUTION · LOCKED: 2026-04-08</span>
+    <span>THE COMPLETE SYSTEM · 311 TOTAL RULES</span>
+    <span>NEXT REVIEW: 2026-07-07</span>
+  </div>
+  <div class="masthead-main">
+    <div class="masthead-eyebrow">THE CROWN JEWEL — FINAL CONSTITUTION</div>
+    <h1 class="masthead-title">Product & Feature<br>Constitution v1.0</h1>
+    <p class="masthead-tagline">"Build the right thing. Build the thing right. Kill what doesn't work."</p>
+    <div class="masthead-meta">
+      <span><strong>24</strong> TOTAL RULES</span>
+      <span><strong>12</strong> CRITICAL</span>
+      <span><strong>8</strong> HIGH PRIORITY</span>
+      <span><strong>4</strong> MEDIUM</span>
+      <span><strong>311</strong> SYSTEM TOTAL</span>
+    </div>
+  </div>
+  <div class="masthead-bottom">
+    <div class="stat-box"><span class="stat-num">24</span><span class="stat-label">Total Rules</span></div>
+    <div class="stat-box"><span class="stat-num">12</span><span class="stat-label">Critical</span></div>
+    <div class="stat-box"><span class="stat-num">8</span><span class="stat-label">High</span></div>
+    <div class="stat-box"><span class="stat-num">4</span><span class="stat-label">Medium</span></div>
+    <div class="stat-box"><span class="stat-num">311</span><span class="stat-label">System Total</span></div>
+  </div>
+</header>
+
+<nav class="part-nav">
+  <a href="#part1" class="pn-item"><span class="pn-num">P1</span><span class="pn-name">Ideation</span><span class="pn-count">P1-P4</span></a>
+  <a href="#part2" class="pn-item"><span class="pn-num">P2</span><span class="pn-name">Prioritization</span><span class="pn-count">P5-P8</span></a>
+  <a href="#part3" class="pn-item"><span class="pn-num">P3</span><span class="pn-name">Definition</span><span class="pn-count">P9-P11</span></a>
+  <a href="#part4" class="pn-item"><span class="pn-num">P4</span><span class="pn-name">Development</span><span class="pn-count">P12-P14</span></a>
+  <a href="#part5" class="pn-item"><span class="pn-num">P5</span><span class="pn-name">Launch</span><span class="pn-count">P15-P17</span></a>
+  <a href="#part6" class="pn-item"><span class="pn-num">P6</span><span class="pn-name">Measurement</span><span class="pn-count">P18-P20</span></a>
+  <a href="#part7" class="pn-item"><span class="pn-num">P7</span><span class="pn-name">Iteration</span><span class="pn-count">P21-P22</span></a>
+  <a href="#part8" class="pn-item"><span class="pn-num">P8</span><span class="pn-name">Deprecation</span><span class="pn-count">P23-P24</span></a>
+  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden</span><span class="pn-count">PF01-PF16</span></a>
+</nav>
+
+<!-- FEATURE LIFECYCLE VISUAL -->
+<div class="section-runner">§ The Feature Lifecycle — From Idea to Sunset</div>
+<div class="part-section" style="padding: 24px 28px;">
+  <div class="feature-lifecycle">
+    <div class="lifecycle-stage"><div class="lifecycle-name">IDEATION</div><div class="lifecycle-icon">💡</div><div class="lifecycle-desc">Problem Discovery</div></div>
+    <div class="lifecycle-stage"><div class="lifecycle-name">PRIORITIZATION</div><div class="lifecycle-icon">⚖️</div><div class="lifecycle-desc">ICE Scoring</div></div>
+    <div class="lifecycle-stage"><div class="lifecycle-name">DEFINITION</div><div class="lifecycle-icon">📋</div><div class="lifecycle-desc">PRD + Spec</div></div>
+    <div class="lifecycle-stage"><div class="lifecycle-name">DEVELOPMENT</div><div class="lifecycle-icon">⚙️</div><div class="lifecycle-desc">Build + Test</div></div>
+    <div class="lifecycle-stage"><div class="lifecycle-name">LAUNCH</div><div class="lifecycle-icon">🚀</div><div class="lifecycle-desc">Feature Flag + Rollout</div></div>
+    <div class="lifecycle-stage"><div class="lifecycle-name">MEASUREMENT</div><div class="lifecycle-icon">📊</div><div class="lifecycle-desc">Metrics + Feedback</div></div>
+    <div class="lifecycle-stage"><div class="lifecycle-name">ITERATION</div><div class="lifecycle-icon">🔄</div><div class="lifecycle-desc">Improve or Kill</div></div>
+    <div class="lifecycle-stage"><div class="lifecycle-name">DEPRECATION</div><div class="lifecycle-icon">🏁</div><div class="lifecycle-desc">Sunset + Remove</div></div>
+  </div>
+</div>
+
+<!-- PART 1: IDEATION -->
+<hr class="divider"/>
+<div class="section-runner" id="part1">§ Part 1 — Ideation (P1-P4)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Discover real problems worth solving. Features without problems are solutions in search of a disease.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 1 / P1-P4</span><span class="part-title">Ideation — Problem Discovery</span><span class="part-desc">2 Critical · 2 High</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P1</span><span class="rule-title">Problem Before Solution</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every feature MUST start with a documented problem statement. No "feature because it's cool" without a problem to solve.</p><div class="callout callout-info"><span class="callout-icon">⚠️</span><div class="callout-body"><strong>The Question:</strong> "What problem does this solve for the user?" — If you cannot answer, do not build it.</div></div></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P2</span><span class="rule-title">User Research Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Major features (>1 week of work) MUST be validated with user research (interviews, surveys, data analysis). Not just internal assumptions.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P3</span><span class="rule-title">Competitive Analysis</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">New features SHOULD include analysis of how competitors solve the same problem. Build differentiation, not parity.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P4</span><span class="rule-title">One Feature, One Problem</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Each feature MUST solve ONE specific problem. Features that try to solve multiple problems become bloated, confusing, and hard to measure.</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 2: PRIORITIZATION -->
+<hr class="divider"/>
+<div class="section-runner" id="part2">§ Part 2 — Prioritization (P5-P8)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">ICE Framework</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Impact × Confidence × Ease = Score. Highest scores win.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 2 / P5-P8</span><span class="part-title">Prioritization — ICE Scoring</span><span class="part-desc">2 Critical · 1 High · 1 Medium</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P5</span><span class="rule-title">ICE Scoring Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every feature MUST be scored using ICE (Impact, Confidence, Ease) before sprint planning. Scores: 1-10 each, multiplied. Minimum score for v1: 125 (5×5×5).</p><div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">ICE Scoring Template</div></div><pre><span class="cc"># Feature: [Name]</span>
+
+<span class="ck">Impact</span> (1-10): _  <span class="cc"># How much does this improve user experience/revenue?</span>
+<span class="ck">Confidence</span> (1-10): _  <span class="cc"># How certain are we of the impact? (Data vs guess)</span>
+<span class="ck">Ease</span> (1-10): _  <span class="cc"># How easy/quick is it to build? (10 = very easy)</span>
+
+<span class="ck">ICE Score</span>: Impact × Confidence × Ease = ___</pre></div></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P6</span><span class="rule-title">Data-Driven Prioritization</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Prioritization MUST use data (usage metrics, user feedback, revenue impact) not politics or "gut feeling." Confidence score of 1-3 requires validation before building.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P7</span><span class="rule-title">Weekly Backlog Grooming</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Backlog MUST be reviewed weekly (30 min). Re-score features based on new data. Remove features that no longer meet ICE threshold.</p></div></div>
+      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">P8</span><span class="rule-title">Technical Debt vs Features</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Technical debt reduction MUST compete on ICE score with new features. 20% capacity reserved for debt (Code Quality CQ31), but debt items must still justify their priority.</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 3: DEFINITION -->
+<hr class="divider"/>
+<div class="section-runner" id="part3">§ Part 3 — Definition (P9-P11)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">PRD Required Fields</div><p style="font-size:9px;color:var(--muted);line-height:1.5">Problem · Success Metrics · User Stories · Acceptance Criteria · Technical Notes · Rollout Plan</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 3 / P9-P11</span><span class="part-title">Definition — PRD & Specs</span><span class="part-desc">2 Critical · 1 High</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P9</span><span class="rule-title">PRD Required for Features >1 Week</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Features estimated >1 week MUST have a Product Requirements Document (PRD) approved before development starts.</p><div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">PRD Template</div></div><pre><span class="cc"># PRD: [Feature Name]</span>
+
+<span class="ck">## Problem Statement</span>
+[What problem does this solve? Who has this problem? How do they solve it today?]
+
+<span class="ck">## Success Metrics</span>
+- [ ] Metric 1: [target]
+- [ ] Metric 2: [target]
+
+<span class="ck">## User Stories</span>
+- As a [user], I want [goal] so that [benefit]
+
+<span class="ck">## Acceptance Criteria</span>
+- [ ] Criterion 1
+- [ ] Criterion 2
+
+<span class="ck">## Technical Notes</span>
+[Architecture considerations, dependencies, constraints]
+
+<span class="ck">## Rollout Plan</span>
+[Feature flag? Beta users? Gradual rollout?]</pre></div></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P10</span><span class="rule-title">Acceptance Criteria MUST Be Testable</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every acceptance criterion MUST be testable (QA can verify pass/fail). "Looks good" or "feels fast" are NOT acceptable.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P11</span><span class="rule-title">Technical Spec for Complex Features</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Complex features (>3 days of backend work or architectural changes) MUST have a technical design document reviewed before coding.</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 4: DEVELOPMENT -->
+<hr class="divider"/>
+<div class="section-runner" id="part4">§ Part 4 — Development (P12-P14)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">MVP First</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Build the smallest thing that could work. Add complexity only when validated.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 4 / P12-P14</span><span class="part-title">Development — Build & Test</span><span class="part-desc">2 Critical · 1 High</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P12</span><span class="rule-title">Feature Flag Required for All Features</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every feature MUST be behind a feature flag (Backend B42, Frontend R65). Flag default = FALSE for new features.</p><div class="callout callout-warn"><span class="callout-icon">⚠️</span><div class="callout-body"><strong>No flag, no merge.</strong> Feature flags are how we ship safely and rollback instantly.</div></div></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P13</span><span class="rule-title">Tests Required Before Merge</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Feature PRs MUST include tests (unit for logic, integration for API, E2E for critical paths) per Testing Constitution T5-T16.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P14</span><span class="rule-title">Documentation Before Launch</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">User-facing features MUST have documentation (help center, tooltips, or onboarding) before launch.</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 5: LAUNCH -->
+<hr class="divider"/>
+<div class="section-runner" id="part5">§ Part 5 — Launch (P15-P17)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Rollout Phases</div><p style="font-size:9px;color:var(--muted);line-height:1.5">Internal → 1% → 10% → 50% → 100% (with monitoring after each)</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 5 / P15-P17</span><span class="part-title">Launch — Rollout & Release</span><span class="part-desc">1 Critical · 2 High</span></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P15</span><span class="rule-title">Launch Checklist Required</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Every feature launch MUST have a completed checklist: tests passing, docs updated, metrics configured, runbook created, feature flag ready.</p></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P16</span><span class="rule-title">Gradual Rollout Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Features MUST roll out gradually: internal testers → 1% users → 10% → 50% → 100%. Monitor metrics after each step. Rollback immediately if negative impact.</p><div class="callout callout-good"><span class="callout-icon">✅</span><div class="callout-body"><strong>Rollback is not failure.</strong> It is the system working as designed. Celebrate good rollbacks.</div></div></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P17</span><span class="rule-title">Launch Communication</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Features affecting users MUST have launch communication: changelog entry, email/Slack notification (if applicable), and support team briefing.</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 6: MEASUREMENT -->
+<hr class="divider"/>
+<div class="section-runner" id="part6">§ Part 6 — Measurement (P18-P20)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Metrics Dashboard</div><p style="font-size:9px;color:var(--muted);line-height:1.5">Usage · Engagement · Revenue · Performance · Support tickets</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 6 / P18-P20</span><span class="part-title">Measurement — Success Metrics</span><span class="part-desc">1 Critical · 2 High</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P18</span><span class="rule-title">Success Metrics Defined Before Launch</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every feature MUST have success metrics defined in the PRD. Metrics MUST be measurable and have targets.</p><div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">Example Success Metrics</div></div><pre>- Adoption: 30% of active users use feature in first month
+- Engagement: Average 5 sessions/week per user
+- Conversion: 15% of users upgrade after using feature
+- Performance: Feature loads in <500ms p95
+- Support: <5 support tickets about feature in first month</pre></div></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P19</span><span class="rule-title">Weekly Feature Review</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">New features MUST be reviewed weekly for first month: metrics vs targets, user feedback, technical issues. Document findings.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P20</span><span class="rule-title">User Feedback Collection</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Every feature MUST have a feedback mechanism (in-app survey, feedback button, or user interview outreach). (Frontend R42).</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 7: ITERATION -->
+<hr class="divider"/>
+<div class="section-runner" id="part7">§ Part 7 — Iteration (P21-P22)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Build-Measure-Learn</div><p style="font-size:10px;color:var(--muted);line-height:1.6">The Lean Startup cycle. Every feature is a hypothesis to be tested.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 7 / P21-P22</span><span class="part-title">Iteration — Improve or Kill</span><span class="part-desc">2 Critical</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P21</span><span class="rule-title">Kill Features That Don't Meet Metrics</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">If feature does not meet success metrics after 30 days, it MUST be reviewed. Decision: iterate (with plan), kill (remove flag), or accept (document why). "Just leave it" is NOT an option.</p><div class="callout callout-critical"><span class="callout-icon">⚠️</span><div class="callout-body"><strong>Killing a feature is success.</strong> You learned what not to build. Celebrate the learning, not the code.</div></div></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P22</span><span class="rule-title">Iteration Requires Hypothesis</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Feature iterations MUST have a hypothesis: "We believe [change] will improve [metric] from X to Y." Measure before and after.</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 8: DEPRECATION -->
+<hr class="divider"/>
+<div class="section-runner" id="part8">§ Part 8 — Deprecation (P23-P24)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Sunset Policy</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Features die. Plan for it. Communicate it. Remove it cleanly.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 8 / P23-P24</span><span class="part-title">Deprecation — Sunset & Remove</span><span class="part-desc">2 Critical</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P23</span><span class="rule-title">Deprecation Notice Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Deprecated features MUST have notice: minimum 30 days for internal, 90 days for external/API users (Backend B44). Include migration path or alternative.</p></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P24</span><span class="rule-title">Feature Removal Cleanup</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">When feature is fully deprecated, remove ALL related code: frontend components, API routes, database columns, feature flags, documentation. No dead code accumulation.</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- FORBIDDEN PATTERNS -->
+<hr class="divider"/>
+<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (PF01-PF16)</div>
+<div class="part-section" style="padding: 24px 28px;">
+  <div class="callout callout-critical" style="margin-bottom:20px;"><span class="callout-icon">■</span><div class="callout-body"><strong>16 patterns permanently banned.</strong> Each one has caused product failure, wasted engineering time, or user frustration.</div></div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+    <div><table class="fp-table"><thead><tr><th>Code</th><th>Pattern</th><th>Rule</th></tr></thead><tbody>
+      <tr><td class="fp-code">PF01</td><td>Building features without problem statement</td><td class="fp-ref">P1</td></tr>
+      <tr><td class="fp-code">PF02</td><td>Prioritizing by "who shouts loudest"</td><td class="fp-ref">P6</td></tr>
+      <tr><td class="fp-code">PF03</td><td>No PRD for major features</td><td class="fp-ref">P9</td></tr>
+      <tr><td class="fp-code">PF04</td><td>Untestable acceptance criteria</td><td class="fp-ref">P10</td></tr>
+      <tr><td class="fp-code">PF05</td><td>No feature flag</td><td class="fp-ref">P12</td></tr>
+      <tr><td class="fp-code">PF06</td><td>No tests for features</td><td class="fp-ref">P13</td></tr>
+      <tr><td class="fp-code">PF07</td><td>Big bang launch (100% at once)</td><td class="fp-ref">P16</td></tr>
+      <tr><td class="fp-code">PF08</td><td>No success metrics defined</td><td class="fp-ref">P18</td></tr>
+    </tbody></table></div>
+    <div><table class="fp-table"><thead><tr><th>Code</th><th>Pattern</th><th>Rule</th></tr></thead><tbody>
+      <tr><td class="fp-code">PF09</td><td>No feedback collection mechanism</td><td class="fp-ref">P20</td></tr>
+      <tr><td class="fp-code">PF10</td><td>Leaving dead features "just in case"</td><td class="fp-ref">P21</td></tr>
+      <tr><td class="fp-code">PF11</td><td>Iterating without hypothesis</td><td class="fp-ref">P22</td></tr>
+      <tr><td class="fp-code">PF12</td><td>Deprecating without notice</td><td class="fp-ref">P23</td></tr>
+      <tr><td class="fp-code">PF13</td><td>Leaving deprecated code in codebase</td><td class="fp-ref">P24</td></tr>
+      <tr><td class="fp-code">PF14</td><td>Scope creep (feature solves multiple problems)</td><td class="fp-ref">P4</td></tr>
+      <tr><td class="fp-code">PF15</td><td>No user research for major features</td><td class="fp-ref">P2</td></tr>
+      <tr><td class="fp-code">PF16</td><td>Technical debt not prioritized alongside features</td><td class="fp-ref">P8</td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- METRICS SHOWCASE -->
+<hr class="divider-double"/>
+<div class="section-runner">§ The Complete System — 311 Total Rules</div>
+<div class="part-section" style="padding: 28px 32px; background: linear-gradient(135deg, var(--paper2), var(--paper));">
+  <div class="metrics-showcase">
+    <div class="metric-card"><div class="metric-number">66</div><div class="metric-label">Frontend v16.0</div></div>
+    <div class="metric-card"><div class="metric-number">61</div><div class="metric-label">Backend v2.2</div></div>
+    <div class="metric-card"><div class="metric-number">38</div><div class="metric-label">Database v1.0</div></div>
+    <div class="metric-card"><div class="metric-number">44</div><div class="metric-label">Infrastructure v1.1</div></div>
+    <div class="metric-card"><div class="metric-number">34</div><div class="metric-label">Testing v1.0</div></div>
+    <div class="metric-card"><div class="metric-number">40</div><div class="metric-label">Incident Response v1.1</div></div>
+    <div class="metric-card"><div class="metric-number">24</div><div class="metric-label">Product & Feature v1.0</div></div>
+    <div class="metric-card"><div class="metric-number">311</div><div class="metric-label">TOTAL SYSTEM RULES</div></div>
+  </div>
+</div>
+
+<!-- FINAL LOCK STATEMENT -->
+<div class="lock-section">
+  <div class="lock-banner">
+    <div class="lock-title-main">Product & Feature Constitution v1.0</div>
+    <div class="lock-sub">The Final Constitution — Complete System Locked</div>
+    <p style="font-family:var(--serif);font-style:italic;font-size:18px;margin-bottom:0;">"Build the right thing. Build the thing right. Kill what doesn't work."</p>
+    <div class="lock-stats">
+      <div class="ls-item"><span class="ls-num">24</span><span class="ls-label">Total Rules</span></div>
+      <div class="ls-item"><span class="ls-num">12</span><span class="ls-label">Critical</span></div>
+      <div class="ls-item"><span class="ls-num">8</span><span class="ls-label">High</span></div>
+      <div class="ls-item"><span class="ls-num">4</span><span class="ls-label">Medium</span></div>
+      <div class="ls-item"><span class="ls-num">16</span><span class="ls-label">Forbidden</span></div>
+      <div class="ls-item"><span class="ls-num">311</span><span class="ls-label">System Total</span></div>
+    </div>
+  </div>
+
+  <div class="lock-body">
+    <div class="lock-col">
+      <div class="lock-col-title">Parts Breakdown (v1.0)</div>
+      <div class="parts-breakdown">
+        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">Ideation (P1-P4)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">Prioritization (P5-P8)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">Definition (P9-P11)</span><span class="pb-rules">3 rules</span><span class="pb-crit">2 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">Development (P12-P14)</span><span class="pb-rules">3 rules</span><span class="pb-crit">2 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Launch (P15-P17)</span><span class="pb-rules">3 rules</span><span class="pb-crit">1 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P6</span><span class="pb-name">Measurement (P18-P20)</span><span class="pb-rules">3 rules</span><span class="pb-crit">1 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P7</span><span class="pb-name">Iteration (P21-P22)</span><span class="pb-rules">2 rules</span><span class="pb-crit">2 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P8</span><span class="pb-name">Deprecation (P23-P24)</span><span class="pb-rules">2 rules</span><span class="pb-crit">2 CRIT</span></div>
+      </div>
+    </div>
+    <div class="lock-col">
+      <div class="lock-col-title">The Complete Constitution System</div>
+      <div class="parts-breakdown">
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Frontend Constitution v16.0 — 66 rules</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Backend Constitution v2.2 — 61 rules</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Database Constitution v1.0 — 38 rules</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Infrastructure Constitution v1.1 — 44 rules</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Testing Constitution v1.0 — 34 rules</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Incident Response Constitution v1.1 — 40 rules</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Code Quality Constitution v2.0 — 39 rules</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Team & Process Constitution v1.1 — 24 rules</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Product & Feature Constitution v1.0 — 24 rules</span></div>
+        <div class="pb-item" style="background: linear-gradient(135deg, var(--gold3), var(--gold2));"><span class="pb-part">🎯</span><span class="pb-name" style="font-weight:700;">TOTAL SYSTEM — 311 RULES — COMPLETE</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lock-final">
+    <div class="lock-final-left">ALL 9 CONSTITUTIONS LOCKED · 2026-04-08</div>
+    <div class="lock-final-motto">"No confusion. No over-engineering. No excuses. Just execution."</div>
+    <div class="lock-final-right">311 RULES · READY TO BUILD</div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

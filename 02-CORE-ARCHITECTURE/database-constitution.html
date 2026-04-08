@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Database Constitution v2.0 — LOCKED</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:      #0e0e0e;
+  --paper:    #eef2f5;
+  --paper2:   #e2e8f0;
+  --paper3:   #d4dee8;
+  --rule:     #b8c4d0;
+  --gold:     #b8860b;
+  --gold2:    #d4a017;
+  --amber:    #e8a020;
+  --red:      #9b1c1c;
+  --orange:   #c05a00;
+  --green:    #1a5c2e;
+  --blue:     #1a3a6e;
+  --blue2:    #2a5a9e;
+  --teal:     #0f6e6e;
+  --muted:    #5a5a6e;
+  --mono:     'IBM Plex Mono', monospace;
+  --serif:    'Playfair Display', serif;
+  --sans:     'IBM Plex Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: .5;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0; opacity: .1;
+}
+
+.page { max-width: 1200px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+.masthead {
+  border-top: 6px solid var(--teal);
+  border-bottom: 3px double var(--teal);
+  margin-bottom: 0;
+}
+
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .08em;
+}
+
+.masthead-main {
+  text-align: center;
+  padding: 40px 0 32px;
+}
+
+.masthead-eyebrow {
+  background: var(--teal);
+  color: var(--paper);
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .2em;
+  padding: 4px 16px;
+  margin-bottom: 16px;
+}
+
+.masthead-title {
+  font-family: var(--serif);
+  font-size: clamp(42px, 6vw, 80px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+
+.masthead-tagline {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+.masthead-meta {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.masthead-meta strong { color: var(--teal); }
+
+.masthead-bottom {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border-top: 1px solid var(--rule);
+  background: var(--paper2);
+}
+
+.stat-box {
+  padding: 16px 20px;
+  border-right: 1px solid var(--rule);
+  text-align: center;
+}
+.stat-box:last-child { border-right: none; }
+
+.stat-num {
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--teal);
+  display: block;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.section-runner {
+  background: var(--teal);
+  color: var(--paper);
+  padding: 6px 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.part-nav {
+  display: flex;
+  border-top: 2px solid var(--teal);
+  border-bottom: 2px solid var(--teal);
+  background: var(--paper2);
+  overflow-x: auto;
+}
+
+.pn-item {
+  flex: 1;
+  min-width: 90px;
+  padding: 10px 8px;
+  border-right: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--muted);
+  transition: all .15s;
+}
+.pn-item:last-child { border-right: none; }
+.pn-item:hover { background: var(--teal); color: var(--paper); }
+.pn-num  { font-family: var(--mono); font-size: 7px; color: var(--gold); letter-spacing: .1em; display: block; }
+.pn-name { font-family: var(--serif); font-size: 9px; font-weight: 700; line-height: 1.2; display: block; margin-top: 2px; }
+.pn-count { font-family: var(--mono); font-size: 7px; color: var(--muted); display: block; margin-top: 1px; }
+
+.col-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+  border-left: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+}
+
+.col-sidebar {
+  border-right: 1px solid var(--rule);
+  padding: 24px 20px;
+  background: var(--paper2);
+}
+
+.col-main {
+  padding: 28px 32px;
+}
+
+.part-section {
+  border-left: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+}
+
+.part-banner {
+  background: var(--teal);
+  color: var(--paper);
+  padding: 20px 28px;
+  margin: -28px -32px 28px;
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.part-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold2);
+  flex-shrink: 0;
+}
+
+.part-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.1;
+  flex: 1;
+}
+
+.part-desc {
+  font-size: 11px;
+  color: rgba(238,242,245,.6);
+  text-align: right;
+  font-style: italic;
+}
+
+.rule-card {
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--teal);
+  background: #fff;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.rule-card.critical { border-left-color: var(--red); }
+.rule-card.high     { border-left-color: var(--orange); }
+.rule-card.medium   { border-left-color: var(--gold); }
+
+.rule-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper2);
+}
+
+.rule-num-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.rule-title {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 700;
+  flex: 1;
+  line-height: 1.3;
+}
+
+.sev-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.sev-critical { background: var(--red); color: #fff; }
+.sev-high     { background: var(--orange); color: #fff; }
+.sev-medium   { background: var(--gold); color: #fff; }
+
+.rule-card-body {
+  padding: 14px 18px;
+}
+
+.rule-statement {
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.rule-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.rule-meta-item {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  padding: 7px 10px;
+  font-size: 11px;
+}
+
+.rule-meta-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.rule-meta-val { font-size: 11px; line-height: 1.4; }
+
+.code-block {
+  background: #1a1a2e;
+  border: 1px solid var(--teal);
+  margin: 12px 0 0;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.code-bar {
+  background: #0f0f1a;
+  padding: 6px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #2a2a3e;
+}
+
+.code-filename {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--gold2);
+  letter-spacing: .05em;
+}
+
+.code-dots { display: flex; gap: 5px; }
+.cd { width: 9px; height: 9px; border-radius: 50%; }
+.cd-r { background: #f87171; } .cd-y { background: #fbbf24; } .cd-g { background: #34d399; }
+
+.code-block pre {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.7;
+  padding: 14px 16px;
+  color: #d4d4d4;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.ck  { color: #c678dd; }
+.cs  { color: #98c379; }
+.cc  { color: #5c6370; font-style: italic; }
+.ct  { color: #e5c07b; }
+.cf  { color: #61afef; }
+.cn  { color: #d19a66; }
+.cv  { color: #56b6c2; }
+
+.const-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.const-table thead tr { background: var(--teal); color: var(--paper); }
+.const-table th {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: 8px 10px;
+  text-align: left;
+}
+.const-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.const-table tbody tr:nth-child(even) { background: var(--paper2); }
+
+.fp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+  border: 2px solid var(--teal);
+}
+.fp-table thead tr { background: var(--red); }
+.fp-table th {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 8px 10px;
+  color: #fff;
+  text-align: left;
+}
+.fp-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.fp-table tbody tr:hover { background: #fef2f2; }
+.fp-code { font-family: var(--mono); font-size: 9px; color: var(--red); font-weight: 700; }
+.fp-ref  { font-family: var(--mono); font-size: 9px; color: var(--teal); }
+
+.checklist-section {
+  border: 1px solid var(--teal);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.cl-header {
+  background: var(--teal);
+  color: var(--paper);
+  padding: 8px 14px;
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cl-tag {
+  font-family: var(--mono);
+  font-size: 8px;
+  background: var(--gold2);
+  color: var(--ink);
+  padding: 2px 8px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.cl-group { border-bottom: 1px solid var(--rule); }
+.cl-group-title {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: var(--muted);
+  background: var(--paper2);
+  padding: 5px 14px;
+  border-bottom: 1px solid var(--rule);
+}
+.cl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 14px;
+  border-bottom: 1px dotted var(--rule);
+  font-size: 10px;
+}
+.cl-item:last-child { border-bottom: none; }
+.cl-box {
+  width: 12px; height: 12px;
+  border: 1.5px solid var(--teal);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.cl-ref { font-family: var(--mono); font-size: 8px; color: var(--gold); margin-left: auto; flex-shrink: 0; }
+
+.callout {
+  display: flex;
+  gap: 12px;
+  padding: 10px 14px;
+  margin: 12px 0;
+  font-size: 11px;
+  border-left: 4px solid;
+  background: var(--paper2);
+}
+.callout-critical { border-color: var(--red); }
+.callout-warn     { border-color: var(--orange); }
+.callout-info     { border-color: var(--gold); }
+.callout-good     { border-color: var(--green); }
+.callout-icon { font-family: var(--mono); font-size: 11px; flex-shrink: 0; font-weight: 700; }
+.callout-body { line-height: 1.6; }
+
+.structure-map {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 2px solid var(--teal);
+  margin-bottom: 20px;
+}
+.sm-col {
+  border-right: 1px solid var(--rule);
+  overflow: hidden;
+}
+.sm-col:last-child { border-right: none; }
+.sm-head {
+  background: var(--teal);
+  color: var(--paper);
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.sm-num { color: var(--gold2); margin-right: 4px; }
+.sm-items { padding: 8px 10px; }
+.sm-item {
+  font-size: 9px;
+  padding: 2px 0;
+  border-bottom: 1px dotted var(--rule);
+  color: var(--muted);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.sm-item::before { content: '→'; color: var(--gold); font-family: var(--mono); font-size: 8px; flex-shrink: 0; }
+
+.lock-section {
+  border: 4px double var(--teal);
+  margin-top: 32px;
+}
+.lock-banner {
+  background: var(--teal);
+  color: var(--paper);
+  text-align: center;
+  padding: 28px 20px;
+  border-bottom: 4px double rgba(238,242,245,.25);
+}
+.lock-title-main {
+  font-family: var(--serif);
+  font-size: clamp(26px, 4vw, 48px);
+  font-weight: 900;
+  letter-spacing: -.02em;
+  margin-bottom: 6px;
+}
+.lock-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--gold2);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.lock-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0;
+  border-top: 1px solid rgba(255,255,255,.15);
+  margin-top: 20px;
+}
+.ls-item {
+  padding: 12px;
+  border-right: 1px solid rgba(255,255,255,.1);
+  text-align: center;
+}
+.ls-item:last-child { border-right: none; }
+.ls-num {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--gold2);
+  display: block;
+}
+.ls-label {
+  font-family: var(--mono);
+  font-size: 7px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: rgba(238,242,245,.5);
+  display: block;
+  margin-top: 2px;
+}
+
+.lock-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.lock-col {
+  padding: 24px 28px;
+  border-right: 2px solid var(--teal);
+}
+.lock-col:last-child { border-right: none; }
+.lock-col-title {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .2em;
+  color: var(--muted);
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 5px;
+}
+
+.parts-breakdown { display: flex; flex-direction: column; gap: 5px; }
+.pb-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  padding: 5px 8px;
+  border: 1px solid var(--rule);
+  background: var(--paper2);
+}
+.pb-part { font-family: var(--mono); font-size: 8px; color: var(--gold); font-weight: 700; min-width: 45px; }
+.pb-name { flex: 1; font-size: 9px; }
+.pb-rules { font-family: var(--mono); font-size: 8px; color: var(--muted); }
+.pb-crit { background: var(--red); color: #fff; padding: 1px 4px; font-family: var(--mono); font-size: 7px; border-radius: 2px; }
+
+.lock-final {
+  border-top: 2px solid var(--teal);
+  background: var(--teal);
+  color: var(--paper);
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.lock-final-left { font-family: var(--mono); font-size: 9px; color: var(--gold2); letter-spacing: .08em; }
+.lock-final-motto { font-family: var(--serif); font-size: 16px; font-style: italic; }
+.lock-final-right { font-family: var(--mono); font-size: 8px; color: rgba(238,242,245,.5); text-align: right; }
+
+.divider { border: none; border-top: 2px solid var(--teal); margin: 0; }
+.divider-double { border: none; border-top: 3px double var(--teal); margin: 0; }
+code {
+  font-family: var(--mono);
+  font-size: 10px;
+  background: #e8e0d0;
+  border: 1px solid var(--rule);
+  padding: 1px 3px;
+  color: var(--red);
+}
+
+@media (max-width: 860px) {
+  .col-layout { grid-template-columns: 1fr; }
+  .col-sidebar { border-right: none; border-bottom: 1px solid var(--rule); }
+  .lock-body { grid-template-columns: 1fr; }
+  .lock-col { border-right: none; border-bottom: 2px solid var(--teal); }
+  .masthead-bottom { grid-template-columns: repeat(3, 1fr); }
+  .structure-map { grid-template-columns: 1fr 1fr; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page > * { animation: fadeIn .35s ease both; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="masthead">
+  <div class="masthead-top">
+    <span>LOCKED: 2026-04-08</span>
+    <span>DOCUMENT CLASS: CONSTITUTION · REVISION: v2.0</span>
+    <span>NEXT REVIEW: 2026-07-08</span>
+  </div>
+  <div class="masthead-main">
+    <div class="masthead-eyebrow">DATABASE CONSTITUTION</div>
+    <h1 class="masthead-title">v2.0</h1>
+    <p class="masthead-tagline">"Data is the only thing you cannot rebuild from code."</p>
+    <div class="masthead-meta">
+      <span><strong>48</strong> TOTAL RULES</span>
+      <span><strong>32</strong> CRITICAL</span>
+      <span><strong>14</strong> HIGH PRIORITY</span>
+      <span><strong>20</strong> FORBIDDEN PATTERNS</span>
+      <span><strong>175</strong> SYSTEM TOTAL</span>
+    </div>
+  </div>
+  <div class="masthead-bottom">
+    <div class="stat-box"><span class="stat-num">48</span><span class="stat-label">Total Rules</span></div>
+    <div class="stat-box"><span class="stat-num">32</span><span class="stat-label">Critical</span></div>
+    <div class="stat-box"><span class="stat-num">14</span><span class="stat-label">High</span></div>
+    <div class="stat-box"><span class="stat-num">2</span><span class="stat-label">Medium</span></div>
+    <div class="stat-box"><span class="stat-num">175</span><span class="stat-label">System Total</span></div>
+  </div>
+</header>
+
+<nav class="part-nav">
+  <a href="#part1" class="pn-item"><span class="pn-num">PART 1</span><span class="pn-name">Naming & Structure</span><span class="pn-count">D1-D7a</span></a>
+  <a href="#part2" class="pn-item"><span class="pn-num">PART 2</span><span class="pn-name">Indexing</span><span class="pn-count">D8-D14a</span></a>
+  <a href="#part3" class="pn-item"><span class="pn-num">PART 3</span><span class="pn-name">Integrity</span><span class="pn-count">D15-D18b</span></a>
+  <a href="#part4" class="pn-item"><span class="pn-num">PART 4</span><span class="pn-name">Retention</span><span class="pn-count">D19-D23</span></a>
+  <a href="#part5" class="pn-item"><span class="pn-num">PART 5</span><span class="pn-name">Backup & Recovery</span><span class="pn-count">D24-D29b</span></a>
+  <a href="#part6" class="pn-item"><span class="pn-num">PART 6</span><span class="pn-name">Security</span><span class="pn-count">D30-D34c</span></a>
+  <a href="#part7" class="pn-item"><span class="pn-num">PART 7</span><span class="pn-name">Migrations</span><span class="pn-count">D35-D38a</span></a>
+  <a href="#part8" class="pn-item"><span class="pn-num">PART 8</span><span class="pn-name">Observability</span><span class="pn-count">D39-D42</span></a>
+  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden</span><span class="pn-count">DF01-DF20</span></a>
+</nav>
+
+<div class="section-runner">§ Executive Summary — Structure Map</div>
+<div class="part-section" style="padding: 28px 28px 20px;">
+  <div class="structure-map">
+    <div class="sm-col"><div class="sm-head"><span class="sm-num">P1</span>Naming & Structure</div><div class="sm-items"><div class="sm-item">Plural table names</div><div class="sm-item">snake_case columns</div><div class="sm-item">UUID v7 primary keys</div><div class="sm-item">created_at/updated_at/version</div><div class="sm-item">deleted_at + deleted_by</div></div></div>
+    <div class="sm-col"><div class="sm-head"><span class="sm-num">P2</span>Indexing</div><div class="sm-items"><div class="sm-item">FK indexes required</div><div class="sm-item">deleted_at indexed</div><div class="sm-item">Partial indexes for active</div><div class="sm-item">BRIN for time-series</div><div class="sm-item">Remove unused indexes</div></div></div>
+    <div class="sm-col"><div class="sm-head"><span class="sm-num">P3</span>Integrity</div><div class="sm-items"><div class="sm-item">NOT NULL explicit</div><div class="sm-item">FK ON DELETE/UPDATE</div><div class="sm-item">No business logic in DB</div><div class="sm-item">RLS for multi-tenant</div><div class="sm-item">Exclusion constraints</div></div></div>
+    <div class="sm-col"><div class="sm-head"><span class="sm-num">P4</span>Retention</div><div class="sm-items"><div class="sm-item">Audit: 90 days, partitioned</div><div class="sm-item">Soft-delete: 30 days</div><div class="sm-item">Sessions: +7 days</div><div class="sm-item">Failed attempts: 1 hour</div><div class="sm-item">Batch purges off-peak</div></div></div>
+    <div class="sm-col"><div class="sm-head"><span class="sm-num">P5</span>Backup & Recovery</div><div class="sm-items"><div class="sm-item">Daily backups</div><div class="sm-item">30d daily / 12m monthly</div><div class="sm-item">RTO: 4 hours</div><div class="sm-item">RPO: 15 min (PITR)</div><div class="sm-item">Quarterly restore test</div><div class="sm-item">WAL archiving to S3</div></div></div>
+    <div class="sm-col"><div class="sm-head"><span class="sm-num">P6</span>Security</div><div class="sm-items"><div class="sm-item">Encryption at rest</div><div class="sm-item">4 least-privilege roles</div><div class="sm-item">No public access</div><div class="sm-item">TLS/SSL verify-full</div><div class="sm-item">Secrets manager + rotation</div><div class="sm-item">Connection pooling</div><div class="sm-item">PII data masking</div></div></div>
+    <div class="sm-col"><div class="sm-head"><span class="sm-num">P7</span>Migrations</div><div class="sm-items"><div class="sm-item">Timestamp prefix</div><div class="sm-item">Zero-downtime required</div><div class="sm-item">Destructive = approval</div><div class="sm-item">Idempotent seeds</div><div class="sm-item">lock_timeout = 2s</div></div></div>
+    <div class="sm-col"><div class="sm-head"><span class="sm-num">P8</span>Observability</div><div class="sm-items"><div class="sm-item">Slow query logging (100ms)</div><div class="sm-item">Deadlock monitoring</div><div class="sm-item">Connection pool metrics</div><div class="sm-item">Table bloat detection</div></div></div>
+  </div>
+</div>
+
+<!-- PART 1: NAMING & STRUCTURE -->
+<hr class="divider"/>
+<div class="section-runner" id="part1">§ Part 1 — Naming & Structure (D1-D7a)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Consistent, self-documenting database schema with modern PostgreSQL features.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 1 / D1-D7a</span><span class="part-title">Naming & Structure</span><span class="part-desc">5 Critical · 2 High · 1 Medium</span></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D1</span><span class="rule-title">Table Names — Plural, snake_case</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Table names MUST be lowercase, snake_case, PLURAL (e.g., users, user_sessions, audit_logs). Junction tables use {singular}_{plural} format (e.g., user_organizations).</p><div class="rule-meta-grid"><div class="rule-meta-item"><span class="rule-meta-label">Violation</span><div class="rule-meta-val">User, userSession, AuditLogs</div></div><div class="rule-meta-item"><span class="rule-meta-label">Compliance</span><div class="rule-meta-val">users, user_sessions, audit_logs</div></div></div></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D2</span><span class="rule-title">Column Names — snake_case</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Column names MUST be lowercase, snake_case. Use @map() in Prisma to map camelCase field names to snake_case columns.</p><div class="rule-meta-grid"><div class="rule-meta-item"><span class="rule-meta-label">Violation</span><div class="rule-meta-val">createdAt, PasswordHash, userId</div></div><div class="rule-meta-item"><span class="rule-meta-label">Compliance</span><div class="rule-meta-val">created_at, password_hash, user_id</div></div></div></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D3</span><span class="rule-title">Primary Keys — UUID v7</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every table MUST have a primary key named id using UUID v7 (time-sortable UUID). Use @default(dbgenerated("gen_random_uuid()")) or uuid_generate_v7() extension.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> UUID v7 replaces cuid()/uuid() for time-sortability and better index performance.</div></div></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D4</span><span class="rule-title">Foreign Keys — {table}_id Format</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Foreign key columns MUST follow format: {singular_table_name}_id (e.g., user_id, session_id). Self-referential FKs use parent_{table}_id or {role}_{table}_id.</p></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D5</span><span class="rule-title">Required Timestamps + Version Column</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every table MUST have created_at, updated_at, AND version Int @default(1) for optimistic concurrency control.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> version column for optimistic locking.</div></div></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D6</span><span class="rule-title">Soft Delete — deleted_at + deleted_by</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Tables that require soft delete MUST have deleted_at AND deleted_by for audit trail. Required for user data and audit logs.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> deleted_by for audit compliance.</div></div></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D7</span><span class="rule-title">Boolean Column Naming</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Permanent states: active, verified, paid. Transient states: is_pending, is_processing. Existence: has_subscription, has_verified_email.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D7a</span><span class="rule-title">JSONB Column Standards</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Every JSON column MUST have a comment documenting expected structure. Use @db.JsonB for performance.</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 2: INDEXING -->
+<hr class="divider"/>
+<div class="section-runner" id="part2">§ Part 2 — Indexing Strategy (D8-D14a)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Performance without waste. Smart indexing for modern query patterns.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 2 / D8-D14a</span><span class="part-title">Indexing Strategy</span><span class="part-desc">2 Critical · 5 High · 1 Medium</span></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D8</span><span class="rule-title">Foreign Key Indexes</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every foreign key column MUST have an index. Multi-column FKs MUST be indexed in the same order.</p></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D9</span><span class="rule-title">Soft Delete Index</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every deleted_at column MUST have an index. Use partial index for active records: WHERE deleted_at IS NULL.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D10</span><span class="rule-title">Created At Index — Expression for Date Queries</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Use expression indexes for date truncation: CREATE INDEX idx_events_day ON events ((date_trunc('day', created_at))).</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D11</span><span class="rule-title">Remove Unused Indexes</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Indexes with idx_scan = 0 for 30 consecutive days MUST be removed.</p></div></div>
+
+      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">D12</span><span class="rule-title">Maximum Indexes Guideline</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Write-heavy tables (1000+ writes/sec): ≤5 indexes. Read-heavy: ≤10 indexes. Monitor dead tuple ratio.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D13</span><span class="rule-title">Composite Index Comments</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Composite indexes with 3+ columns MUST have a comment explaining column order and query pattern.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D14a</span><span class="rule-title">BRIN Indexes for Time-Series Data</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Tables with append-only time-series data (>1M rows) MUST use BRIN indexes instead of B-tree for timestamp columns.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> BRIN indexes use 10x less space for time-series data.</div></div></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 3: DATA INTEGRITY -->
+<hr class="divider"/>
+<div class="section-runner" id="part3">§ Part 3 — Data Integrity & Constraints (D15-D18b)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Data accuracy, consistency, and security at the database level.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 3 / D15-D18b</span><span class="part-title">Data Integrity & Constraints</span><span class="part-desc">4 Critical · 3 High</span></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D15</span><span class="rule-title">NOT NULL Constraints — Explicit</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">All columns that cannot be null MUST have explicit NOT NULL constraint. Prefer database-level NOT NULL over application validation.</p></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D16</span><span class="rule-title">FK ON DELETE and ON UPDATE Behaviors</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every foreign key MUST define BOTH onDelete AND onUpdate behaviors. Never leave default.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> onUpdate now required.</div></div></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D17</span><span class="rule-title">No Business Logic in Database</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Triggers, stored procedures, views with logic are FORBIDDEN. EXCEPTION: Immutable generated columns allowed for derived data.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D18</span><span class="rule-title">Check Constraints and PostgreSQL Enums</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Use PostgreSQL ENUM types for fixed value sets that rarely change. Use CHECK constraints for simple validations.</p></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D18a</span><span class="rule-title">Row-Level Security (RLS)</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Tables with multi-tenant data MUST implement Row-Level Security policies with current_setting('app.tenant_id').</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> RLS for multi-tenancy.</div></div></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D18b</span><span class="rule-title">Exclusion Constraints</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Use exclusion constraints with GiST indexes for non-overlapping ranges (bookings, reservations, time slots).</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Exclusion constraints prevent double-booking.</div></div></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 4: RETENTION -->
+<hr class="divider"/>
+<div class="section-runner" id="part4">§ Part 4 — Data Retention & Purging (D19-D23)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Controlled data growth, compliance, and performance.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 4 / D19-D23</span><span class="part-title">Data Retention & Purging</span><span class="part-desc">3 Critical · 2 High</span></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D19</span><span class="rule-title">Audit Log Retention with Partitioning</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Audit logs: 90 days retention. Security events: 1 year. MUST be partitioned by month for efficient purging.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> Partitioning required for audit logs.</div></div></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D20</span><span class="rule-title">Soft Delete Purge with Archival</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Soft-deleted records MUST be permanently purged after 30 days. Archive to S3/Glacier before deletion. Batch 1000 rows per transaction.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D21</span><span class="rule-title">Session Purge</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Expired sessions MUST be purged 7 days after expiry. Partition if exceeding 1M rows.</p></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D23</span><span class="rule-title">Purge Jobs Requirements</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every table with soft delete or time-based retention MUST have an automated idempotent purge job. Run off-peak, batch commits (≤1000 rows), with monitoring.</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 5: BACKUP & RECOVERY -->
+<hr class="divider"/>
+<div class="section-runner" id="part5">§ Part 5 — Backup & Recovery (D24-D29b)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Data durability, recoverability, and disaster readiness.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 5 / D24-D29b</span><span class="part-title">Backup & Recovery</span><span class="part-desc">2 Critical · 5 High · 1 Medium</span></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D24</span><span class="rule-title">Automated Daily Backups</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Automated daily backups MUST be configured for production database during lowest traffic period.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D25</span><span class="rule-title">Backup Retention — 30d Daily + 12m Monthly + Cross-Region</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Retention: 30 days daily, 12 months monthly snapshots. Copy to secondary region for DR.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D26</span><span class="rule-title">Recovery Time Objective (RTO): 4 Hours</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Database MUST be restored and validated within 4 hours of disaster declaration.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D27</span><span class="rule-title">Recovery Point Objective (RPO): 15 Minutes</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">RPO: 24 hours with daily backups, 15 minutes with PITR enabled.</p></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D28</span><span class="rule-title">Point-in-Time Recovery (PITR) Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">PITR MUST be enabled for production databases. Provides 15-minute RPO.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> PITR now critical requirement.</div></div></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D29</span><span class="rule-title">Backup Restoration Test — Quarterly</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Backup restoration test MUST be performed quarterly with data validation.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D29a</span><span class="rule-title">WAL Archiving</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">WAL MUST be archived to S3 or equivalent object storage for disaster recovery.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> WAL archiving to S3.</div></div></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 6: SECURITY -->
+<hr class="divider"/>
+<div class="section-runner" id="part6">§ Part 6 — Security & Encryption (D30-D34c)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Protect data from unauthorized access and ensure compliance.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 6 / D30-D34c</span><span class="part-title">Security & Encryption</span><span class="part-desc">6 Critical · 2 High</span></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D30</span><span class="rule-title">Encryption at Rest</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Database-level encryption at rest MUST be enabled for production. Use AWS KMS or equivalent.</p></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D31</span><span class="rule-title">Least Privilege Database Roles</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Minimum FOUR roles: app_user (CRUD), app_admin (elevated), migration_user (DDL), backup_user (read-only).</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> Added app_admin role.</div></div></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D32</span><span class="rule-title">No Public Database Access</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Production database MUST NOT have public IP address. Access only via VPC private subnet.</p></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D33</span><span class="rule-title">TLS/SSL Required — verify-full</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">All database connections MUST use TLS/SSL with sslmode=verify-full and certificate validation.</p></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D34</span><span class="rule-title">Secrets Management — Rotation Every 90 Days</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Database credentials MUST NOT be hardcoded. Use AWS Secrets Manager. Rotate every 90 days.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D34a</span><span class="rule-title">Query Audit Logging</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Production MUST log all DDL statements and queries from admin roles to a secure audit schema.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Query audit logging for DDL.</div></div></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D34b</span><span class="rule-title">Connection Pooling — PgBouncer</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Production MUST use connection pooling (PgBouncer in transaction mode). pool_size = core_count × 2.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Connection pooling required.</div></div></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D34c</span><span class="rule-title">Data Masking for PII</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">PII columns MUST have masking policies for non-admin application roles.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> PII data masking for GDPR/CCPA.</div></div></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 7: MIGRATIONS -->
+<hr class="divider"/>
+<div class="section-runner" id="part7">§ Part 7 — Migration & Seeding (D35-D38a)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Safe, repeatable, reversible schema changes with zero downtime.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 7 / D35-D38a</span><span class="part-title">Migration & Seeding</span><span class="part-desc">3 Critical · 2 High</span></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D35</span><span class="rule-title">Migration Naming — Timestamp Prefix</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Migration files MUST follow format: YYYYMMDDHHMMSS_description.sql (e.g., 20260408120000_add_users_table.sql).</p></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D36</span><span class="rule-title">Zero-Downtime Migrations</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">All migrations MUST be zero-downtime compatible using blue-green pattern. Document rollback for each step.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> Zero-downtime required for all migrations.</div></div></div></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D37</span><span class="rule-title">Destructive Migration Approval</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Destructive migrations (DROP, TRUNCATE) REQUIRE tech lead approval, justification, rollback plan, and label.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D38</span><span class="rule-title">Seed Data — Idempotent, Realistic, Validated</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Seed data MUST be idempotent (upsert), realistic (Faker.js), and validated in CI.</p></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D38a</span><span class="rule-title">Migration Lock Timeout — 2 Seconds</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">All migrations MUST set lock_timeout = '2s' to prevent blocking production traffic.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> lock_timeout prevents blocking.</div></div></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 8: OBSERVABILITY -->
+<hr class="divider"/>
+<div class="section-runner" id="part8">§ Part 8 — Observability & Monitoring (D39-D42)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Database health visibility, performance optimization, and proactive alerting.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 8 / D39-D42</span><span class="part-title">Observability & Monitoring</span><span class="part-desc">1 Critical · 2 High · 1 Medium</span></div>
+
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D39</span><span class="rule-title">Slow Query Logging — 100ms Threshold</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Production MUST log all queries exceeding 100ms. Aggregate weekly, review top 10 slow queries.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Slow query logging and review.</div></div></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D40</span><span class="rule-title">Deadlock Monitoring</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Deadlocks MUST be logged and monitored. Alert when rate exceeds 5 per minute or 10 per hour.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Deadlock monitoring and alerting.</div></div></div></div>
+
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D41</span><span class="rule-title">Connection Pool Metrics</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Monitor active connections, idle connections, waiting clients. Alert when waiting > 10 or active > 80% of max.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Connection pool monitoring.</div></div></div></div>
+
+      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">D42</span><span class="rule-title">Table Bloat Detection</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Monitor table and index bloat weekly. Alert when dead tuple ratio exceeds 20%.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Bloat detection and alerting.</div></div></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- FORBIDDEN PATTERNS -->
+<hr class="divider"/>
+<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (DF01-DF20)</div>
+<div class="part-section" style="padding: 24px 28px;">
+  <div class="callout callout-critical" style="margin-bottom:20px"><span class="callout-icon">■</span><div class="callout-body"><strong>20 patterns permanently banned.</strong> Each one has caused real production failures or data loss.</div></div>
+  <table class="fp-table">
+    <thead><tr><th width="8%">Code</th><th width="42%">Pattern</th><th width="32%">Why It's Banned</th><th width="18%">Rule</th></tr></thead>
+    <tbody>
+      <tr><td class="fp-code">DF01</td><td>Singular table names</td><td>Inconsistent, breaks conventions</td><td class="fp-ref">D1</td></tr>
+      <tr><td class="fp-code">DF02</td><td>camelCase column names</td><td>Requires quoting, inconsistent</td><td class="fp-ref">D2</td></tr>
+      <tr><td class="fp-code">DF03</td><td>Integer auto-increment or UUID v4 primary keys</td><td>Not time-sortable, poor index perf</td><td class="fp-ref">D3</td></tr>
+      <tr><td class="fp-code">DF04</td><td>Foreign key without index</td><td>Performance degradation on joins</td><td class="fp-ref">D8</td></tr>
+      <tr><td class="fp-code">DF05</td><td>Soft delete column without index</td><td>Slow queries filtering deleted_at</td><td class="fp-ref">D9</td></tr>
+      <tr><td class="fp-code">DF06</td><td>Unused indexes kept for >30 days</td><td>Wasted storage and write overhead</td><td class="fp-ref">D11</td></tr>
+      <tr><td class="fp-code">DF07</td><td>Triggers, stored procedures, views with logic</td><td>Business logic in wrong layer</td><td class="fp-ref">D17</td></tr>
+      <tr><td class="fp-code">DF08</td><td>No purge job for soft-deleted records</td><td>Unbounded table growth</td><td class="fp-ref">D20</td></tr>
+      <tr><td class="fp-code">DF09</td><td>No daily backups</td><td>Data loss risk</td><td class="fp-ref">D24</td></tr>
+      <tr><td class="fp-code">DF10</td><td>Public database access</td><td>Security vulnerability</td><td class="fp-ref">D32</td></tr>
+      <tr><td class="fp-code">DF11</td><td>Hardcoded database credentials</td><td>Security breach risk</td><td class="fp-ref">D34</td></tr>
+      <tr><td class="fp-code">DF12</td><td>Downtime-causing migrations</td><td>Production outages</td><td class="fp-ref">D36</td></tr>
+      <tr><td class="fp-code">DF13</td><td>Destructive migration without approval</td><td>Data loss without oversight</td><td class="fp-ref">D37</td></tr>
+      <tr><td class="fp-code">DF14</td><td>Production default admin passwords</td><td>Security vulnerability</td><td class="fp-ref">D38</td></tr>
+      <tr><td class="fp-code">DF15</td><td>Multi-tenant tables without RLS</td><td>Data leakage between tenants</td><td class="fp-ref">D18a</td></tr>
+      <tr><td class="fp-code">DF16</td><td>Missing ON UPDATE behavior for FKs</td><td>Referential integrity gaps</td><td class="fp-ref">D16</td></tr>
+      <tr><td class="fp-code">DF17</td><td>Production without PITR</td><td>Cannot recover to point in time</td><td class="fp-ref">D28</td></tr>
+      <tr><td class="fp-code">DF18</td><td>Direct connections without connection pooling</td><td>Connection exhaustion</td><td class="fp-ref">D34b</td></tr>
+      <tr><td class="fp-code">DF19</td><td>PII exposed in queries</td><td>GDPR/CCPA compliance violation</td><td class="fp-ref">D34c</td></tr>
+      <tr><td class="fp-code">DF20</td><td>No slow query monitoring</td><td>Performance degrades undetected</td><td class="fp-ref">D39</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- READINESS CHECKLIST -->
+<hr class="divider"/>
+<div class="section-runner">§ Annex B — Production Readiness Checklist</div>
+<div class="part-section" style="padding: 24px 28px;">
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+    <div><div class="checklist-section"><div class="cl-header"><span class="cl-tag">READY</span> Database Production — All Must Pass</div>
+      <div class="cl-group"><div class="cl-group-title">Naming & Structure</div>
+        <div class="cl-item"><div class="cl-box"></div>Plural, snake_case table names (D1)<div class="cl-ref">D1</div></div>
+        <div class="cl-item"><div class="cl-box"></div>UUID v7 primary keys (D3)<div class="cl-ref">D3</div></div>
+        <div class="cl-item"><div class="cl-box"></div>created_at + updated_at + version (D5)<div class="cl-ref">D5</div></div>
+        <div class="cl-item"><div class="cl-box"></div>deleted_at + deleted_by (D6)<div class="cl-ref">D6</div></div>
+      </div>
+      <div class="cl-group"><div class="cl-group-title">Indexing</div>
+        <div class="cl-item"><div class="cl-box"></div>All foreign keys have indexes (D8)<div class="cl-ref">D8</div></div>
+        <div class="cl-item"><div class="cl-box"></div>deleted_at indexed (D9)<div class="cl-ref">D9</div></div>
+        <div class="cl-item"><div class="cl-box"></div>Unused indexes removed (D11)<div class="cl-ref">D11</div></div>
+      </div>
+      <div class="cl-group"><div class="cl-group-title">Integrity & Retention</div>
+        <div class="cl-item"><div class="cl-box"></div>All NOT NULL explicit (D15)<div class="cl-ref">D15</div></div>
+        <div class="cl-item"><div class="cl-box"></div>All FKs have onDelete + onUpdate (D16)<div class="cl-ref">D16</div></div>
+        <div class="cl-item"><div class="cl-box"></div>RLS for multi-tenant tables (D18a)<div class="cl-ref">D18a</div></div>
+        <div class="cl-item"><div class="cl-box"></div>Audit logs partitioned (D19)<div class="cl-ref">D19</div></div>
+      </div>
+    </div></div>
+    <div><div class="checklist-section"><div class="cl-header"><span class="cl-tag">READY</span> Security & Observability</div>
+      <div class="cl-group"><div class="cl-group-title">Backup & Recovery</div>
+        <div class="cl-item"><div class="cl-box"></div>Daily backups enabled (D24)<div class="cl-ref">D24</div></div>
+        <div class="cl-item"><div class="cl-box"></div>PITR enabled for production (D28)<div class="cl-ref">D28</div></div>
+        <div class="cl-item"><div class="cl-box"></div>Quarterly restore test passes (D29)<div class="cl-ref">D29</div></div>
+      </div>
+      <div class="cl-group"><div class="cl-group-title">Security</div>
+        <div class="cl-item"><div class="cl-box"></div>Encryption at rest enabled (D30)<div class="cl-ref">D30</div></div>
+        <div class="cl-item"><div class="cl-box"></div>4 least-privilege roles configured (D31)<div class="cl-ref">D31</div></div>
+        <div class="cl-item"><div class="cl-box"></div>No public database access (D32)<div class="cl-ref">D32</div></div>
+        <div class="cl-item"><div class="cl-box"></div>TLS/SSL verify-full (D33)<div class="cl-ref">D33</div></div>
+        <div class="cl-item"><div class="cl-box"></div>PgBouncer connection pooling (D34b)<div class="cl-ref">D34b</div></div>
+      </div>
+      <div class="cl-group"><div class="cl-group-title">Observability</div>
+        <div class="cl-item"><div class="cl-box"></div>Slow query logging active (D39)<div class="cl-ref">D39</div></div>
+        <div class="cl-item"><div class="cl-box"></div>Deadlock monitoring active (D40)<div class="cl-ref">D40</div></div>
+        <div class="cl-item"><div class="cl-box"></div>Connection pool metrics dashboard (D41)<div class="cl-ref">D41</div></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- LOCK FOOTER -->
+<div class="lock-section">
+  <div class="lock-banner">
+    <div class="lock-title-main">Database Constitution v2.0</div>
+    <div class="lock-sub">Final Lock — Effective 2026-04-08 — Next Review 2026-07-08</div>
+    <p style="font-family:var(--serif);font-style:italic;font-size:16px;color:rgba(238,242,245,.7);">"Data is the only thing you cannot rebuild from code."</p>
+    <div class="lock-stats">
+      <div class="ls-item"><span class="ls-num">48</span><span class="ls-label">Total Rules</span></div>
+      <div class="ls-item"><span class="ls-num">32</span><span class="ls-label">Critical</span></div>
+      <div class="ls-item"><span class="ls-num">14</span><span class="ls-label">High</span></div>
+      <div class="ls-item"><span class="ls-num">2</span><span class="ls-label">Medium</span></div>
+      <div class="ls-item"><span class="ls-num">20</span><span class="ls-label">Forbidden</span></div>
+      <div class="ls-item"><span class="ls-num">175</span><span class="ls-label">System Total</span></div>
+    </div>
+  </div>
+
+  <div class="lock-body">
+    <div class="lock-col">
+      <div class="lock-col-title">Parts Breakdown (v2.0)</div>
+      <div class="parts-breakdown">
+        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">Naming & Structure (D1-D7a)</span><span class="pb-rules">8 rules</span><span class="pb-crit">5 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">Indexing Strategy (D8-D14a)</span><span class="pb-rules">8 rules</span><span class="pb-crit">2 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">Data Integrity (D15-D18b)</span><span class="pb-rules">7 rules</span><span class="pb-crit">4 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">Retention & Purging (D19-D23)</span><span class="pb-rules">5 rules</span><span class="pb-crit">3 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Backup & Recovery (D24-D29b)</span><span class="pb-rules">8 rules</span><span class="pb-crit">2 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P6</span><span class="pb-name">Security & Encryption (D30-D34c)</span><span class="pb-rules">8 rules</span><span class="pb-crit">6 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P7</span><span class="pb-name">Migration & Seeding (D35-D38a)</span><span class="pb-rules">5 rules</span><span class="pb-crit">3 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P8</span><span class="pb-name">Observability (D39-D42)</span><span class="pb-rules">4 rules</span><span class="pb-crit">1 CRIT</span></div>
+      </div>
+    </div>
+    <div class="lock-col">
+      <div class="lock-col-title">v2.0 Enhancements</div>
+      <div class="parts-breakdown">
+        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">D3: UUID v7 replaces cuid()/uuid()</span></div>
+        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">D5: Version column for optimistic locking</span></div>
+        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">D6: deleted_by for audit trail</span></div>
+        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">D28: PITR now critical requirement</span></div>
+        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">D36: Zero-downtime migrations required</span></div>
+        <div class="pb-item"><span class="pb-part">🆕</span><span class="pb-name">D18a: Row-Level Security (RLS)</span></div>
+        <div class="pb-item"><span class="pb-part">🆕</span><span class="pb-name">D34c: PII data masking</span></div>
+        <div class="pb-item"><span class="pb-part">🆕</span><span class="pb-name">D39-D42: Observability suite</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lock-final">
+    <div class="lock-final-left">VIOLATION OF ANY CRITICAL RULE = DATA RISK<br/>FOLLOW ALL RULES = DATA SAFE</div>
+    <div class="lock-final-motto">"Data is the only thing you cannot rebuild from code."</div>
+    <div class="lock-final-right">v2.0 LOCKED<br/>2026-04-08<br/>Part of 175-rule total system</div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

@@ -304,7 +304,7 @@ in the Software without restriction...
 <p align="center">
   <i>Built with African roots • Designed for global impact</i>
 
-                                        The Sky Is The Limit- by KSDRILL-SA   
+                                      The Sky Is The Limit- by KSDRILL-SA   
 </p>
 
 <p align="center">

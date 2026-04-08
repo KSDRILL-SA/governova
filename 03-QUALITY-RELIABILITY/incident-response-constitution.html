@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Incident Response Constitution v1.1 — LOCKED</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:      #0e0e0e;
+  --paper:    #eef2f5;
+  --paper2:   #e2e8f0;
+  --paper3:   #d4dee8;
+  --rule:     #b8c4d0;
+  --gold:     #b8860b;
+  --gold2:    #d4a017;
+  --amber:    #e8a020;
+  --red:      #9b1c1c;
+  --orange:   #c05a00;
+  --green:    #1a5c2e;
+  --blue:     #1a3a6e;
+  --teal:     #0f6e6e;
+  --muted:    #5a5a6e;
+  --mono:     'IBM Plex Mono', monospace;
+  --serif:    'Playfair Display', serif;
+  --sans:     'IBM Plex Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: .5;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0; opacity: .1;
+}
+
+.page { max-width: 1200px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+.masthead {
+  border-top: 6px solid var(--teal);
+  border-bottom: 3px double var(--teal);
+  margin-bottom: 0;
+}
+
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .08em;
+}
+
+.masthead-main {
+  text-align: center;
+  padding: 40px 0 32px;
+}
+
+.masthead-eyebrow {
+  background: var(--teal);
+  color: var(--paper);
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .2em;
+  padding: 4px 16px;
+  margin-bottom: 16px;
+}
+
+.masthead-title {
+  font-family: var(--serif);
+  font-size: clamp(42px, 6vw, 80px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+
+.masthead-tagline {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+.masthead-meta {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.masthead-meta strong { color: var(--teal); }
+
+.masthead-bottom {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border-top: 1px solid var(--rule);
+  background: var(--paper2);
+}
+
+.stat-box {
+  padding: 16px 20px;
+  border-right: 1px solid var(--rule);
+  text-align: center;
+}
+.stat-box:last-child { border-right: none; }
+
+.stat-num {
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--teal);
+  display: block;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.section-runner {
+  background: var(--teal);
+  color: var(--paper);
+  padding: 6px 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.part-nav {
+  display: flex;
+  border-top: 2px solid var(--teal);
+  border-bottom: 2px solid var(--teal);
+  background: var(--paper2);
+  overflow-x: auto;
+}
+
+.pn-item {
+  flex: 1;
+  min-width: 80px;
+  padding: 8px 6px;
+  border-right: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--muted);
+  transition: all .15s;
+}
+.pn-item:last-child { border-right: none; }
+.pn-item:hover { background: var(--teal); color: var(--paper); }
+.pn-num  { font-family: var(--mono); font-size: 7px; color: var(--gold); letter-spacing: .1em; display: block; }
+.pn-name { font-family: var(--serif); font-size: 8px; font-weight: 700; line-height: 1.2; display: block; margin-top: 2px; }
+.pn-count { font-family: var(--mono); font-size: 7px; color: var(--muted); display: block; margin-top: 1px; }
+
+.col-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+  border-left: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+}
+
+.col-sidebar {
+  border-right: 1px solid var(--rule);
+  padding: 24px 20px;
+  background: var(--paper2);
+}
+
+.col-main {
+  padding: 28px 32px;
+}
+
+.part-section {
+  border-left: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+}
+
+.part-banner {
+  background: var(--teal);
+  color: var(--paper);
+  padding: 20px 28px;
+  margin: -28px -32px 28px;
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.part-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold2);
+  flex-shrink: 0;
+}
+
+.part-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.1;
+  flex: 1;
+}
+
+.part-desc {
+  font-size: 11px;
+  color: rgba(238,242,245,.6);
+  text-align: right;
+  font-style: italic;
+}
+
+.rule-card {
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--teal);
+  background: #fff;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.rule-card.critical { border-left-color: var(--red); }
+.rule-card.high     { border-left-color: var(--orange); }
+.rule-card.medium   { border-left-color: var(--gold); }
+
+.rule-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper2);
+}
+
+.rule-num-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.rule-title {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 700;
+  flex: 1;
+  line-height: 1.3;
+}
+
+.sev-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.sev-critical { background: var(--red); color: #fff; }
+.sev-high     { background: var(--orange); color: #fff; }
+.sev-medium   { background: var(--gold); color: #fff; }
+
+.rule-card-body {
+  padding: 12px 16px;
+}
+
+.rule-statement {
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.rule-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.rule-meta-item {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  padding: 6px 8px;
+  font-size: 10px;
+}
+
+.rule-meta-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.rule-meta-val { font-size: 10px; line-height: 1.4; }
+
+.code-block {
+  background: #1a1a2e;
+  border: 1px solid var(--teal);
+  margin: 10px 0 0;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.code-bar {
+  background: #0f0f1a;
+  padding: 5px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #2a2a3e;
+}
+.code-filename {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--gold2);
+}
+.code-dots { display: flex; gap: 5px; }
+.cd { width: 8px; height: 8px; border-radius: 50%; }
+.cd-r { background: #f87171; } .cd-y { background: #fbbf24; } .cd-g { background: #34d399; }
+.code-block pre {
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1.6;
+  padding: 12px 14px;
+  color: #d4d4d4;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.const-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+.const-table thead tr { background: var(--teal); color: var(--paper); }
+.const-table th {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: 6px 8px;
+  text-align: left;
+}
+.const-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.const-table tbody tr:nth-child(even) { background: var(--paper2); }
+
+.fp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9px;
+  border: 2px solid var(--teal);
+}
+.fp-table thead tr { background: var(--red); }
+.fp-table th {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  color: #fff;
+  text-align: left;
+}
+.fp-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.fp-table tbody tr:hover { background: #fef2f2; }
+.fp-code { font-family: var(--mono); font-size: 8px; color: var(--red); font-weight: 700; }
+.fp-ref  { font-family: var(--mono); font-size: 8px; color: var(--teal); }
+
+.callout {
+  display: flex;
+  gap: 10px;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 10px;
+  border-left: 3px solid;
+  background: var(--paper2);
+}
+.callout-critical { border-color: var(--red); }
+.callout-warn     { border-color: var(--orange); }
+.callout-info     { border-color: var(--gold); }
+.callout-good     { border-color: var(--green); }
+.callout-icon { font-family: var(--mono); font-size: 10px; flex-shrink: 0; font-weight: 700; }
+.callout-body { line-height: 1.6; }
+
+.lock-section {
+  border: 4px double var(--teal);
+  margin-top: 32px;
+}
+.lock-banner {
+  background: var(--teal);
+  color: var(--paper);
+  text-align: center;
+  padding: 28px 20px;
+  border-bottom: 4px double rgba(238,242,245,.25);
+}
+.lock-title-main {
+  font-family: var(--serif);
+  font-size: clamp(26px, 4vw, 48px);
+  font-weight: 900;
+  letter-spacing: -.02em;
+  margin-bottom: 6px;
+}
+.lock-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--gold2);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.lock-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0;
+  border-top: 1px solid rgba(255,255,255,.15);
+  margin-top: 20px;
+}
+.ls-item {
+  padding: 10px;
+  border-right: 1px solid rgba(255,255,255,.1);
+  text-align: center;
+}
+.ls-item:last-child { border-right: none; }
+.ls-num {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--gold2);
+  display: block;
+}
+.ls-label {
+  font-family: var(--mono);
+  font-size: 7px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: rgba(238,242,245,.5);
+  display: block;
+  margin-top: 2px;
+}
+
+.lock-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.lock-col {
+  padding: 20px 24px;
+  border-right: 2px solid var(--teal);
+}
+.lock-col:last-child { border-right: none; }
+.lock-col-title {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .2em;
+  color: var(--muted);
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 4px;
+}
+
+.parts-breakdown { display: flex; flex-direction: column; gap: 4px; }
+.pb-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  padding: 4px 6px;
+  border: 1px solid var(--rule);
+  background: var(--paper2);
+}
+.pb-part { font-family: var(--mono); font-size: 7px; color: var(--gold); font-weight: 700; min-width: 30px; }
+.pb-name { flex: 1; font-size: 8px; }
+.pb-rules { font-family: var(--mono); font-size: 7px; color: var(--muted); }
+.pb-crit { background: var(--red); color: #fff; padding: 1px 3px; font-family: var(--mono); font-size: 6px; border-radius: 2px; }
+
+.lock-final {
+  border-top: 2px solid var(--teal);
+  background: var(--teal);
+  color: var(--paper);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.lock-final-left { font-family: var(--mono); font-size: 8px; color: var(--gold2); letter-spacing: .08em; }
+.lock-final-motto { font-family: var(--serif); font-size: 14px; font-style: italic; }
+.lock-final-right { font-family: var(--mono); font-size: 7px; color: rgba(238,242,245,.5); text-align: right; }
+
+.divider { border: none; border-top: 2px solid var(--teal); margin: 0; }
+.divider-double { border: none; border-top: 3px double var(--teal); margin: 0; }
+
+.severity-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+.sev-card {
+  border: 1px solid var(--rule);
+  background: #fff;
+  padding: 12px;
+  text-align: center;
+}
+.sev-level {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+}
+.sev-response {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--gold);
+  margin: 6px 0;
+}
+.sev-example {
+  font-size: 9px;
+  color: var(--muted);
+}
+
+@media (max-width: 860px) {
+  .col-layout { grid-template-columns: 1fr; }
+  .col-sidebar { border-right: none; border-bottom: 1px solid var(--rule); }
+  .lock-body { grid-template-columns: 1fr; }
+  .lock-col { border-right: none; border-bottom: 2px solid var(--teal); }
+  .severity-grid { grid-template-columns: 1fr; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page > * { animation: fadeIn .35s ease both; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="masthead">
+  <div class="masthead-top">
+    <span>LOCKED: 2026-04-08</span>
+    <span>DOCUMENT CLASS: CONSTITUTION · REVISION: v1.1</span>
+    <span>NEXT REVIEW: 2026-07-07</span>
+  </div>
+  <div class="masthead-main">
+    <div class="masthead-eyebrow">INCIDENT RESPONSE CONSTITUTION</div>
+    <h1 class="masthead-title">v1.1</h1>
+    <p class="masthead-tagline">"Incidents are not failures — they are opportunities to learn."</p>
+    <div class="masthead-meta">
+      <span><strong>40</strong> TOTAL RULES</span>
+      <span><strong>16</strong> CRITICAL</span>
+      <span><strong>18</strong> HIGH PRIORITY</span>
+      <span><strong>18</strong> FORBIDDEN PATTERNS</span>
+      <span><strong>279</strong> SYSTEM TOTAL</span>
+    </div>
+  </div>
+  <div class="masthead-bottom">
+    <div class="stat-box"><span class="stat-num">40</span><span class="stat-label">Total Rules</span></div>
+    <div class="stat-box"><span class="stat-num">16</span><span class="stat-label">Critical</span></div>
+    <div class="stat-box"><span class="stat-num">18</span><span class="stat-label">High</span></div>
+    <div class="stat-box"><span class="stat-num">6</span><span class="stat-label">Medium</span></div>
+    <div class="stat-box"><span class="stat-num">279</span><span class="stat-label">System Total</span></div>
+  </div>
+</header>
+
+<nav class="part-nav">
+  <a href="#part1" class="pn-item"><span class="pn-num">PART 1</span><span class="pn-name">Severity</span><span class="pn-count">IR1-IR5</span></a>
+  <a href="#part2" class="pn-item"><span class="pn-num">PART 2</span><span class="pn-name">Detection</span><span class="pn-count">IR6-IR10</span></a>
+  <a href="#part3" class="pn-item"><span class="pn-num">PART 3</span><span class="pn-name">Response</span><span class="pn-count">IR11-IR16</span></a>
+  <a href="#part4" class="pn-item"><span class="pn-num">PART 4</span><span class="pn-name">Communication</span><span class="pn-count">IR17-IR21</span></a>
+  <a href="#part5" class="pn-item"><span class="pn-num">PART 5</span><span class="pn-name">Post-Mortems</span><span class="pn-count">IR22-IR27</span></a>
+  <a href="#part6" class="pn-item"><span class="pn-num">PART 6</span><span class="pn-name">Runbooks</span><span class="pn-count">IR28-IR31</span></a>
+  <a href="#part7" class="pn-item"><span class="pn-num">PART 7</span><span class="pn-name">On-Call</span><span class="pn-count">IR32-IR36</span></a>
+  <a href="#part8" class="pn-item"><span class="pn-num">PART 8</span><span class="pn-name">Solo Ops</span><span class="pn-count">IR37-IR40</span></a>
+  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden</span><span class="pn-count">IRF01-IRF18</span></a>
+</nav>
+
+<!-- SEVERITY GRID -->
+<div class="section-runner">§ Severity Levels (IR1-IR5)</div>
+<div class="part-section" style="padding: 20px 28px;">
+  <div class="severity-grid">
+    <div class="sev-card"><div class="sev-level" style="color:var(--red);">SEV0</div><div class="sev-response">Response: 5 min</div><div class="sev-example">Complete outage, data loss, breach</div></div>
+    <div class="sev-card"><div class="sev-level" style="color:var(--orange);">SEV1</div><div class="sev-response">Response: 15 min</div><div class="sev-example">Major feature broken, >10% users</div></div>
+    <div class="sev-card"><div class="sev-level" style="color:var(--gold);">SEV2</div><div class="sev-response">Response: 4 hours</div><div class="sev-example">Non-critical broken, <10% users</div></div>
+    <div class="sev-card"><div class="sev-level" style="color:var(--green);">SEV3</div><div class="sev-response">Response: 1 week</div><div class="sev-example">Cosmetic, typo, non-blocking</div></div>
+    <div class="sev-card"><div class="sev-level" style="color:var(--muted);">SEV4</div><div class="sev-response">Next sprint</div><div class="sev-example">Enhancement, nice-to-have</div></div>
+  </div>
+</div>
+
+<!-- PART 1: SEVERITY -->
+<hr class="divider"/>
+<div class="section-runner" id="part1">§ Part 1 — Severity Levels (IR1-IR5)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Classify incidents by impact for appropriate response.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 1 / IR1-IR5</span><span class="part-title">Severity Levels</span><span class="part-desc">2 Critical · 1 High · 2 Medium</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR1</span><span class="rule-title">SEV0 — Critical (5 min response)</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Complete system outage, data loss, security breach. Response within 5 minutes. Page on-call, all hands if needed.</p></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR2</span><span class="rule-title">SEV1 — High (15 min response)</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Major feature broken, significant performance degradation, partial outage affecting >10% of users. Response within 15 minutes.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR3</span><span class="rule-title">SEV2 — Medium (4 hour response)</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Non-critical feature broken, minor performance issue, UI bug affecting <10% of users. Response within 4 hours.</p></div></div>
+      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">IR4</span><span class="rule-title">SEV3 — Low (1 week response)</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Cosmetic issue, typo, non-blocking bug. Response within 1 week.</p></div></div>
+      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">IR5</span><span class="rule-title">SEV4 — Suggestion (next sprint)</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Enhancement request, nice-to-have. Response during next sprint planning.</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 2: DETECTION & TRIAGE -->
+<hr class="divider"/>
+<div class="section-runner" id="part2">§ Part 2 — Detection & Triage (IR6-IR10)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Find incidents before users do, triage quickly.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 2 / IR6-IR10</span><span class="part-title">Detection & Triage</span><span class="part-desc">2 Critical · 2 High · 1 Medium</span></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR6</span><span class="rule-title">Automated Detection First</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Incidents MUST be detected via automated monitoring first (not user reports). User reports are a failure of monitoring.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR7</span><span class="rule-title">Runbook per Alert</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Every alert MUST have a clear runbook link documented in alert configuration.</p></div></div>
+      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">IR8</span><span class="rule-title">False Positive Review</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">False positives MUST be reviewed weekly. Adjust thresholds or silence noisy alerts.</p></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR9</span><span class="rule-title">Triage Within Response Time</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Incident triage (severity assignment, IC named) MUST happen within severity response time.</p></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR10</span><span class="rule-title">RCA Within 24 Hours (CLARIFIED)</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Service restoration is immediate priority. Resolution = users restored. Root Cause Analysis MUST be completed within 24 hours of resolution. Incident state remains "Monitoring" until service stable.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v1.1 CLARIFIED:</strong> Resolution = service restored. RCA = within 24h post-resolution.</div></div></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 3: RESPONSE ROLES -->
+<hr class="divider"/>
+<div class="section-runner" id="part3">§ Part 3 — Response Roles & Process (IR11-IR16)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Clear roles, blameless process, effective coordination.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 3 / IR11-IR16</span><span class="part-title">Response Roles & Process</span><span class="part-desc">4 Critical · 2 High</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR11</span><span class="rule-title">Incident Commander Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Incident Commander (IC) role MUST be assigned for SEV0 and SEV1 incidents.</p></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR12</span><span class="rule-title">IC Responsibilities</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">IC is responsible for: communication, timeline management, decision-making, resolution coordination, stakeholder updates.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR13</span><span class="rule-title">IC Does NOT Fix (Team Context)</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">In team contexts (2+ responders): IC is NOT responsible for debugging, fixing, or writing code. IC coordinates; others execute. See IR37 for solo founder exception.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR14</span><span class="rule-title">Scribe Required for SEV0/SEV1</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Scribe role MUST be assigned for SEV0 and SEV1 incidents (timeline documentation).</p></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR15</span><span class="rule-title">Timeline Recorded</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Timeline MUST be recorded: detection → triage → mitigation → resolution → recovery.</p></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR16</span><span class="rule-title">Blameless Culture</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Blameless culture: Incidents are system failures, not people failures. Post-mortems MUST NOT assign blame to individuals.</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 4: COMMUNICATION -->
+<hr class="divider"/>
+<div class="section-runner" id="part4">§ Part 4 — Communication (IR17-IR21)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Keep everyone informed, reduce confusion.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 4 / IR17-IR21</span><span class="part-title">Communication</span><span class="part-desc">4 High · 1 Medium</span></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR17</span><span class="rule-title">Internal Communication Channel</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Internal communication channel (Slack #incidents) MUST be used for SEV0 and SEV1 incidents.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR18</span><span class="rule-title">Status Page for SEV0</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Status page updates REQUIRED for SEV0 incidents within 15 minutes of declaration.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR19</span><span class="rule-title">Customer Communication Threshold</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Customer communication REQUIRED for SEV0 incidents or any incident affecting >10% of users.</p></div></div>
+      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">IR20</span><span class="rule-title">Communication Templates</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Communication template MUST be used for consistent incident updates.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR21</span><span class="rule-title">Update Frequency</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Updates MUST be posted every 30 minutes for SEV0, every 60 minutes for SEV1 (even if "no change, still investigating").</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 5: POST-MORTEMS -->
+<hr class="divider"/>
+<div class="section-runner" id="part5">§ Part 5 — Post-Mortems & Learning (IR22-IR27)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Learn from incidents, prevent recurrence.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 5 / IR22-IR27</span><span class="part-title">Post-Mortems & Learning</span><span class="part-desc">4 Critical · 2 High</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR22</span><span class="rule-title">Post-Mortem Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Post-mortem REQUIRED for all SEV0 and SEV1 incidents.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR23</span><span class="rule-title">Post-Mortem Timeline</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Post-mortem MUST be completed within 5 business days of incident resolution.</p></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR24</span><span class="rule-title">Post-Mortem Content (ENHANCED)</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Post-mortem MUST include: Timeline, Root Cause, Impact, What Went Well, What Went Wrong, Action Items, Lessons Learned.</p><div class="callout callout-info"><span class="callout-icon">📝</span><div class="callout-body"><strong>v1.1 ENHANCED:</strong> Added "What Went Well" section for blameless positive reinforcement.</div></div></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR25</span><span class="rule-title">Action Items with Owners</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Action items MUST have owners and due dates.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR26</span><span class="rule-title">Action Items Tracked to Completion</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Action items MUST be tracked to completion (no orphaned items).</p></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR27</span><span class="rule-title">Post-Mortem Shared with Team</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Post-mortem MUST be shared with entire team (blameless, learning-focused).</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 6: RUNBOOKS -->
+<hr class="divider"/>
+<div class="section-runner" id="part6">§ Part 6 — Runbooks & Playbooks (IR28-IR31)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Documented, tested procedures for common incidents.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 6 / IR28-IR31</span><span class="part-title">Runbooks & Playbooks</span><span class="part-desc">3 High · 1 Medium</span></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR28</span><span class="rule-title">Runbook per Critical Alert</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Runbook MUST exist for every critical alert (SEV0/SEV1 potential).</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR29</span><span class="rule-title">Runbook Content</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Runbook MUST include: alert meaning, severity, diagnostic steps, mitigation steps, escalation path.</p></div></div>
+      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">IR30</span><span class="rule-title">Runbook Testing Quarterly</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Runbooks MUST be tested quarterly (simulate alert, follow runbook, time it).</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR31</span><span class="rule-title">Runbook Version Control</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Runbooks MUST be version controlled (same repository as code).</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 7: ON-CALL ROTATION -->
+<hr class="divider"/>
+<div class="section-runner" id="part7">§ Part 7 — On-Call Rotation (IR32-IR36)</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">24/7 coverage, clear expectations, prevent burnout.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 7 / IR32-IR36</span><span class="part-title">On-Call Rotation</span><span class="part-desc">1 Critical · 3 High · 1 Medium</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR32</span><span class="rule-title">On-Call Rotation Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">On-call rotation MUST exist for SEV0 and SEV1 incidents.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR33</span><span class="rule-title">On-Call Boundaries (Solo Founder)</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">For solo founder: on-call boundaries MUST be documented. Response: within 30 minutes 9 AM-9 PM, within 2 hours 9 PM-9 AM.</p></div></div>
+      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">IR34</span><span class="rule-title">On-Call Handover</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">On-call handover MUST include: open incidents, recent changes, known issues, runbook updates.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR35</span><span class="rule-title">Post-On-Call Report</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Post-on-call report MUST be shared (alerts received, incidents handled, improvements needed) — 5 minutes max.</p></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR36</span><span class="rule-title">On-Call Compensation</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">On-call compensation: time-off-in-lieu (1 hour off for 1 hour on-call worked).</p></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- PART 8: SOLO OPS & FATIGUE (NEW v1.1) -->
+<hr class="divider"/>
+<div class="section-runner" id="part8">§ Part 8 — Solo Operations & Fatigue Prevention (IR37-IR40) 🆕</div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Adapt enterprise practices for solo founders/small teams. Prevent burnout.</p></div></aside>
+    <main class="col-main">
+      <div class="part-banner"><span class="part-num">PART 8 / IR37-IR40</span><span class="part-title">Solo Operations & Fatigue Prevention</span><span class="part-desc">2 Critical · 2 High</span></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR37</span><span class="rule-title">SEV0 Solo Protocol 🆕</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Solo Operator Exception: When a single person is both IC and Responder, IR13 is suspended. Solo operator MAY fix code directly, but MUST preserve timeline by vocalizing actions aloud for recording or typing actions into incident channel as they go.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v1.1 NEW:</strong> Solo founder may fix code directly but must log actions.</div></div></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR38</span><span class="rule-title">Minimum Viable Coverage 🆕</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">On-call rotation MUST have either: (a) minimum 2 engineers in rotation, OR (b) documented solo boundaries with customer-facing SLA. "Single point of failure" is acceptable only with documented SLA boundaries.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v1.1 NEW:</strong> Ensures solo coverage is intentional, not accidental.</div></div></div></div>
+      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">IR39</span><span class="rule-title">Incident Fatigue Monitoring 🆕</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Fatigue Threshold: >3 pages in 24 hours, OR >10 pages in 7 days, triggers an automatic review. Review outcome MUST be one of: adjust thresholds, fix underlying issue, add secondary on-call, or documented acceptance of alert volume.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v1.1 NEW:</strong> Prevents burnout and alert fatigue.</div></div></div></div>
+      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">IR40</span><span class="rule-title">Tooling Over Memory 🆕</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Compliance with this constitution SHOULD be automated via tooling, not human memory. Humans panic during incidents. Tooling (PagerDuty, Slack workflows, status page integrations) enforces rules automatically.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v1.1 NEW:</strong> Automate compliance, don't rely on memory under stress.</div></div></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- FORBIDDEN PATTERNS -->
+<hr class="divider"/>
+<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (IRF01-IRF18)</div>
+<div class="part-section" style="padding: 20px 24px;">
+  <div class="callout callout-critical" style="margin-bottom:16px;"><span class="callout-icon">■</span><div class="callout-body"><strong>18 patterns permanently banned.</strong> Each one has caused real incident response failures.</div></div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+    <div><table class="fp-table"><thead><tr><th>Code</th><th>Pattern</th><th>Rule</th></tr></thead><tbody>
+      <tr><td class="fp-code">IRF01</td><td>User reports incident first</td><td class="fp-ref">IR6</td></tr>
+      <tr><td class="fp-code">IRF02</td><td>Alert with no runbook</td><td class="fp-ref">IR7</td></tr>
+      <tr><td class="fp-code">IRF03</td><td>Same false positive for weeks</td><td class="fp-ref">IR8</td></tr>
+      <tr><td class="fp-code">IRF04</td><td>No response to SEV0 for >5 min</td><td class="fp-ref">IR1</td></tr>
+      <tr><td class="fp-code">IRF05</td><td>No IC for SEV0/SEV1</td><td class="fp-ref">IR11</td></tr>
+      <tr><td class="fp-code">IRF06</td><td>IC starts debugging (team)</td><td class="fp-ref">IR13</td></tr>
+      <tr><td class="fp-code">IRF07</td><td>Blaming individuals in post-mortem</td><td class="fp-ref">IR16</td></tr>
+      <tr><td class="fp-code">IRF08</td><td>No status page update for SEV0</td><td class="fp-ref">IR18</td></tr>
+      <tr><td class="fp-code">IRF09</td><td>Incident discussed in DMs</td><td class="fp-ref">IR17</td></tr>
+    </tbody></table></div>
+    <div><table class="fp-table"><thead><tr><th>Code</th><th>Pattern</th><th>Rule</th></tr></thead><tbody>
+      <tr><td class="fp-code">IRF10</td><td>2+ hours with no update during SEV0</td><td class="fp-ref">IR21</td></tr>
+      <tr><td class="fp-code">IRF11</td><td>No post-mortem for SEV0/SEV1</td><td class="fp-ref">IR22</td></tr>
+      <tr><td class="fp-code">IRF12</td><td>Action item with no owner/due date</td><td class="fp-ref">IR25</td></tr>
+      <tr><td class="fp-code">IRF13</td><td>Orphaned action items (>30 days)</td><td class="fp-ref">IR26</td></tr>
+      <tr><td class="fp-code">IRF14</td><td>Post-mortem hidden from team</td><td class="fp-ref">IR27</td></tr>
+      <tr><td class="fp-code">IRF15</td><td>Runbook not tested for >6 months</td><td class="fp-ref">IR30</td></tr>
+      <tr><td class="fp-code">IRF16</td><td>Runbook says "fix it" with no steps</td><td class="fp-ref">IR29</td></tr>
+      <tr><td class="fp-code">IRF17</td><td>>3 pages in 24h with no follow-up</td><td class="fp-ref">IR39</td></tr>
+      <tr><td class="fp-code">IRF18</td><td>Solo founder with no documented boundaries</td><td class="fp-ref">IR33, IR38</td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- POST-MORTEM TEMPLATE -->
+<hr class="divider-double"/>
+<div class="section-runner">§ Post-Mortem Template (IR24 — Enhanced v1.1)</div>
+<div class="part-section" style="padding: 20px 24px;">
+  <div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">post-mortem-template.md — v1.1</div></div><pre># Post-Mortem: [INCIDENT NAME] — SEV[0/1]
+
+| Field | Value |
+|-------|-------|
+| Date | YYYY-MM-DD |
+| Duration | X hours Y minutes |
+| Severity | SEV0 / SEV1 |
+| IC | @name |
+| Scribe | @name |
+
+## 📋 Executive Summary
+[2-3 sentence summary of what happened and impact]
+
+## ✅ What Went Well (v1.1 ADDITION)
+- [Positive observation 1 — e.g., "Alert fired within 30 seconds"]
+- [Positive observation 2 — e.g., "Rollback completed in 2 minutes"]
+
+## ❌ What Went Wrong
+- [Gap 1 — e.g., "Runbook was outdated"]
+
+## 🔍 Root Cause Analysis
+[Detailed technical explanation — system failure, not person failure]
+
+## 📝 Action Items
+| # | Action | Owner | Due Date |
+|---|--------|-------|----------|
+| 1 | [Action] | @name | YYYY-MM-DD |
+
+## 💡 Lessons Learned
+[Broader insights applicable beyond this specific incident]</pre></div>
+</div>
+
+<!-- FINAL LOCK STATEMENT -->
+<div class="lock-section">
+  <div class="lock-banner">
+    <div class="lock-title-main">Incident Response Constitution v1.1</div>
+    <div class="lock-sub">Final Lock — Effective 2026-04-08 — Next Review 2026-07-07</div>
+    <p style="font-family:var(--serif);font-style:italic;font-size:16px;color:rgba(238,242,245,.7);">"Incidents are not failures — they are opportunities to learn."<br>"Tooling over memory. Humans panic. Automate compliance."</p>
+    <div class="lock-stats">
+      <div class="ls-item"><span class="ls-num">40</span><span class="ls-label">Total Rules</span></div>
+      <div class="ls-item"><span class="ls-num">16</span><span class="ls-label">Critical</span></div>
+      <div class="ls-item"><span class="ls-num">18</span><span class="ls-label">High</span></div>
+      <div class="ls-item"><span class="ls-num">6</span><span class="ls-label">Medium</span></div>
+      <div class="ls-item"><span class="ls-num">18</span><span class="ls-label">Forbidden</span></div>
+      <div class="ls-item"><span class="ls-num">279</span><span class="ls-label">System Total</span></div>
+    </div>
+  </div>
+
+  <div class="lock-body">
+    <div class="lock-col">
+      <div class="lock-col-title">Parts Breakdown (v1.1)</div>
+      <div class="parts-breakdown">
+        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">Severity Levels (IR1-IR5)</span><span class="pb-rules">5 rules</span><span class="pb-crit">2 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">Detection & Triage (IR6-IR10)</span><span class="pb-rules">5 rules</span><span class="pb-crit">2 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">Response Roles (IR11-IR16)</span><span class="pb-rules">6 rules</span><span class="pb-crit">4 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">Communication (IR17-IR21)</span><span class="pb-rules">5 rules</span><span class="pb-crit">0 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Post-Mortems (IR22-IR27)</span><span class="pb-rules">6 rules</span><span class="pb-crit">4 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P6</span><span class="pb-name">Runbooks (IR28-IR31)</span><span class="pb-rules">4 rules</span><span class="pb-crit">0 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P7</span><span class="pb-name">On-Call (IR32-IR36)</span><span class="pb-rules">5 rules</span><span class="pb-crit">1 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P8</span><span class="pb-name">Solo Ops & Fatigue (IR37-IR40) 🆕</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
+      </div>
+    </div>
+    <div class="lock-col">
+      <div class="lock-col-title">v1.1 Changes Summary</div>
+      <div class="parts-breakdown">
+        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">IR10 CLARIFIED: Resolution = service restored; RCA within 24h</span></div>
+        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">IR24 ENHANCED: Added "What Went Well" section</span></div>
+        <div class="pb-item"><span class="pb-part">🆕</span><span class="pb-name">IR37: SEV0 Solo Protocol — IC may fix but must log actions</span></div>
+        <div class="pb-item"><span class="pb-part">🆕</span><span class="pb-name">IR38: Minimum Viable Coverage — 2+ engineers OR documented boundaries</span></div>
+        <div class="pb-item"><span class="pb-part">🆕</span><span class="pb-name">IR39: Incident Fatigue Monitoring — >3 pages/24h triggers review</span></div>
+        <div class="pb-item"><span class="pb-part">🆕</span><span class="pb-name">IR40: Tooling Over Memory — Automate compliance</span></div>
+        <div class="pb-item"><span class="pb-part">🆕</span><span class="pb-name">IRF15-IRF18: New forbidden patterns</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lock-final">
+    <div class="lock-final-left">INCIDENT RESPONSE v1.1 — LOCKED 2026-04-08</div>
+    <div class="lock-final-motto">"Tooling over memory. Humans panic. Automate compliance."</div>
+    <div class="lock-final-right">Part of 279-rule total system</div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

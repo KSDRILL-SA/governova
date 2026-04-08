@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Team & Process Constitution v1.1 — LOCKED</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:      #0e0e0e;
+  --paper:    #f0ede6;
+  --paper2:   #e8e4db;
+  --paper3:   #dfd9ce;
+  --rule:     #c5bcab;
+  --gold:     #b8860b;
+  --gold2:    #d4a017;
+  --amber:    #e8a020;
+  --red:      #9b1c1c;
+  --orange:   #c05a00;
+  --green:    #1a5c2e;
+  --blue:     #1a3a6e;
+  --blue2:    #2a5a9e;
+  --purple:   #5a3a6e;
+  --muted:    #5a5040;
+  --mono:     'IBM Plex Mono', monospace;
+  --serif:    'Playfair Display', serif;
+  --sans:     'IBM Plex Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ── GRAIN TEXTURE ── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: .5;
+}
+
+/* ── GRID LINES ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0; opacity: .1;
+}
+
+.page { max-width: 1200px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+/* ══════════════════════════════════════════
+   MASTHEAD
+══════════════════════════════════════════ */
+.masthead {
+  border-top: 6px solid var(--purple);
+  border-bottom: 3px double var(--purple);
+  margin-bottom: 0;
+}
+
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .08em;
+}
+
+.masthead-main {
+  text-align: center;
+  padding: 40px 0 32px;
+}
+
+.masthead-eyebrow {
+  background: var(--purple);
+  color: var(--paper);
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .2em;
+  padding: 4px 16px;
+  margin-bottom: 16px;
+}
+
+.masthead-title {
+  font-family: var(--serif);
+  font-size: clamp(42px, 6vw, 80px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--purple);
+  margin-bottom: 8px;
+}
+
+.masthead-tagline {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+.masthead-meta {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.masthead-meta strong { color: var(--purple); }
+
+.masthead-bottom {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border-top: 1px solid var(--rule);
+  background: var(--paper2);
+}
+
+.stat-box {
+  padding: 16px 20px;
+  border-right: 1px solid var(--rule);
+  text-align: center;
+}
+.stat-box:last-child { border-right: none; }
+
+.stat-num {
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--purple);
+  display: block;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ══════════════════════════════════════════
+   SECTION RUNNER
+══════════════════════════════════════════ */
+.section-runner {
+  background: var(--purple);
+  color: var(--paper);
+  padding: 6px 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════
+   PART NAV
+══════════════════════════════════════════ */
+.part-nav {
+  display: flex;
+  border-top: 2px solid var(--purple);
+  border-bottom: 2px solid var(--purple);
+  background: var(--paper2);
+  overflow-x: auto;
+}
+
+.pn-item {
+  flex: 1;
+  min-width: 110px;
+  padding: 12px 16px;
+  border-right: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--muted);
+  transition: all .15s;
+}
+.pn-item:last-child { border-right: none; }
+.pn-item:hover { background: var(--purple); color: var(--paper); }
+.pn-num  { font-family: var(--mono); font-size: 9px; color: var(--gold); letter-spacing: .1em; display: block; }
+.pn-name { font-family: var(--serif); font-size: 11px; font-weight: 700; line-height: 1.3; display: block; margin-top: 2px; }
+.pn-count { font-family: var(--mono); font-size: 8px; color: var(--muted); display: block; margin-top: 1px; }
+
+/* ══════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════ */
+.col-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+  border-left: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+}
+
+.col-sidebar {
+  border-right: 1px solid var(--rule);
+  padding: 24px 20px;
+  background: var(--paper2);
+}
+
+.col-main {
+  padding: 28px 32px;
+}
+
+.part-section {
+  border-left: 1px solid var(--rule);
+  border-right: 1px var(--rule);
+}
+
+/* ══════════════════════════════════════════
+   PART BANNER
+══════════════════════════════════════════ */
+.part-banner {
+  background: var(--purple);
+  color: var(--paper);
+  padding: 20px 28px;
+  margin: -28px -32px 28px;
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.part-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold2);
+  flex-shrink: 0;
+}
+
+.part-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.1;
+  flex: 1;
+}
+
+.part-desc {
+  font-size: 11px;
+  color: rgba(240,237,230,.6);
+  text-align: right;
+  font-style: italic;
+}
+
+/* ══════════════════════════════════════════
+   RULE CARD
+══════════════════════════════════════════ */
+.rule-card {
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--purple);
+  background: #fff;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.rule-card.critical { border-left-color: var(--red); }
+.rule-card.high     { border-left-color: var(--orange); }
+.rule-card.medium   { border-left-color: var(--gold); }
+
+.rule-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper2);
+}
+
+.rule-num-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.rule-title {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 700;
+  flex: 1;
+  line-height: 1.3;
+}
+
+.sev-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.sev-critical { background: var(--red);    color: #fff; }
+.sev-high     { background: var(--orange); color: #fff; }
+.sev-medium   { background: var(--gold);   color: #fff; }
+
+.rule-card-body {
+  padding: 14px 18px;
+}
+
+.rule-statement {
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.rule-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.rule-meta-item {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  padding: 7px 10px;
+  font-size: 11.5px;
+}
+
+.rule-meta-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.rule-meta-val { font-size: 12px; line-height: 1.4; }
+
+/* ══════════════════════════════════════════
+   TABLES
+══════════════════════════════════════════ */
+.const-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.const-table thead tr { background: var(--purple); color: var(--paper); }
+.const-table th {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: 8px 12px;
+  text-align: left;
+}
+.const-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.const-table tbody tr:nth-child(even) { background: var(--paper2); }
+
+/* ══════════════════════════════════════════
+   FORBIDDEN TABLE
+══════════════════════════════════════════ */
+.fp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  border: 2px solid var(--purple);
+}
+.fp-table thead tr { background: var(--red); }
+.fp-table th {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  color: #fff;
+  text-align: left;
+}
+.fp-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.fp-table tbody tr:hover { background: #fef2f2; }
+.fp-code { font-family: var(--mono); font-size: 10px; color: var(--red); font-weight: 700; }
+.fp-ref  { font-family: var(--mono); font-size: 10px; color: var(--purple); }
+
+/* ══════════════════════════════════════════
+   CHECKLIST
+══════════════════════════════════════════ */
+.checklist-section {
+  border: 1px solid var(--purple);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.cl-header {
+  background: var(--purple);
+  color: var(--paper);
+  padding: 10px 16px;
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cl-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  background: var(--gold2);
+  color: var(--ink);
+  padding: 2px 8px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.cl-group { border-bottom: 1px solid var(--rule); }
+.cl-group-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: var(--muted);
+  background: var(--paper2);
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.cl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 16px;
+  border-bottom: 1px dotted var(--rule);
+  font-size: 12px;
+}
+.cl-item:last-child { border-bottom: none; }
+.cl-box {
+  width: 14px; height: 14px;
+  border: 1.5px solid var(--purple);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.cl-ref { font-family: var(--mono); font-size: 10px; color: var(--gold); margin-left: auto; flex-shrink: 0; }
+
+/* ══════════════════════════════════════════
+   CALLOUT
+══════════════════════════════════════════ */
+.callout {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 12.5px;
+  border-left: 4px solid;
+  background: var(--paper2);
+}
+.callout-critical { border-color: var(--red); }
+.callout-warn     { border-color: var(--orange); }
+.callout-info     { border-color: var(--gold); }
+.callout-good     { border-color: var(--green); }
+.callout-icon { font-family: var(--mono); font-size: 12px; flex-shrink: 0; font-weight: 700; }
+.callout-body { line-height: 1.6; }
+.callout-body strong { color: var(--ink); }
+
+/* ══════════════════════════════════════════
+   STRUCTURE MAP
+══════════════════════════════════════════ */
+.structure-map {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 2px solid var(--purple);
+  margin-bottom: 20px;
+}
+.sm-col {
+  border-right: 1px solid var(--rule);
+  overflow: hidden;
+}
+.sm-col:last-child { border-right: none; }
+.sm-head {
+  background: var(--purple);
+  color: var(--paper);
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.sm-num { color: var(--gold2); margin-right: 6px; }
+.sm-items { padding: 10px 14px; }
+.sm-item {
+  font-size: 11px;
+  padding: 3px 0;
+  border-bottom: 1px dotted var(--rule);
+  color: var(--muted);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.sm-item::before { content: '→'; color: var(--gold); font-family: var(--mono); font-size: 9px; flex-shrink: 0; }
+
+/* ══════════════════════════════════════════
+   WARNING SIGNS BOX
+══════════════════════════════════════════ */
+.warning-box {
+  border: 2px solid var(--orange);
+  background: #fffbf0;
+  padding: 16px 20px;
+  margin: 16px 0;
+}
+.warning-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.warning-list { list-style: none; }
+.warning-list li {
+  padding: 4px 0;
+  border-bottom: 1px dotted var(--rule);
+  font-size: 12px;
+  color: var(--muted);
+}
+.warning-list li::before { content: '⚠️ '; font-size: 11px; }
+
+/* ══════════════════════════════════════════
+   LOCK FOOTER
+══════════════════════════════════════════ */
+.lock-section {
+  border: 4px double var(--purple);
+  margin-top: 32px;
+}
+
+.lock-banner {
+  background: var(--purple);
+  color: var(--paper);
+  text-align: center;
+  padding: 32px 24px;
+  border-bottom: 4px double rgba(240,237,230,.25);
+}
+
+.lock-title-main {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 52px);
+  font-weight: 900;
+  letter-spacing: -.02em;
+  margin-bottom: 8px;
+}
+
+.lock-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gold2);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.lock-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0;
+  border-top: 1px solid rgba(255,255,255,.15);
+  margin-top: 24px;
+}
+.ls-item {
+  padding: 14px;
+  border-right: 1px solid rgba(255,255,255,.1);
+  text-align: center;
+}
+.ls-item:last-child { border-right: none; }
+.ls-num {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--gold2);
+  display: block;
+}
+.ls-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: rgba(240,237,230,.5);
+  display: block;
+  margin-top: 2px;
+}
+
+.lock-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.lock-col {
+  padding: 28px 32px;
+  border-right: 2px solid var(--purple);
+}
+.lock-col:last-child { border-right: none; }
+.lock-col-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .2em;
+  color: var(--muted);
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 6px;
+}
+
+.parts-breakdown { display: flex; flex-direction: column; gap: 6px; }
+.pb-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  padding: 6px 10px;
+  border: 1px solid var(--rule);
+  background: var(--paper2);
+}
+.pb-part { font-family: var(--mono); font-size: 9px; color: var(--gold); font-weight: 700; min-width: 50px; }
+.pb-name { flex: 1; font-size: 10.5px; }
+.pb-rules { font-family: var(--mono); font-size: 9px; color: var(--muted); }
+.pb-crit { background: var(--red); color: #fff; padding: 1px 5px; font-family: var(--mono); font-size: 8px; border-radius: 2px; }
+
+.lock-final {
+  border-top: 2px solid var(--purple);
+  background: var(--purple);
+  color: var(--paper);
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.lock-final-left { font-family: var(--mono); font-size: 10px; color: var(--gold2); letter-spacing: .08em; }
+.lock-final-motto { font-family: var(--serif); font-size: 18px; font-style: italic; }
+.lock-final-right { font-family: var(--mono); font-size: 9px; color: rgba(240,237,230,.5); text-align: right; }
+
+/* ══════════════════════════════════════════
+   UTILITY
+══════════════════════════════════════════ */
+.divider { border: none; border-top: 2px solid var(--purple); margin: 0; }
+.divider-double { border: none; border-top: 3px double var(--purple); margin: 0; }
+code {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: #e8e0d0;
+  border: 1px solid var(--rule);
+  padding: 1px 4px;
+  color: var(--red);
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 860px) {
+  .col-layout { grid-template-columns: 1fr; }
+  .col-sidebar { border-right: none; border-bottom: 1px solid var(--rule); }
+  .lock-body { grid-template-columns: 1fr; }
+  .lock-col { border-right: none; border-bottom: 2px solid var(--purple); }
+  .masthead-bottom { grid-template-columns: repeat(3, 1fr); }
+  .structure-map { grid-template-columns: 1fr 1fr; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page > * { animation: fadeIn .35s ease both; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══════════════════════════════════════════
+     MASTHEAD
+══════════════════════════════════════════ -->
+<header class="masthead">
+  <div class="masthead-top">
+    <span>LOCKED: 2026-04-08</span>
+    <span>DOCUMENT CLASS: CONSTITUTION · REVISION: v1.1</span>
+    <span>NEXT REVIEW: 2026-07-07</span>
+  </div>
+  <div class="masthead-main">
+    <div class="masthead-eyebrow">TEAM &amp; PROCESS CONSTITUTION</div>
+    <h1 class="masthead-title">v1.1</h1>
+    <p class="masthead-tagline">"Process enables people. People do not serve process."</p>
+    <div class="masthead-meta">
+      <span><strong>24</strong> TOTAL RULES</span>
+      <span><strong>1</strong> CRITICAL</span>
+      <span><strong>8</strong> HIGH PRIORITY</span>
+      <span><strong>17</strong> FORBIDDEN PATTERNS</span>
+      <span><strong>355</strong> SYSTEM TOTAL</span>
+    </div>
+  </div>
+  <div class="masthead-bottom">
+    <div class="stat-box"><span class="stat-num">24</span><span class="stat-label">Total Rules</span></div>
+    <div class="stat-box"><span class="stat-num">1</span><span class="stat-label">Critical</span></div>
+    <div class="stat-box"><span class="stat-num">8</span><span class="stat-label">High</span></div>
+    <div class="stat-box"><span class="stat-num">15</span><span class="stat-label">Medium</span></div>
+    <div class="stat-box"><span class="stat-num">355</span><span class="stat-label">System Total</span></div>
+  </div>
+</header>
+
+<!-- PART NAV -->
+<nav class="part-nav">
+  <a href="#preamble" class="pn-item"><span class="pn-num">PREAMBLE</span><span class="pn-name">How to Use</span><span class="pn-count">TP00</span></a>
+  <a href="#part1" class="pn-item"><span class="pn-num">PART 1</span><span class="pn-name">Team Roles</span><span class="pn-count">TP1-TP4</span></a>
+  <a href="#part2" class="pn-item"><span class="pn-num">PART 2</span><span class="pn-name">Meetings</span><span class="pn-count">TP5-TP9</span></a>
+  <a href="#part3" class="pn-item"><span class="pn-num">PART 3</span><span class="pn-name">Communication</span><span class="pn-count">TP10-TP13</span></a>
+  <a href="#part4" class="pn-item"><span class="pn-num">PART 4</span><span class="pn-name">Decisions</span><span class="pn-count">TP14-TP17</span></a>
+  <a href="#part5" class="pn-item"><span class="pn-num">PART 5</span><span class="pn-name">Onboarding</span><span class="pn-count">TP18-TP21</span></a>
+  <a href="#part6" class="pn-item"><span class="pn-num">PART 6</span><span class="pn-name">Improvement</span><span class="pn-count">TP22-TP24</span></a>
+  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden</span><span class="pn-count">FP01-FP17</span></a>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     EXECUTIVE SUMMARY
+══════════════════════════════════════════ -->
+<div class="section-runner">§ Executive Summary — Structure Map</div>
+<div class="part-section" style="padding: 28px 28px 20px;">
+  <div class="structure-map">
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">PREAMBLE</span> How to Use</div>
+      <div class="sm-items">
+        <div class="sm-item">TP00 — The 80% Rule (CRITICAL)</div>
+        <div class="sm-item">Case law approach — consult, don't memorize</div>
+        <div class="sm-item">Living document, locked for quarters</div>
+        <div class="sm-item">Amendment log for changes</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">PART 1</span> Team Roles</div>
+      <div class="sm-items">
+        <div class="sm-item">Roles documented (TP1)</div>
+        <div class="sm-item">Constitution owners (TP2)</div>
+        <div class="sm-item">Decision authority (TP3)</div>
+        <div class="sm-item">Weekly 1:1s (TP4) — team only</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">PART 2</span> Meetings</div>
+      <div class="sm-items">
+        <div class="sm-item">Daily standup (TP5)</div>
+        <div class="sm-item">Sprint planning (TP6)</div>
+        <div class="sm-item">Retrospective (TP7)</div>
+        <div class="sm-item">Meeting discipline (TP9)</div>
+        <div class="sm-item">Calendar bloat awareness (TP9a)</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">PART 3</span> Communication</div>
+      <div class="sm-items">
+        <div class="sm-item">Async first (TP10)</div>
+        <div class="sm-item">Urgent = phone (TP11)</div>
+        <div class="sm-item">Working hours (TP12)</div>
+        <div class="sm-item">Public channels (TP13)</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">PART 4</span> Decisions</div>
+      <div class="sm-items">
+        <div class="sm-item">ADRs documented (TP14)</div>
+        <div class="sm-item">Disagree &amp; commit (TP15)</div>
+        <div class="sm-item">Size-based authority (TP16)</div>
+        <div class="sm-item">Reversible/irreversible (TP17)</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">PART 5</span> Onboarding</div>
+      <div class="sm-items">
+        <div class="sm-item">Onboarding checklist (TP18)</div>
+        <div class="sm-item">Docs = DOD (TP19)</div>
+        <div class="sm-item">Knowledge sharing (TP20)</div>
+        <div class="sm-item">Feature runbooks (TP21)</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">PART 6</span> Improvement</div>
+      <div class="sm-items">
+        <div class="sm-item">Retro action owners (TP22)</div>
+        <div class="sm-item">One experiment/sprint (TP23)</div>
+        <div class="sm-item">Quarterly health check (TP24)</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">ANNEX</span> Forbidden</div>
+      <div class="sm-items">
+        <div class="sm-item">17 forbidden patterns</div>
+        <div class="sm-item">Process weaponization banned</div>
+        <div class="sm-item">Loud voice override banned</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PREAMBLE — HOW TO USE
+══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="preamble">§ Preamble — How to Use This Constitution</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div>
+        <p style="font-size:12px;color:var(--muted);line-height:1.6">Prevent the constitution from becoming a bureaucratic burden. This document exists to help you, not to be a weapon used against you.</p>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Consultation Guide</div>
+        <div style="font-size:11px;line-height:1.8;color:var(--muted)">
+          <strong>Problem → Section</strong><br/>
+          New hire lost → Part 5<br/>
+          Meeting overload → Part 2<br/>
+          Decision paralysis → Part 4<br/>
+          Team tension → TP15 + TP24<br/>
+          Burnout signs → TP24
+        </div>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner">
+        <span class="part-num">PREAMBLE / TP00</span>
+        <span class="part-title">How to Use This Constitution</span>
+        <span class="part-desc">1 CRITICAL Rule</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head">
+          <span class="rule-num-badge">TP00</span>
+          <span class="rule-title">The 80% Rule — Don't Let Process Become Tyranny</span>
+          <span class="sev-badge sev-critical">CRITICAL</span>
+        </div>
+        <div class="rule-card-body">
+          <p class="rule-statement">This constitution is aspirational, not absolute. Compliance is expected 80% of the time. The remaining 20% is reserved for emergencies, deep flow states, shipping deadlines, or explicit team agreement to temporarily suspend a rule. If you are compliant 100% of the time, you are over-optimizing process and under-optimizing product.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">Enforcement</span><div class="rule-meta-val">Quarterly review — if compliance exceeds 95%, audit for process burden</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Violation Example</span><div class="rule-meta-val">Team spends more time on process than building; stress over missing a retro</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Compliance Example</span><div class="rule-meta-val">"We skipped retro this week to ship auth. We'll do a double-retro next week."</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Industry Source</span><div class="rule-meta-val">Agile Manifesto ("Individuals and interactions over processes and tools")</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info" style="margin-top:8px;">
+        <span class="callout-icon">📖</span>
+        <div class="callout-body"><strong>Treat this as case law, not a rulebook.</strong> You don't read the entire legal library before starting a business. You consult it when you have a specific problem. Don't memorize this document — learn where to look when you need guidance.</div>
+      </div>
+
+      <div class="warning-box">
+        <div class="warning-title">⚠️ WARNING SIGNS YOU'RE OVER-APPLYING THIS CONSTITUTION</div>
+        <ul class="warning-list">
+          <li>Team groans when "standup time" is mentioned ("Standup Theater")</li>
+          <li>Retro action items are copied/pasted week after week without progress</li>
+          <li>People spend more time updating status than doing work</li>
+          <li>The constitution is cited to win arguments rather than solve problems</li>
+          <li>Compliance is tracked as a metric itself</li>
+        </ul>
+        <div class="callout-icon" style="margin-top:12px;">✅ IF YOU SEE THESE SIGNS: Invoke TP00 and reduce process immediately.</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PART 1 — TEAM ROLES
+══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="part1">§ Part 1 — Team Roles &amp; Responsibilities (TP1–TP4)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div>
+        <p style="font-size:12px;color:var(--muted);line-height:1.6">Clear ownership, accountability, and decision authority. Everyone knows who does what.</p>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner">
+        <span class="part-num">PART 1 / TP1–TP4</span>
+        <span class="part-title">Team Roles &amp; Responsibilities</span>
+        <span class="part-desc">2 High · 2 Medium</span>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TP1</span><span class="rule-title">Roles Documented</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <p class="rule-statement">Roles MUST be clearly defined for each team member. For solo founders: document your own responsibilities (I am responsible for all technical, product, and operational decisions).</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">Enforcement</span><div class="rule-meta-val">Onboarding + annual review</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Violation</span><div class="rule-meta-val">Team of 3, no one knows who owns database decisions</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Compliance</span><div class="rule-meta-val"><code>docs/team/roles.md</code> with clear assignments</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TP2</span><span class="rule-title">Constitution Owners</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <p class="rule-statement">Each constitution MUST have a designated owner (person accountable for enforcement, review, and updates). For solo founder: you own all. For team of 2+: assign owners.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">Enforcement</span><div class="rule-meta-val">Quarterly review + ownership document</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Violation</span><div class="rule-meta-val">Backend constitution outdated for 6 months, no owner</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP3</span><span class="rule-title">Decision Authority Documented</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body">
+          <p class="rule-statement">Decision authority MUST be documented (who decides what: technical, product, operational). One page maximum.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">Compliance</span><div class="rule-meta-val">"Tech decisions → CTO/Lead. Product decisions → Product Owner. Operations → Founder."</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP4</span><span class="rule-title">Weekly 1:1 Meetings (Team Only)</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body">
+          <p class="rule-statement">Weekly 1:1 meetings between lead and each team member REQUIRED (30 minutes). Not applicable for solo founder.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">Enforcement</span><div class="rule-meta-val">Calendar audit + team health check</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Violation</span><div class="rule-meta-val">No 1:1s for 3 months</div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PART 2 — MEETING CADENCE
+══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="part2">§ Part 2 — Meeting Cadence &amp; Structure (TP5–TP9)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Meeting Timeboxes</div>
+        <table class="const-table" style="font-size:10px;">
+          <tr><td>Daily Standup</td><td>15 min (team) / 5 min (solo)</td></tr>
+          <tr><td>Sprint Planning</td><td>45-60 min / 20-30 min</td></tr>
+          <tr><td>Retrospective</td><td>30 min / 15 min</td></tr>
+          <tr><td>Monthly All-Hands</td><td>30 min (team only)</td></tr>
+        </table>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner">
+        <span class="part-num">PART 2 / TP5–TP9</span>
+        <span class="part-title">Meeting Cadence &amp; Structure</span>
+        <span class="part-desc">2 High · 3 Medium</span>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP5</span><span class="rule-title">Daily Standup</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body">
+          <p class="rule-statement">Daily standup REQUIRED. Team: 15 minutes (what did you do yesterday, what today, blockers). Solo founder: 5 minutes personal (written or recorded).</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TP6</span><span class="rule-title">Sprint Planning</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <p class="rule-statement">Weekly sprint planning REQUIRED. Team: 45-60 minutes (prioritize backlog, assign tasks). Solo founder: 20-30 minutes (review priorities, plan week). If backlog is already groomed and clear, 30 minutes is sufficient.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TP7</span><span class="rule-title">Sprint Retrospective</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <p class="rule-statement">Weekly sprint retrospective REQUIRED. Team: 30 minutes (what went well, what went wrong, what to improve). Solo founder: 15 minutes (personal retro). May be skipped during launch/crunch weeks with explicit team agreement (invoke TP00).</p>
+          <div class="callout callout-info" style="margin-top:8px;">
+            <span class="callout-icon">📝</span>
+            <div class="callout-body"><strong>Retro Format:</strong> What went well? (5 min) → What went wrong? (10 min) → What will we improve? (10 min) → Action items (5 min)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP9</span><span class="rule-title">Meeting Discipline</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body">
+          <p class="rule-statement">Meetings MUST start on time, end on time, have clear agenda shared 24 hours in advance.</p>
+        </div>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP9a</span><span class="rule-title">Calendar Bloat Awareness</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body">
+          <p class="rule-statement">Be aware of total meeting load. For a 5-person team: Sprint Planning (60 min) + Retro (30 min) + Dailies (75 min/week) = ~3+ hours/week per person in ceremony. If the team expresses meeting fatigue, reduce timeboxes immediately.</p>
+          <div class="warning-box" style="margin-top:8px; padding:10px;">
+            <div class="warning-title">⚠️ Warning Sign: "Standup Theater"</div>
+            <div>People going through motions, no real value. Cancel meetings that don't have clear agenda/need; use async updates when possible.</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PART 3 — COMMUNICATION
+══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="part3">§ Part 3 — Communication Guidelines (TP10–TP13)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Communication Channels</div>
+        <ul class="warning-list" style="list-style:none; padding-left:0;">
+          <li style="border-bottom:1px dotted var(--rule); padding:4px 0;">📧 Email → Async, non-urgent</li>
+          <li style="border-bottom:1px dotted var(--rule); padding:4px 0;">💬 Slack/Discord → Day-to-day</li>
+          <li style="border-bottom:1px dotted var(--rule); padding:4px 0;">📞 Phone → Urgent only</li>
+          <li style="border-bottom:1px dotted var(--rule); padding:4px 0;">📝 GitHub/Linear → Task discussion</li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner">
+        <span class="part-num">PART 3 / TP10–TP13</span>
+        <span class="part-title">Communication Guidelines</span>
+        <span class="part-desc">1 High · 3 Medium</span>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP10</span><span class="rule-title">Async First</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Async communication preferred (Slack, GitHub, Linear) over sync for non-urgent matters.</p></div>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP11</span><span class="rule-title">Urgent Communication</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Urgent matters: phone call or immediate Slack @here (not email).</p></div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TP12</span><span class="rule-title">Working Hours</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Daily communication window: 9 AM - 5 PM local time. No expectation of response outside these hours. Prevents burnout.</p></div>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP13</span><span class="rule-title">Public Status Updates</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Status updates MUST be posted in public channels (not DMs) for visibility. For solo founder: maintain public roadmap or changelog.</p></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PART 4 — DECISION-MAKING
+══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="part4">§ Part 4 — Decision-Making Framework (TP14–TP17)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Decision Types</div>
+        <div style="font-size:11px;line-height:1.8;color:var(--muted)">
+          <strong>Reversible (Fast):</strong> Deploy feature flag, change copy, update style<br/>
+          <strong>Irreversible (24h review):</strong> Choose database, change auth provider, remove API
+        </div>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner">
+        <span class="part-num">PART 4 / TP14–TP17</span>
+        <span class="part-title">Decision-Making Framework</span>
+        <span class="part-desc">2 High · 2 Medium</span>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TP14</span><span class="rule-title">Decisions Documented</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Decisions MUST be documented (ADR for technical, PRD for product). For solo founder: lightweight decision log.</p></div>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP15</span><span class="rule-title">Disagree and Commit (with Safety Valve)</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body">
+          <p class="rule-statement">Disagreements follow "disagree and commit" — after decision made, everyone commits (no sabotage, no "I told you so"). PREREQUISITE: Psychological safety must exist for genuine disagreement. If the Health Check (TP24) shows low psychological safety scores, pause and fix team dynamics before enforcing.</p>
+          <div class="callout callout-critical" style="margin-top:8px;">
+            <span class="callout-icon">🛡️</span>
+            <div class="callout-body"><strong>Safety Valve:</strong> If quiet voices are never heard or decisions are dominated by loud voices, pause TP15 enforcement and run an anonymous survey on decision-making comfort first.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP16</span><span class="rule-title">Decision Authority by Size</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Small decisions (1 hour or less impact) = individual. Large decisions (significant impact) = team discussion. For solo founder: all decisions are individual.</p></div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TP17</span><span class="rule-title">Reversible vs Irreversible</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Reversible decisions can be made quickly; irreversible decisions require more scrutiny (written proposal, 24-hour review period).</p></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PART 5 — ONBOARDING
+══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="part5">§ Part 5 — Onboarding &amp; Knowledge Sharing (TP18–TP21)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div>
+        <p style="font-size:12px;color:var(--muted);line-height:1.6">Scale team, preserve knowledge, reduce bus factor.</p>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner">
+        <span class="part-num">PART 5 / TP18–TP21</span>
+        <span class="part-title">Onboarding &amp; Knowledge Sharing</span>
+        <span class="part-desc">3 High · 1 Medium</span>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TP18</span><span class="rule-title">Onboarding Checklist</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Onboarding checklist MUST exist for new team members. For solo founder: document for "bus factor" (if you're unavailable, someone can take over).</p></div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TP19</span><span class="rule-title">Documentation as Definition of Done</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Documentation MUST be kept up-to-date — part of definition of done for every feature.</p></div>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP20</span><span class="rule-title">Monthly Knowledge Sharing</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Knowledge sharing sessions REQUIRED monthly. Team: lunch &amp; learn (30-60 min). Solo founder: self-learning (1 hour — read a paper, watch a talk, document takeaways).</p></div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TP21</span><span class="rule-title">Feature Runbooks</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Every major feature MUST have documented runbook before launch.</p></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PART 6 — CONTINUOUS IMPROVEMENT
+══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="part6">§ Part 6 — Continuous Improvement (TP22–TP24)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Health Check Questions</div>
+        <div style="font-size:10.5px;line-height:1.7;color:var(--muted)">
+          1. Clear goals?<br/>
+          2. Resources to do job?<br/>
+          3. Psychologically safe?<br/>
+          4. Feel heard when disagree?<br/>
+          5. Not experiencing burnout?<br/>
+          6. Proud of what building?<br/>
+          7. Meeting load appropriate?
+        </div>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner">
+        <span class="part-num">PART 6 / TP22–TP24</span>
+        <span class="part-title">Continuous Improvement</span>
+        <span class="part-desc">1 High · 2 Medium</span>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TP22</span><span class="rule-title">Retrospective Action Items</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body"><p class="rule-statement">Retrospective action items MUST have owners and due dates.</p></div>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP23</span><span class="rule-title">One Experiment Per Sprint</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body"><p class="rule-statement">One improvement experiment per sprint (small change to try). For solo founder: one personal experiment per sprint.</p></div>
+      </div>
+
+      <div class="rule-card medium">
+        <div class="rule-card-head"><span class="rule-num-badge">TP24</span><span class="rule-title">Quarterly Health Check</span><span class="sev-badge sev-medium">Medium</span></div>
+        <div class="rule-card-body">
+          <p class="rule-statement">Quarterly team health check REQUIRED (anonymous survey: morale, burnout, process satisfaction, psychological safety). For solo founder: monthly 5-minute self-check (journal: energy 1-10, stress 1-10, enjoyment 1-10). This is the canary in the coal mine — low scores require immediate action, not just documentation.</p>
+          <div class="callout callout-good" style="margin-top:8px;">
+            <span class="callout-icon">📊</span>
+            <div class="callout-body"><strong>Solo Founder Self-Check:</strong> Energy (1-10) ___ | Stress (1-10) ___ | Enjoyment (1-10) ___ | Am I heading toward burnout? [ ] No [ ] Maybe [ ] Yes — take action this week</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FORBIDDEN PATTERNS
+══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (FP01–FP17)</div>
+
+<div class="part-section" style="padding: 24px 28px;">
+  <div class="callout callout-critical" style="margin-bottom:20px">
+    <span class="callout-icon">🚫</span>
+    <div class="callout-body"><strong>17 patterns permanently banned.</strong> Each one has caused real team dysfunction or process failure. If you find yourself reasoning about why any of these "should be okay in this case" — stop. The answer is no.</div>
+  </div>
+
+  <table class="fp-table">
+    <thead><tr><th width="8%">Code</th><th width="40%">Pattern</th><th width="35%">Why It's Banned</th><th width="17%">Rule</th></tr></thead>
+    <tbody>
+      <tr><td class="fp-code">FP01</td><td>No documented roles</td><td>Confusion, blame, dropped responsibilities</td><td class="fp-ref">TP1</td></tr>
+      <tr><td class="fp-code">FP02</td><td>No constitution owners</td><td>Constitutions become outdated, ignored</td><td class="fp-ref">TP2</td></tr>
+      <tr><td class="fp-code">FP03</td><td>No sprint planning</td><td>Reactive work, no prioritization</td><td class="fp-ref">TP6</td></tr>
+      <tr><td class="fp-code">FP04</td><td>No retrospective (without explicit TP00 skip)</td><td>No learning, same problems repeat</td><td class="fp-ref">TP7</td></tr>
+      <tr><td class="fp-code">FP05</td><td>Meetings with no agenda</td><td>Wasted time, no outcomes</td><td class="fp-ref">TP9</td></tr>
+      <tr><td class="fp-code">FP06</td><td>Expecting responses outside working hours</td><td>Burnout, resentment</td><td class="fp-ref">TP12</td></tr>
+      <tr><td class="fp-code">FP07</td><td>Status updates in DMs</td><td>Information silos</td><td class="fp-ref">TP13</td></tr>
+      <tr><td class="fp-code">FP08</td><td>Decisions not documented</td><td>Repeat debates, lost context</td><td class="fp-ref">TP14</td></tr>
+      <tr><td class="fp-code">FP09</td><td>"I told you so" after decision</td><td>Undermines team, kills psychological safety</td><td class="fp-ref">TP15</td></tr>
+      <tr><td class="fp-code">FP10</td><td>Irreversible decision made quickly</td><td>Expensive mistakes, no scrutiny</td><td class="fp-ref">TP17</td></tr>
+      <tr><td class="fp-code">FP11</td><td>No onboarding checklist</td><td>New hires lost, slow ramp-up</td><td class="fp-ref">TP18</td></tr>
+      <tr><td class="fp-code">FP12</td><td>Feature launched, no runbook</td><td>Can't operate or debug</td><td class="fp-ref">TP21</td></tr>
+      <tr><td class="fp-code">FP13</td><td>Retro action items with no owner or due date</td><td>Nothing changes, retros become theater</td><td class="fp-ref">TP22</td></tr>
+      <tr><td class="fp-code">FP14</td><td>No experiments for improvement</td><td>Stagnation, no learning</td><td class="fp-ref">TP23</td></tr>
+      <tr><td class="fp-code">FP15</td><td>No health check for months</td><td>Undetected burnout, team dysfunction</td><td class="fp-ref">TP24</td></tr>
+      <tr><td class="fp-code">FP16</td><td>Process compliance weaponized (using rules to block progress)</td><td>Constitution becomes tyranny — invoke TP00 immediately</td><td class="fp-ref">TP00</td></tr>
+      <tr><td class="fp-code">FP17</td><td>Loud voice overrides quiet voice repeatedly</td><td>Psychological safety fails — pause TP15, fix first</td><td class="fp-ref">TP15</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════
+     READINESS CHECKLIST
+══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner">§ Annex B — Readiness Checklist</div>
+
+<div class="part-section" style="padding: 24px 28px;">
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+    <div>
+      <div class="checklist-section">
+        <div class="cl-header"><span class="cl-tag">READY</span> Team &amp; Process — "Ready" When All Pass</div>
+        <div class="cl-group"><div class="cl-group-title">Preamble</div>
+          <div class="cl-item"><div class="cl-box"></div>TP00 understood — 80% Rule is the override<div class="cl-ref">TP00</div></div>
+          <div class="cl-item"><div class="cl-box"></div>"Case law" approach understood<div class="cl-ref">Preamble</div></div>
+        </div>
+        <div class="cl-group"><div class="cl-group-title">Roles</div>
+          <div class="cl-item"><div class="cl-box"></div>Roles documented<div class="cl-ref">TP1</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Constitution owners assigned<div class="cl-ref">TP2</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Decision authority documented<div class="cl-ref">TP3</div></div>
+        </div>
+        <div class="cl-group"><div class="cl-group-title">Meetings</div>
+          <div class="cl-item"><div class="cl-box"></div>Daily standup scheduled<div class="cl-ref">TP5</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Sprint planning scheduled<div class="cl-ref">TP6</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Retrospective scheduled<div class="cl-ref">TP7</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Meeting discipline: agenda, on time<div class="cl-ref">TP9</div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="checklist-section">
+        <div class="cl-header"><span class="cl-tag">READY</span> Communication &amp; Decisions</div>
+        <div class="cl-group"><div class="cl-group-title">Communication</div>
+          <div class="cl-item"><div class="cl-box"></div>Working hours defined<div class="cl-ref">TP12</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Public channels for status<div class="cl-ref">TP13</div></div>
+        </div>
+        <div class="cl-group"><div class="cl-group-title">Decision-Making</div>
+          <div class="cl-item"><div class="cl-box"></div>ADR/PRD process documented<div class="cl-ref">TP14</div></div>
+          <div class="cl-item"><div class="cl-box"></div>"Disagree and commit" understood WITH safety valve<div class="cl-ref">TP15</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Reversible/irreversible framework<div class="cl-ref">TP17</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Psychological safety baseline established<div class="cl-ref">TP24</div></div>
+        </div>
+        <div class="cl-group"><div class="cl-group-title">Onboarding &amp; Improvement</div>
+          <div class="cl-item"><div class="cl-box"></div>Onboarding checklist exists<div class="cl-ref">TP18</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Documentation as DOD<div class="cl-ref">TP19</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Retro action items tracked<div class="cl-ref">TP22</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Experiment per sprint<div class="cl-ref">TP23</div></div>
+          <div class="cl-item"><div class="cl-box"></div>Quarterly health check<div class="cl-ref">TP24</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     QUICK REFERENCE CARD
+══════════════════════════════════════════ -->
+<hr class="divider-double"/>
+<div class="part-section" style="padding: 16px 28px; background: var(--paper2);">
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:16px;">
+    <div>
+      <p style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--purple);font-weight:700;">🔴 CRITICAL (1)</p>
+      <p style="font-size:12px; margin-top:4px;"><strong>TP00</strong> — 80% Rule — Don't let process become tyranny</p>
+    </div>
+    <div>
+      <p style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--orange);font-weight:700;">🟠 HIGH PRIORITY (8)</p>
+      <p style="font-size:11px; margin-top:4px;">TP1 (Roles) · TP2 (Owners) · TP6 (Planning) · TP7 (Retro) · TP12 (Hours) · TP14 (ADRs) · TP17 (Reversible) · TP18 (Onboarding) · TP19 (Docs DOD) · TP21 (Runbooks) · TP22 (Action items)</p>
+    </div>
+    <div>
+      <p style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--gold);font-weight:700;">⚠️ WARNING SIGNS (Invoke TP00)</p>
+      <p style="font-size:11px; margin-top:4px;">"Standup Theater" · Retro actions copied/pasted · Constitution cited to win arguments · Quiet voices never speak</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     LOCK FOOTER
+══════════════════════════════════════════ -->
+<div class="lock-section">
+  <div class="lock-banner">
+    <div class="lock-title-main">Team &amp; Process Constitution v1.1</div>
+    <div class="lock-sub">Final Lock — Effective 2026-04-08 — Next Review 2026-07-07</div>
+    <p style="font-family:var(--serif);font-style:italic;font-size:18px;color:rgba(240,237,230,.7);">"Process enables people. People do not serve process."</p>
+    <div class="lock-stats">
+      <div class="ls-item"><span class="ls-num">24</span><span class="ls-label">Total Rules</span></div>
+      <div class="ls-item"><span class="ls-num">1</span><span class="ls-label">Critical</span></div>
+      <div class="ls-item"><span class="ls-num">8</span><span class="ls-label">High</span></div>
+      <div class="ls-item"><span class="ls-num">15</span><span class="ls-label">Medium</span></div>
+      <div class="ls-item"><span class="ls-num">17</span><span class="ls-label">Forbidden</span></div>
+      <div class="ls-item"><span class="ls-num">355</span><span class="ls-label">System Total</span></div>
+    </div>
+  </div>
+
+  <div class="lock-body">
+    <div class="lock-col">
+      <div class="lock-col-title">Parts Breakdown</div>
+      <div class="parts-breakdown">
+        <div class="pb-item"><span class="pb-part">Preamble</span><span class="pb-name">How to Use (TP00)</span><span class="pb-rules">1 rule</span><span class="pb-crit">1 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">Part 1</span><span class="pb-name">Team Roles (TP1-TP4)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 HIGH</span></div>
+        <div class="pb-item"><span class="pb-part">Part 2</span><span class="pb-name">Meetings (TP5-TP9)</span><span class="pb-rules">5 rules</span><span class="pb-crit">2 HIGH</span></div>
+        <div class="pb-item"><span class="pb-part">Part 3</span><span class="pb-name">Communication (TP10-TP13)</span><span class="pb-rules">4 rules</span><span class="pb-crit">1 HIGH</span></div>
+        <div class="pb-item"><span class="pb-part">Part 4</span><span class="pb-name">Decisions (TP14-TP17)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 HIGH</span></div>
+        <div class="pb-item"><span class="pb-part">Part 5</span><span class="pb-name">Onboarding (TP18-TP21)</span><span class="pb-rules">4 rules</span><span class="pb-crit">3 HIGH</span></div>
+        <div class="pb-item"><span class="pb-part">Part 6</span><span class="pb-name">Improvement (TP22-TP24)</span><span class="pb-rules">3 rules</span><span class="pb-crit">1 HIGH</span></div>
+      </div>
+    </div>
+    <div class="lock-col">
+      <div class="lock-col-title">v1.1 Enhancements</div>
+      <div class="parts-breakdown">
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">TP00 — The 80% Rule (CRITICAL)</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">"Case law" usage guidance</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Disagree &amp; commit with safety valve</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Calendar bloat awareness</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Enhanced health check with psychological safety</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Forbidden patterns: process weaponization, loud voices</span></div>
+        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Amendment log template</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lock-final">
+    <div class="lock-final-left">VIOLATION OF TP00 = PROCESS FAILURE<br/>FOLLOW ALL RULES = HEALTHY TEAM</div>
+    <div class="lock-final-motto">"No confusion. No over-engineering. No excuses. Just execution."</div>
+    <div class="lock-final-right">v1.1 LOCKED<br/>2026-04-08<br/>Part of 355-rule total system</div>
+  </div>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>

@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Database Constitution v2.0 — LOCKED</title>
+<title>Database Constitution v3.0 — KSDRILL SA · LOCKED</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
   --ink:      #0e0e0e;
-  --paper:    #eef2f5;
-  --paper2:   #e2e8f0;
-  --paper3:   #d4dee8;
-  --rule:     #b8c4d0;
+  --paper:    #f0f7f4;
+  --paper2:   #e0ede8;
+  --paper3:   #cfe0d8;
+  --rule:     #a8c4ba;
   --gold:     #b8860b;
   --gold2:    #d4a017;
   --amber:    #e8a020;
@@ -19,15 +19,16 @@
   --orange:   #c05a00;
   --green:    #1a5c2e;
   --blue:     #1a3a6e;
-  --blue2:    #2a5a9e;
-  --teal:     #0f6e6e;
-  --muted:    #5a5a6e;
+  --teal:     #0d6e6e;
+  --ang-red:  #9b1c1c;
+  --mongo:    #00684a;
+  --muted:    #3d5a50;
   --mono:     'IBM Plex Mono', monospace;
   --serif:    'Playfair Display', serif;
   --sans:     'IBM Plex Sans', sans-serif;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
@@ -49,1001 +50,1252 @@ body::after {
 body::before {
   content: '';
   position: fixed; inset: 0;
-  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-image:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
   background-size: 48px 48px;
-  pointer-events: none; z-index: 0; opacity: .1;
+  pointer-events: none; z-index: 0; opacity: .10;
 }
 
-.page { max-width: 1200px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+.page { max-width: 1100px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
 
-.masthead {
-  border-top: 6px solid var(--teal);
-  border-bottom: 3px double var(--teal);
-  margin-bottom: 0;
-}
-
-.masthead-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--rule);
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: .08em;
-}
-
-.masthead-main {
-  text-align: center;
-  padding: 40px 0 32px;
-}
-
-.masthead-eyebrow {
-  background: var(--teal);
-  color: var(--paper);
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .2em;
-  padding: 4px 16px;
-  margin-bottom: 16px;
-}
-
-.masthead-title {
-  font-family: var(--serif);
-  font-size: clamp(42px, 6vw, 80px);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -.02em;
-  color: var(--teal);
-  margin-bottom: 8px;
-}
-
-.masthead-tagline {
-  font-family: var(--serif);
-  font-size: 18px;
-  font-style: italic;
-  color: var(--muted);
-  margin-bottom: 18px;
-}
-
-.masthead-meta {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-
-.masthead-meta strong { color: var(--teal); }
-
-.masthead-bottom {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  border-top: 1px solid var(--rule);
-  background: var(--paper2);
-}
-
-.stat-box {
-  padding: 16px 20px;
-  border-right: 1px solid var(--rule);
-  text-align: center;
-}
+/* ── MASTHEAD ── */
+.masthead { border-top: 6px solid var(--teal); border-bottom: 3px double var(--teal); margin-bottom: 0; }
+.masthead-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--teal); font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .08em; }
+.masthead-main { padding: 40px 0 28px; text-align: center; border-bottom: 1px solid var(--teal); }
+.masthead-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .25em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.masthead-title { font-family: var(--serif); font-size: clamp(42px, 6vw, 80px); font-weight: 900; line-height: 1.0; letter-spacing: -.02em; margin-bottom: 8px; }
+.masthead-tagline { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--muted); margin-bottom: 18px; }
+.masthead-meta { display: flex; justify-content: center; gap: 36px; flex-wrap: wrap; font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+.masthead-meta strong { color: var(--ink); }
+.masthead-bottom { display: grid; grid-template-columns: repeat(6, 1fr); border-top: 1px solid var(--teal); }
+.stat-box { padding: 14px 10px; border-right: 1px solid var(--teal); text-align: center; }
 .stat-box:last-child { border-right: none; }
+.stat-num { font-family: var(--serif); font-size: 30px; font-weight: 900; line-height: 1; color: var(--teal); display: block; }
+.stat-label { font-family: var(--mono); font-size: 8px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-top: 2px; }
 
-.stat-num {
-  font-family: var(--serif);
-  font-size: 36px;
-  font-weight: 900;
-  line-height: 1;
-  color: var(--teal);
-  display: block;
-}
-.stat-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: var(--muted);
-  margin-top: 2px;
-}
+/* ── PART NAV ── */
+.part-nav { display: flex; overflow-x: auto; border-bottom: 2px solid var(--teal); background: var(--paper2); }
+.pn-item { display: flex; flex-direction: column; padding: 10px 16px; border-right: 1px solid var(--rule); text-decoration: none; color: var(--ink); flex-shrink: 0; }
+.pn-item:hover { background: var(--paper); }
+.pn-num   { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: .1em; }
+.pn-name  { font-family: var(--serif); font-size: 11px; font-weight: 700; }
+.pn-count { font-family: var(--mono); font-size: 9px; color: var(--teal); }
 
-.section-runner {
-  background: var(--teal);
-  color: var(--paper);
-  padding: 6px 0;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  text-align: center;
-}
+/* ── SECTION RUNNER ── */
+.section-runner { background: var(--teal); color: var(--paper); padding: 6px 0; font-family: var(--mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; text-align: center; }
 
-.part-nav {
-  display: flex;
-  border-top: 2px solid var(--teal);
-  border-bottom: 2px solid var(--teal);
-  background: var(--paper2);
-  overflow-x: auto;
-}
+/* ── LAYOUT ── */
+.col-layout { display: grid; grid-template-columns: 240px 1fr; gap: 0; border-left: 1px solid var(--teal); border-right: 1px solid var(--teal); }
+.col-sidebar { border-right: 1px solid var(--rule); padding: 24px 20px; background: var(--paper2); }
+.col-main { padding: 24px 28px; }
+.part-section { border-left: 1px solid var(--teal); border-right: 1px solid var(--teal); }
 
-.pn-item {
-  flex: 1;
-  min-width: 90px;
-  padding: 10px 8px;
-  border-right: 1px solid var(--rule);
-  text-decoration: none;
-  color: var(--muted);
-  transition: all .15s;
-}
-.pn-item:last-child { border-right: none; }
-.pn-item:hover { background: var(--teal); color: var(--paper); }
-.pn-num  { font-family: var(--mono); font-size: 7px; color: var(--gold); letter-spacing: .1em; display: block; }
-.pn-name { font-family: var(--serif); font-size: 9px; font-weight: 700; line-height: 1.2; display: block; margin-top: 2px; }
-.pn-count { font-family: var(--mono); font-size: 7px; color: var(--muted); display: block; margin-top: 1px; }
+/* ── PART BANNER ── */
+.part-banner { background: var(--teal); color: var(--paper); padding: 20px 28px; margin: 0 -28px 28px; display: flex; align-items: baseline; gap: 20px; }
+.part-banner.mongo-banner { background: var(--mongo); }
+.part-banner.new-banner   { background: var(--green); }
+.part-num   { font-family: var(--mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: rgba(240,247,244,.7); flex-shrink: 0; }
+.part-title { font-family: var(--serif); font-size: 24px; font-weight: 900; line-height: 1.1; }
+.part-desc  { font-size: 12px; color: rgba(240,247,244,.6); margin-left: auto; text-align: right; max-width: 260px; font-style: italic; }
 
-.col-layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 0;
-  border-left: 1px solid var(--rule);
-  border-right: 1px solid var(--rule);
-}
-
-.col-sidebar {
-  border-right: 1px solid var(--rule);
-  padding: 24px 20px;
-  background: var(--paper2);
-}
-
-.col-main {
-  padding: 28px 32px;
-}
-
-.part-section {
-  border-left: 1px solid var(--rule);
-  border-right: 1px solid var(--rule);
-}
-
-.part-banner {
-  background: var(--teal);
-  color: var(--paper);
-  padding: 20px 28px;
-  margin: -28px -32px 28px;
-  display: flex;
-  align-items: baseline;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.part-num {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--gold2);
-  flex-shrink: 0;
-}
-
-.part-title {
-  font-family: var(--serif);
-  font-size: 24px;
-  font-weight: 900;
-  line-height: 1.1;
-  flex: 1;
-}
-
-.part-desc {
-  font-size: 11px;
-  color: rgba(238,242,245,.6);
-  text-align: right;
-  font-style: italic;
-}
-
-.rule-card {
-  border: 1px solid var(--rule);
-  border-left: 4px solid var(--teal);
-  background: #fff;
-  margin-bottom: 18px;
-  overflow: hidden;
-}
-
+/* ── RULE CARD ── */
+.rule-card { border: 1px solid var(--rule); border-left: 4px solid var(--teal); background: #fff; margin-bottom: 16px; overflow: hidden; }
 .rule-card.critical { border-left-color: var(--red); }
 .rule-card.high     { border-left-color: var(--orange); }
 .rule-card.medium   { border-left-color: var(--gold); }
+.rule-card.new      { border-left-color: var(--mongo); }
 
-.rule-card-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px 18px 10px;
-  border-bottom: 1px solid var(--rule);
-  background: var(--paper2);
-}
-
-.rule-num-badge {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  color: var(--muted);
-  flex-shrink: 0;
-}
-
-.rule-title {
-  font-family: var(--serif);
-  font-size: 14px;
-  font-weight: 700;
-  flex: 1;
-  line-height: 1.3;
-}
-
-.sev-badge {
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-.sev-critical { background: var(--red); color: #fff; }
+.rule-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 14px 18px 10px; border-bottom: 1px solid var(--rule); background: var(--paper2); }
+.rule-num-badge { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .1em; color: var(--muted); flex-shrink: 0; margin-top: 2px; }
+.rule-title     { font-family: var(--serif); font-size: 15px; font-weight: 700; flex: 1; line-height: 1.3; }
+.sev-badge      { font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; flex-shrink: 0; }
+.sev-critical { background: var(--red);    color: #fff; }
 .sev-high     { background: var(--orange); color: #fff; }
-.sev-medium   { background: var(--gold); color: #fff; }
+.sev-medium   { background: var(--gold);   color: #fff; }
+.sev-new      { background: var(--mongo);  color: #fff; }
 
-.rule-card-body {
-  padding: 14px 18px;
-}
+.rule-card-body { padding: 14px 18px; }
+.rule-statement { font-size: 13.5px; line-height: 1.6; margin-bottom: 12px; font-weight: 500; }
 
-.rule-statement {
-  font-size: 13px;
-  line-height: 1.6;
-  margin-bottom: 12px;
-  font-weight: 500;
-}
+/* ── SCOPE ── */
+.scope-bar { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.scope-chip { font-family: var(--mono); font-size: 8px; letter-spacing: .08em; padding: 2px 8px; border-radius: 2px; font-weight: 700; }
+.scope-both    { background: var(--teal);    color: #fff; }
+.scope-nextjs  { background: #0e0e0e;        color: #fff; }
+.scope-angular { background: var(--ang-red); color: #fff; }
+.scope-mongo   { background: var(--mongo);   color: #fff; }
+.scope-new     { background: var(--green);   color: #fff; }
 
-.rule-meta-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 8px;
-  margin-top: 10px;
-}
+/* ── STACK DIFF ── */
+.stack-diff { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--ink); margin-top: 10px; overflow: hidden; }
+.stack-diff-head { padding: 6px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+.stack-diff-head.nj  { background: #0e0e0e; color: var(--paper); }
+.stack-diff-head.ang { background: var(--ang-red); color: #fff; }
+.stack-diff-head.mongo { background: var(--mongo); color: #fff; }
+.stack-diff-body { padding: 10px 12px; font-size: 11.5px; color: var(--muted); line-height: 1.8; background: var(--paper2); border-left: 1px solid var(--rule); }
+.stack-diff-col:first-child .stack-diff-body { border-left: none; }
 
-.rule-meta-item {
-  background: var(--paper2);
-  border: 1px solid var(--rule);
-  padding: 7px 10px;
-  font-size: 11px;
-}
+/* ── META ── */
+.rule-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-top: 10px; }
+.rule-meta-item { background: var(--paper2); border: 1px solid var(--rule); padding: 7px 10px; }
+.rule-meta-label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); display: block; margin-bottom: 2px; }
+.rule-meta-val { font-size: 12px; line-height: 1.4; }
 
-.rule-meta-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  color: var(--muted);
-  display: block;
-  margin-bottom: 2px;
-}
-
-.rule-meta-val { font-size: 11px; line-height: 1.4; }
-
-.code-block {
-  background: #1a1a2e;
-  border: 1px solid var(--teal);
-  margin: 12px 0 0;
-  overflow: hidden;
-  border-radius: 4px;
-}
-
-.code-bar {
-  background: #0f0f1a;
-  padding: 6px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #2a2a3e;
-}
-
-.code-filename {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--gold2);
-  letter-spacing: .05em;
-}
-
+/* ── CODE ── */
+.code-block { background: #1a1a1a; border: 1px solid var(--ink); margin: 12px 0 0; overflow: hidden; }
+.code-bar { background: #0a0a0a; padding: 6px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; }
+.code-filename { font-family: var(--mono); font-size: 10px; color: var(--amber); letter-spacing: .05em; }
 .code-dots { display: flex; gap: 5px; }
 .cd { width: 9px; height: 9px; border-radius: 50%; }
 .cd-r { background: #f87171; } .cd-y { background: #fbbf24; } .cd-g { background: #34d399; }
+.code-block pre { font-family: var(--mono); font-size: 12px; line-height: 1.75; padding: 16px 18px; color: #d4d4d4; overflow-x: auto; white-space: pre; }
+.ck { color: #c678dd; } .cs { color: #98c379; } .cc { color: #5c6370; font-style:italic; }
+.ct { color: #e5c07b; } .cf { color: #61afef; } .cn { color: #d19a66; }
 
-.code-block pre {
-  font-family: var(--mono);
-  font-size: 10px;
-  line-height: 1.7;
-  padding: 14px 16px;
-  color: #d4d4d4;
-  overflow-x: auto;
-  white-space: pre;
-}
+/* ── COMPARE ── */
+.compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+.compare-block { overflow: hidden; border: 1px solid var(--rule); }
+.compare-label { padding: 5px 12px; font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.compare-bad  .compare-label { background: #fef2f2; color: var(--red);   border-bottom: 1px solid #fca5a5; }
+.compare-good .compare-label { background: #f0fdf4; color: var(--green); border-bottom: 1px solid #86efac; }
+.compare-block pre { font-family: var(--mono); font-size: 11px; line-height: 1.7; padding: 10px 12px; background: #1a1a1a; color: #d4d4d4; white-space: pre; overflow-x: auto; }
 
-.ck  { color: #c678dd; }
-.cs  { color: #98c379; }
-.cc  { color: #5c6370; font-style: italic; }
-.ct  { color: #e5c07b; }
-.cf  { color: #61afef; }
-.cn  { color: #d19a66; }
-.cv  { color: #56b6c2; }
+/* ── CALLOUT ── */
+.callout { display: flex; gap: 12px; padding: 10px 14px; margin: 10px 0; border: 1px solid var(--rule); }
+.callout-icon { font-family: var(--mono); font-size: 11px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.callout-info     { background: #eff6ff; border-color: #93c5fd; }
+.callout-info     .callout-icon { background: #3b82f6; color: #fff; }
+.callout-critical { background: #fff1f2; border-color: #fca5a5; }
+.callout-critical .callout-icon { background: var(--red); color: #fff; }
+.callout-warning  { background: #fff7ed; border-color: #fdba74; }
+.callout-warning  .callout-icon { background: var(--orange); color: #fff; }
+.callout-new      { background: #f0fdf4; border-color: #86efac; }
+.callout-new      .callout-icon { background: var(--mongo); color: #fff; }
+.callout-body { font-size: 12px; line-height: 1.6; color: var(--muted); }
+.callout-body strong { color: var(--ink); }
 
-.const-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
-}
-.const-table thead tr { background: var(--teal); color: var(--paper); }
-.const-table th {
-  font-family: var(--mono);
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  padding: 8px 10px;
-  text-align: left;
-}
-.const-table td {
-  padding: 7px 10px;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-}
-.const-table tbody tr:nth-child(even) { background: var(--paper2); }
+/* ── SIDEBAR ── */
+.sidebar-section { margin-bottom: 24px; }
+.sidebar-label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 8px; border-bottom: 1px solid var(--rule); padding-bottom: 4px; }
+.sb-rule-list { list-style: none; }
+.sb-rule-list li { padding: 4px 0; border-bottom: 1px dotted var(--rule); font-size: 11.5px; color: var(--muted); display: flex; gap: 6px; }
+.rn { font-family: var(--mono); font-size: 9px; color: var(--teal); font-weight: 700; flex-shrink: 0; }
 
-.fp-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 10px;
-  border: 2px solid var(--teal);
-}
-.fp-table thead tr { background: var(--red); }
-.fp-table th {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  padding: 8px 10px;
-  color: #fff;
-  text-align: left;
-}
-.fp-table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-}
-.fp-table tbody tr:hover { background: #fef2f2; }
-.fp-code { font-family: var(--mono); font-size: 9px; color: var(--red); font-weight: 700; }
-.fp-ref  { font-family: var(--mono); font-size: 9px; color: var(--teal); }
+/* ── TABLE ── */
+.const-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 11px; border: 1.5px solid var(--rule); margin-top: 10px; }
+.const-table th { background: var(--paper2); padding: 8px 12px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; text-align: left; border-bottom: 1.5px solid var(--teal); }
+.const-table td { padding: 7px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.const-table tr:last-child td { border-bottom: none; }
+.const-table tr:nth-child(even) td { background: var(--paper2); }
 
-.checklist-section {
-  border: 1px solid var(--teal);
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-.cl-header {
-  background: var(--teal);
-  color: var(--paper);
-  padding: 8px 14px;
-  font-family: var(--serif);
-  font-size: 13px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.cl-tag {
-  font-family: var(--mono);
-  font-size: 8px;
-  background: var(--gold2);
-  color: var(--ink);
-  padding: 2px 8px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-.cl-group { border-bottom: 1px solid var(--rule); }
-.cl-group-title {
-  font-family: var(--mono);
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: .15em;
-  color: var(--muted);
-  background: var(--paper2);
-  padding: 5px 14px;
-  border-bottom: 1px solid var(--rule);
-}
-.cl-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 6px 14px;
-  border-bottom: 1px dotted var(--rule);
-  font-size: 10px;
-}
-.cl-item:last-child { border-bottom: none; }
-.cl-box {
-  width: 12px; height: 12px;
-  border: 1.5px solid var(--teal);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.cl-ref { font-family: var(--mono); font-size: 8px; color: var(--gold); margin-left: auto; flex-shrink: 0; }
-
-.callout {
-  display: flex;
-  gap: 12px;
-  padding: 10px 14px;
-  margin: 12px 0;
-  font-size: 11px;
-  border-left: 4px solid;
-  background: var(--paper2);
-}
-.callout-critical { border-color: var(--red); }
-.callout-warn     { border-color: var(--orange); }
-.callout-info     { border-color: var(--gold); }
-.callout-good     { border-color: var(--green); }
-.callout-icon { font-family: var(--mono); font-size: 11px; flex-shrink: 0; font-weight: 700; }
-.callout-body { line-height: 1.6; }
-
-.structure-map {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-  border: 2px solid var(--teal);
-  margin-bottom: 20px;
-}
-.sm-col {
-  border-right: 1px solid var(--rule);
-  overflow: hidden;
-}
+/* ── STRUCTURE MAP ── */
+.structure-map { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--teal); margin-bottom: 0; }
+.sm-col { border-right: 1px solid var(--rule); }
 .sm-col:last-child { border-right: none; }
-.sm-head {
-  background: var(--teal);
-  color: var(--paper);
-  padding: 8px 10px;
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-.sm-num { color: var(--gold2); margin-right: 4px; }
-.sm-items { padding: 8px 10px; }
-.sm-item {
-  font-size: 9px;
-  padding: 2px 0;
-  border-bottom: 1px dotted var(--rule);
-  color: var(--muted);
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-.sm-item::before { content: '→'; color: var(--gold); font-family: var(--mono); font-size: 8px; flex-shrink: 0; }
+.sm-head { background: var(--paper2); padding: 8px 12px; font-family: var(--serif); font-size: 11px; font-weight: 700; border-bottom: 1px solid var(--rule); }
+.sm-num { font-family: var(--mono); font-size: 9px; color: var(--teal); margin-right: 5px; }
+.sm-items { padding: 8px 12px; }
+.sm-item { font-size: 11px; padding: 3px 0; border-bottom: 1px dotted var(--rule); color: var(--muted); display: flex; align-items: baseline; gap: 5px; }
+.sm-item::before { content: '→'; color: var(--gold); font-family: var(--mono); font-size: 9px; flex-shrink: 0; }
 
-.lock-section {
-  border: 4px double var(--teal);
-  margin-top: 32px;
-}
-.lock-banner {
-  background: var(--teal);
-  color: var(--paper);
-  text-align: center;
-  padding: 28px 20px;
-  border-bottom: 4px double rgba(238,242,245,.25);
-}
-.lock-title-main {
-  font-family: var(--serif);
-  font-size: clamp(26px, 4vw, 48px);
-  font-weight: 900;
-  letter-spacing: -.02em;
-  margin-bottom: 6px;
-}
-.lock-sub {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--gold2);
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-}
-.lock-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 0;
-  border-top: 1px solid rgba(255,255,255,.15);
-  margin-top: 20px;
-}
-.ls-item {
-  padding: 12px;
-  border-right: 1px solid rgba(255,255,255,.1);
-  text-align: center;
-}
+/* ── DB ASSIGNMENT GRID ── */
+.db-assign-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 2px solid var(--teal); margin-bottom: 16px; overflow: hidden; }
+.db-col { border-right: 1px solid var(--rule); overflow: hidden; }
+.db-col:last-child { border-right: none; }
+.db-col-head { padding: 10px 14px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+.db-col-head.postgres { background: #4169E1; color: #fff; }
+.db-col-head.mongo    { background: var(--mongo); color: #fff; }
+.db-col-head.chroma   { background: #5a67d8; color: #fff; }
+.db-col-body { padding: 12px 14px; font-size: 11.5px; color: var(--muted); line-height: 2; background: var(--paper2); }
+.db-col-body strong { color: var(--ink); }
+.db-item { padding: 3px 0; border-bottom: 1px dotted var(--rule); font-size: 11px; }
+.db-item:last-child { border-bottom: none; }
+.db-yes { color: var(--green); font-family: var(--mono); font-size: 9px; }
+.db-no  { color: var(--red);   font-family: var(--mono); font-size: 9px; }
+
+/* ── FORBIDDEN ── */
+.forbidden-section { border: 2px solid var(--red); overflow: hidden; }
+.forbidden-header { background: var(--red); color: #fff; padding: 10px 20px; font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; }
+.forbidden-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.fp-item { padding: 12px 16px; border-right: 1px solid rgba(155,28,28,.2); border-bottom: 1px solid rgba(155,28,28,.2); font-family: var(--mono); font-size: 10.5px; }
+.fp-item:nth-child(even) { border-right: none; }
+.fp-code { color: var(--red); font-weight: 700; margin-bottom: 3px; font-size: 10px; }
+.fp-desc { color: var(--muted); font-size: 10px; line-height: 1.5; }
+.fp-fix  { color: var(--green); font-size: 9px; margin-top: 3px; }
+
+/* ── LOCK ── */
+.lock-section { border: 4px double var(--teal); margin: 0; background: var(--paper); }
+.lock-banner { background: var(--teal); color: var(--paper); text-align: center; padding: 32px 24px; border-bottom: 4px double rgba(255,255,255,.2); }
+.lock-title-main { font-family: var(--serif); font-size: clamp(28px,4vw,52px); font-weight: 900; letter-spacing: -.02em; margin-bottom: 8px; }
+.lock-sub { font-family: var(--mono); font-size: 11px; color: rgba(240,247,244,.8); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 24px; }
+.lock-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0; border-top: 1px solid rgba(255,255,255,.15); margin-top: 24px; }
+.ls-item { padding: 14px; border-right: 1px solid rgba(255,255,255,.1); text-align: center; }
 .ls-item:last-child { border-right: none; }
-.ls-num {
-  font-family: var(--serif);
-  font-size: 24px;
-  font-weight: 900;
-  color: var(--gold2);
-  display: block;
-}
-.ls-label {
-  font-family: var(--mono);
-  font-size: 7px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: rgba(238,242,245,.5);
-  display: block;
-  margin-top: 2px;
-}
-
-.lock-body {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-}
-.lock-col {
-  padding: 24px 28px;
-  border-right: 2px solid var(--teal);
-}
+.ls-num { font-family: var(--serif); font-size: 28px; font-weight: 900; color: rgba(240,247,244,.9); display: block; }
+.ls-label { font-family: var(--mono); font-size: 8px; text-transform: uppercase; letter-spacing: .12em; color: rgba(240,247,244,.5); display: block; margin-top: 2px; }
+.lock-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.lock-col { padding: 26px 30px; border-right: 2px solid var(--teal); }
 .lock-col:last-child { border-right: none; }
-.lock-col-title {
-  font-family: var(--mono);
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: .2em;
-  color: var(--muted);
-  margin-bottom: 12px;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 5px;
-}
-
+.lock-col-title { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .18em; color: var(--muted); margin-bottom: 12px; border-bottom: 1px solid var(--rule); padding-bottom: 5px; }
 .parts-breakdown { display: flex; flex-direction: column; gap: 5px; }
-.pb-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  padding: 5px 8px;
-  border: 1px solid var(--rule);
-  background: var(--paper2);
-}
-.pb-part { font-family: var(--mono); font-size: 8px; color: var(--gold); font-weight: 700; min-width: 45px; }
-.pb-name { flex: 1; font-size: 9px; }
-.pb-rules { font-family: var(--mono); font-size: 8px; color: var(--muted); }
-.pb-crit { background: var(--red); color: #fff; padding: 1px 4px; font-family: var(--mono); font-size: 7px; border-radius: 2px; }
+.pb-item { display: flex; align-items: center; gap: 9px; font-size: 11px; padding: 6px 9px; border: 1px solid var(--rule); background: var(--paper2); }
+.pb-part { font-family: var(--mono); font-size: 9px; color: var(--teal); font-weight: 700; min-width: 44px; }
+.pb-name { flex: 1; font-size: 10.5px; }
+.pb-rules { font-family: var(--mono); font-size: 9px; color: var(--muted); }
+.pb-crit { background: var(--red);   color: #fff; padding: 1px 5px; font-family: var(--mono); font-size: 8px; border-radius: 2px; }
+.pb-new  { background: var(--mongo); color: #fff; padding: 1px 5px; font-family: var(--mono); font-size: 8px; border-radius: 2px; }
+.sig-line { display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid var(--teal); padding-bottom: 10px; margin-bottom: 10px; }
+.sig-role { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.sig-name-line { border-bottom: 1px solid var(--teal); height: 24px; }
+.sig-meta { display: flex; gap: 20px; margin-top: 4px; font-family: var(--mono); font-size: 9px; color: var(--muted); }
+.lock-final { border-top: 2px solid var(--teal); background: var(--teal); color: var(--paper); padding: 18px 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.lock-final-left  { font-family: var(--mono); font-size: 10px; color: rgba(240,247,244,.8); letter-spacing: .06em; }
+.lock-final-motto { font-family: var(--serif); font-size: 17px; font-style: italic; }
+.lock-final-right { font-family: var(--mono); font-size: 9px; color: rgba(240,247,244,.45); text-align: right; }
 
-.lock-final {
-  border-top: 2px solid var(--teal);
-  background: var(--teal);
-  color: var(--paper);
-  padding: 16px 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.lock-final-left { font-family: var(--mono); font-size: 9px; color: var(--gold2); letter-spacing: .08em; }
-.lock-final-motto { font-family: var(--serif); font-size: 16px; font-style: italic; }
-.lock-final-right { font-family: var(--mono); font-size: 8px; color: rgba(238,242,245,.5); text-align: right; }
+code { font-family: var(--mono); font-size: 11px; background: var(--paper3); border: 1px solid var(--rule); padding: 1px 4px; color: var(--red); }
+hr.divider { height: 1px; background: var(--rule); margin: 0; border: none; }
+hr.divider-double { height: 3px; border: none; background: var(--teal); margin: 0; }
 
-.divider { border: none; border-top: 2px solid var(--teal); margin: 0; }
-.divider-double { border: none; border-top: 3px double var(--teal); margin: 0; }
-code {
-  font-family: var(--mono);
-  font-size: 10px;
-  background: #e8e0d0;
-  border: 1px solid var(--rule);
-  padding: 1px 3px;
-  color: var(--red);
-}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.page > * { animation: fadeIn .35s ease both; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--rule); }
 
-@media (max-width: 860px) {
+@media (max-width: 760px) {
   .col-layout { grid-template-columns: 1fr; }
   .col-sidebar { border-right: none; border-bottom: 1px solid var(--rule); }
   .lock-body { grid-template-columns: 1fr; }
   .lock-col { border-right: none; border-bottom: 2px solid var(--teal); }
   .masthead-bottom { grid-template-columns: repeat(3, 1fr); }
-  .structure-map { grid-template-columns: 1fr 1fr; }
+  .structure-map, .db-assign-grid { grid-template-columns: 1fr; }
+  .compare-row, .stack-diff, .forbidden-grid { grid-template-columns: 1fr; }
 }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.page > * { animation: fadeIn .35s ease both; }
 </style>
 </head>
 <body>
 <div class="page">
 
+<!-- ══════════════════════════════════════════ MASTHEAD ══════════════════════════════════════════ -->
 <header class="masthead">
   <div class="masthead-top">
-    <span>LOCKED: 2026-04-08</span>
-    <span>DOCUMENT CLASS: CONSTITUTION · REVISION: v2.0</span>
-    <span>NEXT REVIEW: 2026-07-08</span>
+    <span>LOCKED: 2026-04-14 · KSDRILL SA</span>
+    <span>DOCUMENT CLASS: CONSTITUTION · REVISION: v3.0</span>
+    <span>NEXT REVIEW: 2026-07-07</span>
   </div>
   <div class="masthead-main">
     <div class="masthead-eyebrow">DATABASE CONSTITUTION</div>
-    <h1 class="masthead-title">v2.0</h1>
-    <p class="masthead-tagline">"Data is the only thing you cannot rebuild from code."</p>
+    <h1 class="masthead-title">v3.0</h1>
+    <p class="masthead-tagline">"One source of truth per data type. No mixing. No exceptions."</p>
     <div class="masthead-meta">
-      <span><strong>48</strong> TOTAL RULES</span>
-      <span><strong>32</strong> CRITICAL</span>
-      <span><strong>14</strong> HIGH PRIORITY</span>
-      <span><strong>20</strong> FORBIDDEN PATTERNS</span>
-      <span><strong>175</strong> SYSTEM TOTAL</span>
+      <span><strong>58</strong> TOTAL RULES</span>
+      <span><strong>34</strong> CRITICAL</span>
+      <span><strong>4</strong> PARTS</span>
+      <span><strong>3</strong> DATABASES</span>
+      <span>POSTGRESQL · MONGODB · CHROMADB</span>
+      <span>SYMMETRIC WITH BACKEND v3.0</span>
     </div>
   </div>
   <div class="masthead-bottom">
-    <div class="stat-box"><span class="stat-num">48</span><span class="stat-label">Total Rules</span></div>
-    <div class="stat-box"><span class="stat-num">32</span><span class="stat-label">Critical</span></div>
-    <div class="stat-box"><span class="stat-num">14</span><span class="stat-label">High</span></div>
-    <div class="stat-box"><span class="stat-num">2</span><span class="stat-label">Medium</span></div>
-    <div class="stat-box"><span class="stat-num">175</span><span class="stat-label">System Total</span></div>
+    <div class="stat-box"><span class="stat-num">58</span><span class="stat-label">Total Rules</span></div>
+    <div class="stat-box"><span class="stat-num">34</span><span class="stat-label">Critical</span></div>
+    <div class="stat-box"><span class="stat-num">16</span><span class="stat-label">High Priority</span></div>
+    <div class="stat-box"><span class="stat-num">10</span><span class="stat-label">New Rules</span></div>
+    <div class="stat-box"><span class="stat-num">20</span><span class="stat-label">Forbidden</span></div>
+    <div class="stat-box"><span class="stat-num">355</span><span class="stat-label">System Total</span></div>
   </div>
 </header>
 
+<!-- PART NAV -->
 <nav class="part-nav">
-  <a href="#part1" class="pn-item"><span class="pn-num">PART 1</span><span class="pn-name">Naming & Structure</span><span class="pn-count">D1-D7a</span></a>
-  <a href="#part2" class="pn-item"><span class="pn-num">PART 2</span><span class="pn-name">Indexing</span><span class="pn-count">D8-D14a</span></a>
-  <a href="#part3" class="pn-item"><span class="pn-num">PART 3</span><span class="pn-name">Integrity</span><span class="pn-count">D15-D18b</span></a>
-  <a href="#part4" class="pn-item"><span class="pn-num">PART 4</span><span class="pn-name">Retention</span><span class="pn-count">D19-D23</span></a>
-  <a href="#part5" class="pn-item"><span class="pn-num">PART 5</span><span class="pn-name">Backup & Recovery</span><span class="pn-count">D24-D29b</span></a>
-  <a href="#part6" class="pn-item"><span class="pn-num">PART 6</span><span class="pn-name">Security</span><span class="pn-count">D30-D34c</span></a>
-  <a href="#part7" class="pn-item"><span class="pn-num">PART 7</span><span class="pn-name">Migrations</span><span class="pn-count">D35-D38a</span></a>
-  <a href="#part8" class="pn-item"><span class="pn-num">PART 8</span><span class="pn-name">Observability</span><span class="pn-count">D39-D42</span></a>
-  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden</span><span class="pn-count">DF01-DF20</span></a>
+  <a href="#p1"  class="pn-item"><span class="pn-num">P1</span><span class="pn-name">Strategy &amp; Assignment</span><span class="pn-count">D1–D8</span></a>
+  <a href="#p2"  class="pn-item"><span class="pn-num">P2</span><span class="pn-name">PostgreSQL — Prisma</span><span class="pn-count">D9–D24</span></a>
+  <a href="#p3"  class="pn-item"><span class="pn-num">P3 🆕</span><span class="pn-name">MongoDB — Beanie/Mongoose</span><span class="pn-count">D25–D38</span></a>
+  <a href="#p4"  class="pn-item"><span class="pn-num">P4</span><span class="pn-name">ChromaDB — Vector</span><span class="pn-count">D39–D46</span></a>
+  <a href="#p5"  class="pn-item"><span class="pn-num">P5</span><span class="pn-name">Cross-DB &amp; Migrations</span><span class="pn-count">D47–D58</span></a>
+  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden Patterns</span><span class="pn-count">FP01–FP20</span></a>
 </nav>
 
-<div class="section-runner">§ Executive Summary — Structure Map</div>
-<div class="part-section" style="padding: 28px 28px 20px;">
+<!-- ══════════════════════════════════════════ EXECUTIVE SUMMARY ══════════════════════════════════════════ -->
+<div class="section-runner">§ Executive Summary — Database Assignment by Stack</div>
+<div class="part-section" style="padding:24px 28px 20px;">
+
+  <div class="callout callout-new" style="margin-bottom:20px;">
+    <span class="callout-icon">+</span>
+    <div class="callout-body"><strong>v3.0 Major Change:</strong> MongoDB + Beanie/Mongoose has been added as the document database for the Angular stack (FundsLink Academy, KSDRILL Reserve Bank). Part 3 is entirely new. PostgreSQL remains the source of truth for all relational and financial data on both stacks. ChromaDB rules are unchanged. The three-database separation rule (D6) is now enforced across all systems.</div>
+  </div>
+
+  <div class="db-assign-grid">
+    <div class="db-col">
+      <div class="db-col-head postgres">
+        <span>PostgreSQL + Prisma</span>
+        <span style="font-size:9px;opacity:.7">Both Stacks</span>
+      </div>
+      <div class="db-col-body">
+        <strong>What belongs here:</strong>
+        <div class="db-item"><span class="db-yes">✓</span> Users, authentication, roles</div>
+        <div class="db-item"><span class="db-yes">✓</span> Financial transactions &amp; balances</div>
+        <div class="db-item"><span class="db-yes">✓</span> Funding applications &amp; statuses</div>
+        <div class="db-item"><span class="db-yes">✓</span> Community votes &amp; requests</div>
+        <div class="db-item"><span class="db-yes">✓</span> Audit logs &amp; sessions</div>
+        <div class="db-item"><span class="db-yes">✓</span> Any data requiring ACID guarantees</div>
+        <div class="db-item"><span class="db-yes">✓</span> Any data requiring joins or foreign keys</div>
+        <div class="db-item" style="margin-top:6px;"><span class="db-no">✗</span> AI-generated free-form content</div>
+        <div class="db-item"><span class="db-no">✗</span> Vector embeddings</div>
+      </div>
+    </div>
+    <div class="db-col">
+      <div class="db-col-head mongo">
+        <span>MongoDB + Beanie</span>
+        <span style="font-size:9px;opacity:.7">Angular Stack Only 🆕</span>
+      </div>
+      <div class="db-col-body">
+        <strong>What belongs here:</strong>
+        <div class="db-item"><span class="db-yes">✓</span> AI-generated scholarship reasoning</div>
+        <div class="db-item"><span class="db-yes">✓</span> Dynamic content (tags, categories)</div>
+        <div class="db-item"><span class="db-yes">✓</span> Application logs &amp; events</div>
+        <div class="db-item"><span class="db-yes">✓</span> Feature-rich data with evolving schemas</div>
+        <div class="db-item"><span class="db-yes">✓</span> Content not requiring cross-table joins</div>
+        <div class="db-item" style="margin-top:6px;"><span class="db-no">✗</span> Financial transactions or balances</div>
+        <div class="db-item"><span class="db-no">✗</span> Authentication or user credentials</div>
+        <div class="db-item"><span class="db-no">✗</span> Data requiring foreign key constraints</div>
+        <div class="db-item"><span class="db-no">✗</span> Vector embeddings</div>
+      </div>
+    </div>
+    <div class="db-col">
+      <div class="db-col-head chroma">
+        <span>ChromaDB</span>
+        <span style="font-size:9px;opacity:.7">FundsLink Only</span>
+      </div>
+      <div class="db-col-body">
+        <strong>What belongs here:</strong>
+        <div class="db-item"><span class="db-yes">✓</span> Scholarship document embeddings</div>
+        <div class="db-item"><span class="db-yes">✓</span> RAG context documents</div>
+        <div class="db-item"><span class="db-yes">✓</span> Eligibility scoring vectors</div>
+        <div class="db-item"><span class="db-yes">✓</span> Semantic similarity data</div>
+        <div class="db-item" style="margin-top:6px;"><span class="db-no">✗</span> Structured relational data</div>
+        <div class="db-item"><span class="db-no">✗</span> User data or credentials</div>
+        <div class="db-item"><span class="db-no">✗</span> Financial records</div>
+        <div class="db-item"><span class="db-no">✗</span> Document metadata (use Postgres)</div>
+      </div>
+    </div>
+  </div>
+
   <div class="structure-map">
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P1</span>Naming & Structure</div><div class="sm-items"><div class="sm-item">Plural table names</div><div class="sm-item">snake_case columns</div><div class="sm-item">UUID v7 primary keys</div><div class="sm-item">created_at/updated_at/version</div><div class="sm-item">deleted_at + deleted_by</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P2</span>Indexing</div><div class="sm-items"><div class="sm-item">FK indexes required</div><div class="sm-item">deleted_at indexed</div><div class="sm-item">Partial indexes for active</div><div class="sm-item">BRIN for time-series</div><div class="sm-item">Remove unused indexes</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P3</span>Integrity</div><div class="sm-items"><div class="sm-item">NOT NULL explicit</div><div class="sm-item">FK ON DELETE/UPDATE</div><div class="sm-item">No business logic in DB</div><div class="sm-item">RLS for multi-tenant</div><div class="sm-item">Exclusion constraints</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P4</span>Retention</div><div class="sm-items"><div class="sm-item">Audit: 90 days, partitioned</div><div class="sm-item">Soft-delete: 30 days</div><div class="sm-item">Sessions: +7 days</div><div class="sm-item">Failed attempts: 1 hour</div><div class="sm-item">Batch purges off-peak</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P5</span>Backup & Recovery</div><div class="sm-items"><div class="sm-item">Daily backups</div><div class="sm-item">30d daily / 12m monthly</div><div class="sm-item">RTO: 4 hours</div><div class="sm-item">RPO: 15 min (PITR)</div><div class="sm-item">Quarterly restore test</div><div class="sm-item">WAL archiving to S3</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P6</span>Security</div><div class="sm-items"><div class="sm-item">Encryption at rest</div><div class="sm-item">4 least-privilege roles</div><div class="sm-item">No public access</div><div class="sm-item">TLS/SSL verify-full</div><div class="sm-item">Secrets manager + rotation</div><div class="sm-item">Connection pooling</div><div class="sm-item">PII data masking</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P7</span>Migrations</div><div class="sm-items"><div class="sm-item">Timestamp prefix</div><div class="sm-item">Zero-downtime required</div><div class="sm-item">Destructive = approval</div><div class="sm-item">Idempotent seeds</div><div class="sm-item">lock_timeout = 2s</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P8</span>Observability</div><div class="sm-items"><div class="sm-item">Slow query logging (100ms)</div><div class="sm-item">Deadlock monitoring</div><div class="sm-item">Connection pool metrics</div><div class="sm-item">Table bloat detection</div></div></div>
-  </div>
-</div>
-
-<!-- PART 1: NAMING & STRUCTURE -->
-<hr class="divider"/>
-<div class="section-runner" id="part1">§ Part 1 — Naming & Structure (D1-D7a)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Consistent, self-documenting database schema with modern PostgreSQL features.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 1 / D1-D7a</span><span class="part-title">Naming & Structure</span><span class="part-desc">5 Critical · 2 High · 1 Medium</span></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D1</span><span class="rule-title">Table Names — Plural, snake_case</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Table names MUST be lowercase, snake_case, PLURAL (e.g., users, user_sessions, audit_logs). Junction tables use {singular}_{plural} format (e.g., user_organizations).</p><div class="rule-meta-grid"><div class="rule-meta-item"><span class="rule-meta-label">Violation</span><div class="rule-meta-val">User, userSession, AuditLogs</div></div><div class="rule-meta-item"><span class="rule-meta-label">Compliance</span><div class="rule-meta-val">users, user_sessions, audit_logs</div></div></div></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D2</span><span class="rule-title">Column Names — snake_case</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Column names MUST be lowercase, snake_case. Use @map() in Prisma to map camelCase field names to snake_case columns.</p><div class="rule-meta-grid"><div class="rule-meta-item"><span class="rule-meta-label">Violation</span><div class="rule-meta-val">createdAt, PasswordHash, userId</div></div><div class="rule-meta-item"><span class="rule-meta-label">Compliance</span><div class="rule-meta-val">created_at, password_hash, user_id</div></div></div></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D3</span><span class="rule-title">Primary Keys — UUID v7</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every table MUST have a primary key named id using UUID v7 (time-sortable UUID). Use @default(dbgenerated("gen_random_uuid()")) or uuid_generate_v7() extension.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> UUID v7 replaces cuid()/uuid() for time-sortability and better index performance.</div></div></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D4</span><span class="rule-title">Foreign Keys — {table}_id Format</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Foreign key columns MUST follow format: {singular_table_name}_id (e.g., user_id, session_id). Self-referential FKs use parent_{table}_id or {role}_{table}_id.</p></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D5</span><span class="rule-title">Required Timestamps + Version Column</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every table MUST have created_at, updated_at, AND version Int @default(1) for optimistic concurrency control.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> version column for optimistic locking.</div></div></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D6</span><span class="rule-title">Soft Delete — deleted_at + deleted_by</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Tables that require soft delete MUST have deleted_at AND deleted_by for audit trail. Required for user data and audit logs.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> deleted_by for audit compliance.</div></div></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D7</span><span class="rule-title">Boolean Column Naming</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Permanent states: active, verified, paid. Transient states: is_pending, is_processing. Existence: has_subscription, has_verified_email.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D7a</span><span class="rule-title">JSONB Column Standards</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Every JSON column MUST have a comment documenting expected structure. Use @db.JsonB for performance.</p></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 2: INDEXING -->
-<hr class="divider"/>
-<div class="section-runner" id="part2">§ Part 2 — Indexing Strategy (D8-D14a)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Performance without waste. Smart indexing for modern query patterns.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 2 / D8-D14a</span><span class="part-title">Indexing Strategy</span><span class="part-desc">2 Critical · 5 High · 1 Medium</span></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D8</span><span class="rule-title">Foreign Key Indexes</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every foreign key column MUST have an index. Multi-column FKs MUST be indexed in the same order.</p></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D9</span><span class="rule-title">Soft Delete Index</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every deleted_at column MUST have an index. Use partial index for active records: WHERE deleted_at IS NULL.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D10</span><span class="rule-title">Created At Index — Expression for Date Queries</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Use expression indexes for date truncation: CREATE INDEX idx_events_day ON events ((date_trunc('day', created_at))).</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D11</span><span class="rule-title">Remove Unused Indexes</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Indexes with idx_scan = 0 for 30 consecutive days MUST be removed.</p></div></div>
-
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">D12</span><span class="rule-title">Maximum Indexes Guideline</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Write-heavy tables (1000+ writes/sec): ≤5 indexes. Read-heavy: ≤10 indexes. Monitor dead tuple ratio.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D13</span><span class="rule-title">Composite Index Comments</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Composite indexes with 3+ columns MUST have a comment explaining column order and query pattern.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D14a</span><span class="rule-title">BRIN Indexes for Time-Series Data</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Tables with append-only time-series data (>1M rows) MUST use BRIN indexes instead of B-tree for timestamp columns.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> BRIN indexes use 10x less space for time-series data.</div></div></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 3: DATA INTEGRITY -->
-<hr class="divider"/>
-<div class="section-runner" id="part3">§ Part 3 — Data Integrity & Constraints (D15-D18b)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Data accuracy, consistency, and security at the database level.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 3 / D15-D18b</span><span class="part-title">Data Integrity & Constraints</span><span class="part-desc">4 Critical · 3 High</span></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D15</span><span class="rule-title">NOT NULL Constraints — Explicit</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">All columns that cannot be null MUST have explicit NOT NULL constraint. Prefer database-level NOT NULL over application validation.</p></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D16</span><span class="rule-title">FK ON DELETE and ON UPDATE Behaviors</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every foreign key MUST define BOTH onDelete AND onUpdate behaviors. Never leave default.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> onUpdate now required.</div></div></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D17</span><span class="rule-title">No Business Logic in Database</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Triggers, stored procedures, views with logic are FORBIDDEN. EXCEPTION: Immutable generated columns allowed for derived data.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D18</span><span class="rule-title">Check Constraints and PostgreSQL Enums</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Use PostgreSQL ENUM types for fixed value sets that rarely change. Use CHECK constraints for simple validations.</p></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D18a</span><span class="rule-title">Row-Level Security (RLS)</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Tables with multi-tenant data MUST implement Row-Level Security policies with current_setting('app.tenant_id').</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> RLS for multi-tenancy.</div></div></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D18b</span><span class="rule-title">Exclusion Constraints</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Use exclusion constraints with GiST indexes for non-overlapping ranges (bookings, reservations, time slots).</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Exclusion constraints prevent double-booking.</div></div></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 4: RETENTION -->
-<hr class="divider"/>
-<div class="section-runner" id="part4">§ Part 4 — Data Retention & Purging (D19-D23)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Controlled data growth, compliance, and performance.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 4 / D19-D23</span><span class="part-title">Data Retention & Purging</span><span class="part-desc">3 Critical · 2 High</span></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D19</span><span class="rule-title">Audit Log Retention with Partitioning</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Audit logs: 90 days retention. Security events: 1 year. MUST be partitioned by month for efficient purging.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> Partitioning required for audit logs.</div></div></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D20</span><span class="rule-title">Soft Delete Purge with Archival</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Soft-deleted records MUST be permanently purged after 30 days. Archive to S3/Glacier before deletion. Batch 1000 rows per transaction.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D21</span><span class="rule-title">Session Purge</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Expired sessions MUST be purged 7 days after expiry. Partition if exceeding 1M rows.</p></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D23</span><span class="rule-title">Purge Jobs Requirements</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every table with soft delete or time-based retention MUST have an automated idempotent purge job. Run off-peak, batch commits (≤1000 rows), with monitoring.</p></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 5: BACKUP & RECOVERY -->
-<hr class="divider"/>
-<div class="section-runner" id="part5">§ Part 5 — Backup & Recovery (D24-D29b)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Data durability, recoverability, and disaster readiness.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 5 / D24-D29b</span><span class="part-title">Backup & Recovery</span><span class="part-desc">2 Critical · 5 High · 1 Medium</span></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D24</span><span class="rule-title">Automated Daily Backups</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Automated daily backups MUST be configured for production database during lowest traffic period.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D25</span><span class="rule-title">Backup Retention — 30d Daily + 12m Monthly + Cross-Region</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Retention: 30 days daily, 12 months monthly snapshots. Copy to secondary region for DR.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D26</span><span class="rule-title">Recovery Time Objective (RTO): 4 Hours</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Database MUST be restored and validated within 4 hours of disaster declaration.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D27</span><span class="rule-title">Recovery Point Objective (RPO): 15 Minutes</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">RPO: 24 hours with daily backups, 15 minutes with PITR enabled.</p></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D28</span><span class="rule-title">Point-in-Time Recovery (PITR) Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">PITR MUST be enabled for production databases. Provides 15-minute RPO.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> PITR now critical requirement.</div></div></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D29</span><span class="rule-title">Backup Restoration Test — Quarterly</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Backup restoration test MUST be performed quarterly with data validation.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D29a</span><span class="rule-title">WAL Archiving</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">WAL MUST be archived to S3 or equivalent object storage for disaster recovery.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> WAL archiving to S3.</div></div></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 6: SECURITY -->
-<hr class="divider"/>
-<div class="section-runner" id="part6">§ Part 6 — Security & Encryption (D30-D34c)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Protect data from unauthorized access and ensure compliance.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 6 / D30-D34c</span><span class="part-title">Security & Encryption</span><span class="part-desc">6 Critical · 2 High</span></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D30</span><span class="rule-title">Encryption at Rest</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Database-level encryption at rest MUST be enabled for production. Use AWS KMS or equivalent.</p></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D31</span><span class="rule-title">Least Privilege Database Roles</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Minimum FOUR roles: app_user (CRUD), app_admin (elevated), migration_user (DDL), backup_user (read-only).</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> Added app_admin role.</div></div></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D32</span><span class="rule-title">No Public Database Access</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Production database MUST NOT have public IP address. Access only via VPC private subnet.</p></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D33</span><span class="rule-title">TLS/SSL Required — verify-full</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">All database connections MUST use TLS/SSL with sslmode=verify-full and certificate validation.</p></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D34</span><span class="rule-title">Secrets Management — Rotation Every 90 Days</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Database credentials MUST NOT be hardcoded. Use AWS Secrets Manager. Rotate every 90 days.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D34a</span><span class="rule-title">Query Audit Logging</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Production MUST log all DDL statements and queries from admin roles to a secure audit schema.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Query audit logging for DDL.</div></div></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D34b</span><span class="rule-title">Connection Pooling — PgBouncer</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Production MUST use connection pooling (PgBouncer in transaction mode). pool_size = core_count × 2.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Connection pooling required.</div></div></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D34c</span><span class="rule-title">Data Masking for PII</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">PII columns MUST have masking policies for non-admin application roles.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> PII data masking for GDPR/CCPA.</div></div></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 7: MIGRATIONS -->
-<hr class="divider"/>
-<div class="section-runner" id="part7">§ Part 7 — Migration & Seeding (D35-D38a)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Safe, repeatable, reversible schema changes with zero downtime.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 7 / D35-D38a</span><span class="part-title">Migration & Seeding</span><span class="part-desc">3 Critical · 2 High</span></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D35</span><span class="rule-title">Migration Naming — Timestamp Prefix</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Migration files MUST follow format: YYYYMMDDHHMMSS_description.sql (e.g., 20260408120000_add_users_table.sql).</p></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D36</span><span class="rule-title">Zero-Downtime Migrations</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">All migrations MUST be zero-downtime compatible using blue-green pattern. Document rollback for each step.</p><div class="callout callout-warn"><span class="callout-icon">⚡</span><div class="callout-body"><strong>v2.0 CHANGE:</strong> Zero-downtime required for all migrations.</div></div></div></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D37</span><span class="rule-title">Destructive Migration Approval</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Destructive migrations (DROP, TRUNCATE) REQUIRE tech lead approval, justification, rollback plan, and label.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D38</span><span class="rule-title">Seed Data — Idempotent, Realistic, Validated</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Seed data MUST be idempotent (upsert), realistic (Faker.js), and validated in CI.</p></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D38a</span><span class="rule-title">Migration Lock Timeout — 2 Seconds</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">All migrations MUST set lock_timeout = '2s' to prevent blocking production traffic.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> lock_timeout prevents blocking.</div></div></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 8: OBSERVABILITY -->
-<hr class="divider"/>
-<div class="section-runner" id="part8">§ Part 8 — Observability & Monitoring (D39-D42)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:11px;color:var(--muted);line-height:1.6">Database health visibility, performance optimization, and proactive alerting.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 8 / D39-D42</span><span class="part-title">Observability & Monitoring</span><span class="part-desc">1 Critical · 2 High · 1 Medium</span></div>
-
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">D39</span><span class="rule-title">Slow Query Logging — 100ms Threshold</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Production MUST log all queries exceeding 100ms. Aggregate weekly, review top 10 slow queries.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Slow query logging and review.</div></div></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D40</span><span class="rule-title">Deadlock Monitoring</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Deadlocks MUST be logged and monitored. Alert when rate exceeds 5 per minute or 10 per hour.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Deadlock monitoring and alerting.</div></div></div></div>
-
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">D41</span><span class="rule-title">Connection Pool Metrics</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Monitor active connections, idle connections, waiting clients. Alert when waiting > 10 or active > 80% of max.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Connection pool monitoring.</div></div></div></div>
-
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">D42</span><span class="rule-title">Table Bloat Detection</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Monitor table and index bloat weekly. Alert when dead tuple ratio exceeds 20%.</p><div class="callout callout-info"><span class="callout-icon">🆕</span><div class="callout-body"><strong>v2.0 ADDITION:</strong> Bloat detection and alerting.</div></div></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- FORBIDDEN PATTERNS -->
-<hr class="divider"/>
-<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (DF01-DF20)</div>
-<div class="part-section" style="padding: 24px 28px;">
-  <div class="callout callout-critical" style="margin-bottom:20px"><span class="callout-icon">■</span><div class="callout-body"><strong>20 patterns permanently banned.</strong> Each one has caused real production failures or data loss.</div></div>
-  <table class="fp-table">
-    <thead><tr><th width="8%">Code</th><th width="42%">Pattern</th><th width="32%">Why It's Banned</th><th width="18%">Rule</th></tr></thead>
-    <tbody>
-      <tr><td class="fp-code">DF01</td><td>Singular table names</td><td>Inconsistent, breaks conventions</td><td class="fp-ref">D1</td></tr>
-      <tr><td class="fp-code">DF02</td><td>camelCase column names</td><td>Requires quoting, inconsistent</td><td class="fp-ref">D2</td></tr>
-      <tr><td class="fp-code">DF03</td><td>Integer auto-increment or UUID v4 primary keys</td><td>Not time-sortable, poor index perf</td><td class="fp-ref">D3</td></tr>
-      <tr><td class="fp-code">DF04</td><td>Foreign key without index</td><td>Performance degradation on joins</td><td class="fp-ref">D8</td></tr>
-      <tr><td class="fp-code">DF05</td><td>Soft delete column without index</td><td>Slow queries filtering deleted_at</td><td class="fp-ref">D9</td></tr>
-      <tr><td class="fp-code">DF06</td><td>Unused indexes kept for >30 days</td><td>Wasted storage and write overhead</td><td class="fp-ref">D11</td></tr>
-      <tr><td class="fp-code">DF07</td><td>Triggers, stored procedures, views with logic</td><td>Business logic in wrong layer</td><td class="fp-ref">D17</td></tr>
-      <tr><td class="fp-code">DF08</td><td>No purge job for soft-deleted records</td><td>Unbounded table growth</td><td class="fp-ref">D20</td></tr>
-      <tr><td class="fp-code">DF09</td><td>No daily backups</td><td>Data loss risk</td><td class="fp-ref">D24</td></tr>
-      <tr><td class="fp-code">DF10</td><td>Public database access</td><td>Security vulnerability</td><td class="fp-ref">D32</td></tr>
-      <tr><td class="fp-code">DF11</td><td>Hardcoded database credentials</td><td>Security breach risk</td><td class="fp-ref">D34</td></tr>
-      <tr><td class="fp-code">DF12</td><td>Downtime-causing migrations</td><td>Production outages</td><td class="fp-ref">D36</td></tr>
-      <tr><td class="fp-code">DF13</td><td>Destructive migration without approval</td><td>Data loss without oversight</td><td class="fp-ref">D37</td></tr>
-      <tr><td class="fp-code">DF14</td><td>Production default admin passwords</td><td>Security vulnerability</td><td class="fp-ref">D38</td></tr>
-      <tr><td class="fp-code">DF15</td><td>Multi-tenant tables without RLS</td><td>Data leakage between tenants</td><td class="fp-ref">D18a</td></tr>
-      <tr><td class="fp-code">DF16</td><td>Missing ON UPDATE behavior for FKs</td><td>Referential integrity gaps</td><td class="fp-ref">D16</td></tr>
-      <tr><td class="fp-code">DF17</td><td>Production without PITR</td><td>Cannot recover to point in time</td><td class="fp-ref">D28</td></tr>
-      <tr><td class="fp-code">DF18</td><td>Direct connections without connection pooling</td><td>Connection exhaustion</td><td class="fp-ref">D34b</td></tr>
-      <tr><td class="fp-code">DF19</td><td>PII exposed in queries</td><td>GDPR/CCPA compliance violation</td><td class="fp-ref">D34c</td></tr>
-      <tr><td class="fp-code">DF20</td><td>No slow query monitoring</td><td>Performance degrades undetected</td><td class="fp-ref">D39</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- READINESS CHECKLIST -->
-<hr class="divider"/>
-<div class="section-runner">§ Annex B — Production Readiness Checklist</div>
-<div class="part-section" style="padding: 24px 28px;">
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-    <div><div class="checklist-section"><div class="cl-header"><span class="cl-tag">READY</span> Database Production — All Must Pass</div>
-      <div class="cl-group"><div class="cl-group-title">Naming & Structure</div>
-        <div class="cl-item"><div class="cl-box"></div>Plural, snake_case table names (D1)<div class="cl-ref">D1</div></div>
-        <div class="cl-item"><div class="cl-box"></div>UUID v7 primary keys (D3)<div class="cl-ref">D3</div></div>
-        <div class="cl-item"><div class="cl-box"></div>created_at + updated_at + version (D5)<div class="cl-ref">D5</div></div>
-        <div class="cl-item"><div class="cl-box"></div>deleted_at + deleted_by (D6)<div class="cl-ref">D6</div></div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">P1</span>Strategy · D1–D8</div>
+      <div class="sm-items">
+        <div class="sm-item">Three-database separation rule</div>
+        <div class="sm-item">PostgreSQL = relational source of truth</div>
+        <div class="sm-item">MongoDB = document data (Angular only)</div>
+        <div class="sm-item">ChromaDB = vectors only (FundsLink)</div>
+        <div class="sm-item">Never mix data types across DBs</div>
+        <div class="sm-item">Cross-DB refs use PostgreSQL cuid</div>
       </div>
-      <div class="cl-group"><div class="cl-group-title">Indexing</div>
-        <div class="cl-item"><div class="cl-box"></div>All foreign keys have indexes (D8)<div class="cl-ref">D8</div></div>
-        <div class="cl-item"><div class="cl-box"></div>deleted_at indexed (D9)<div class="cl-ref">D9</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Unused indexes removed (D11)<div class="cl-ref">D11</div></div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">P2+P3</span>PostgreSQL + MongoDB · D9–D38</div>
+      <div class="sm-items">
+        <div class="sm-item">Prisma schema = canonical relational source</div>
+        <div class="sm-item">id/created_at/updated_at on all tables</div>
+        <div class="sm-item">Soft delete everywhere — never hard delete</div>
+        <div class="sm-item">SELECT * is forbidden — explicit select</div>
+        <div class="sm-item">Beanie ODM for all MongoDB access</div>
+        <div class="sm-item">MongoDB: timestamps, soft delete, indexes</div>
       </div>
-      <div class="cl-group"><div class="cl-group-title">Integrity & Retention</div>
-        <div class="cl-item"><div class="cl-box"></div>All NOT NULL explicit (D15)<div class="cl-ref">D15</div></div>
-        <div class="cl-item"><div class="cl-box"></div>All FKs have onDelete + onUpdate (D16)<div class="cl-ref">D16</div></div>
-        <div class="cl-item"><div class="cl-box"></div>RLS for multi-tenant tables (D18a)<div class="cl-ref">D18a</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Audit logs partitioned (D19)<div class="cl-ref">D19</div></div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">P4+P5</span>ChromaDB + Cross-DB · D39–D58</div>
+      <div class="sm-items">
+        <div class="sm-item">Separate container — never co-located</div>
+        <div class="sm-item">Read-only from AI service</div>
+        <div class="sm-item">Similarity threshold ≥ 0.7</div>
+        <div class="sm-item">Explicit cross-DB sync tested</div>
+        <div class="sm-item">Migrations run before service starts</div>
+        <div class="sm-item">Zero-downtime migration strategy</div>
       </div>
-    </div></div>
-    <div><div class="checklist-section"><div class="cl-header"><span class="cl-tag">READY</span> Security & Observability</div>
-      <div class="cl-group"><div class="cl-group-title">Backup & Recovery</div>
-        <div class="cl-item"><div class="cl-box"></div>Daily backups enabled (D24)<div class="cl-ref">D24</div></div>
-        <div class="cl-item"><div class="cl-box"></div>PITR enabled for production (D28)<div class="cl-ref">D28</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Quarterly restore test passes (D29)<div class="cl-ref">D29</div></div>
-      </div>
-      <div class="cl-group"><div class="cl-group-title">Security</div>
-        <div class="cl-item"><div class="cl-box"></div>Encryption at rest enabled (D30)<div class="cl-ref">D30</div></div>
-        <div class="cl-item"><div class="cl-box"></div>4 least-privilege roles configured (D31)<div class="cl-ref">D31</div></div>
-        <div class="cl-item"><div class="cl-box"></div>No public database access (D32)<div class="cl-ref">D32</div></div>
-        <div class="cl-item"><div class="cl-box"></div>TLS/SSL verify-full (D33)<div class="cl-ref">D33</div></div>
-        <div class="cl-item"><div class="cl-box"></div>PgBouncer connection pooling (D34b)<div class="cl-ref">D34b</div></div>
-      </div>
-      <div class="cl-group"><div class="cl-group-title">Observability</div>
-        <div class="cl-item"><div class="cl-box"></div>Slow query logging active (D39)<div class="cl-ref">D39</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Deadlock monitoring active (D40)<div class="cl-ref">D40</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Connection pool metrics dashboard (D41)<div class="cl-ref">D41</div></div>
-      </div>
-    </div></div>
+    </div>
   </div>
 </div>
 
-<!-- LOCK FOOTER -->
-<div class="lock-section">
+<!-- ══════════════════════════════════════════ PART 1: STRATEGY ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p1">§ Part 1 — Database Strategy &amp; Assignment (D1–D8)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Flagship System → DB Map</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">FundsLink</span> PG + Mongo + Chroma</li>
+          <li><span class="rn">Reserve Bank</span> PG + Mongo + Redis</li>
+          <li><span class="rn">Maphophe</span> PG only</li>
+          <li><span class="rn">SyncUp</span> PG + Redis</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Decision Rule</div>
+        <div style="font-size:11.5px;color:var(--muted);line-height:1.8;">
+          <strong style="color:var(--ink)">Use PostgreSQL when:</strong><br>
+          Needs ACID · has relations · financial · auth<br><br>
+          <strong style="color:var(--ink)">Use MongoDB when:</strong><br>
+          AI output · dynamic schema · logs · no joins<br><br>
+          <strong style="color:var(--ink)">Use ChromaDB when:</strong><br>
+          Vector similarity · RAG · embeddings only
+        </div>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner">
+        <span class="part-num">PART 1 / D1–D8</span>
+        <span class="part-title">Database Strategy &amp; Assignment</span>
+        <span class="part-desc">5 Critical · 3 High · Both Stacks</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D1</span><span class="rule-title">Three-Database Separation — One Purpose Per Database Type</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Three distinct database types serve three distinct purposes. PostgreSQL for structured relational data with ACID guarantees. MongoDB for flexible document data without rigid schemas (Angular stack only). ChromaDB for vector embeddings and semantic similarity (FundsLink only). Data that belongs to one type must never be stored in another.</p>
+          <div class="callout callout-critical">
+            <span class="callout-icon">!</span>
+            <div class="callout-body"><strong>Hardest violation to fix:</strong> Once financial data gets into MongoDB or embeddings get into PostgreSQL, untangling it in production is expensive and risky. Enforce at schema design time — never at migration time.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D2</span><span class="rule-title">PostgreSQL Is the System of Record — All Entities Originate Here</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every core entity (user, student, funder, resident, account holder, creator) is first created and owned by PostgreSQL. MongoDB documents and ChromaDB embeddings may reference these entities but are subordinate. If PostgreSQL and MongoDB ever conflict on the same entity, PostgreSQL wins.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D3</span><span class="rule-title">Financial Data in PostgreSQL Only — Never MongoDB</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">All financial data — account balances, transaction amounts, deposit schedules, interest rates, lock periods — must live exclusively in PostgreSQL. MongoDB's eventual consistency and lack of native ACID multi-document transactions make it structurally unsuitable for financial records. This rule is absolute with no exceptions.</p>
+          <div class="compare-row">
+            <div class="compare-block compare-bad"><div class="compare-label">❌ Never — Financial in MongoDB</div><pre>deposits_collection {
+  amount: <span class="cn">5000</span>,        <span class="cc">// financial</span>
+  balance: <span class="cn">12500</span>,      <span class="cc">// financial</span>
+  interest_rate: <span class="cn">0.05</span>  <span class="cc">// financial</span>
+}</pre></div>
+            <div class="compare-block compare-good"><div class="compare-label">✅ Correct — Financial in PostgreSQL</div><pre>deposits table (Prisma) {
+  id, amount, balance,
+  interest_rate,
+  created_at, deleted_at
+}</pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D4</span><span class="rule-title">Authentication Data in PostgreSQL Only</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">All authentication and identity data — user credentials, password hashes, JWT refresh tokens, reset tokens, email verification tokens, sessions — must live in PostgreSQL. Authentication requires ACID consistency to prevent race conditions in token validation and session management.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D5</span><span class="rule-title">Cross-Database References Use PostgreSQL cuid — Not ObjectIDs</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">When a MongoDB document or ChromaDB embedding references a user or entity that exists in PostgreSQL, the reference field stores the PostgreSQL <code>cuid</code> string. Never use a MongoDB ObjectID as a cross-database foreign reference. This keeps PostgreSQL as the unambiguous system of record and simplifies join queries at the application layer.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">MongoDB reference field</span><div class="rule-meta-val"><code>student_id: str</code> stores PostgreSQL cuid e.g. <code>clx7...</code></div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">ChromaDB metadata</span><div class="rule-meta-val"><code>{"user_id": "clx7..."}</code> in document metadata</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D6</span><span class="rule-title">Database Selection Decision Must Be Documented at Design Time</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every new data entity must have its database destination documented in the system design before schema work begins. The design doc must answer: relational joins needed? ACID required? Schema fixed or dynamic? AI-generated content? The answer determines the database. No ad-hoc database decisions at implementation time.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D7</span><span class="rule-title">No Direct Database Access from Frontend — Always Through Backend</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">The browser never connects directly to PostgreSQL, MongoDB, or ChromaDB. All database access goes through the backend service layer — Next.js API routes (Next.js stack) or FastAPI (Angular stack). No client-side Prisma, no client-side MongoDB driver, no direct ChromaDB HTTP calls from Angular.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D8</span><span class="rule-title">Soft Delete on All Databases — Never Hard Delete in Production</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">No production record is ever permanently deleted. PostgreSQL uses <code>deleted_at DateTime?</code> via Prisma. MongoDB uses <code>deletedAt: Date</code> via Beanie. ChromaDB documents are archived, not deleted. All queries default-filter records where <code>deleted_at IS NULL</code>. Hard deletes require a documented admin process and are never triggered by user actions.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 2: POSTGRESQL ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p2">§ Part 2 — PostgreSQL &amp; Prisma Rules (D9–D24)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Required on Every Table</div>
+        <div style="font-family:var(--mono);font-size:10px;line-height:1.9;color:var(--muted);">
+          id &nbsp;&nbsp;&nbsp;&nbsp; String @id @default(cuid())<br>
+          created_at DateTime @default(now())<br>
+          updated_at DateTime @updatedAt<br>
+          deleted_at DateTime?
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Never Expose These</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">❌</span> password_hash</li>
+          <li><span class="rn">❌</span> reset_token</li>
+          <li><span class="rn">❌</span> refresh_token</li>
+          <li><span class="rn">❌</span> deleted_at</li>
+          <li><span class="rn">❌</span> internal_notes</li>
+          <li><span class="rn">❌</span> Two-factor secrets</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Query Rules</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✓</span> Explicit select on every query</li>
+          <li><span class="rn">✓</span> Where deleted_at IS NULL</li>
+          <li><span class="rn">✓</span> Indexes on all FK fields</li>
+          <li><span class="rn">✓</span> Pagination on all list queries</li>
+          <li><span class="rn">✗</span> SELECT * — never</li>
+          <li><span class="rn">✗</span> Unbounded list queries</li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner">
+        <span class="part-num">PART 2 / D9–D24</span>
+        <span class="part-title">PostgreSQL &amp; Prisma</span>
+        <span class="part-desc">10 Critical · 6 High · Both Stacks</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D9</span><span class="rule-title">Prisma Schema Is the Single Source of Truth — All Changes Through Migrations</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">The Prisma schema file is the authoritative definition of all PostgreSQL tables. All schema changes go through <code>prisma migrate dev</code> (development) or <code>prisma migrate deploy</code> (production). No manual SQL DDL changes. No ad-hoc <code>ALTER TABLE</code>. Raw SQL is allowed only for complex aggregates or recursive CTEs, with a comment explaining why Prisma is insufficient.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D10</span><span class="rule-title">Required Fields on Every Table — id, created_at, updated_at, deleted_at</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every Prisma model must define four base fields: <code>id String @id @default(cuid())</code>, <code>created_at DateTime @default(now())</code>, <code>updated_at DateTime @updatedAt</code>, <code>deleted_at DateTime?</code>. A Prisma schema linter in CI fails the build if any model is missing these fields.</p>
+          <div class="code-block">
+            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">schema.prisma — base model pattern</div></div>
+            <pre><span class="ck">model</span> <span class="ct">User</span> {
+  id         <span class="ct">String</span>    @id @default(cuid())
+  created_at <span class="ct">DateTime</span>  @default(now())
+  updated_at <span class="ct">DateTime</span>  @updatedAt
+  deleted_at <span class="ct">DateTime</span>?              <span class="cc">// soft delete</span>
+
+  <span class="cc">// domain fields below</span>
+  email      <span class="ct">String</span>    @unique
+  role       <span class="ct">Role</span>      @default(USER)
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D11</span><span class="rule-title">No SELECT * — Explicit select on Every Prisma Query</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every <code>prisma.model.findMany()</code>, <code>findFirst()</code>, and <code>findUnique()</code> must include an explicit <code>select</code> object listing only the fields required. Never call these methods without a <code>select</code> clause. This prevents accidental exposure of sensitive fields and reduces payload size.</p>
+          <div class="compare-row">
+            <div class="compare-block compare-bad"><div class="compare-label">❌ Exposes password_hash, tokens</div><pre>prisma.user.<span class="cf">findMany</span>()
+<span class="cc">// returns ALL columns including secrets</span></pre></div>
+            <div class="compare-block compare-good"><div class="compare-label">✅ Only safe fields returned</div><pre>prisma.user.<span class="cf">findMany</span>({
+  select: { id: <span class="ck">true</span>, email: <span class="ck">true</span>,
+            name: <span class="ck">true</span>, role: <span class="ck">true</span> },
+  where: { deleted_at: <span class="ck">null</span> }
+})</pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D12</span><span class="rule-title">All Queries Filter deleted_at: null by Default</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every query on a soft-deletable model must include <code>where: { deleted_at: null }</code> unless explicitly fetching deleted records for admin purposes. Implement a Prisma middleware that automatically appends this filter to all queries, preventing accidental inclusion of soft-deleted records.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D13</span><span class="rule-title">Foreign Key Indexes — Every FK Field Has an Index</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every foreign key field in the Prisma schema must have an explicit <code>@@index</code> or <code>@index</code> annotation. Unindexed foreign keys cause full table scans on join queries. The Prisma schema linter in CI checks that all FK fields have indexes defined.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D14</span><span class="rule-title">Pagination on All List Queries — No Unbounded Results</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every query that returns a list of records must include <code>take</code> and <code>skip</code> (or cursor-based pagination). Default page size is 20 records. Maximum page size is 100 records. Never return an unbounded result set regardless of how few records currently exist — the data will grow.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D15</span><span class="rule-title">Transactions for Multi-Step Writes — prisma.$transaction()</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Any operation that writes to multiple tables must use <code>prisma.$transaction([])</code>. Never issue sequential writes without a transaction wrapper when partial failure would leave the database in an inconsistent state. This is especially critical for Reserve Bank deposit operations, FundsLink application submissions, and SyncUp pitch-to-subscription flows.</p>
+          <div class="code-block">
+            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">reserve-bank: deposit + balance update</div></div>
+            <pre><span class="cc">// Both writes succeed or both roll back</span>
+<span class="ck">await</span> prisma.<span class="cf">$transaction</span>([
+  prisma.deposit.<span class="cf">create</span>({ data: depositData }),
+  prisma.account.<span class="cf">update</span>({
+    where: { id: accountId },
+    data: { balance: { increment: amount } }
+  })
+]);</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D16</span><span class="rule-title">Never Expose Sensitive Fields — Explicit Exclusion List</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">The following fields must never appear in any API response: <code>password_hash</code>, <code>reset_token</code>, <code>refresh_token</code>, <code>two_factor_secret</code>, <code>deleted_at</code>, <code>internal_notes</code>. The explicit <code>select</code> rule (D11) is the enforcement mechanism — never select these fields.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D17</span><span class="rule-title">Audit Log on Every State Change</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every write operation that changes state (create, update, soft delete) must be accompanied by an audit log entry in the <code>AuditLog</code> table. The log captures: entity type, entity id, action, actor id, IP address, and timestamp. Implemented as a Prisma middleware or FastAPI service layer decorator.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D18</span><span class="rule-title">Connection Pooling — PgBouncer or Prisma Accelerate in Production</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Production PostgreSQL connections must go through a connection pooler. Next.js stack on Vercel uses Prisma Accelerate or a PgBouncer-enabled connection string. Angular stack on Railway uses Railway's built-in connection pooling. Direct unbuffered connections in serverless/edge environments exhaust the PostgreSQL connection limit under load.</p>
+          <div class="stack-diff">
+            <div class="stack-diff-col">
+              <div class="stack-diff-head nj">Next.js Stack (Vercel)</div>
+              <div class="stack-diff-body">Use Prisma Accelerate or PgBouncer URL. Set <code>connection_limit=1</code> in Prisma datasource for serverless environments.</div>
+            </div>
+            <div class="stack-diff-col">
+              <div class="stack-diff-head ang">Angular Stack (Railway)</div>
+              <div class="stack-diff-body">Railway managed Postgres includes PgBouncer. Use the Railway pooled connection URL in FastAPI <code>DATABASE_URL</code> env variable.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D19</span><span class="rule-title">Migration Rollback Plan — Every Migration Has a Down Migration</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every production migration must have a documented rollback strategy before it is deployed. For additive migrations (add column, add table), document the <code>ALTER TABLE DROP COLUMN</code> or <code>DROP TABLE</code> equivalent. For data migrations, document the reverse transform. The rollback plan is reviewed and approved in the same PR as the migration.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D20</span><span class="rule-title">Zero-Downtime Migrations — Additive First, Remove Later</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Schema changes that could cause downtime must be performed in phases. Phase 1: add the new column/table as optional (deploy, verify). Phase 2: backfill data. Phase 3: make required and remove the old column in a follow-up deploy. Never rename or drop a column in the same migration that adds the replacement.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D21</span><span class="rule-title">No Raw SQL for Standard CRUD — Prisma ORM Only</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Standard create, read, update, and soft delete operations must use Prisma ORM methods. <code>prisma.$queryRaw</code> and <code>prisma.$executeRaw</code> are permitted only for: complex aggregates, recursive CTEs, or queries that Prisma cannot express. Every raw SQL usage requires a comment: <code>// RAW SQL: [reason Prisma is insufficient]</code>.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D22</span><span class="rule-title">Enum Types in Prisma — Never Free-Text Status Fields</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Status, type, and role fields with a fixed set of values must be defined as Prisma <code>enum</code> types, never as free-text string fields. This enforces valid values at the schema level and generates TypeScript enums for type safety throughout the codebase.</p>
+          <div class="compare-row">
+            <div class="compare-block compare-bad"><div class="compare-label">❌ Free-text status — no safety</div><pre>status <span class="ct">String</span>  <span class="cc">// "pending"? "PENDING"? "Pending"?</span></pre></div>
+            <div class="compare-block compare-good"><div class="compare-label">✅ Enum — enforced at schema level</div><pre><span class="ck">enum</span> <span class="ct">ApplicationStatus</span> {
+  PENDING APPROVED REJECTED WITHDRAWN
+}
+status <span class="ct">ApplicationStatus</span> @default(PENDING)</pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D23</span><span class="rule-title">Database Backups — Automated Daily, Verified Weekly</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Production PostgreSQL databases must have automated daily backups configured. Railway managed Postgres includes automated backups — verify the retention period is set to minimum 7 days. Perform a test restore from backup weekly in the staging environment to confirm backup integrity.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D24</span><span class="rule-title">Seed Data — Separate from Migrations, Idempotent</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Seed data (test users, default roles, sample records) lives in <code>prisma/seed.ts</code> — never in migrations. Seed scripts must be idempotent: running them multiple times produces the same result without errors or duplicates. Production seeds contain only system defaults — never test data.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 3: MONGODB ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p3">§ Part 3 — MongoDB &amp; Beanie ODM (D25–D38) · NEW IN v3.0 · Angular Stack Only</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Scope</div>
+        <div style="font-size:11.5px;color:var(--muted);line-height:1.7;">
+          Rules D25–D38 apply ONLY to:<br>
+          — <strong>FundsLink Academy</strong><br>
+          — <strong>KSDRILL Reserve Bank</strong><br><br>
+          Next.js systems (Maphophe, SyncUp) do not use MongoDB. Rules D25–D38 do not apply to them.
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">ODM — Beanie (Python)</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">ODM</span> Beanie (Pydantic + Motor)</li>
+          <li><span class="rn">Alt</span> Mongoengine — acceptable</li>
+          <li><span class="rn">✗</span> Raw Motor driver — forbidden</li>
+          <li><span class="rn">✗</span> PyMongo direct — forbidden</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Required on Every Document</div>
+        <div style="font-family:var(--mono);font-size:10px;line-height:1.9;color:var(--muted);">
+          _id: ObjectId (auto Beanie)<br>
+          createdAt: datetime (auto)<br>
+          updatedAt: datetime (auto)<br>
+          deletedAt: Optional[datetime]
+        </div>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner mongo-banner">
+        <span class="part-num">PART 3 / D25–D38 · NEW</span>
+        <span class="part-title">MongoDB &amp; Beanie ODM</span>
+        <span class="part-desc">Angular Stack Only — FundsLink · Reserve Bank</span>
+      </div>
+
+      <div class="callout callout-new">
+        <span class="callout-icon">+</span>
+        <div class="callout-body"><strong>New in v3.0:</strong> Part 3 is entirely new. MongoDB + Beanie is the document database for the Angular stack. All 14 rules in this section are new. Rules D25–D38 are additive to the overall system — they do not replace or override any PostgreSQL rules. Both databases operate simultaneously on Angular systems.</div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D25</span><span class="rule-title">Beanie ODM for All MongoDB Access — No Raw Motor or PyMongo</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">All MongoDB access must go through Beanie ODM (Pydantic-based async ODM for Motor). Never use the raw Motor async driver or PyMongo synchronous driver directly in production code. Beanie provides schema validation, type safety, and consistent query patterns that match the rest of the FastAPI/Pydantic ecosystem.</p>
+          <div class="code-block">
+            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">models/scholarship_match.py — Beanie document model</div></div>
+            <pre><span class="ck">from</span> beanie <span class="ck">import</span> Document, Indexed
+<span class="ck">from</span> pydantic <span class="ck">import</span> Field
+<span class="ck">from</span> datetime <span class="ck">import</span> datetime
+<span class="ck">from</span> typing <span class="ck">import</span> Optional, List
+
+<span class="ck">class</span> <span class="ct">ScholarshipMatch</span>(Document):
+    student_id: <span class="ct">Indexed</span>(<span class="ct">str</span>)             <span class="cc"># PostgreSQL cuid ref (D5)</span>
+    match_score: <span class="ct">float</span>
+    matched_scholarships: List[<span class="ct">str</span>]      <span class="cc"># scholarship ids</span>
+    ai_reasoning: <span class="ct">str</span>                    <span class="cc"># AI-generated content</span>
+    created_at: <span class="ct">datetime</span> = Field(default_factory=datetime.utcnow)
+    updated_at: <span class="ct">datetime</span> = Field(default_factory=datetime.utcnow)
+    deleted_at: Optional[<span class="ct">datetime</span>] = <span class="ck">None</span>  <span class="cc"># D35: soft delete</span>
+
+    <span class="ck">class</span> <span class="ct">Settings</span>:
+        name = <span class="cs">"scholarship_matches"</span>
+        use_state_management = <span class="ck">True</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D26</span><span class="rule-title">Every Document Schema Defined Before Collection Use</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">A Beanie document class must be defined and registered at FastAPI startup before any document is written to a collection. Never write to a MongoDB collection without a corresponding Beanie schema. Collections without schemas are read-only legacy data — new writes always require a schema.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D27</span><span class="rule-title">Required Fields on Every Document — created_at, updated_at, deleted_at</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">Every Beanie document model must include: <code>created_at: datetime</code> (auto-set), <code>updated_at: datetime</code> (auto-updated), <code>deleted_at: Optional[datetime] = None</code>. These mirror the PostgreSQL required fields (D10) and ensure consistent temporal tracking across both databases.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D28</span><span class="rule-title">Cross-Database Reference Field Naming Convention</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">Fields in MongoDB documents that reference PostgreSQL entities follow the naming convention <code>{entity}_id: str</code> — e.g., <code>student_id</code>, <code>account_id</code>, <code>funder_id</code>. The value stored is always the PostgreSQL <code>cuid</code> string. Type annotation is <code>Indexed(str)</code> (Beanie indexed field) to enable efficient lookups.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D29</span><span class="rule-title">Explicit Indexes on All Query Fields</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">Every MongoDB field used in a query predicate must have an explicit index defined in the Beanie schema using <code>Indexed(type)</code> or <code>@@index</code>. Collection scans are forbidden in production. CI includes a query plan analyser that fails on <code>COLLSCAN</code> in the slow query log.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">Single field index</span><div class="rule-meta-val"><code>student_id: Indexed(str)</code></div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Compound index</span><div class="rule-meta-val"><code>@pymongo.operations.IndexModel([("student_id", 1), ("match_score", -1)])</code></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D30</span><span class="rule-title">Pagination on All MongoDB List Queries — No Unbounded Finds</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">Every MongoDB query returning a list must use <code>.limit(n).skip(offset)</code> or Beanie's built-in pagination. Default limit is 20. Maximum limit is 100. Never call <code>Document.find_all()</code> without a limit in production queries. Unbounded queries are forbidden.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D31</span><span class="rule-title">AI-Generated Content Validation — Pydantic Before Storage</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">All AI-generated content (LangChain outputs, scholarship reasoning, eligibility explanations) must be validated through a Pydantic model before being stored in MongoDB. Never store raw LangChain output strings directly. Define a structured output schema for each AI task and validate the response before persistence.</p>
+          <div class="compare-row">
+            <div class="compare-block compare-bad"><div class="compare-label">❌ Raw LangChain string stored</div><pre>await ScholarshipMatch.<span class="cf">insert</span>({
+  ai_reasoning: langchain_response  <span class="cc"># unvalidated</span>
+})</pre></div>
+            <div class="compare-block compare-good"><div class="compare-label">✅ Validated through Pydantic first</div><pre>validated = <span class="ct">AIReasoningSchema</span>.<span class="cf">parse</span>(
+  langchain_response
+)
+await ScholarshipMatch.<span class="cf">insert</span>(validated)</pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D32</span><span class="rule-title">MongoDB Connection Pooling — Motor Async Client at Startup</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">The MongoDB Motor async client initialises once at FastAPI startup and is reused across all requests. Never create a new Motor client per request. Configure the connection pool with a minimum of 5 and maximum of 20 connections. Store the client in FastAPI application state.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D33</span><span class="rule-title">No Multi-Document Transactions for Financial Data — Use PostgreSQL</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">MongoDB 4.x supports multi-document ACID transactions, but they are to be avoided for financial data. If an operation requires multi-document atomicity on financial data, that data belongs in PostgreSQL. MongoDB transactions are permitted only for coordinating writes to multiple document collections of non-financial, non-critical data.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D34</span><span class="rule-title">Collection Naming — snake_case Plural Nouns</span><span class="sev-badge sev-new">New · Medium</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">MongoDB collection names use <code>snake_case</code> plural nouns defined in the Beanie <code>Settings.name</code>. Examples: <code>scholarship_matches</code>, <code>application_logs</code>, <code>ai_reasoning_cache</code>. Never use camelCase, PascalCase, or singular nouns for collection names.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D35</span><span class="rule-title">Soft Delete on MongoDB — deletedAt, Never Hard Delete</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">MongoDB documents follow the same soft delete pattern as PostgreSQL. Set <code>deleted_at = datetime.utcnow()</code> instead of calling <code>document.delete()</code>. All queries include <code>deleted_at=None</code> in the filter. Implement a Beanie before-find hook that automatically appends this filter to all standard queries.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D36</span><span class="rule-title">MongoDB Backups — Automated Daily via Railway or mongodump</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">Production MongoDB instances must have automated daily backups. Use Railway's managed MongoDB backup feature or a scheduled <code>mongodump</code> to object storage. Minimum retention period is 7 days. Perform a test restore monthly in staging to verify backup integrity.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D37</span><span class="rule-title">Environment-Specific MongoDB URIs — Never Shared Across Environments</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">Development, staging, and production MongoDB instances are completely separate. The production <code>MONGODB_URI</code> must never be used in development or CI environments. Each environment has its own database cluster, access credentials, and Railway service. Cross-environment data contamination is a critical security violation.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">D38</span><span class="rule-title">MongoDB Schema Versioning — Version Field on Evolving Documents</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">Document schemas that are expected to evolve over time must include a <code>schema_version: int = Field(default=1)</code> field. When the schema changes, increment the version. Migration scripts read the version field to apply the correct transformation. This enables backward-compatible reads of older documents alongside new ones.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 4: CHROMADB ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p4">§ Part 4 — ChromaDB &amp; Vector Storage (D39–D46) · FundsLink Only</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Scope</div>
+        <div style="font-size:11.5px;color:var(--muted);line-height:1.7;">
+          ChromaDB applies ONLY to:<br>
+          — <strong>FundsLink Academy</strong><br><br>
+          Scholarship eligibility matching and RAG pipeline. No other system uses ChromaDB in v1.
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">ChromaDB Rules</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✓</span> Separate container always</li>
+          <li><span class="rn">✓</span> Read-only from AI service</li>
+          <li><span class="rn">✓</span> Write: admin process only</li>
+          <li><span class="rn">✓</span> Similarity ≥ 0.7 enforced</li>
+          <li><span class="rn">✓</span> Metadata = PG cuid refs</li>
+          <li><span class="rn">✗</span> Co-locate with FastAPI</li>
+          <li><span class="rn">✗</span> Store user data here</li>
+          <li><span class="rn">✗</span> Return results below 0.7</li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner" style="background:#5a67d8;">
+        <span class="part-num">PART 4 / D39–D46</span>
+        <span class="part-title">ChromaDB — Vector Storage</span>
+        <span class="part-desc">FundsLink Academy Only · RAG Pipeline</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D39</span><span class="rule-title">ChromaDB in Separate Container — Never Co-Located</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — FUNDSLINK ONLY</span></div>
+          <p class="rule-statement">ChromaDB runs as a standalone container separate from the FastAPI application container. Never bundle ChromaDB inside the FastAPI container. The ChromaDB HTTP client in FastAPI connects to this separate container via a service URL. This isolation allows ChromaDB to be scaled, restarted, and maintained independently.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D40</span><span class="rule-title">AI Service Has Read-Only Access to ChromaDB</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — FUNDSLINK ONLY</span></div>
+          <p class="rule-statement">The FastAPI AI service connects to ChromaDB in read-only mode. Embedding ingestion (adding new scholarship documents) is a separate admin-triggered process — never a real-time user-triggered operation. The ChromaDB access token used by the AI service has query-only permissions.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D41</span><span class="rule-title">Similarity Threshold — Minimum 0.7, Empty Result if None Qualify</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — FUNDSLINK ONLY</span></div>
+          <p class="rule-statement">All ChromaDB similarity queries must specify a minimum distance threshold equivalent to a similarity score of 0.7. Results below this threshold are discarded before returning. If no results meet the threshold, return an empty array with a clear "no matches found" message — never return low-confidence results to users.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D42</span><span class="rule-title">ChromaDB Metadata Uses PostgreSQL cuids as References</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — FUNDSLINK ONLY</span></div>
+          <p class="rule-statement">Document metadata stored in ChromaDB must use PostgreSQL cuid strings to reference scholarships and funders. Format: <code>{"scholarship_id": "clx7...", "funder_id": "clx8..."}</code>. Never store user PII (names, emails, ID numbers) in ChromaDB metadata — only system identifiers.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D43</span><span class="rule-title">Embedding Ingestion Is Admin-Triggered — Not User-Triggered</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — FUNDSLINK ONLY</span></div>
+          <p class="rule-statement">Adding new scholarship documents to ChromaDB (embedding ingestion) is triggered by an admin action — never automatically on every scholarship record creation. Ingestion runs as a batch process: admin approves scholarship → triggers ingestion pipeline → ChromaDB updated. This prevents unbounded real-time embedding generation.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D44</span><span class="rule-title">ChromaDB Collections Named by Domain — One Collection per Concern</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — FUNDSLINK ONLY</span></div>
+          <p class="rule-statement">ChromaDB collections are named by domain concern: <code>scholarships</code>, <code>bursaries</code>, <code>seta_funds</code>. Never use a single catch-all collection. One collection per distinct document type enables independent scaling, versioning, and re-indexing of each funding category.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D45</span><span class="rule-title">ChromaDB Backup — Weekly Export to Object Storage</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — FUNDSLINK ONLY</span></div>
+          <p class="rule-statement">ChromaDB data must be exported weekly to object storage (S3 or equivalent). Embeddings can be regenerated from source documents but regeneration is expensive. A weekly backup prevents full regeneration after data loss. Store the backup alongside the source document IDs so the collection can be rebuilt without re-running the full ingestion pipeline.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D46</span><span class="rule-title">No User PII in ChromaDB — Identifiers Only</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — FUNDSLINK ONLY</span></div>
+          <p class="rule-statement">ChromaDB must never store personally identifiable information: no names, emails, ID numbers, addresses, or financial details. Only system-generated identifiers (PostgreSQL cuids) and non-personal metadata (scholarship type, funding amount category, academic field) are stored in ChromaDB. PII belongs in PostgreSQL with proper access controls.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 5: CROSS-DB & MIGRATIONS ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p5">§ Part 5 — Cross-Database Coordination &amp; Migrations (D47–D58)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Migration Sequence</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">1st</span> Run prisma migrate deploy</li>
+          <li><span class="rn">2nd</span> Verify migration success</li>
+          <li><span class="rn">3rd</span> Start application server</li>
+          <li><span class="rn">4th</span> Run health check /health</li>
+          <li><span class="rn">5th</span> Accept traffic</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Cross-DB Sync Triggers</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">PG→CDB</span> Profile update → re-embed</li>
+          <li><span class="rn">PG→MDB</span> Application → AI reasoning</li>
+          <li><span class="rn">MDB→PG</span> AI match → status update</li>
+          <li><span class="rn">TEST</span> Integration test verifies each</li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner new-banner">
+        <span class="part-num">PART 5 / D47–D58</span>
+        <span class="part-title">Cross-Database &amp; Migrations</span>
+        <span class="part-desc">Both Stacks · Coordination + Safety</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D47</span><span class="rule-title">Migrations Run Before Service Starts — Always, on Every Deploy</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement"><code>prisma migrate deploy</code> runs and must succeed before the application server starts accepting requests. This is enforced in the Railway start command (Angular stack) and Vercel deploy hook (Next.js stack). A migration failure aborts the deploy — the previous version stays live. Never start a service with a pending migration.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D48</span><span class="rule-title">Cross-Database Sync Must Be Explicit and Tested</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every operation that writes to more than one database must have an integration test that verifies the sync. No silent cross-database writes. If a PostgreSQL write must trigger a MongoDB write or a ChromaDB re-embedding, the trigger mechanism and its failure mode must be documented, logged, and covered by an integration test before deployment.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D49</span><span class="rule-title">Cross-Database Failure Is Logged and Alertable — Never Silently Ignored</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">If a cross-database sync operation fails (e.g., PostgreSQL write succeeds but MongoDB write fails), the failure must be: (1) logged as a structured error with the entity IDs involved, (2) captured in Sentry, (3) trigger a retry queue entry. Never allow inconsistent state to go undetected.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D50</span><span class="rule-title">PostgreSQL Is Always Written First in Cross-DB Operations</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">In any operation that writes to multiple databases, PostgreSQL is written first. MongoDB and ChromaDB writes follow. If the PostgreSQL write fails, the entire operation aborts with no writes to other databases. PostgreSQL is the system of record — other databases are derived from it, not the other way around.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D51</span><span class="rule-title">Additive-First Migration Strategy — No Destructive Changes in One Step</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">All schema changes follow the expand-contract pattern: Phase 1 — add new column/field (optional). Phase 2 — deploy code that writes to both old and new. Phase 3 — backfill old data to new structure. Phase 4 — deploy code that reads only new. Phase 5 — drop old column. Each phase is a separate deploy verified in staging before going to production.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D52</span><span class="rule-title">Staging Environment Mirrors Production Database Structure Exactly</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">The staging environment must have the same database schema as production at all times. Every migration is applied to staging first, verified, then applied to production. Staging must use the same database provider (Railway Postgres, Railway MongoDB) — not SQLite or in-memory substitutes.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D53</span><span class="rule-title">Never Modify a Production Migration File After Deployment</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Prisma migration files in <code>prisma/migrations/</code> are immutable once deployed to any environment. Never edit, rename, or delete a migration file that has been applied. If a deployed migration has a bug, create a new corrective migration — never modify the existing one. Prisma tracks migration checksums and will refuse to apply modified migrations.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D54</span><span class="rule-title">Database Connection Errors Are Non-Fatal on Startup — Retry with Backoff</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">If a database connection fails on application startup, the service retries with exponential backoff (1s, 2s, 4s, 8s — max 5 retries) before aborting. This handles Railway and Vercel cold starts where the database may not be immediately ready. After 5 failed retries, the service exits with a non-zero code to trigger a deployment retry.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D55</span><span class="rule-title">Environment Variable Validation — Fail Fast on Missing DB Config</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">At application startup, validate all required database environment variables are present before attempting any connection. Missing <code>DATABASE_URL</code>, <code>MONGODB_URI</code>, or <code>CHROMA_URL</code> must cause an immediate startup failure with a clear error message. Never start the service with undefined database configuration.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D56</span><span class="rule-title">Query Performance Budget — p95 Under 150ms for Standard Queries</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Standard CRUD queries (single record fetch, paginated list) must complete within 150ms at p95. Queries consistently exceeding this threshold require an index review. Enable slow query logging: PostgreSQL <code>log_min_duration_statement = 100</code>, MongoDB <code>operationProfiling.slowOpThresholdMs = 100</code>. Alert on any query exceeding 500ms.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">D57</span><span class="rule-title">No Schema Changes During Traffic Hours — Off-Peak Migrations Only</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Production schema changes (Prisma migrations, MongoDB index creation) are deployed outside peak traffic hours. For South African systems, peak hours are 07:00–22:00 SAST. Schedule migrations for 00:00–04:00 SAST. Emergency migrations during traffic hours require approval and a documented rollback plan that can execute in under 5 minutes.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">D58</span><span class="rule-title">Database Health Check in /health Endpoint — Both Databases on Angular Stack</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">The <code>/health</code> endpoint must verify connectivity to all databases used by the service. Next.js stack: check PostgreSQL. Angular stack: check PostgreSQL AND MongoDB AND ChromaDB (FundsLink only). A service whose database connectivity fails its health check is removed from load balancing until connectivity is restored.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ FORBIDDEN PATTERNS ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (FP01–FP20)</div>
+
+<div class="forbidden-section">
+  <div class="forbidden-header">⚠ FORBIDDEN PATTERNS — VIOLATION = BUILD FAILURE · BOTH STACKS UNLESS MARKED</div>
+  <div class="forbidden-grid">
+    <div class="fp-item"><div class="fp-code">FP01 — SELECT * IN PRISMA</div><div class="fp-desc">Calling findMany(), findFirst(), or findUnique() without an explicit select clause on any model.</div><div class="fp-fix">✓ Fix: Explicit select with only required fields (D11).</div></div>
+    <div class="fp-item"><div class="fp-code">FP02 — FINANCIAL DATA IN MONGODB</div><div class="fp-desc">Storing transaction amounts, account balances, interest rates, or deposit records in MongoDB.</div><div class="fp-fix">✓ Fix: All financial data in PostgreSQL only (D3).</div></div>
+    <div class="fp-item"><div class="fp-code">FP03 — HARD DELETE IN PRODUCTION</div><div class="fp-desc">Calling prisma.model.delete() or document.delete() on production records instead of setting deleted_at.</div><div class="fp-fix">✓ Fix: Soft delete with deleted_at timestamp (D8, D35).</div></div>
+    <div class="fp-item"><div class="fp-code">FP04 — PII IN CHROMADB</div><div class="fp-desc">Storing names, emails, ID numbers, or any personal data in ChromaDB metadata or document content.</div><div class="fp-fix">✓ Fix: Only PostgreSQL cuid identifiers in ChromaDB (D46).</div></div>
+    <div class="fp-item"><div class="fp-code">FP05 — MONGODB WITHOUT BEANIE SCHEMA</div><div class="fp-desc">Direct Motor or PyMongo calls writing to a collection without a corresponding Beanie document class. [Angular]</div><div class="fp-fix">✓ Fix: All MongoDB access through defined Beanie schemas (D25).</div></div>
+    <div class="fp-item"><div class="fp-code">FP06 — AUTHENTICATION DATA IN MONGODB</div><div class="fp-desc">Storing password hashes, JWT secrets, refresh tokens, or session data in MongoDB collections.</div><div class="fp-fix">✓ Fix: All auth data in PostgreSQL exclusively (D4).</div></div>
+    <div class="fp-item"><div class="fp-code">FP07 — UNINDEXED MONGODB QUERY FIELDS</div><div class="fp-desc">Querying a MongoDB field without an explicit index defined — causes collection scans in production. [Angular]</div><div class="fp-fix">✓ Fix: Indexed(type) annotation on all query fields (D29).</div></div>
+    <div class="fp-item"><div class="fp-code">FP08 — RAW AI OUTPUT STORED WITHOUT VALIDATION</div><div class="fp-desc">Storing LangChain/LLM output strings directly in MongoDB without Pydantic schema validation. [Angular]</div><div class="fp-fix">✓ Fix: Validate through AIReasoningSchema.parse() first (D31).</div></div>
+    <div class="fp-item"><div class="fp-code">FP09 — MIGRATION MODIFIED AFTER DEPLOY</div><div class="fp-desc">Editing, renaming, or deleting a Prisma migration file that has been applied to any environment.</div><div class="fp-fix">✓ Fix: Create a new corrective migration instead (D53).</div></div>
+    <div class="fp-item"><div class="fp-code">FP10 — SIMILARITY RESULTS BELOW 0.7 RETURNED</div><div class="fp-desc">Returning ChromaDB query results with a score below the 0.7 similarity threshold to users. [FundsLink]</div><div class="fp-fix">✓ Fix: Filter at threshold, return empty if none qualify (D41).</div></div>
+    <div class="fp-item"><div class="fp-code">FP11 — CHROMADB CO-LOCATED WITH FASTAPI</div><div class="fp-desc">Running ChromaDB inside the FastAPI application container instead of as a separate service. [FundsLink]</div><div class="fp-fix">✓ Fix: Separate ChromaDB container with HTTP client (D39).</div></div>
+    <div class="fp-item"><div class="fp-code">FP12 — UNBOUNDED LIST QUERIES</div><div class="fp-desc">Prisma findMany() or MongoDB find() without a limit — returns all records regardless of table size.</div><div class="fp-fix">✓ Fix: Always include take/skip (Prisma) or limit/skip (Mongo) (D14, D30).</div></div>
+    <div class="fp-item"><div class="fp-code">FP13 — DIRECT DB ACCESS FROM FRONTEND</div><div class="fp-desc">Browser-side Prisma, MongoDB driver, or direct ChromaDB HTTP calls from Angular or React code.</div><div class="fp-fix">✓ Fix: All DB access through backend service layer (D7).</div></div>
+    <div class="fp-item"><div class="fp-code">FP14 — MULTI-STEP WRITE WITHOUT TRANSACTION</div><div class="fp-desc">Sequential Prisma writes to multiple tables without a prisma.$transaction() wrapper.</div><div class="fp-fix">✓ Fix: Wrap all multi-table writes in prisma.$transaction() (D15).</div></div>
+    <div class="fp-item"><div class="fp-code">FP15 — FREE-TEXT STATUS FIELDS</div><div class="fp-desc">String fields for status, type, or role with no enum constraint — allows invalid values.</div><div class="fp-fix">✓ Fix: Define Prisma enum types for all fixed-value fields (D22).</div></div>
+    <div class="fp-item"><div class="fp-code">FP16 — MIGRATION BEFORE STAGING VERIFICATION</div><div class="fp-desc">Applying a Prisma migration directly to production without first running and verifying it in staging.</div><div class="fp-fix">✓ Fix: Staging first, production second — always (D52).</div></div>
+    <div class="fp-item"><div class="fp-code">FP17 — MONGODB OBJECTID AS CROSS-DB REFERENCE</div><div class="fp-desc">Using MongoDB ObjectID as the reference to PostgreSQL entities instead of the PostgreSQL cuid. [Angular]</div><div class="fp-fix">✓ Fix: Use PostgreSQL cuid string as the reference field value (D5, D28).</div></div>
+    <div class="fp-item"><div class="fp-code">FP18 — SCHEMA CHANGE DURING PEAK HOURS</div><div class="fp-desc">Running production migrations between 07:00 and 22:00 SAST without emergency approval.</div><div class="fp-fix">✓ Fix: Schedule migrations for 00:00–04:00 SAST (D57).</div></div>
+    <div class="fp-item"><div class="fp-code">FP19 — MISSING DELETED_AT FILTER</div><div class="fp-desc">Queries that can return soft-deleted records because the where: { deleted_at: null } filter is absent.</div><div class="fp-fix">✓ Fix: Prisma middleware + Beanie hook auto-appends this filter (D12, D35).</div></div>
+    <div class="fp-item"><div class="fp-code">FP20 — PRODUCTION DB URI IN DEVELOPMENT</div><div class="fp-desc">Using the production DATABASE_URL or MONGODB_URI in a local development or CI environment. [Angular]</div><div class="fp-fix">✓ Fix: Separate env credentials per environment — never share (D37).</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ LOCK FOOTER ══════════════════════════════════════════ -->
+<hr class="divider-double"/>
+<div class="lock-section" id="lock">
   <div class="lock-banner">
-    <div class="lock-title-main">Database Constitution v2.0</div>
-    <div class="lock-sub">Final Lock — Effective 2026-04-08 — Next Review 2026-07-08</div>
-    <p style="font-family:var(--serif);font-style:italic;font-size:16px;color:rgba(238,242,245,.7);">"Data is the only thing you cannot rebuild from code."</p>
+    <div class="lock-title-main">Database Constitution v3.0</div>
+    <div class="lock-sub">Final Lock — Effective 2026-04-14 — Next Review 2026-07-07</div>
+    <p style="font-family:var(--serif);font-style:italic;font-size:18px;color:rgba(240,247,244,.7);">"One source of truth per data type. No mixing. No exceptions."</p>
     <div class="lock-stats">
-      <div class="ls-item"><span class="ls-num">48</span><span class="ls-label">Total Rules</span></div>
-      <div class="ls-item"><span class="ls-num">32</span><span class="ls-label">Critical</span></div>
-      <div class="ls-item"><span class="ls-num">14</span><span class="ls-label">High</span></div>
-      <div class="ls-item"><span class="ls-num">2</span><span class="ls-label">Medium</span></div>
+      <div class="ls-item"><span class="ls-num">58</span><span class="ls-label">Total Rules</span></div>
+      <div class="ls-item"><span class="ls-num">34</span><span class="ls-label">Critical</span></div>
+      <div class="ls-item"><span class="ls-num">16</span><span class="ls-label">High Priority</span></div>
+      <div class="ls-item"><span class="ls-num">14</span><span class="ls-label">MongoDB New</span></div>
       <div class="ls-item"><span class="ls-num">20</span><span class="ls-label">Forbidden</span></div>
-      <div class="ls-item"><span class="ls-num">175</span><span class="ls-label">System Total</span></div>
+      <div class="ls-item"><span class="ls-num">355</span><span class="ls-label">System Total</span></div>
     </div>
   </div>
 
   <div class="lock-body">
     <div class="lock-col">
-      <div class="lock-col-title">Parts Breakdown (v2.0)</div>
+      <div class="lock-col-title">Parts Breakdown</div>
       <div class="parts-breakdown">
-        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">Naming & Structure (D1-D7a)</span><span class="pb-rules">8 rules</span><span class="pb-crit">5 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">Indexing Strategy (D8-D14a)</span><span class="pb-rules">8 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">Data Integrity (D15-D18b)</span><span class="pb-rules">7 rules</span><span class="pb-crit">4 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">Retention & Purging (D19-D23)</span><span class="pb-rules">5 rules</span><span class="pb-crit">3 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Backup & Recovery (D24-D29b)</span><span class="pb-rules">8 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P6</span><span class="pb-name">Security & Encryption (D30-D34c)</span><span class="pb-rules">8 rules</span><span class="pb-crit">6 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P7</span><span class="pb-name">Migration & Seeding (D35-D38a)</span><span class="pb-rules">5 rules</span><span class="pb-crit">3 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P8</span><span class="pb-name">Observability (D39-D42)</span><span class="pb-rules">4 rules</span><span class="pb-crit">1 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">DB Strategy &amp; Assignment (D1–D8)</span><span class="pb-rules">8 rules</span><span class="pb-crit">5 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">PostgreSQL &amp; Prisma (D9–D24)</span><span class="pb-rules">16 rules</span><span class="pb-crit">10 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P3 🆕</span><span class="pb-name">MongoDB &amp; Beanie (D25–D38)</span><span class="pb-rules">14 rules</span><span class="pb-new">ALL NEW</span></div>
+        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">ChromaDB — Vector (D39–D46)</span><span class="pb-rules">8 rules</span><span class="pb-crit">5 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Cross-DB &amp; Migrations (D47–D58)</span><span class="pb-rules">12 rules</span><span class="pb-crit">6 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">ANNEX</span><span class="pb-name">Forbidden Patterns (FP01–FP20)</span><span class="pb-rules">20 patterns</span><span class="pb-crit">ALL CRITICAL</span></div>
       </div>
     </div>
     <div class="lock-col">
-      <div class="lock-col-title">v2.0 Enhancements</div>
-      <div class="parts-breakdown">
-        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">D3: UUID v7 replaces cuid()/uuid()</span></div>
-        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">D5: Version column for optimistic locking</span></div>
-        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">D6: deleted_by for audit trail</span></div>
-        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">D28: PITR now critical requirement</span></div>
-        <div class="pb-item"><span class="pb-part">⚡</span><span class="pb-name">D36: Zero-downtime migrations required</span></div>
-        <div class="pb-item"><span class="pb-part">🆕</span><span class="pb-name">D18a: Row-Level Security (RLS)</span></div>
-        <div class="pb-item"><span class="pb-part">🆕</span><span class="pb-name">D34c: PII data masking</span></div>
-        <div class="pb-item"><span class="pb-part">🆕</span><span class="pb-name">D39-D42: Observability suite</span></div>
+      <div class="lock-col-title">v3.0 Changes from v2.0</div>
+      <div style="font-size:11.5px;color:var(--muted);line-height:2;">
+        + Part 3 entirely new: 14 MongoDB rules (D25–D38)<br>
+        + Three-database separation rule formalised (D1)<br>
+        + Financial data isolation absolute rule added (D3)<br>
+        + Authentication data isolation rule added (D4)<br>
+        + Cross-DB reference convention defined (D5, D28)<br>
+        + Cross-DB sync rules formalised (D48–D50)<br>
+        + Off-peak migration window defined (D57)<br>
+        + Connection pooling guidance (Railway) added (D18)<br>
+        + System Total corrected: 175 → <strong>355</strong><br>
+        + Forbidden patterns: 14 → 20<br>
+        + Scope badges on all rules<br>
+        + Lock date: 2026-04-08 → 2026-04-14
+      </div>
+      <div class="lock-col-title" style="margin-top:16px;">Official Signatures</div>
+      <div class="sig-line">
+        <span class="sig-role">Database Lead</span>
+        <div class="sig-name-line"></div>
+        <div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div>
+      </div>
+      <div class="sig-line">
+        <span class="sig-role">Product Owner — KSDRILL SA</span>
+        <div class="sig-name-line"></div>
+        <div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div>
       </div>
     </div>
   </div>
 
   <div class="lock-final">
-    <div class="lock-final-left">VIOLATION OF ANY CRITICAL RULE = DATA RISK<br/>FOLLOW ALL RULES = DATA SAFE</div>
-    <div class="lock-final-motto">"Data is the only thing you cannot rebuild from code."</div>
-    <div class="lock-final-right">v2.0 LOCKED<br/>2026-04-08<br/>Part of 175-rule total system</div>
+    <div class="lock-final-left">VIOLATION OF ANY CRITICAL RULE = SYSTEM FAILURE<br/>FOLLOW ALL RULES = SYSTEM SHIPS</div>
+    <div class="lock-final-motto">"One source of truth per data type. No mixing. No exceptions."</div>
+    <div class="lock-final-right">v3.0 LOCKED · 2026-04-14<br/>PostgreSQL + MongoDB + ChromaDB · 58 rules<br/>System Total: 355 rules</div>
   </div>
 </div>
 
-</div>
+</div><!-- /page -->
 </body>
 </html>

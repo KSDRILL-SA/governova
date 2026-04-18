@@ -3,874 +3,721 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Testing Constitution v1.0 — LOCKED</title>
+<title>Testing Constitution v3.0 — KSDRILL SA · LOCKED</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --ink:      #0e0e0e;
-  --paper:    #eef2f5;
-  --paper2:   #e2e8f0;
-  --paper3:   #d4dee8;
-  --rule:     #b8c4d0;
-  --gold:     #b8860b;
-  --gold2:    #d4a017;
-  --amber:    #e8a020;
-  --red:      #9b1c1c;
-  --orange:   #c05a00;
-  --green:    #1a5c2e;
-  --blue:     #1a3a6e;
-  --teal:     #0f6e6e;
-  --purple:   #6a3e6e;
-  --muted:    #5a5a6e;
-  --mono:     'IBM Plex Mono', monospace;
-  --serif:    'Playfair Display', serif;
-  --sans:     'IBM Plex Sans', sans-serif;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--sans);
-  font-size: 14px;
-  line-height: 1.65;
-  overflow-x: hidden;
-}
-
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 9999; opacity: .5;
-}
-
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none; z-index: 0; opacity: .1;
-}
-
-.page { max-width: 1200px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
-
-.masthead {
-  border-top: 6px solid var(--purple);
-  border-bottom: 3px double var(--purple);
-  margin-bottom: 0;
-}
-
-.masthead-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--rule);
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: .08em;
-}
-
-.masthead-main {
-  text-align: center;
-  padding: 40px 0 32px;
-}
-
-.masthead-eyebrow {
-  background: var(--purple);
-  color: var(--paper);
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .2em;
-  padding: 4px 16px;
-  margin-bottom: 16px;
-}
-
-.masthead-title {
-  font-family: var(--serif);
-  font-size: clamp(42px, 6vw, 80px);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -.02em;
-  color: var(--purple);
-  margin-bottom: 8px;
-}
-
-.masthead-tagline {
-  font-family: var(--serif);
-  font-size: 18px;
-  font-style: italic;
-  color: var(--muted);
-  margin-bottom: 18px;
-}
-
-.masthead-meta {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-
-.masthead-meta strong { color: var(--purple); }
-
-.masthead-bottom {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  border-top: 1px solid var(--rule);
-  background: var(--paper2);
-}
-
-.stat-box {
-  padding: 16px 20px;
-  border-right: 1px solid var(--rule);
-  text-align: center;
-}
-.stat-box:last-child { border-right: none; }
-
-.stat-num {
-  font-family: var(--serif);
-  font-size: 36px;
-  font-weight: 900;
-  line-height: 1;
-  color: var(--purple);
-  display: block;
-}
-.stat-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-.section-runner {
-  background: var(--purple);
-  color: var(--paper);
-  padding: 6px 0;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-.part-nav {
-  display: flex;
-  border-top: 2px solid var(--purple);
-  border-bottom: 2px solid var(--purple);
-  background: var(--paper2);
-  overflow-x: auto;
-}
-
-.pn-item {
-  flex: 1;
-  min-width: 70px;
-  padding: 8px 4px;
-  border-right: 1px solid var(--rule);
-  text-decoration: none;
-  color: var(--muted);
-  transition: all .15s;
-}
-.pn-item:last-child { border-right: none; }
-.pn-item:hover { background: var(--purple); color: var(--paper); }
-.pn-num  { font-family: var(--mono); font-size: 7px; color: var(--gold); letter-spacing: .1em; display: block; }
-.pn-name { font-family: var(--serif); font-size: 8px; font-weight: 700; line-height: 1.2; display: block; margin-top: 2px; }
-.pn-count { font-family: var(--mono); font-size: 7px; color: var(--muted); display: block; margin-top: 1px; }
-
-.col-layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 0;
-  border-left: 1px solid var(--rule);
-  border-right: 1px solid var(--rule);
-}
-
-.col-sidebar {
-  border-right: 1px solid var(--rule);
-  padding: 24px 20px;
-  background: var(--paper2);
-}
-
-.col-main {
-  padding: 28px 32px;
-}
-
-.part-section {
-  border-left: 1px solid var(--rule);
-  border-right: 1px solid var(--rule);
-}
-
-.part-banner {
-  background: var(--purple);
-  color: var(--paper);
-  padding: 20px 28px;
-  margin: -28px -32px 28px;
-  display: flex;
-  align-items: baseline;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.part-num {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--gold2);
-  flex-shrink: 0;
-}
-
-.part-title {
-  font-family: var(--serif);
-  font-size: 24px;
-  font-weight: 900;
-  line-height: 1.1;
-  flex: 1;
-}
-
-.part-desc {
-  font-size: 11px;
-  color: rgba(238,242,245,.6);
-  text-align: right;
-  font-style: italic;
-}
-
-.rule-card {
-  border: 1px solid var(--rule);
-  border-left: 4px solid var(--purple);
-  background: #fff;
-  margin-bottom: 18px;
-  overflow: hidden;
-}
-
-.rule-card.critical { border-left-color: var(--red); }
-.rule-card.high     { border-left-color: var(--orange); }
-.rule-card.medium   { border-left-color: var(--gold); }
-
-.rule-card-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px 16px 8px;
-  border-bottom: 1px solid var(--rule);
-  background: var(--paper2);
-}
-
-.rule-num-badge {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  color: var(--muted);
-  flex-shrink: 0;
-}
-
-.rule-title {
-  font-family: var(--serif);
-  font-size: 14px;
-  font-weight: 700;
-  flex: 1;
-  line-height: 1.3;
-}
-
-.sev-badge {
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-.sev-critical { background: var(--red); color: #fff; }
-.sev-high     { background: var(--orange); color: #fff; }
-.sev-medium   { background: var(--gold); color: #fff; }
-
-.rule-card-body {
-  padding: 12px 16px;
-}
-
-.rule-statement {
-  font-size: 12px;
-  line-height: 1.6;
-  margin-bottom: 10px;
-  font-weight: 500;
-}
-
-.rule-meta-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.rule-meta-item {
-  background: var(--paper2);
-  border: 1px solid var(--rule);
-  padding: 6px 8px;
-  font-size: 10px;
-}
-
-.rule-meta-label {
-  font-family: var(--mono);
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  color: var(--muted);
-  display: block;
-  margin-bottom: 2px;
-}
-
-.rule-meta-val { font-size: 10px; line-height: 1.4; }
-
-.code-block {
-  background: #1a1a2e;
-  border: 1px solid var(--purple);
-  margin: 10px 0 0;
-  overflow: hidden;
-  border-radius: 4px;
-}
-.code-bar {
-  background: #0f0f1a;
-  padding: 5px 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #2a2a3e;
-}
-.code-filename {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--gold2);
-}
-.code-dots { display: flex; gap: 5px; }
-.cd { width: 8px; height: 8px; border-radius: 50%; }
-.cd-r { background: #f87171; } .cd-y { background: #fbbf24; } .cd-g { background: #34d399; }
-.code-block pre {
-  font-family: var(--mono);
-  font-size: 9px;
-  line-height: 1.6;
-  padding: 12px 14px;
-  color: #d4d4d4;
-  overflow-x: auto;
-  white-space: pre;
-}
-
-.const-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 10px;
-}
-.const-table thead tr { background: var(--purple); color: var(--paper); }
-.const-table th {
-  font-family: var(--mono);
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  padding: 6px 8px;
-  text-align: left;
-}
-.const-table td {
-  padding: 6px 8px;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-}
-.const-table tbody tr:nth-child(even) { background: var(--paper2); }
-
-.fp-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 9px;
-  border: 2px solid var(--purple);
-}
-.fp-table thead tr { background: var(--red); }
-.fp-table th {
-  font-family: var(--mono);
-  font-size: 7px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  padding: 6px 8px;
-  color: #fff;
-  text-align: left;
-}
-.fp-table td {
-  padding: 6px 8px;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-}
-.fp-table tbody tr:hover { background: #fef2f2; }
-.fp-code { font-family: var(--mono); font-size: 8px; color: var(--red); font-weight: 700; }
-.fp-ref  { font-family: var(--mono); font-size: 8px; color: var(--purple); }
-
-.callout {
-  display: flex;
-  gap: 10px;
-  padding: 8px 12px;
-  margin: 10px 0;
-  font-size: 10px;
-  border-left: 3px solid;
-  background: var(--paper2);
-}
-.callout-critical { border-color: var(--red); }
-.callout-warn     { border-color: var(--orange); }
-.callout-info     { border-color: var(--gold); }
-.callout-good     { border-color: var(--green); }
-.callout-icon { font-family: var(--mono); font-size: 10px; flex-shrink: 0; font-weight: 700; }
-.callout-body { line-height: 1.6; }
-
-.lock-section {
-  border: 4px double var(--purple);
-  margin-top: 32px;
-}
-.lock-banner {
-  background: var(--purple);
-  color: var(--paper);
-  text-align: center;
-  padding: 28px 20px;
-  border-bottom: 4px double rgba(238,242,245,.25);
-}
-.lock-title-main {
-  font-family: var(--serif);
-  font-size: clamp(26px, 4vw, 48px);
-  font-weight: 900;
-  letter-spacing: -.02em;
-  margin-bottom: 6px;
-}
-.lock-sub {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--gold2);
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-}
-.lock-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-  gap: 0;
-  border-top: 1px solid rgba(255,255,255,.15);
-  margin-top: 20px;
-}
-.ls-item {
-  padding: 10px;
-  border-right: 1px solid rgba(255,255,255,.1);
-  text-align: center;
-}
-.ls-item:last-child { border-right: none; }
-.ls-num {
-  font-family: var(--serif);
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--gold2);
-  display: block;
-}
-.ls-label {
-  font-family: var(--mono);
-  font-size: 7px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: rgba(238,242,245,.5);
-  display: block;
-  margin-top: 2px;
-}
-
-.lock-body {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-}
-.lock-col {
-  padding: 20px 24px;
-  border-right: 2px solid var(--purple);
-}
-.lock-col:last-child { border-right: none; }
-.lock-col-title {
-  font-family: var(--mono);
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: .2em;
-  color: var(--muted);
-  margin-bottom: 10px;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 4px;
-}
-
-.parts-breakdown { display: flex; flex-direction: column; gap: 4px; }
-.pb-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 9px;
-  padding: 4px 6px;
-  border: 1px solid var(--rule);
-  background: var(--paper2);
-}
-.pb-part { font-family: var(--mono); font-size: 7px; color: var(--gold); font-weight: 700; min-width: 30px; }
-.pb-name { flex: 1; font-size: 8px; }
-.pb-rules { font-family: var(--mono); font-size: 7px; color: var(--muted); }
-.pb-crit { background: var(--red); color: #fff; padding: 1px 3px; font-family: var(--mono); font-size: 6px; border-radius: 2px; }
-
-.lock-final {
-  border-top: 2px solid var(--purple);
-  background: var(--purple);
-  color: var(--paper);
-  padding: 14px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.lock-final-left { font-family: var(--mono); font-size: 8px; color: var(--gold2); letter-spacing: .08em; }
-.lock-final-motto { font-family: var(--serif); font-size: 14px; font-style: italic; }
-.lock-final-right { font-family: var(--mono); font-size: 7px; color: rgba(238,242,245,.5); text-align: right; }
-
-.divider { border: none; border-top: 2px solid var(--purple); margin: 0; }
-.divider-double { border: none; border-top: 3px double var(--purple); margin: 0; }
-
-.test-pyramid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 4px;
-  margin: 16px 0;
-  max-width: 300px;
-}
-.pyramid-layer {
-  text-align: center;
-  padding: 8px;
-  color: #fff;
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-}
-.pyramid-e2e { background: var(--orange); width: 100%; }
-.pyramid-integration { background: var(--gold); width: 80%; margin: 0 auto; }
-.pyramid-unit { background: var(--green); width: 60%; margin: 0 auto; }
-
-@media (max-width: 860px) {
-  .col-layout { grid-template-columns: 1fr; }
-  .col-sidebar { border-right: none; border-bottom: 1px solid var(--rule); }
-  .lock-body { grid-template-columns: 1fr; }
-  .lock-col { border-right: none; border-bottom: 2px solid var(--purple); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.page > * { animation: fadeIn .35s ease both; }
+:root{--ink:#0e0e0e;--paper:#f0fdf4;--paper2:#dcfce7;--paper3:#bbf7d0;--rule:#86efac;--gold:#b8860b;--amber:#e8a020;--red:#9b1c1c;--orange:#c05a00;--green:#1a5c2e;--blue:#1a3a6e;--ang-red:#9b1c1c;--muted:#14532d;--mono:'IBM Plex Mono',monospace;--serif:'Playfair Display',serif;--sans:'IBM Plex Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.65;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.5;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;opacity:.08;}
+.page{max-width:1100px;margin:0 auto;padding:0 32px;position:relative;z-index:1;}
+.masthead{border-top:6px solid var(--green);border-bottom:3px double var(--green);}
+.masthead-top{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--green);font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.08em;}
+.masthead-main{padding:40px 0 28px;text-align:center;border-bottom:1px solid var(--green);}
+.masthead-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.masthead-title{font-family:var(--serif);font-size:clamp(36px,5vw,72px);font-weight:900;line-height:1.0;letter-spacing:-.02em;margin-bottom:8px;}
+.masthead-tagline{font-family:var(--serif);font-size:18px;font-style:italic;color:var(--muted);margin-bottom:18px;}
+.masthead-meta{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+.masthead-meta strong{color:var(--ink);}
+.masthead-bottom{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--green);}
+.stat-box{padding:14px 10px;border-right:1px solid var(--green);text-align:center;}
+.stat-box:last-child{border-right:none;}
+.stat-num{font-family:var(--serif);font-size:30px;font-weight:900;line-height:1;color:var(--green);display:block;}
+.stat-label{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-top:2px;}
+.part-nav{display:flex;overflow-x:auto;border-bottom:2px solid var(--green);background:var(--paper2);}
+.pn-item{display:flex;flex-direction:column;padding:10px 16px;border-right:1px solid var(--rule);text-decoration:none;color:var(--ink);flex-shrink:0;}
+.pn-item:hover{background:var(--paper);}
+.pn-num{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.1em;}
+.pn-name{font-family:var(--serif);font-size:11px;font-weight:700;}
+.pn-count{font-family:var(--mono);font-size:9px;color:var(--green);}
+.section-runner{background:var(--green);color:#fff;padding:6px 0;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;text-align:center;}
+.col-layout{display:grid;grid-template-columns:240px 1fr;gap:0;border-left:1px solid var(--green);border-right:1px solid var(--green);}
+.col-sidebar{border-right:1px solid var(--rule);padding:24px 20px;background:var(--paper2);}
+.col-main{padding:24px 28px;}
+.part-section{border-left:1px solid var(--green);border-right:1px solid var(--green);}
+.part-banner{background:var(--green);color:#fff;padding:20px 28px;margin:0 -28px 28px;display:flex;align-items:baseline;gap:20px;}
+.part-banner.blue{background:var(--blue);}
+.part-banner.ang{background:var(--ang-red);}
+.part-banner.dark{background:var(--ink);}
+.part-num{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.7);flex-shrink:0;}
+.part-title{font-family:var(--serif);font-size:24px;font-weight:900;line-height:1.1;}
+.part-desc{font-size:12px;color:rgba(255,255,255,.6);margin-left:auto;text-align:right;max-width:260px;font-style:italic;}
+.rule-card{border:1px solid var(--rule);border-left:4px solid var(--green);background:#fff;margin-bottom:16px;overflow:hidden;}
+.rule-card.critical{border-left-color:var(--red);}
+.rule-card.high{border-left-color:var(--orange);}
+.rule-card.medium{border-left-color:var(--gold);}
+.rule-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:14px 18px 10px;border-bottom:1px solid var(--rule);background:var(--paper2);}
+.rule-num-badge{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted);flex-shrink:0;margin-top:2px;}
+.rule-title{font-family:var(--serif);font-size:15px;font-weight:700;flex:1;line-height:1.3;}
+.sev-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:2px;flex-shrink:0;}
+.sev-critical{background:var(--red);color:#fff;}
+.sev-high{background:var(--orange);color:#fff;}
+.sev-medium{background:var(--gold);color:#fff;}
+.rule-card-body{padding:14px 18px;}
+.rule-statement{font-size:13.5px;line-height:1.6;margin-bottom:10px;font-weight:500;}
+.scope-bar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.scope-chip{font-family:var(--mono);font-size:8px;letter-spacing:.08em;padding:2px 8px;border-radius:2px;font-weight:700;}
+.scope-both{background:var(--green);color:#fff;}
+.scope-nextjs{background:#0e0e0e;color:#fff;}
+.scope-angular{background:var(--ang-red);color:#fff;}
+.scope-py{background:#3776AB;color:#fff;}
+.rule-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:10px;}
+.rule-meta-item{background:var(--paper2);border:1px solid var(--rule);padding:7px 10px;}
+.rule-meta-label{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:block;margin-bottom:2px;}
+.rule-meta-val{font-size:12px;line-height:1.4;}
+.stack-diff{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--ink);margin-top:10px;overflow:hidden;}
+.stack-diff-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--ink);margin-top:10px;overflow:hidden;}
+.stack-diff-head{padding:6px 12px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
+.stack-diff-head.nj{background:#0e0e0e;color:#fff;}
+.stack-diff-head.ang{background:var(--ang-red);color:#fff;}
+.stack-diff-head.py{background:#3776AB;color:#fff;}
+.stack-diff-body{padding:10px 12px;font-size:11.5px;color:var(--muted);line-height:1.8;background:var(--paper2);border-left:1px solid var(--rule);}
+.stack-diff-col:first-child .stack-diff-body{border-left:none;}
+.callout{display:flex;gap:12px;padding:10px 14px;margin:10px 0;border:1px solid var(--rule);}
+.callout-icon{font-family:var(--mono);font-size:11px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.callout-info{background:#eff6ff;border-color:#93c5fd;}
+.callout-info .callout-icon{background:#3b82f6;color:#fff;}
+.callout-critical{background:#fff1f2;border-color:#fca5a5;}
+.callout-critical .callout-icon{background:var(--red);color:#fff;}
+.callout-body{font-size:12px;line-height:1.6;color:var(--muted);}
+.callout-body strong{color:var(--ink);}
+.sidebar-section{margin-bottom:24px;}
+.sidebar-label{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:8px;border-bottom:1px solid var(--rule);padding-bottom:4px;}
+.sb-rule-list{list-style:none;}
+.sb-rule-list li{padding:4px 0;border-bottom:1px dotted var(--rule);font-size:11.5px;color:var(--muted);display:flex;gap:6px;}
+.rn{font-family:var(--mono);font-size:9px;color:var(--green);font-weight:700;flex-shrink:0;}
+.coverage-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px;border:1.5px solid var(--rule);margin-top:10px;}
+.coverage-table th{background:var(--paper2);padding:8px 12px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;text-align:left;border-bottom:1.5px solid var(--green);}
+.coverage-table td{padding:7px 12px;border-bottom:1px solid var(--rule);vertical-align:top;}
+.coverage-table tr:last-child td{border-bottom:none;}
+.coverage-table tr:nth-child(even) td{background:var(--paper2);}
+.forbidden-section{border:2px solid var(--red);overflow:hidden;}
+.forbidden-header{background:var(--red);color:#fff;padding:10px 20px;font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;}
+.forbidden-grid{display:grid;grid-template-columns:1fr 1fr;}
+.fp-item{padding:11px 16px;border-right:1px solid rgba(155,28,28,.2);border-bottom:1px solid rgba(155,28,28,.2);font-family:var(--mono);font-size:10.5px;}
+.fp-item:nth-child(even){border-right:none;}
+.fp-code{color:var(--red);font-weight:700;margin-bottom:3px;font-size:10px;}
+.fp-desc{color:var(--muted);font-size:10px;line-height:1.5;}
+.fp-fix{color:var(--green);font-size:9px;margin-top:3px;}
+.lock-section{border:4px double var(--green);margin:0;background:var(--paper);}
+.lock-banner{background:var(--green);color:#fff;text-align:center;padding:32px 24px;border-bottom:4px double rgba(255,255,255,.2);}
+.lock-title-main{font-family:var(--serif);font-size:clamp(28px,4vw,48px);font-weight:900;letter-spacing:-.02em;margin-bottom:8px;}
+.lock-sub{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.8);letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px;}
+.lock-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:0;border-top:1px solid rgba(255,255,255,.15);margin-top:24px;}
+.ls-item{padding:14px;border-right:1px solid rgba(255,255,255,.1);text-align:center;}
+.ls-item:last-child{border-right:none;}
+.ls-num{font-family:var(--serif);font-size:28px;font-weight:900;color:rgba(255,255,255,.9);display:block;}
+.ls-label{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);display:block;margin-top:2px;}
+.lock-body{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.lock-col{padding:26px 30px;border-right:2px solid var(--green);}
+.lock-col:last-child{border-right:none;}
+.lock-col-title{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-bottom:12px;border-bottom:1px solid var(--rule);padding-bottom:5px;}
+.parts-breakdown{display:flex;flex-direction:column;gap:5px;}
+.pb-item{display:flex;align-items:center;gap:9px;font-size:11px;padding:6px 9px;border:1px solid var(--rule);background:var(--paper2);}
+.pb-part{font-family:var(--mono);font-size:9px;color:var(--green);font-weight:700;min-width:40px;}
+.pb-name{flex:1;font-size:10.5px;}
+.pb-rules{font-family:var(--mono);font-size:9px;color:var(--muted);}
+.pb-crit{background:var(--red);color:#fff;padding:1px 5px;font-family:var(--mono);font-size:8px;border-radius:2px;}
+.pb-new{background:var(--green);color:#fff;padding:1px 5px;font-family:var(--mono);font-size:8px;border-radius:2px;}
+.sig-line{display:flex;flex-direction:column;gap:4px;border-bottom:1px solid var(--green);padding-bottom:10px;margin-bottom:10px;}
+.sig-role{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);}
+.sig-name-line{border-bottom:1px solid var(--green);height:24px;}
+.sig-meta{display:flex;gap:20px;margin-top:4px;font-family:var(--mono);font-size:9px;color:var(--muted);}
+.lock-final{border-top:2px solid var(--green);background:var(--green);color:#fff;padding:18px 30px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.lock-final-left{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.8);letter-spacing:.06em;}
+.lock-final-motto{font-family:var(--serif);font-size:17px;font-style:italic;}
+.lock-final-right{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.45);text-align:right;}
+code{font-family:var(--mono);font-size:11px;background:var(--paper3);border:1px solid var(--rule);padding:1px 4px;color:var(--red);}
+hr.divider{height:1px;background:var(--rule);margin:0;border:none;}
+hr.divider-double{height:3px;border:none;background:var(--green);margin:0;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.page>*{animation:fadeIn .35s ease both;}
+@media(max-width:760px){.col-layout{grid-template-columns:1fr;}.col-sidebar{border-right:none;border-bottom:1px solid var(--rule);}.lock-body{grid-template-columns:1fr;}.masthead-bottom{grid-template-columns:repeat(3,1fr);}.stack-diff,.stack-diff-3,.forbidden-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <div class="page">
-
 <header class="masthead">
-  <div class="masthead-top">
-    <span>LOCKED: 2026-04-08</span>
-    <span>DOCUMENT CLASS: CONSTITUTION · REVISION: v1.0</span>
-    <span>NEXT REVIEW: 2026-07-07</span>
-  </div>
+  <div class="masthead-top"><span>LOCKED: 2026-04-14 · KSDRILL SA</span><span>DOCUMENT CLASS: CONSTITUTION · REVISION: v3.0</span><span>NEXT REVIEW: 2026-07-07</span></div>
   <div class="masthead-main">
     <div class="masthead-eyebrow">TESTING CONSTITUTION</div>
-    <h1 class="masthead-title">v1.0</h1>
-    <p class="masthead-tagline">"Untested code is broken code. Prove it works."</p>
+    <h1 class="masthead-title">v3.0</h1>
+    <p class="masthead-tagline">"Untested code is broken code waiting to be discovered."</p>
     <div class="masthead-meta">
-      <span><strong>34</strong> TOTAL RULES</span>
-      <span><strong>14</strong> CRITICAL</span>
-      <span><strong>16</strong> HIGH PRIORITY</span>
-      <span><strong>4</strong> MEDIUM</span>
-      <span><strong>277</strong> SYSTEM TOTAL</span>
+      <span><strong>38</strong> TOTAL RULES</span>
+      <span><strong>16</strong> CRITICAL</span>
+      <span><strong>5</strong> PARTS</span>
+      <span>JEST · VITEST · PLAYWRIGHT · PYTEST</span>
+      <span>SYMMETRIC WITH FRONTEND v17.0 + BACKEND v3.0</span>
     </div>
   </div>
   <div class="masthead-bottom">
-    <div class="stat-box"><span class="stat-num">34</span><span class="stat-label">Total Rules</span></div>
-    <div class="stat-box"><span class="stat-num">14</span><span class="stat-label">Critical</span></div>
-    <div class="stat-box"><span class="stat-num">16</span><span class="stat-label">High</span></div>
-    <div class="stat-box"><span class="stat-num">4</span><span class="stat-label">Medium</span></div>
-    <div class="stat-box"><span class="stat-num">277</span><span class="stat-label">System Total</span></div>
+    <div class="stat-box"><span class="stat-num">38</span><span class="stat-label">Total Rules</span></div>
+    <div class="stat-box"><span class="stat-num">16</span><span class="stat-label">Critical</span></div>
+    <div class="stat-box"><span class="stat-num">18</span><span class="stat-label">High Priority</span></div>
+    <div class="stat-box"><span class="stat-num">4</span><span class="stat-label">New Rules</span></div>
+    <div class="stat-box"><span class="stat-num">355</span><span class="stat-label">System Total</span></div>
   </div>
 </header>
-
 <nav class="part-nav">
-  <a href="#part1" class="pn-item"><span class="pn-num">P1</span><span class="pn-name">Strategy</span><span class="pn-count">T1-T4</span></a>
-  <a href="#part2" class="pn-item"><span class="pn-num">P2</span><span class="pn-name">Unit Tests</span><span class="pn-count">T5-T8</span></a>
-  <a href="#part3" class="pn-item"><span class="pn-num">P3</span><span class="pn-name">Integration</span><span class="pn-count">T9-T12</span></a>
-  <a href="#part4" class="pn-item"><span class="pn-num">P4</span><span class="pn-name">E2E</span><span class="pn-count">T13-T16</span></a>
-  <a href="#part5" class="pn-item"><span class="pn-num">P5</span><span class="pn-name">Contract</span><span class="pn-count">T17-T19</span></a>
-  <a href="#part6" class="pn-item"><span class="pn-num">P6</span><span class="pn-name">Performance</span><span class="pn-count">T20-T23</span></a>
-  <a href="#part7" class="pn-item"><span class="pn-num">P7</span><span class="pn-name">Test Data</span><span class="pn-count">T24-T27</span></a>
-  <a href="#part8" class="pn-item"><span class="pn-num">P8</span><span class="pn-name">Coverage</span><span class="pn-count">T28-T31</span></a>
-  <a href="#part9" class="pn-item"><span class="pn-num">P9</span><span class="pn-name">Flaky Tests</span><span class="pn-count">T32-T34</span></a>
-  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden</span><span class="pn-count">TF01-TF14</span></a>
+  <a href="#p1" class="pn-item"><span class="pn-num">P1</span><span class="pn-name">Test Strategy</span><span class="pn-count">TS1–TS6</span></a>
+  <a href="#p2" class="pn-item"><span class="pn-num">P2</span><span class="pn-name">Unit &amp; Integration</span><span class="pn-count">TS7–TS16</span></a>
+  <a href="#p3" class="pn-item"><span class="pn-num">P3</span><span class="pn-name">E2E &amp; Visual</span><span class="pn-count">TS17–TS24</span></a>
+  <a href="#p4" class="pn-item"><span class="pn-num">P4</span><span class="pn-name">Coverage &amp; CI</span><span class="pn-count">TS25–TS30</span></a>
+  <a href="#p5" class="pn-item"><span class="pn-num">P5</span><span class="pn-name">Python Testing</span><span class="pn-count">TS31–TS38</span></a>
+  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden</span><span class="pn-count">FP01–FP16</span></a>
 </nav>
 
-<!-- TEST PYRAMID VISUAL -->
-<div class="section-runner">§ Test Pyramid — v1.0 Strategy</div>
-<div class="part-section" style="padding: 20px 28px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-    <div class="test-pyramid">
-      <div class="pyramid-layer pyramid-e2e">E2E Tests (10-20)</div>
-      <div class="pyramid-layer pyramid-integration">Integration Tests (50-100)</div>
-      <div class="pyramid-layer pyramid-unit">Unit Tests (200-500+)</div>
-    </div>
-    <div style="font-family: var(--mono); font-size: 10px; color: var(--muted);">
-      <strong>Distribution Targets:</strong><br/>
-      Unit: 70% of test count<br/>
-      Integration: 20% of test count<br/>
-      E2E: 10% of test count<br/>
-      Execution: Unit (<2s), Integration (<30s), E2E (<5min)
-    </div>
-  </div>
+<!-- TOOLCHAIN -->
+<div class="section-runner">§ Testing Toolchain — Locked by Stack</div>
+<div class="part-section" style="padding:20px 28px;">
+  <table class="coverage-table">
+    <thead><tr><th>Layer</th><th>Next.js Stack (Maphophe · SyncUp)</th><th>Angular Stack (FundsLink · Reserve Bank)</th><th>Python/FastAPI</th></tr></thead>
+    <tbody>
+      <tr><td style="font-family:var(--mono);font-size:10px;font-weight:700;">Unit</td><td>Jest + React Testing Library</td><td><strong style="color:var(--green)">Vitest</strong> + Angular Testing Utilities</td><td>pytest + pytest-asyncio</td></tr>
+      <tr><td style="font-family:var(--mono);font-size:10px;font-weight:700;">Integration</td><td>Jest + MSW (mock service worker)</td><td>Vitest + TestBed + HTTP mocks</td><td>pytest + httpx (ASGI client)</td></tr>
+      <tr><td style="font-family:var(--mono);font-size:10px;font-weight:700;">E2E</td><td>Playwright</td><td>Playwright</td><td>pytest E2E via FastAPI TestClient</td></tr>
+      <tr><td style="font-family:var(--mono);font-size:10px;font-weight:700;">Visual Regression</td><td>Playwright at 320/375/390px</td><td>Playwright at 320/375/390px</td><td>N/A</td></tr>
+      <tr><td style="font-family:var(--mono);font-size:10px;font-weight:700;">Coverage</td><td>Jest — min 70% · CI gate</td><td>Vitest — min 75% · CI gate</td><td>pytest-cov — min 80% · CI gate</td></tr>
+      <tr><td style="font-family:var(--mono);font-size:10px;font-weight:700;">API mocking</td><td>MSW (Mock Service Worker)</td><td>Angular HttpClientTestingModule</td><td>pytest fixtures + Beanie mock</td></tr>
+    </tbody>
+  </table>
 </div>
 
-<!-- PART 1: TESTING STRATEGY -->
+<!-- PART 1: TEST STRATEGY -->
 <hr class="divider"/>
-<div class="section-runner" id="part1">§ Part 1 — Testing Strategy (T1-T4)</div>
+<div class="section-runner" id="p1">§ Part 1 — Test Strategy (TS1–TS6)</div>
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Define the testing approach, levels, and expectations.</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Test Pyramid</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">Many</span> Unit tests (fast, isolated)</li>
+          <li><span class="rn">Some</span> Integration tests</li>
+          <li><span class="rn">Few</span> E2E tests (critical paths)</li>
+          <li><span class="rn">Few</span> Visual regression tests</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Test File Naming</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">Unit</span> *.test.ts / *.spec.ts</li>
+          <li><span class="rn">Angular</span> *.spec.ts (Vitest)</li>
+          <li><span class="rn">E2E</span> *.e2e.ts / e2e/*.ts</li>
+          <li><span class="rn">Python</span> test_*.py</li>
+          <li><span class="rn">Visual</span> tests/visual/*.ts</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 1 / T1-T4</span><span class="part-title">Testing Strategy</span><span class="part-desc">2 Critical · 2 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T1</span><span class="rule-title">Test Pyramid Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Test suite MUST follow the test pyramid: many unit tests, fewer integration tests, few E2E tests. Ratio target: 70% unit / 20% integration / 10% E2E.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T2</span><span class="rule-title">CI Must Run All Tests</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">CI pipeline MUST run the full test suite. No merging with failing tests (Infrastructure Constitution I15).</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T3</span><span class="rule-title">Test Execution Time Limits</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Unit tests: <2s per test, <2min total. Integration: <30s per test, <10min total. E2E: <5min total. (Infrastructure I16).</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T4</span><span class="rule-title">Test Environment Parity</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Tests MUST run in environment matching production (same Node version, same dependencies, isolated DB). Use test containers for database tests.</p></div></div>
+      <div class="part-banner"><span class="part-num">PART 1 / TS1–TS6</span><span class="part-title">Test Strategy</span><span class="part-desc">4 Critical · 2 High · All Stacks</span></div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS1</span><span class="rule-title">Tests Written Alongside Code — Never After</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Tests are written in the same PR as the feature code. "I'll write tests later" is forbidden. A feature PR without corresponding tests will not be approved for merge. The only exception is a pure refactor PR that changes no behaviour and relies on existing test coverage to validate.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS2</span><span class="rule-title">Test Runner Assignment — Vitest for Angular, Jest for Next.js, pytest for Python</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">The test runner is assigned per stack and cannot be mixed. Angular systems use Vitest exclusively — never Karma, Jasmine, or Jest. Next.js systems use Jest + React Testing Library. FastAPI uses pytest + pytest-asyncio. Installing a non-assigned test runner in a repo fails CI.</p>
+          <div class="stack-diff-3">
+            <div class="stack-diff-col"><div class="stack-diff-head nj">Next.js</div><div class="stack-diff-body">Jest + React Testing Library<br>Coverage via jest --coverage<br>Min 70% · CI gate</div></div>
+            <div class="stack-diff-col"><div class="stack-diff-head ang">Angular</div><div class="stack-diff-body">Vitest + @analogjs/vitest-angular<br>Coverage via vitest --coverage<br>Min 75% · CI gate</div></div>
+            <div class="stack-diff-col"><div class="stack-diff-head py">Python</div><div class="stack-diff-body">pytest + pytest-asyncio<br>Coverage via pytest-cov<br>Min 80% · CI gate</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS3</span><span class="rule-title">Test the Behaviour, Not the Implementation</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Tests assert what a function, component, or endpoint does — not how it does it. Tests that assert on internal state, private methods, or implementation details break on every refactor. Tests that assert on outputs, side effects, and rendered UI survive refactors. Tests that require mocking 5+ dependencies signal a design problem — fix the design.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS4</span><span class="rule-title">Tests Must Be Independent — No Shared Mutable State Between Tests</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Each test must be runnable in isolation and in any order. Tests cannot depend on the state left by a previous test. Use <code>beforeEach</code>/<code>afterEach</code> to reset state. Database tests use transactions that roll back after each test. Shared mutable state between tests is the most common source of flaky tests.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS5</span><span class="rule-title">Test Naming — Describes Behaviour in Plain English</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Test names describe the behaviour being tested, not the function name. Format: <code>it('returns empty array when no scholarships match the threshold')</code> not <code>it('findMatches works')</code>. A failing test name must tell you exactly what broke without reading the test body. Test names are the living documentation of expected behaviour.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS6</span><span class="rule-title">Critical Path Tests Run on Every PR — Full Suite Runs Nightly</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">CI on every PR runs: unit tests, integration tests, and critical path E2E tests. The full E2E suite and visual regression suite run on a nightly CI job. This keeps PR CI times under 5 minutes while ensuring full coverage is checked daily.</p>
+        </div>
+      </div>
     </main>
   </div>
 </div>
 
-<!-- PART 2: UNIT TESTS -->
+<!-- PART 2: UNIT & INTEGRATION -->
 <hr class="divider"/>
-<div class="section-runner" id="part2">§ Part 2 — Unit Tests (T5-T8)</div>
+<div class="section-runner" id="p2">§ Part 2 — Unit &amp; Integration Testing (TS7–TS16)</div>
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Framework</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Jest + React Testing Library (Frontend) / Vitest (Backend).</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">What to Unit Test</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✓</span> All service layer functions</li>
+          <li><span class="rn">✓</span> All utility/helper functions</li>
+          <li><span class="rn">✓</span> All Pydantic validators</li>
+          <li><span class="rn">✓</span> All Zod schemas</li>
+          <li><span class="rn">✓</span> All Angular Guards</li>
+          <li><span class="rn">✓</span> All React hooks</li>
+          <li><span class="rn">✓</span> Error boundary components</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">What to Integration Test</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✓</span> API endpoints (request → response)</li>
+          <li><span class="rn">✓</span> Auth flows end-to-end</li>
+          <li><span class="rn">✓</span> DB + service layer together</li>
+          <li><span class="rn">✓</span> Cross-DB sync operations</li>
+          <li><span class="rn">✓</span> Angular component + service</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 2 / T5-T8</span><span class="part-title">Unit Tests</span><span class="part-desc">2 Critical · 2 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T5</span><span class="rule-title">Business Logic Coverage</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">All business logic (calculations, validations, transformations) MUST have unit tests. No untested logic in production.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T6</span><span class="rule-title">Edge Cases Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Unit tests MUST cover edge cases: null/undefined inputs, empty arrays, boundary values, error conditions.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T7</span><span class="rule-title">One Assertion Per Test (Prefer)</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Prefer one logical assertion per test. Tests with multiple assertions MUST test a single behavior.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T8</span><span class="rule-title">Descriptive Test Names</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Test names MUST describe expected behavior: <code>it('returns user when valid email provided')</code> not <code>it('works')</code>.</p></div></div>
+      <div class="part-banner blue"><span class="part-num">PART 2 / TS7–TS16</span><span class="part-title">Unit &amp; Integration Testing</span><span class="part-desc">6 Critical · 4 High · All Stacks</span></div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS7</span><span class="rule-title">Every Service Function Has a Unit Test — No Untested Services</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Every function in the service layer (Angular Services, Next.js API utilities, Python FastAPI services) must have at least one unit test covering its primary success path and one covering its primary failure path. Service functions without tests block the PR merge.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS8</span><span class="rule-title">Angular: Test With TestBed, Not With DOM Queries on Internals</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK</span></div>
+          <p class="rule-statement">Angular component tests use <code>TestBed.createComponent()</code> and assert on rendered output via <code>fixture.nativeElement</code> and <code>fixture.debugElement.query()</code>. Never query internal component properties directly — test what the user sees. Use <code>@testing-library/angular</code> for more accessible query patterns where available.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS9</span><span class="rule-title">Next.js: React Components Tested With RTL — No Enzyme</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-nextjs">NEXT.JS STACK</span></div>
+          <p class="rule-statement">React component tests use React Testing Library exclusively. Enzyme is forbidden — it encourages testing implementation details. RTL queries by accessible role, text, or label mirror how users interact with the UI. <code>getByRole</code>, <code>getByText</code>, and <code>findBy*</code> async queries are the standard patterns.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS10</span><span class="rule-title">API Integration Tests Use a Real Test Database — Not Mocked DB</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Integration tests for API endpoints run against a real test PostgreSQL database (not SQLite, not mocked). The test database is seeded with fixtures before each test suite and reset via transaction rollback after each test. Docker Compose provides the test database locally and in CI.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS11</span><span class="rule-title">Auth Routes Tested for Both Authenticated and Unauthenticated States</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Every protected API endpoint and Angular route must have integration tests that verify: (1) authenticated user with correct role can access it, (2) unauthenticated request receives 401, (3) authenticated user with wrong role receives 403. Auth test coverage is non-negotiable regardless of overall coverage threshold.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS12</span><span class="rule-title">Angular HTTP Interceptor Tested — JWT Attachment and 401 Refresh</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK</span></div>
+          <p class="rule-statement">The Angular auth HTTP interceptor (Frontend Rule 68) must have dedicated integration tests covering: (1) access token is attached to requests, (2) 401 triggers silent refresh, (3) refresh success → original request retried, (4) refresh failure → redirect to login. Use <code>HttpClientTestingModule</code> to mock HTTP responses.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS13</span><span class="rule-title">Mocks Are Reset Between Tests — Never Persistent</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">All mocks, stubs, and spies are cleared and reset in <code>afterEach</code>. Jest: <code>jest.clearAllMocks()</code> in <code>afterEach</code> or <code>clearMocks: true</code> in config. Vitest: equivalent config. Python: <code>@pytest.fixture(autouse=True)</code> patch teardown. Persistent mock state causes non-deterministic test failures.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS14</span><span class="rule-title">MSW for API Mocking in Next.js — Never fetch() Mocks</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-nextjs">NEXT.JS STACK</span></div>
+          <p class="rule-statement">Frontend API mocking uses Mock Service Worker (MSW) — not <code>jest.fn()</code> patches on <code>global.fetch</code>. MSW intercepts at the network layer, allowing tests to behave like real browser requests. This tests the actual fetch call, error handling, and retry logic — not just the function that calls fetch.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS15</span><span class="rule-title">Cross-Database Sync Operations Have Integration Tests</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK</span></div>
+          <p class="rule-statement">Every operation that writes to multiple databases (Postgres + MongoDB, or Postgres + ChromaDB) must have an integration test that verifies both writes succeed correctly, and a separate test verifying rollback behaviour when the second write fails (Database Constitution D48).</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS16</span><span class="rule-title">Snapshot Tests Are Banned — Use Explicit Assertions</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Jest/Vitest snapshot tests (<code>expect(component).toMatchSnapshot()</code>) are forbidden for component testing. They encode implementation details and are blindly updated when they fail. Use explicit assertions: <code>expect(screen.getByRole('button')).toHaveTextContent('Submit')</code>. Visual regression with Playwright handles visual testing separately.</p>
+        </div>
+      </div>
     </main>
   </div>
 </div>
 
-<!-- PART 3: INTEGRATION TESTS -->
+<!-- PART 3: E2E & VISUAL -->
 <hr class="divider"/>
-<div class="section-runner" id="part3">§ Part 3 — Integration Tests (T9-T12)</div>
+<div class="section-runner" id="p3">§ Part 3 — E2E &amp; Visual Regression (TS17–TS24)</div>
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Verify components work together correctly.</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Critical E2E Paths</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✓</span> Register → verify → login</li>
+          <li><span class="rn">✓</span> Login → access protected page</li>
+          <li><span class="rn">✓</span> Primary feature workflow</li>
+          <li><span class="rn">✓</span> Logout clears session</li>
+          <li><span class="rn">✓</span> Error states show correctly</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Visual Breakpoints</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">320px</span> Minimum baseline</li>
+          <li><span class="rn">375px</span> iPhone standard</li>
+          <li><span class="rn">390px</span> iPhone Pro</li>
+          <li><span class="rn">768px</span> Tablet</li>
+          <li><span class="rn">1280px</span> Desktop</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 3 / T9-T12</span><span class="part-title">Integration Tests</span><span class="part-desc">2 Critical · 2 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T9</span><span class="rule-title">API Endpoint Testing Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every API endpoint MUST have integration tests covering success, error, and edge cases (Backend Constitution B11).</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T10</span><span class="rule-title">Database Integration Tests</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Database queries and mutations MUST have integration tests. Use test database with transactions for isolation.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T11</span><span class="rule-title">External Service Mocking</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">External API calls (OpenAI, Stripe) MUST be mocked in integration tests. Test both success and failure responses.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T12</span><span class="rule-title">Auth Flow Integration</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Authentication flows (register, login, logout, session validation) MUST have comprehensive integration tests.</p></div></div>
+      <div class="part-banner dark"><span class="part-num">PART 3 / TS17–TS24</span><span class="part-title">E2E &amp; Visual Regression</span><span class="part-desc">4 Critical · 4 High · Both TS Stacks</span></div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS17</span><span class="rule-title">Playwright for E2E — Both TS Stacks, Same Test Patterns</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">All E2E tests use Playwright for both Next.js and Angular systems. Same test patterns, same Playwright config, same CI integration. This allows shared E2E knowledge across the team. Cypress is not used — Playwright has better async handling, parallel execution, and built-in visual comparison.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS18</span><span class="rule-title">E2E Tests Cover Every Critical Path — Auth, Primary Feature, Error</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">The minimum E2E test suite for every platform: (1) full registration and email verification flow, (2) login with valid credentials, (3) login with invalid credentials — error shown correctly, (4) access primary platform feature end-to-end, (5) logout and verify session cleared. These 5 paths are the minimum viable E2E suite for every v1 system.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS19</span><span class="rule-title">Visual Regression at 320/375/390px — Every PR That Changes UI</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">PRs that change any UI component trigger Playwright visual regression tests at exactly 320px, 375px, and 390px. Any layout breakage at these widths fails CI. The test suite uses Playwright's <code>page.setViewportSize()</code> and <code>expect(page).toHaveScreenshot()</code> for deterministic comparison. Baseline screenshots are committed to the repo.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS20</span><span class="rule-title">E2E Tests Run Against Staging Environment — Never Against Production</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">E2E tests run against the staging environment (preview deployments on Vercel, staging environment on Railway). Never run automated E2E tests against production. The staging environment mirrors production structure but uses isolated data. E2E tests that create, modify, or delete data are safe to run on staging.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS21</span><span class="rule-title">Playwright Page Objects — No Inline Selectors in Test Files</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">All Playwright selectors are encapsulated in Page Object Model classes. Test files contain only test logic — not selector strings. A <code>LoginPage</code> class exposes methods like <code>fillEmail()</code>, <code>clickSubmit()</code>, <code>errorMessage()</code>. This makes tests readable and centralises selector maintenance.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS22</span><span class="rule-title">E2E Test Data — Seeded Fixtures, Cleaned After Each Test</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">E2E tests use seeded test fixtures for data (not production data, not manually created). After each test or test suite, created data is cleaned up via API calls or DB reset. E2E tests must be idempotent — running them multiple times produces the same results.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS23</span><span class="rule-title">Accessibility Tests in E2E — axe-core on Every Critical Page</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">Playwright E2E tests include an accessibility check using <code>@axe-core/playwright</code> on every critical page (login, registration, main dashboard, primary feature page). Accessibility violations at WCAG 2.1 AA level fail CI. This automates the WCAG AA requirement from Frontend Constitution Rule 15.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS24</span><span class="rule-title">Flaky Tests Are Fixed Within One Sprint — Never Skipped Permanently</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">A test that fails intermittently (flaky) is logged as a GitHub Issue with priority. The test may be temporarily skipped with <code>test.skip</code> for maximum one sprint. If not fixed within one sprint, it becomes a mandatory sprint ticket. Permanently skipped tests accumulate technical debt — they are removed from the suite entirely if not fixed in two sprints.</p>
+        </div>
+      </div>
     </main>
   </div>
 </div>
 
-<!-- PART 4: E2E TESTS -->
+<!-- PART 4: COVERAGE & CI -->
 <hr class="divider"/>
-<div class="section-runner" id="part4">§ Part 4 — E2E Tests (T13-T16)</div>
+<div class="section-runner" id="p4">§ Part 4 — Coverage &amp; CI Gates (TS25–TS30)</div>
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Framework</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Playwright (cross-browser) or Cypress.</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Coverage Thresholds</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">NJ</span> Jest min 70% lines</li>
+          <li><span class="rn">ANG</span> Vitest min 75% lines</li>
+          <li><span class="rn">PY</span> pytest-cov min 80% lines</li>
+          <li><span class="rn">Auth</span> 100% — no exceptions</li>
+          <li><span class="rn">Service</span> 85% minimum</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 4 / T13-T16</span><span class="part-title">E2E Tests</span><span class="part-desc">2 Critical · 2 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T13</span><span class="rule-title">Critical User Journeys</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Critical user journeys (auth → dashboard → core feature) MUST have E2E tests. Minimum 1 per major feature.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T14</span><span class="rule-title">E2E Test Environment</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">E2E tests MUST run against staging environment (not local). Use CI to deploy staging before E2E.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T15</span><span class="rule-title">Cross-Browser Testing</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">E2E tests SHOULD run on Chrome and Firefox. Safari optional for v1.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T16</span><span class="rule-title">Visual Regression (Optional v1)</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Visual regression tests RECOMMENDED for critical UI components. Defer to v2 if not feasible.</p></div></div>
+      <div class="part-banner"><span class="part-num">PART 4 / TS25–TS30</span><span class="part-title">Coverage &amp; CI Gates</span><span class="part-desc">4 Critical · 2 High · All Stacks</span></div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS25</span><span class="rule-title">Coverage Below Threshold Fails CI — Hard Gate</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Coverage thresholds are hard CI gates — not guidelines. Jest: <code>--coverageThreshold global.lines 70</code>. Vitest: <code>thresholds.lines: 75</code>. pytest: <code>--cov-fail-under=80</code>. Dropping below threshold fails the build. New features must include tests that maintain or improve coverage. Coverage exclusions (<code>/* istanbul ignore */</code>) require a comment explaining the exemption.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS26</span><span class="rule-title">Auth Module Coverage — 100% Required</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">The authentication module — login, register, password reset, token refresh, logout, JWT validation, NextAuth callbacks — requires 100% test coverage. Auth bugs have the highest impact of any code in the system. 100% coverage for auth is configured as a separate coverage threshold in the CI config.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS27</span><span class="rule-title">CI Test Suite Completes Under 5 Minutes on PR</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">The PR CI test suite (unit + integration + critical E2E) must complete in under 5 minutes. Slow tests block developer flow and reduce CI run frequency. Tests exceeding this limit prompt an investigation into parallelisation (GitHub Actions matrix), test isolation, or database query optimisation.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS28</span><span class="rule-title">All Tests Pass Before Merge — Zero Tolerance for Red CI</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">No PR is merged with any failing test, regardless of claimed relevance. "That test was already failing before my change" is not an acceptable justification for merging. Fix the failing test or demonstrate it was already a known flaky test (logged issue). CI green is the merge gate.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS29</span><span class="rule-title">Test Coverage Reports Published as PR Comments</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">GitHub Actions publishes a coverage report as a PR comment showing: current coverage %, delta from base branch, and a list of uncovered lines in changed files. This makes coverage regressions visible in code review without requiring reviewers to run tests locally.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS30</span><span class="rule-title">Nightly Full Suite — Including Visual Regression and Full E2E</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">A nightly GitHub Actions workflow runs the complete test suite including: all unit and integration tests, the full E2E suite, visual regression at all 5 breakpoints, and accessibility tests. Failures in the nightly suite are treated as high-priority bugs. Results are posted to the team communication channel.</p>
+        </div>
+      </div>
     </main>
   </div>
 </div>
 
-<!-- PART 5: CONTRACT TESTS -->
+<!-- PART 5: PYTHON -->
 <hr class="divider"/>
-<div class="section-runner" id="part5">§ Part 5 — Contract Tests (T17-T19)</div>
+<div class="section-runner" id="p5">§ Part 5 — Python / FastAPI Testing (TS31–TS38)</div>
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Ensure API contract compliance between services.</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">pytest Setup</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">pytest</span> + pytest-asyncio</li>
+          <li><span class="rn">httpx</span> ASGI test client</li>
+          <li><span class="rn">factory-boy</span> test fixtures</li>
+          <li><span class="rn">pytest-cov</span> coverage</li>
+          <li><span class="rn">Beanie</span> test client for MongoDB</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 5 / T17-T19</span><span class="part-title">Contract Tests</span><span class="part-desc">2 Critical · 1 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T17</span><span class="rule-title">OpenAPI Contract Validation</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Contract tests MUST verify API responses match OpenAPI specification (Backend Constitution B7).</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T18</span><span class="rule-title">ApiResponse&lt;T&gt; Format</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Contract tests MUST verify all endpoints return ApiResponse&lt;T&gt; format (Backend Constitution B8).</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T19</span><span class="rule-title">Consumer-Driven Contracts (v2 Target)</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Consumer-driven contract testing (Pact) is NOT required for v1. Defer to v2 for service-to-service contracts.</p></div></div>
+      <div class="part-banner ang"><span class="part-num">PART 5 / TS31–TS38</span><span class="part-title">Python / FastAPI Testing</span><span class="part-desc">4 Critical · 4 High · Angular Stack</span></div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS31</span><span class="rule-title">pytest-asyncio for All Async Tests — Never asyncio.run()</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">All async FastAPI endpoint tests and async service function tests use <code>@pytest.mark.asyncio</code>. Never call <code>asyncio.run()</code> inside tests. Configure <code>asyncio_mode = "auto"</code> in <code>pyproject.toml</code> to automatically mark all async test functions.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS32</span><span class="rule-title">httpx AsyncClient for API Testing — Not TestClient (Sync)</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">FastAPI endpoint tests use <code>httpx.AsyncClient(app=app, base_url="http://test")</code> — not the synchronous <code>TestClient</code>. The async client tests the full async request lifecycle including middleware, dependencies, and background tasks. TestClient blocks the event loop and misses async-specific bugs.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS33</span><span class="rule-title">Database Tests Use Transaction Rollback — Never Truncate Between Tests</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">Each pytest test that writes to PostgreSQL runs inside a transaction that is rolled back on teardown. This is faster than truncating tables and ensures test isolation. Use a <code>db_session</code> fixture that begins a transaction, yields the session, then rolls back. Never use <code>TRUNCATE</code> in test teardown.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">TS34</span><span class="rule-title">Pydantic Model Validation Tests — Every Schema Has a Test</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">Every Pydantic request/response model must have unit tests covering: valid input parses correctly, missing required fields raise <code>ValidationError</code>, invalid field types raise <code>ValidationError</code>, and boundary values (empty strings, zero, None) behave as documented. Pydantic validation is the first line of API security.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS35</span><span class="rule-title">factory-boy for Test Fixtures — No Hardcoded Test Data</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">Test fixtures (users, accounts, applications) are generated by <code>factory-boy</code> factories — not hardcoded dicts or manually created model instances. Factories produce valid, realistic test data with sensible defaults and support override per-test. This keeps tests DRY and makes fixture maintenance centralised.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS36</span><span class="rule-title">MongoDB Tests Use Beanie Test Mode — Isolated In-Memory Collection</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">Tests that involve MongoDB use Beanie's test client with an isolated test database, reset between test suites. Never run MongoDB tests against the development or staging MongoDB instance. Use <code>mongomock</code> for unit tests of service functions, and a real test MongoDB container for integration tests.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS37</span><span class="rule-title">AI/LangChain Tests Mock the LLM — Never Call Real API in Tests</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">Tests for AI service functions mock the LangChain LLM call — never call the real API. Use <code>unittest.mock.patch</code> or <code>pytest-mock</code> to mock the LLM response with a fixture. This makes tests deterministic, fast, and free. A separate manual integration test suite (not in CI) may test real LLM calls with <code>@pytest.mark.slow</code>.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">TS38</span><span class="rule-title">RBAC Tests — Every Endpoint Tests All Three Access Levels</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">Every FastAPI endpoint that has role restrictions must have parametrised pytest tests for all three access scenarios: (1) authorised role succeeds, (2) unauthenticated request gets 401, (3) wrong role gets 403. Use <code>@pytest.mark.parametrize</code> with a fixture that creates users of different roles.</p>
+        </div>
+      </div>
     </main>
   </div>
 </div>
 
-<!-- PART 6: PERFORMANCE TESTS -->
+<!-- FORBIDDEN -->
 <hr class="divider"/>
-<div class="section-runner" id="part6">§ Part 6 — Performance Tests (T20-T23)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Ensure system meets performance requirements.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 6 / T20-T23</span><span class="part-title">Performance Tests</span><span class="part-desc">1 Critical · 3 High</span></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T20</span><span class="rule-title">Lighthouse CI</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Lighthouse CI MUST run on critical pages. Targets: Performance >90, Accessibility >95, SEO >90.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T21</span><span class="rule-title">Load Testing (v2 Target)</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Load testing NOT required for v1. Defer to v2 for scale verification.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T22</span><span class="rule-title">Database Query Performance</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">N+1 queries MUST be detected and prevented. Use Prisma's $queryRaw monitoring or query logging.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T23</span><span class="rule-title">API Response Time Tracking</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Performance regression tests MUST track API response times. Alert on >20% regression (Backend Constitution B24).</p></div></div>
-    </main>
+<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (FP01–FP16)</div>
+<div class="forbidden-section">
+  <div class="forbidden-header">⚠ FORBIDDEN PATTERNS — VIOLATION = BUILD FAILURE</div>
+  <div class="forbidden-grid">
+    <div class="fp-item"><div class="fp-code">FP01 — TESTS WRITTEN AFTER THE FACT</div><div class="fp-desc">Merging a feature PR with no tests and adding tests "later" in a follow-up PR.</div><div class="fp-fix">✓ Fix: Tests required in same PR as feature code (TS1).</div></div>
+    <div class="fp-item"><div class="fp-code">FP02 — KARMA/JASMINE IN ANGULAR</div><div class="fp-desc">Running Angular tests with Karma or Jasmine instead of Vitest.</div><div class="fp-fix">✓ Fix: Vitest + Angular Testing Utilities exclusively (TS2).</div></div>
+    <div class="fp-item"><div class="fp-code">FP03 — SNAPSHOT TESTS</div><div class="fp-desc">Using <code>toMatchSnapshot()</code> for component testing instead of explicit assertions.</div><div class="fp-fix">✓ Fix: Explicit assertions on rendered output (TS16).</div></div>
+    <div class="fp-item"><div class="fp-code">FP04 — SHARED MUTABLE STATE BETWEEN TESTS</div><div class="fp-desc">Tests relying on state set up by a previous test in the suite.</div><div class="fp-fix">✓ Fix: beforeEach/afterEach reset state — tests are independent (TS4).</div></div>
+    <div class="fp-item"><div class="fp-code">FP05 — ENZYME IN REACT TESTS</div><div class="fp-desc">Using Enzyme for React component testing instead of React Testing Library.</div><div class="fp-fix">✓ Fix: RTL getByRole, getByText, findBy* queries only (TS9).</div></div>
+    <div class="fp-item"><div class="fp-code">FP06 — MOCKED DATABASE IN INTEGRATION TESTS</div><div class="fp-desc">Using SQLite, in-memory DB, or Prisma mocks for API integration tests.</div><div class="fp-fix">✓ Fix: Real test PostgreSQL database in Docker Compose (TS10).</div></div>
+    <div class="fp-item"><div class="fp-code">FP07 — E2E AGAINST PRODUCTION</div><div class="fp-desc">Running automated Playwright tests against the production environment.</div><div class="fp-fix">✓ Fix: E2E against staging/preview only (TS20).</div></div>
+    <div class="fp-item"><div class="fp-code">FP08 — PERMANENTLY SKIPPED TESTS</div><div class="fp-desc">Tests left in a permanently skipped state with <code>test.skip</code> beyond two sprints.</div><div class="fp-fix">✓ Fix: Fix within one sprint or remove entirely (TS24).</div></div>
+    <div class="fp-item"><div class="fp-code">FP09 — COVERAGE BELOW THRESHOLD</div><div class="fp-desc">Merging code that drops coverage below the stack's minimum threshold.</div><div class="fp-fix">✓ Fix: CI hard gate enforces threshold — must include tests (TS25).</div></div>
+    <div class="fp-item"><div class="fp-code">FP10 — REAL LLM API CALLS IN CI TESTS</div><div class="fp-desc">pytest tests that call the real LangChain/LLM API during CI runs.</div><div class="fp-fix">✓ Fix: Mock LLM with pytest-mock — real calls only in @pytest.mark.slow (TS37).</div></div>
+    <div class="fp-item"><div class="fp-code">FP11 — NO AUTH TESTS ON PROTECTED ENDPOINTS</div><div class="fp-desc">Protected API endpoints or routes without tests for 401 and 403 scenarios.</div><div class="fp-fix">✓ Fix: Every protected endpoint tested for auth and forbidden states (TS11).</div></div>
+    <div class="fp-item"><div class="fp-code">FP12 — ASYNCIO.RUN() IN PYTHON TESTS</div><div class="fp-desc">Calling asyncio.run() inside pytest test functions to run async code.</div><div class="fp-fix">✓ Fix: pytest-asyncio with asyncio_mode="auto" (TS31).</div></div>
+    <div class="fp-item"><div class="fp-code">FP13 — TRUNCATE IN DB TEST TEARDOWN</div><div class="fp-desc">Using TRUNCATE or DELETE FROM to clean up test data in Python tests.</div><div class="fp-fix">✓ Fix: Transaction rollback per test — no truncate (TS33).</div></div>
+    <div class="fp-item"><div class="fp-code">FP14 — INLINE SELECTORS IN PLAYWRIGHT TESTS</div><div class="fp-desc">Using CSS selectors or data-testid strings directly in test files instead of Page Objects.</div><div class="fp-fix">✓ Fix: All selectors encapsulated in Page Object classes (TS21).</div></div>
+    <div class="fp-item"><div class="fp-code">FP15 — SYNCTESTCLIENT FOR ASYNC FASTAPI</div><div class="fp-desc">Using Starlette's synchronous TestClient for testing async FastAPI endpoints.</div><div class="fp-fix">✓ Fix: httpx.AsyncClient(app=app) for all endpoint tests (TS32).</div></div>
+    <div class="fp-item"><div class="fp-code">FP16 — MERGING WITH FAILING TESTS</div><div class="fp-desc">Merging any PR where any test is failing, even if claimed unrelated to the change.</div><div class="fp-fix">✓ Fix: All tests pass before merge — zero tolerance (TS28).</div></div>
   </div>
 </div>
 
-<!-- PART 7: TEST DATA -->
-<hr class="divider"/>
-<div class="section-runner" id="part7">§ Part 7 — Test Data Management (T24-T27)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Consistent, isolated, realistic test data.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 7 / T24-T27</span><span class="part-title">Test Data Management</span><span class="part-desc">2 Critical · 1 High · 1 Medium</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T24</span><span class="rule-title">No Production Data in Tests</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Tests MUST NOT use production data. Use factories (Faker.js, Factory Bot) to generate test data.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T25</span><span class="rule-title">Database Isolation</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Tests MUST NOT share database state. Use transactions (rollback after each test) or per-test databases.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T26</span><span class="rule-title">Test Data Factories</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Use factories (not fixtures) for generating test data. Fixtures are allowed only for static reference data.</p></div></div>
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">T27</span><span class="rule-title">Seed Data for E2E</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">E2E tests MUST use predictable seed data. Test database should be reset before E2E test suite runs.</p></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 8: COVERAGE REQUIREMENTS -->
-<hr class="divider"/>
-<div class="section-runner" id="part8">§ Part 8 — Coverage Requirements (T28-T31)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Targets</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Lines: 80% · Branches: 70% · Functions: 80%</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 8 / T28-T31</span><span class="part-title">Coverage Requirements</span><span class="part-desc">2 Critical · 2 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T28</span><span class="rule-title">Minimum Coverage Thresholds</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Minimum coverage: lines 80%, branches 70%, functions 80%. CI fails if thresholds not met. (Backend Constitution CQ6-CQ10).</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T29</span><span class="rule-title">Coverage on New Code</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">New code MUST maintain or increase coverage. PRs that decrease coverage are BLOCKED.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T30</span><span class="rule-title">Coverage Reports in CI</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Coverage reports MUST be generated in CI and uploaded to Codecov/CodeClimate.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T31</span><span class="rule-title">Critical Path Coverage</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Authentication and payment flows MUST have 100% line and branch coverage.</p></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 9: FLAKY TEST MANAGEMENT -->
-<hr class="divider"/>
-<div class="section-runner" id="part9">§ Part 9 — Flaky Test Management (T32-T34)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Maintain CI reliability and trust.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 9 / T32-T34</span><span class="part-title">Flaky Test Management</span><span class="part-desc">1 Critical · 2 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">T32</span><span class="rule-title">No Flaky Tests in CI</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Flaky tests MUST be quarantined immediately (skip in CI). Do NOT re-run CI without fixing (Code Quality CQ35).</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T33</span><span class="rule-title">Flaky Test Tracking</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Quarantined tests MUST have issue with owner and due date. Fix within 2 weeks.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">T34</span><span class="rule-title">Test Retry Policy</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Automatic test retry: 0 for unit, 1 for integration, 2 for E2E. More than 2 retries = flaky test (quarantine).</p></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- FORBIDDEN PATTERNS -->
-<hr class="divider"/>
-<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (TF01-TF14)</div>
-<div class="part-section" style="padding: 20px 24px;">
-  <div class="callout callout-critical" style="margin-bottom:16px;"><span class="callout-icon">■</span><div class="callout-body"><strong>14 patterns permanently banned.</strong> Each one has caused real test suite failures.</div></div>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-    <div><table class="fp-table"><thead><tr><th>Code</th><th>Pattern</th><th>Rule</th></tr></thead><tbody>
-      <tr><td class="fp-code">TF01</td><td>Skipping tests in CI</td><td class="fp-ref">T2</td></tr>
-      <tr><td class="fp-code">TF02</td><td>No edge case tests</td><td class="fp-ref">T6</td></tr>
-      <tr><td class="fp-code">TF03</td><td>Vague test names</td><td class="fp-ref">T8</td></tr>
-      <tr><td class="fp-code">TF04</td><td>Testing implementation details</td><td class="fp-ref">T5</td></tr>
-      <tr><td class="fp-code">TF05</td><td>Shared database state</td><td class="fp-ref">T25</td></tr>
-      <tr><td class="fp-code">TF06</td><td>Production data in tests</td><td class="fp-ref">T24</td></tr>
-      <tr><td class="fp-code">TF07</td><td>Sleep/wait in tests</td><td class="fp-ref">T13</td></tr>
-    </tbody></table></div>
-    <div><table class="fp-table"><thead><tr><th>Code</th><th>Pattern</th><th>Rule</th></tr></thead><tbody>
-      <tr><td class="fp-code">TF08</td><td>Test order dependencies</td><td class="fp-ref">T25</td></tr>
-      <tr><td class="fp-code">TF09</td><td>Testing external APIs without mocks</td><td class="fp-ref">T11</td></tr>
-      <tr><td class="fp-code">TF10</td><td>N+1 queries in tests</td><td class="fp-ref">T22</td></tr>
-      <tr><td class="fp-code">TF11</td><td>No error path tests</td><td class="fp-ref">T6</td></tr>
-      <tr><td class="fp-code">TF12</td><td>Decreasing coverage</td><td class="fp-ref">T29</td></tr>
-      <tr><td class="fp-code">TF13</td><td>Re-running CI for flaky tests</td><td class="fp-ref">T32</td></tr>
-      <tr><td class="fp-code">TF14</td><td>Hardcoded test data</td><td class="fp-ref">T26</td></tr>
-    </tbody></table></div>
-  </div>
-</div>
-
-<!-- READINESS CHECKLIST -->
+<!-- LOCK -->
 <hr class="divider-double"/>
-<div class="section-runner">§ Production Readiness Checklist</div>
-<div class="part-section" style="padding: 20px 24px;">
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-    <div><div class="rule-card high" style="margin:0;"><div class="rule-card-head"><span class="rule-num-badge">✅</span><span class="rule-title">Unit & Integration</span></div><div class="rule-card-body">Business logic coverage (T5) · Edge cases (T6) · API endpoint tests (T9) · DB integration (T10)</div></div></div>
-    <div><div class="rule-card high" style="margin:0;"><div class="rule-card-head"><span class="rule-num-badge">✅</span><span class="rule-title">E2E & Contract</span></div><div class="rule-card-body">Critical user journeys (T13) · OpenAPI validation (T17) · ApiResponse format (T18)</div></div></div>
-    <div><div class="rule-card high" style="margin:0;"><div class="rule-card-head"><span class="rule-num-badge">✅</span><span class="rule-title">Performance & Coverage</span></div><div class="rule-card-body">Lighthouse CI (T20) · N+1 detection (T22) · Coverage ≥80% (T28) · No coverage decrease (T29)</div></div></div>
-    <div><div class="rule-card high" style="margin:0;"><div class="rule-card-head"><span class="rule-num-badge">✅</span><span class="rule-title">Test Hygiene</span></div><div class="rule-card-body">No production data (T24) · Database isolation (T25) · Factories over fixtures (T26) · No flaky tests (T32)</div></div></div>
-  </div>
-</div>
-
-<!-- FINAL LOCK STATEMENT -->
-<div class="lock-section">
+<div class="lock-section" id="lock">
   <div class="lock-banner">
-    <div class="lock-title-main">Testing Constitution v1.0</div>
-    <div class="lock-sub">Final Lock — Effective 2026-04-08 — Next Review 2026-07-07</div>
-    <p style="font-family:var(--serif);font-style:italic;font-size:16px;color:rgba(238,242,245,.7);">"Untested code is broken code. Prove it works."</p>
+    <div class="lock-title-main">Testing Constitution v3.0</div>
+    <div class="lock-sub">Final Lock — Effective 2026-04-14 — Next Review 2026-07-07</div>
+    <p style="font-family:var(--serif);font-style:italic;font-size:18px;color:rgba(255,255,255,.7);">"Untested code is broken code waiting to be discovered."</p>
     <div class="lock-stats">
-      <div class="ls-item"><span class="ls-num">34</span><span class="ls-label">Total Rules</span></div>
-      <div class="ls-item"><span class="ls-num">14</span><span class="ls-label">Critical</span></div>
-      <div class="ls-item"><span class="ls-num">16</span><span class="ls-label">High</span></div>
-      <div class="ls-item"><span class="ls-num">4</span><span class="ls-label">Medium</span></div>
-      <div class="ls-item"><span class="ls-num">14</span><span class="ls-label">Forbidden</span></div>
-      <div class="ls-item"><span class="ls-num">277</span><span class="ls-label">System Total</span></div>
+      <div class="ls-item"><span class="ls-num">38</span><span class="ls-label">Total Rules</span></div>
+      <div class="ls-item"><span class="ls-num">16</span><span class="ls-label">Critical</span></div>
+      <div class="ls-item"><span class="ls-num">18</span><span class="ls-label">High Priority</span></div>
+      <div class="ls-item"><span class="ls-num">16</span><span class="ls-label">Forbidden</span></div>
+      <div class="ls-item"><span class="ls-num">355</span><span class="ls-label">System Total</span></div>
     </div>
   </div>
-
   <div class="lock-body">
     <div class="lock-col">
-      <div class="lock-col-title">Parts Breakdown (v1.0)</div>
+      <div class="lock-col-title">Parts Breakdown</div>
       <div class="parts-breakdown">
-        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">Testing Strategy (T1-T4)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">Unit Tests (T5-T8)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">Integration Tests (T9-T12)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">E2E Tests (T13-T16)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Contract Tests (T17-T19)</span><span class="pb-rules">3 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P6</span><span class="pb-name">Performance Tests (T20-T23)</span><span class="pb-rules">4 rules</span><span class="pb-crit">1 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P7</span><span class="pb-name">Test Data (T24-T27)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P8</span><span class="pb-name">Coverage (T28-T31)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P9</span><span class="pb-name">Flaky Tests (T32-T34)</span><span class="pb-rules">3 rules</span><span class="pb-crit">1 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">Test Strategy (TS1–TS6)</span><span class="pb-rules">6 rules</span><span class="pb-crit">4 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">Unit &amp; Integration (TS7–TS16)</span><span class="pb-rules">10 rules</span><span class="pb-crit">6 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">E2E &amp; Visual (TS17–TS24)</span><span class="pb-rules">8 rules</span><span class="pb-crit">4 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">Coverage &amp; CI (TS25–TS30)</span><span class="pb-rules">6 rules</span><span class="pb-crit">4 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Python Testing (TS31–TS38)</span><span class="pb-rules">8 rules</span><span class="pb-new">4 NEW</span></div>
+        <div class="pb-item"><span class="pb-part">ANNEX</span><span class="pb-name">Forbidden Patterns (FP01–FP16)</span><span class="pb-rules">16 patterns</span><span class="pb-crit">ALL CRIT</span></div>
       </div>
     </div>
     <div class="lock-col">
-      <div class="lock-col-title">Deferrals to v2</div>
-      <div class="parts-breakdown">
-        <div class="pb-item"><span class="pb-part">⏸</span><span class="pb-name">T16: Visual regression testing (optional v1, required v2)</span></div>
-        <div class="pb-item"><span class="pb-part">⏸</span><span class="pb-name">T19: Consumer-driven contract testing (Pact)</span></div>
-        <div class="pb-item"><span class="pb-part">⏸</span><span class="pb-name">T21: Load testing</span></div>
+      <div class="lock-col-title">v3.0 Changes from v2.0</div>
+      <div style="font-size:11.5px;color:var(--muted);line-height:2;">
+        + TS2: Vitest added as Angular test runner (not Karma)<br>
+        + TS8: Angular TestBed testing patterns added<br>
+        + TS12: Angular HTTP interceptor test requirements<br>
+        + TS15: Cross-DB sync integration tests (Angular)<br>
+        + Toolchain table added — 3 stacks side by side<br>
+        + TS36: MongoDB Beanie test mode added<br>
+        + TS37: LangChain mock requirement added<br>
+        + TS38: RBAC parametrised tests for FastAPI<br>
+        + System Total corrected: 277 → <strong>355</strong><br>
+        + Forbidden patterns: 12 → 16<br>
+        + Lock date: 2026-04-08 → 2026-04-14
       </div>
-      <div class="lock-col-title" style="margin-top:16px;">Cross-Constitution Links</div>
-      <div class="parts-breakdown">
-        <div class="pb-item"><span class="pb-part">🔗</span><span class="pb-name">T2, T3: Infrastructure I13-I16</span></div>
-        <div class="pb-item"><span class="pb-part">🔗</span><span class="pb-name">T9, T17: Backend B7-B12</span></div>
-        <div class="pb-item"><span class="pb-part">🔗</span><span class="pb-name">T28: Code Quality CQ6-CQ10</span></div>
-        <div class="pb-item"><span class="pb-part">🔗</span><span class="pb-name">T32: Code Quality CQ35</span></div>
-      </div>
+      <div class="lock-col-title" style="margin-top:16px;">Official Signatures</div>
+      <div class="sig-line"><span class="sig-role">Testing Lead</span><div class="sig-name-line"></div><div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div></div>
+      <div class="sig-line"><span class="sig-role">Product Owner — KSDRILL SA</span><div class="sig-name-line"></div><div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div></div>
     </div>
   </div>
-
   <div class="lock-final">
-    <div class="lock-final-left">TESTING CONSTITUTION v1.0 — LOCKED 2026-04-08</div>
-    <div class="lock-final-motto">"Untested code is broken code. Prove it works."</div>
-    <div class="lock-final-right">Part of 277-rule total system</div>
+    <div class="lock-final-left">ALL TESTS PASS = SYSTEM SHIPS WITH CONFIDENCE</div>
+    <div class="lock-final-motto">"Untested code is broken code waiting to be discovered."</div>
+    <div class="lock-final-right">v3.0 LOCKED · 2026-04-14<br/>Jest + Vitest + Playwright + pytest · 38 rules<br/>System Total: 355 rules</div>
   </div>
 </div>
-
 </div>
 </body>
 </html>

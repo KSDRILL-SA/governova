@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Code Quality & Review Constitution v2.0 — LOCKED</title>
+<title>Code Quality &amp; Review Constitution v3.0 — KSDRILL SA · LOCKED</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
   --ink:      #0e0e0e;
-  --paper:    #eef2f5;
-  --paper2:   #e2e8f0;
-  --paper3:   #d4dee8;
-  --rule:     #b8c4d0;
+  --paper:    #faf8f2;
+  --paper2:   #f2ede0;
+  --paper3:   #e8e0cc;
+  --rule:     #c8b896;
   --gold:     #b8860b;
   --gold2:    #d4a017;
   --amber:    #e8a020;
@@ -19,9 +19,8 @@
   --orange:   #c05a00;
   --green:    #1a5c2e;
   --blue:     #1a3a6e;
-  --blue2:    #2a5a9e;
-  --teal:     #0f6e6e;
-  --muted:    #5a5a6e;
+  --ang-red:  #9b1c1c;
+  --muted:    #5a4a2a;
   --mono:     'IBM Plex Mono', monospace;
   --serif:    'Playfair Display', serif;
   --sans:     'IBM Plex Sans', sans-serif;
@@ -43,1045 +42,1172 @@ body::after {
   content: '';
   position: fixed; inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 9999; opacity: .5;
+  pointer-events: none; z-index: 9999; opacity: .6;
 }
 
 body::before {
   content: '';
   position: fixed; inset: 0;
-  background-image:
-    linear-gradient(var(--rule) 1px, transparent 1px),
-    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
   background-size: 48px 48px;
-  pointer-events: none; z-index: 0; opacity: .1;
+  pointer-events: none; z-index: 0; opacity: .10;
 }
 
-.page { max-width: 1200px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+.page { max-width: 1100px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
 
-/* MASTHEAD */
-.masthead {
-  border-top: 6px solid var(--teal);
-  border-bottom: 3px double var(--teal);
-  margin-bottom: 0;
-}
-
-.masthead-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--rule);
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: .08em;
-}
-
-.masthead-main {
-  text-align: center;
-  padding: 40px 0 32px;
-}
-
-.masthead-eyebrow {
-  background: var(--teal);
-  color: var(--paper);
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .2em;
-  padding: 4px 16px;
-  margin-bottom: 16px;
-}
-
-.masthead-title {
-  font-family: var(--serif);
-  font-size: clamp(42px, 6vw, 80px);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -.02em;
-  color: var(--teal);
-  margin-bottom: 8px;
-}
-
-.masthead-tagline {
-  font-family: var(--serif);
-  font-size: 18px;
-  font-style: italic;
-  color: var(--muted);
-  margin-bottom: 18px;
-}
-
-.masthead-meta {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-
-.masthead-meta strong { color: var(--teal); }
-
-.masthead-bottom {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  border-top: 1px solid var(--rule);
-  background: var(--paper2);
-}
-
-.stat-box {
-  padding: 16px 20px;
-  border-right: 1px solid var(--rule);
-  text-align: center;
-}
+/* ── MASTHEAD ── */
+.masthead { border-top: 6px solid var(--ink); border-bottom: 3px double var(--ink); }
+.masthead-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--ink); font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .08em; }
+.masthead-main { padding: 40px 0 28px; text-align: center; border-bottom: 1px solid var(--ink); }
+.masthead-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .25em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.masthead-title { font-family: var(--serif); font-size: clamp(36px, 5vw, 72px); font-weight: 900; line-height: 1.0; letter-spacing: -.02em; margin-bottom: 8px; }
+.masthead-tagline { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--muted); margin-bottom: 18px; }
+.masthead-meta { display: flex; justify-content: center; gap: 36px; flex-wrap: wrap; font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+.masthead-meta strong { color: var(--ink); }
+.masthead-bottom { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--ink); }
+.stat-box { padding: 14px 10px; border-right: 1px solid var(--ink); text-align: center; }
 .stat-box:last-child { border-right: none; }
+.stat-num { font-family: var(--serif); font-size: 30px; font-weight: 900; line-height: 1; color: var(--gold); display: block; }
+.stat-label { font-family: var(--mono); font-size: 8px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-top: 2px; }
 
-.stat-num {
-  font-family: var(--serif);
-  font-size: 36px;
-  font-weight: 900;
-  line-height: 1;
-  color: var(--teal);
-  display: block;
-}
-.stat-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: var(--muted);
-  margin-top: 2px;
-}
+/* ── NAV ── */
+.part-nav { display: flex; overflow-x: auto; border-bottom: 2px solid var(--ink); background: var(--paper2); }
+.pn-item { display: flex; flex-direction: column; padding: 10px 16px; border-right: 1px solid var(--rule); text-decoration: none; color: var(--ink); flex-shrink: 0; }
+.pn-item:hover { background: var(--paper); }
+.pn-num   { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: .1em; }
+.pn-name  { font-family: var(--serif); font-size: 11px; font-weight: 700; }
+.pn-count { font-family: var(--mono); font-size: 9px; color: var(--gold); }
 
-.section-runner {
-  background: var(--teal);
-  color: var(--paper);
-  padding: 6px 0;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  text-align: center;
-}
+/* ── RUNNERS ── */
+.section-runner { background: var(--ink); color: var(--paper); padding: 6px 0; font-family: var(--mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; text-align: center; }
 
-.part-nav {
-  display: flex;
-  border-top: 2px solid var(--teal);
-  border-bottom: 2px solid var(--teal);
-  background: var(--paper2);
-  overflow-x: auto;
-}
+/* ── LAYOUT ── */
+.col-layout { display: grid; grid-template-columns: 240px 1fr; gap: 0; border-left: 1px solid var(--ink); border-right: 1px solid var(--ink); }
+.col-sidebar { border-right: 1px solid var(--rule); padding: 24px 20px; background: var(--paper2); }
+.col-main { padding: 24px 28px; }
+.part-section { border-left: 1px solid var(--ink); border-right: 1px solid var(--ink); }
 
-.pn-item {
-  flex: 1;
-  min-width: 100px;
-  padding: 10px 12px;
-  border-right: 1px solid var(--rule);
-  text-decoration: none;
-  color: var(--muted);
-  transition: all .15s;
-}
-.pn-item:last-child { border-right: none; }
-.pn-item:hover { background: var(--teal); color: var(--paper); }
-.pn-num  { font-family: var(--mono); font-size: 8px; color: var(--gold); letter-spacing: .1em; display: block; }
-.pn-name { font-family: var(--serif); font-size: 10px; font-weight: 700; line-height: 1.3; display: block; margin-top: 2px; }
-.pn-count { font-family: var(--mono); font-size: 8px; color: var(--muted); display: block; margin-top: 1px; }
+/* ── PART BANNER ── */
+.part-banner { background: var(--ink); color: var(--paper); padding: 20px 28px; margin: 0 -28px 28px; display: flex; align-items: baseline; gap: 20px; }
+.part-banner.orange-banner { background: var(--orange); }
+.part-banner.green-banner  { background: var(--green); }
+.part-banner.blue-banner   { background: var(--blue); }
+.part-banner.gold-banner   { background: var(--gold); color: var(--ink); }
+.part-num   { font-family: var(--mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--amber); flex-shrink: 0; }
+.part-title { font-family: var(--serif); font-size: 24px; font-weight: 900; line-height: 1.1; }
+.part-desc  { font-size: 12px; color: rgba(250,248,242,.6); margin-left: auto; text-align: right; max-width: 260px; font-style: italic; }
 
-.col-layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 0;
-  border-left: 1px solid var(--rule);
-  border-right: 1px solid var(--rule);
-}
-
-.col-sidebar {
-  border-right: 1px solid var(--rule);
-  padding: 24px 20px;
-  background: var(--paper2);
-}
-
-.col-main {
-  padding: 28px 32px;
-}
-
-.part-section {
-  border-left: 1px solid var(--rule);
-  border-right: 1px solid var(--rule);
-}
-
-.part-banner {
-  background: var(--teal);
-  color: var(--paper);
-  padding: 20px 28px;
-  margin: -28px -32px 28px;
-  display: flex;
-  align-items: baseline;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.part-num {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--gold2);
-  flex-shrink: 0;
-}
-
-.part-title {
-  font-family: var(--serif);
-  font-size: 24px;
-  font-weight: 900;
-  line-height: 1.1;
-  flex: 1;
-}
-
-.part-desc {
-  font-size: 11px;
-  color: rgba(238,242,245,.6);
-  text-align: right;
-  font-style: italic;
-}
-
-.rule-card {
-  border: 1px solid var(--rule);
-  border-left: 4px solid var(--teal);
-  background: #fff;
-  margin-bottom: 18px;
-  overflow: hidden;
-}
-
+/* ── RULE CARD ── */
+.rule-card { border: 1px solid var(--rule); border-left: 4px solid var(--ink); background: #fff; margin-bottom: 16px; overflow: hidden; }
 .rule-card.critical { border-left-color: var(--red); }
 .rule-card.high     { border-left-color: var(--orange); }
 .rule-card.medium   { border-left-color: var(--gold); }
+.rule-card.new      { border-left-color: var(--green); }
 
-.rule-card-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px 18px 10px;
-  border-bottom: 1px solid var(--rule);
-  background: var(--paper2);
-}
-
-.rule-num-badge {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  color: var(--muted);
-  flex-shrink: 0;
-}
-
-.rule-title {
-  font-family: var(--serif);
-  font-size: 15px;
-  font-weight: 700;
-  flex: 1;
-  line-height: 1.3;
-}
-
-.sev-badge {
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
+.rule-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 14px 18px 10px; border-bottom: 1px solid var(--rule); background: var(--paper2); }
+.rule-num-badge { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .1em; color: var(--muted); flex-shrink: 0; margin-top: 2px; }
+.rule-title     { font-family: var(--serif); font-size: 15px; font-weight: 700; flex: 1; line-height: 1.3; }
+.sev-badge      { font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; flex-shrink: 0; }
 .sev-critical { background: var(--red);    color: #fff; }
 .sev-high     { background: var(--orange); color: #fff; }
 .sev-medium   { background: var(--gold);   color: #fff; }
+.sev-new      { background: var(--green);  color: #fff; }
 
-.rule-card-body {
-  padding: 14px 18px;
-}
+.rule-card-body { padding: 14px 18px; }
+.rule-statement { font-size: 13.5px; line-height: 1.6; margin-bottom: 12px; font-weight: 500; }
 
-.rule-statement {
-  font-size: 13.5px;
-  line-height: 1.6;
-  margin-bottom: 12px;
-  font-weight: 500;
-}
+/* ── SCOPE ── */
+.scope-bar { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.scope-chip { font-family: var(--mono); font-size: 8px; letter-spacing: .08em; padding: 2px 8px; border-radius: 2px; font-weight: 700; }
+.scope-both    { background: var(--ink);     color: var(--paper); }
+.scope-nextjs  { background: #0e0e0e;        color: var(--paper); }
+.scope-angular { background: var(--ang-red); color: #fff; }
+.scope-py      { background: #3776AB;        color: #fff; }
+.scope-new     { background: var(--green);   color: #fff; }
 
-.rule-meta-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 8px;
-  margin-top: 10px;
-}
+/* ── STACK DIFF ── */
+.stack-diff { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--ink); margin-top: 10px; overflow: hidden; }
+.stack-diff-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 1px solid var(--ink); margin-top: 10px; overflow: hidden; }
+.stack-diff-head { padding: 6px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+.stack-diff-head.nj  { background: #0e0e0e; color: var(--paper); }
+.stack-diff-head.ang { background: var(--ang-red); color: #fff; }
+.stack-diff-head.py  { background: #3776AB; color: #fff; }
+.stack-diff-body { padding: 10px 12px; font-size: 11.5px; color: var(--muted); line-height: 1.8; background: var(--paper2); border-left: 1px solid var(--rule); }
+.stack-diff-col:first-child .stack-diff-body { border-left: none; }
 
-.rule-meta-item {
-  background: var(--paper2);
-  border: 1px solid var(--rule);
-  padding: 7px 10px;
-  font-size: 11.5px;
-}
-
-.rule-meta-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  color: var(--muted);
-  display: block;
-  margin-bottom: 2px;
-}
-
+/* ── META ── */
+.rule-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-top: 10px; }
+.rule-meta-item { background: var(--paper2); border: 1px solid var(--rule); padding: 7px 10px; }
+.rule-meta-label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); display: block; margin-bottom: 2px; }
 .rule-meta-val { font-size: 12px; line-height: 1.4; }
 
-.code-block {
-  background: #1a1a2e;
-  border: 1px solid var(--teal);
-  margin: 12px 0 0;
-  overflow: hidden;
-  border-radius: 4px;
-}
-
-.code-bar {
-  background: #0f0f1a;
-  padding: 6px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #2a2a3e;
-}
-
-.code-filename {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--gold2);
-  letter-spacing: .05em;
-}
-
+/* ── CODE ── */
+.code-block { background: #1a1a1a; border: 1px solid var(--ink); margin: 12px 0 0; overflow: hidden; }
+.code-bar { background: #0a0a0a; padding: 6px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; }
+.code-filename { font-family: var(--mono); font-size: 10px; color: var(--amber); letter-spacing: .05em; }
 .code-dots { display: flex; gap: 5px; }
 .cd { width: 9px; height: 9px; border-radius: 50%; }
 .cd-r { background: #f87171; } .cd-y { background: #fbbf24; } .cd-g { background: #34d399; }
+.code-block pre { font-family: var(--mono); font-size: 12px; line-height: 1.75; padding: 16px 18px; color: #d4d4d4; overflow-x: auto; white-space: pre; }
+.ck { color: #c678dd; } .cs { color: #98c379; } .cc { color: #5c6370; font-style: italic; }
+.ct { color: #e5c07b; } .cf { color: #61afef; } .cn { color: #d19a66; }
 
-.code-block pre {
-  font-family: var(--mono);
-  font-size: 11px;
-  line-height: 1.75;
-  padding: 16px 18px;
-  color: #d4d4d4;
-  overflow-x: auto;
-  white-space: pre;
-}
+/* ── COMPARE ── */
+.compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+.compare-block { overflow: hidden; border: 1px solid var(--rule); }
+.compare-label { padding: 5px 12px; font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.compare-bad  .compare-label { background: #fef2f2; color: var(--red);   border-bottom: 1px solid #fca5a5; }
+.compare-good .compare-label { background: #f0fdf4; color: var(--green); border-bottom: 1px solid #86efac; }
+.compare-block pre { font-family: var(--mono); font-size: 11px; line-height: 1.7; padding: 10px 12px; background: #1a1a1a; color: #d4d4d4; white-space: pre; overflow-x: auto; }
 
-.ck  { color: #c678dd; }
-.cs  { color: #98c379; }
-.cc  { color: #5c6370; font-style: italic; }
-.ct  { color: #e5c07b; }
-.cf  { color: #61afef; }
-.cn  { color: #d19a66; }
-.cv  { color: #56b6c2; }
-
-.const-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-.const-table thead tr { background: var(--teal); color: var(--paper); }
-.const-table th {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  padding: 8px 12px;
-  text-align: left;
-}
-.const-table td {
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-}
-.const-table tbody tr:nth-child(even) { background: var(--paper2); }
-
-.fp-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
-  border: 2px solid var(--teal);
-}
-.fp-table thead tr { background: var(--red); }
-.fp-table th {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  padding: 8px 12px;
-  color: #fff;
-  text-align: left;
-}
-.fp-table td {
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-}
-.fp-table tbody tr:hover { background: #fef2f2; }
-.fp-code { font-family: var(--mono); font-size: 10px; color: var(--red); font-weight: 700; }
-.fp-ref  { font-family: var(--mono); font-size: 10px; color: var(--teal); }
-
-.checklist-section {
-  border: 1px solid var(--teal);
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-.cl-header {
-  background: var(--teal);
-  color: var(--paper);
-  padding: 10px 16px;
-  font-family: var(--serif);
-  font-size: 15px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.cl-tag {
-  font-family: var(--mono);
-  font-size: 9px;
-  background: var(--gold2);
-  color: var(--ink);
-  padding: 2px 8px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-.cl-group { border-bottom: 1px solid var(--rule); }
-.cl-group-title {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .15em;
-  color: var(--muted);
-  background: var(--paper2);
-  padding: 6px 16px;
-  border-bottom: 1px solid var(--rule);
-}
-.cl-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 8px 16px;
-  border-bottom: 1px dotted var(--rule);
-  font-size: 12px;
-}
-.cl-item:last-child { border-bottom: none; }
-.cl-box {
-  width: 14px; height: 14px;
-  border: 1.5px solid var(--teal);
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-.cl-ref { font-family: var(--mono); font-size: 10px; color: var(--gold); margin-left: auto; flex-shrink: 0; }
-
-.callout {
-  display: flex;
-  gap: 12px;
-  padding: 12px 16px;
-  margin: 16px 0;
-  font-size: 12.5px;
-  border-left: 4px solid;
-  background: var(--paper2);
-}
-.callout-critical { border-color: var(--red); }
-.callout-warn     { border-color: var(--orange); }
-.callout-info     { border-color: var(--gold); }
-.callout-good     { border-color: var(--green); }
-.callout-icon { font-family: var(--mono); font-size: 12px; flex-shrink: 0; font-weight: 700; }
-.callout-body { line-height: 1.6; }
+/* ── CALLOUT ── */
+.callout { display: flex; gap: 12px; padding: 10px 14px; margin: 10px 0; border: 1px solid var(--rule); }
+.callout-icon { font-family: var(--mono); font-size: 11px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.callout-info     { background: #eff6ff; border-color: #93c5fd; }
+.callout-info     .callout-icon { background: #3b82f6; color: #fff; }
+.callout-critical { background: #fff1f2; border-color: #fca5a5; }
+.callout-critical .callout-icon { background: var(--red); color: #fff; }
+.callout-warning  { background: #fff7ed; border-color: #fdba74; }
+.callout-warning  .callout-icon { background: var(--orange); color: #fff; }
+.callout-new      { background: #f0fdf4; border-color: #86efac; }
+.callout-new      .callout-icon { background: var(--green); color: #fff; }
+.callout-body { font-size: 12px; line-height: 1.6; color: var(--muted); }
 .callout-body strong { color: var(--ink); }
 
-.structure-map {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0;
-  border: 2px solid var(--teal);
-  margin-bottom: 20px;
-}
-.sm-col {
-  border-right: 1px solid var(--rule);
-  overflow: hidden;
-}
+/* ── SIDEBAR ── */
+.sidebar-section { margin-bottom: 24px; }
+.sidebar-label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 8px; border-bottom: 1px solid var(--rule); padding-bottom: 4px; }
+.sb-rule-list { list-style: none; }
+.sb-rule-list li { padding: 4px 0; border-bottom: 1px dotted var(--rule); font-size: 11.5px; color: var(--muted); display: flex; gap: 6px; }
+.rn { font-family: var(--mono); font-size: 9px; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+
+/* ── TABLES ── */
+.const-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 11px; border: 1.5px solid var(--rule); margin-top: 10px; }
+.const-table th { background: var(--paper2); padding: 8px 12px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; text-align: left; border-bottom: 1.5px solid var(--ink); }
+.const-table td { padding: 7px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.const-table tr:last-child td { border-bottom: none; }
+.const-table tr:nth-child(even) td { background: var(--paper2); }
+
+/* ── STRUCTURE MAP ── */
+.structure-map { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--ink); margin-bottom: 0; }
+.sm-col { border-right: 1px solid var(--rule); }
 .sm-col:last-child { border-right: none; }
-.sm-head {
-  background: var(--teal);
-  color: var(--paper);
-  padding: 10px 14px;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-.sm-num { color: var(--gold2); margin-right: 6px; }
-.sm-items { padding: 10px 14px; }
-.sm-item {
-  font-size: 10px;
-  padding: 3px 0;
-  border-bottom: 1px dotted var(--rule);
-  color: var(--muted);
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-}
+.sm-head { background: var(--paper2); padding: 8px 12px; font-family: var(--serif); font-size: 11px; font-weight: 700; border-bottom: 1px solid var(--rule); }
+.sm-num { font-family: var(--mono); font-size: 9px; color: var(--gold); margin-right: 5px; }
+.sm-items { padding: 8px 12px; }
+.sm-item { font-size: 11px; padding: 3px 0; border-bottom: 1px dotted var(--rule); color: var(--muted); display: flex; align-items: baseline; gap: 5px; }
 .sm-item::before { content: '→'; color: var(--gold); font-family: var(--mono); font-size: 9px; flex-shrink: 0; }
 
-.warning-box {
-  border: 2px solid var(--orange);
-  background: #fffbf0;
-  padding: 14px 18px;
-  margin: 16px 0;
-}
-.warning-title {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  color: var(--orange);
-  margin-bottom: 8px;
-  font-weight: 700;
-}
+/* ── TOOL TABLE ── */
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 1.5px solid var(--ink); margin-bottom: 16px; overflow: hidden; }
+.tool-col { border-right: 1px solid var(--rule); overflow: hidden; }
+.tool-col:last-child { border-right: none; }
+.tool-col-head { padding: 10px 14px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid var(--rule); }
+.tool-col-head.nj-tools  { background: #0e0e0e; color: var(--paper); }
+.tool-col-head.ang-tools { background: var(--ang-red); color: #fff; }
+.tool-col-head.py-tools  { background: #3776AB; color: #fff; }
+.tool-col-body { padding: 12px 14px; background: var(--paper2); }
+.tool-item { font-family: var(--mono); font-size: 10px; color: var(--muted); padding: 3px 0; border-bottom: 1px dotted var(--rule); display: flex; gap: 6px; align-items: baseline; }
+.tool-item:last-child { border-bottom: none; }
+.tool-name { color: var(--ink); font-weight: 700; }
 
-.lock-section {
-  border: 4px double var(--teal);
-  margin-top: 32px;
-}
-.lock-banner {
-  background: var(--teal);
-  color: var(--paper);
-  text-align: center;
-  padding: 32px 24px;
-  border-bottom: 4px double rgba(238,242,245,.25);
-}
-.lock-title-main {
-  font-family: var(--serif);
-  font-size: clamp(28px, 4vw, 52px);
-  font-weight: 900;
-  letter-spacing: -.02em;
-  margin-bottom: 8px;
-}
-.lock-sub {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--gold2);
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-}
-.lock-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0;
-  border-top: 1px solid rgba(255,255,255,.15);
-  margin-top: 24px;
-}
-.ls-item {
-  padding: 14px;
-  border-right: 1px solid rgba(255,255,255,.1);
-  text-align: center;
-}
+/* ── FORBIDDEN ── */
+.forbidden-section { border: 2px solid var(--red); overflow: hidden; }
+.forbidden-header { background: var(--red); color: #fff; padding: 10px 20px; font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; }
+.forbidden-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.fp-item { padding: 12px 16px; border-right: 1px solid rgba(155,28,28,.2); border-bottom: 1px solid rgba(155,28,28,.2); font-family: var(--mono); font-size: 10.5px; }
+.fp-item:nth-child(even) { border-right: none; }
+.fp-code { color: var(--red); font-weight: 700; margin-bottom: 3px; font-size: 10px; }
+.fp-desc { color: var(--muted); font-size: 10px; line-height: 1.5; }
+.fp-fix  { color: var(--green); font-size: 9px; margin-top: 3px; }
+
+/* ── LOCK ── */
+.lock-section { border: 4px double var(--ink); margin: 0; background: var(--paper); }
+.lock-banner { background: var(--ink); color: var(--paper); text-align: center; padding: 32px 24px; border-bottom: 4px double var(--paper); }
+.lock-title-main { font-family: var(--serif); font-size: clamp(28px,4vw,48px); font-weight: 900; letter-spacing: -.02em; margin-bottom: 8px; }
+.lock-sub { font-family: var(--mono); font-size: 11px; color: var(--amber); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 24px; }
+.lock-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0; border-top: 1px solid rgba(255,255,255,.15); margin-top: 24px; }
+.ls-item { padding: 14px; border-right: 1px solid rgba(255,255,255,.1); text-align: center; }
 .ls-item:last-child { border-right: none; }
-.ls-num {
-  font-family: var(--serif);
-  font-size: 28px;
-  font-weight: 900;
-  color: var(--gold2);
-  display: block;
-}
-.ls-label {
-  font-family: var(--mono);
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: rgba(238,242,245,.5);
-  display: block;
-  margin-top: 2px;
-}
-
-.lock-body {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-}
-.lock-col {
-  padding: 28px 32px;
-  border-right: 2px solid var(--teal);
-}
+.ls-num { font-family: var(--serif); font-size: 28px; font-weight: 900; color: var(--amber); display: block; }
+.ls-label { font-family: var(--mono); font-size: 8px; text-transform: uppercase; letter-spacing: .12em; color: rgba(250,248,242,.5); display: block; margin-top: 2px; }
+.lock-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.lock-col { padding: 26px 30px; border-right: 2px solid var(--ink); }
 .lock-col:last-child { border-right: none; }
-.lock-col-title {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .2em;
-  color: var(--muted);
-  margin-bottom: 14px;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 6px;
-}
-
-.parts-breakdown { display: flex; flex-direction: column; gap: 6px; }
-.pb-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 11px;
-  padding: 6px 10px;
-  border: 1px solid var(--rule);
-  background: var(--paper2);
-}
-.pb-part { font-family: var(--mono); font-size: 9px; color: var(--gold); font-weight: 700; min-width: 50px; }
-.pb-name { flex: 1; font-size: 10px; }
+.lock-col-title { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .18em; color: var(--muted); margin-bottom: 12px; border-bottom: 1px solid var(--rule); padding-bottom: 5px; }
+.parts-breakdown { display: flex; flex-direction: column; gap: 5px; }
+.pb-item { display: flex; align-items: center; gap: 9px; font-size: 11px; padding: 6px 9px; border: 1px solid var(--rule); background: var(--paper2); }
+.pb-part { font-family: var(--mono); font-size: 9px; color: var(--gold); font-weight: 700; min-width: 44px; }
+.pb-name { flex: 1; font-size: 10.5px; }
 .pb-rules { font-family: var(--mono); font-size: 9px; color: var(--muted); }
-.pb-crit { background: var(--red); color: #fff; padding: 1px 5px; font-family: var(--mono); font-size: 8px; border-radius: 2px; }
+.pb-crit { background: var(--red);   color: #fff; padding: 1px 5px; font-family: var(--mono); font-size: 8px; border-radius: 2px; }
+.pb-new  { background: var(--green); color: #fff; padding: 1px 5px; font-family: var(--mono); font-size: 8px; border-radius: 2px; }
+.sig-line { display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid var(--ink); padding-bottom: 10px; margin-bottom: 10px; }
+.sig-role { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.sig-name-line { border-bottom: 1px solid var(--ink); height: 24px; }
+.sig-meta { display: flex; gap: 20px; margin-top: 4px; font-family: var(--mono); font-size: 9px; color: var(--muted); }
+.lock-final { border-top: 2px solid var(--ink); background: var(--ink); color: var(--paper); padding: 18px 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.lock-final-left  { font-family: var(--mono); font-size: 10px; color: var(--amber); letter-spacing: .06em; }
+.lock-final-motto { font-family: var(--serif); font-size: 17px; font-style: italic; }
+.lock-final-right { font-family: var(--mono); font-size: 9px; color: rgba(250,248,242,.45); text-align: right; }
 
-.lock-final {
-  border-top: 2px solid var(--teal);
-  background: var(--teal);
-  color: var(--paper);
-  padding: 20px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-.lock-final-left { font-family: var(--mono); font-size: 10px; color: var(--gold2); letter-spacing: .08em; }
-.lock-final-motto { font-family: var(--serif); font-size: 18px; font-style: italic; }
-.lock-final-right { font-family: var(--mono); font-size: 9px; color: rgba(238,242,245,.5); text-align: right; }
+code { font-family: var(--mono); font-size: 11px; background: var(--paper3); border: 1px solid var(--rule); padding: 1px 4px; color: var(--red); }
+hr.divider { height: 1px; background: var(--rule); margin: 0; border: none; }
+hr.divider-double { height: 3px; border: none; background: var(--ink); margin: 0; }
 
-.divider { border: none; border-top: 2px solid var(--teal); margin: 0; }
-.divider-double { border: none; border-top: 3px double var(--teal); margin: 0; }
-code {
-  font-family: var(--mono);
-  font-size: 11px;
-  background: #e8e0d0;
-  border: 1px solid var(--rule);
-  padding: 1px 4px;
-  color: var(--red);
-}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.page > * { animation: fadeIn .35s ease both; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--rule); }
 
-@media (max-width: 860px) {
+@media (max-width: 760px) {
   .col-layout { grid-template-columns: 1fr; }
   .col-sidebar { border-right: none; border-bottom: 1px solid var(--rule); }
   .lock-body { grid-template-columns: 1fr; }
-  .lock-col { border-right: none; border-bottom: 2px solid var(--teal); }
+  .lock-col { border-right: none; border-bottom: 2px solid var(--ink); }
   .masthead-bottom { grid-template-columns: repeat(3, 1fr); }
-  .structure-map { grid-template-columns: 1fr 1fr; }
+  .structure-map, .tool-grid, .compare-row, .stack-diff, .stack-diff-3, .forbidden-grid { grid-template-columns: 1fr; }
 }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.page > * { animation: fadeIn .35s ease both; }
 </style>
 </head>
 <body>
 <div class="page">
 
-<!-- MASTHEAD -->
+<!-- ══════════════════════════════════════════ MASTHEAD ══════════════════════════════════════════ -->
 <header class="masthead">
   <div class="masthead-top">
-    <span>LOCKED: 2026-04-08</span>
-    <span>DOCUMENT CLASS: CONSTITUTION · REVISION: v2.0</span>
+    <span>LOCKED: 2026-04-14 · KSDRILL SA</span>
+    <span>DOCUMENT CLASS: CONSTITUTION · REVISION: v3.0</span>
     <span>NEXT REVIEW: 2026-07-07</span>
   </div>
   <div class="masthead-main">
     <div class="masthead-eyebrow">CODE QUALITY &amp; REVIEW CONSTITUTION</div>
-    <h1 class="masthead-title">v2.0</h1>
-    <p class="masthead-tagline">"Code is read more often than it is written — make it readable."<br>"AI writes the first draft — humans own the final product."</p>
+    <h1 class="masthead-title">v3.0</h1>
+    <p class="masthead-tagline">"Quality is not an act — it is a habit enforced by the system."</p>
     <div class="masthead-meta">
-      <span><strong>39</strong> TOTAL RULES</span>
-      <span><strong>18</strong> CRITICAL</span>
-      <span><strong>17</strong> HIGH PRIORITY</span>
-      <span><strong>23</strong> FORBIDDEN PATTERNS</span>
-      <span><strong>314</strong> SYSTEM TOTAL</span>
+      <span><strong>44</strong> TOTAL RULES</span>
+      <span><strong>20</strong> CRITICAL</span>
+      <span><strong>7</strong> PARTS</span>
+      <span><strong>5</strong> NEW RULES</span>
+      <span>TYPESCRIPT · PYTHON · ANGULAR · NEXT.JS</span>
+      <span>SYMMETRIC WITH FRONTEND v17.0 + BACKEND v3.0</span>
     </div>
   </div>
   <div class="masthead-bottom">
-    <div class="stat-box"><span class="stat-num">39</span><span class="stat-label">Total Rules</span></div>
-    <div class="stat-box"><span class="stat-num">18</span><span class="stat-label">Critical</span></div>
-    <div class="stat-box"><span class="stat-num">17</span><span class="stat-label">High</span></div>
-    <div class="stat-box"><span class="stat-num">4</span><span class="stat-label">Medium</span></div>
-    <div class="stat-box"><span class="stat-num">314</span><span class="stat-label">System Total</span></div>
+    <div class="stat-box"><span class="stat-num">44</span><span class="stat-label">Total Rules</span></div>
+    <div class="stat-box"><span class="stat-num">20</span><span class="stat-label">Critical</span></div>
+    <div class="stat-box"><span class="stat-num">18</span><span class="stat-label">High Priority</span></div>
+    <div class="stat-box"><span class="stat-num">5</span><span class="stat-label">New Rules</span></div>
+    <div class="stat-box"><span class="stat-num">355</span><span class="stat-label">System Total</span></div>
   </div>
 </header>
 
 <!-- PART NAV -->
 <nav class="part-nav">
-  <a href="#part1" class="pn-item"><span class="pn-num">PART 1</span><span class="pn-name">Formatting &amp; Linting</span><span class="pn-count">CQ1-CQ5</span></a>
-  <a href="#part2" class="pn-item"><span class="pn-num">PART 2</span><span class="pn-name">TypeScript</span><span class="pn-count">CQ6-CQ10</span></a>
-  <a href="#part3" class="pn-item"><span class="pn-num">PART 3</span><span class="pn-name">Code Review</span><span class="pn-count">CQ11-CQ16</span></a>
-  <a href="#part4" class="pn-item"><span class="pn-num">PART 4</span><span class="pn-name">Pull Requests</span><span class="pn-count">CQ17-CQ20</span></a>
-  <a href="#part5" class="pn-item"><span class="pn-num">PART 5</span><span class="pn-name">Documentation</span><span class="pn-count">CQ21-CQ24</span></a>
-  <a href="#part6" class="pn-item"><span class="pn-num">PART 6</span><span class="pn-name">Dependencies</span><span class="pn-count">CQ25-CQ28</span></a>
-  <a href="#part7" class="pn-item"><span class="pn-num">PART 7</span><span class="pn-name">Tech Debt</span><span class="pn-count">CQ29-CQ32</span></a>
-  <a href="#part8" class="pn-item"><span class="pn-num">PART 8</span><span class="pn-name">Supply Chain</span><span class="pn-count">CQ33-CQ35</span></a>
-  <a href="#part9" class="pn-item"><span class="pn-num">PART 9</span><span class="pn-name">AI Governance</span><span class="pn-count">CQ36-CQ39</span></a>
-  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden</span><span class="pn-count">FP01-FP23</span></a>
+  <a href="#p1" class="pn-item"><span class="pn-num">P1</span><span class="pn-name">TypeScript Standards</span><span class="pn-count">Q1–Q8</span></a>
+  <a href="#p2" class="pn-item"><span class="pn-num">P2</span><span class="pn-name">Python Standards</span><span class="pn-count">Q9–Q14</span></a>
+  <a href="#p3" class="pn-item"><span class="pn-num">P3</span><span class="pn-name">File &amp; Module Structure</span><span class="pn-count">Q15–Q20</span></a>
+  <a href="#p4" class="pn-item"><span class="pn-num">P4</span><span class="pn-name">Linting &amp; Formatting</span><span class="pn-count">Q21–Q27</span></a>
+  <a href="#p5" class="pn-item"><span class="pn-num">P5</span><span class="pn-name">Code Review</span><span class="pn-count">Q28–Q35</span></a>
+  <a href="#p6" class="pn-item"><span class="pn-num">P6</span><span class="pn-name">Documentation</span><span class="pn-count">Q36–Q40</span></a>
+  <a href="#p7" class="pn-item"><span class="pn-num">P7 🆕</span><span class="pn-name">Angular Quality</span><span class="pn-count">Q41–Q44</span></a>
+  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden Patterns</span><span class="pn-count">FP01–FP20</span></a>
 </nav>
 
-<!-- EXECUTIVE SUMMARY -->
-<div class="section-runner">§ Executive Summary — Structure Map</div>
-<div class="part-section" style="padding: 28px 28px 20px;">
+<!-- ══════════════════════════════════════════ TOOLCHAIN OVERVIEW ══════════════════════════════════════════ -->
+<div class="section-runner">§ Toolchain Overview — Locked by Stack</div>
+<div class="part-section" style="padding:20px 28px;">
+  <div class="tool-grid">
+    <div class="tool-col">
+      <div class="tool-col-head nj-tools">NEXT.JS STACK (Maphophe · SyncUp)</div>
+      <div class="tool-col-body">
+        <div class="tool-item"><span class="tool-name">Language</span> TypeScript 5.x — strict mode</div>
+        <div class="tool-item"><span class="tool-name">Linter</span> ESLint + Next.js config</div>
+        <div class="tool-item"><span class="tool-name">Formatter</span> Prettier (2-space indent)</div>
+        <div class="tool-item"><span class="tool-name">Unit/Integration</span> Jest + React Testing Library</div>
+        <div class="tool-item"><span class="tool-name">E2E</span> Playwright</div>
+        <div class="tool-item"><span class="tool-name">Types</span> Zod (generated from OpenAPI)</div>
+        <div class="tool-item"><span class="tool-name">Git hooks</span> Husky + lint-staged</div>
+        <div class="tool-item"><span class="tool-name">CI</span> GitHub Actions</div>
+      </div>
+    </div>
+    <div class="tool-col">
+      <div class="tool-col-head ang-tools">ANGULAR STACK (FundsLink · Reserve Bank)</div>
+      <div class="tool-col-body">
+        <div class="tool-item"><span class="tool-name">Language</span> TypeScript 5.x — strict mode</div>
+        <div class="tool-item"><span class="tool-name">Linter</span> ESLint + Angular ESLint</div>
+        <div class="tool-item"><span class="tool-name">Formatter</span> Prettier (2-space indent)</div>
+        <div class="tool-item"><span class="tool-name">Unit/Integration</span> <strong style="color:var(--green)">Vitest</strong> + Angular Testing Utilities</div>
+        <div class="tool-item"><span class="tool-name">E2E</span> Playwright</div>
+        <div class="tool-item"><span class="tool-name">Types</span> openapi-typescript (generated)</div>
+        <div class="tool-item"><span class="tool-name">Git hooks</span> Husky + lint-staged</div>
+        <div class="tool-item"><span class="tool-name">CI</span> GitHub Actions</div>
+      </div>
+    </div>
+    <div class="tool-col">
+      <div class="tool-col-head py-tools">PYTHON / FASTAPI (Angular Stack Backend)</div>
+      <div class="tool-col-body">
+        <div class="tool-item"><span class="tool-name">Language</span> Python 3.11+ with type hints</div>
+        <div class="tool-item"><span class="tool-name">Linter</span> Ruff (replaces flake8 + isort)</div>
+        <div class="tool-item"><span class="tool-name">Formatter</span> Black (88-char line length)</div>
+        <div class="tool-item"><span class="tool-name">Type checker</span> mypy (strict mode)</div>
+        <div class="tool-item"><span class="tool-name">Unit/Integration</span> pytest + pytest-asyncio</div>
+        <div class="tool-item"><span class="tool-name">Coverage</span> pytest-cov (min 80%)</div>
+        <div class="tool-item"><span class="tool-name">Security</span> bandit (security linter)</div>
+        <div class="tool-item"><span class="tool-name">Git hooks</span> pre-commit</div>
+      </div>
+    </div>
+  </div>
+
   <div class="structure-map">
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P1</span>Formatting &amp; Linting</div><div class="sm-items"><div class="sm-item">Prettier mandatory</div><div class="sm-item">ESLint strict</div><div class="sm-item">Lint fails CI</div><div class="sm-item">Pre-commit hooks</div><div class="sm-item">Max 100 chars</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P2</span>TypeScript</div><div class="sm-items"><div class="sm-item">strict: true</div><div class="sm-item">noImplicitAny</div><div class="sm-item">strictNullChecks</div><div class="sm-item">No any (doc exceptions)</div><div class="sm-item">No @ts-ignore</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P3</span>Code Review</div><div class="sm-items"><div class="sm-item">1 approving review</div><div class="sm-item">Respond to all comments</div><div class="sm-item">24h ack / 48h review</div><div class="sm-item">Cognitive load > line count</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P4</span>Pull Requests</div><div class="sm-items"><div class="sm-item">Conventional Commits</div><div class="sm-item">What/why/test in desc</div><div class="sm-item">Link to issue</div><div class="sm-item">Tests required</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P5</span>Documentation</div><div class="sm-items"><div class="sm-item">JSDoc on exports</div><div class="sm-item">"Why" comments</div><div class="sm-item">README per package</div><div class="sm-item">ADRs for decisions</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P6</span>Dependencies</div><div class="sm-items"><div class="sm-item">Exact versions</div><div class="sm-item">Dependabot enabled</div><div class="sm-item">depcheck in CI</div><div class="sm-item">License check</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P7</span>Tech Debt</div><div class="sm-items"><div class="sm-item">TODO + issue + owner</div><div class="sm-item">Tracked in issue tracker</div><div class="sm-item">20% per sprint</div><div class="sm-item">Zero functional changes</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P8</span>Supply Chain</div><div class="sm-items"><div class="sm-item">Provenance verification</div><div class="sm-item">Dependency confusion prev</div><div class="sm-item">Flaky test quarantine</div></div></div>
-    <div class="sm-col"><div class="sm-head"><span class="sm-num">P9</span>AI Governance</div><div class="sm-items"><div class="sm-item">Attribution required</div><div class="sm-item">AI review checklist</div><div class="sm-item">Prompt preservation</div><div class="sm-item">Human liability clause</div></div></div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">P1+P2</span>Language Standards · Q1–Q14</div>
+      <div class="sm-items">
+        <div class="sm-item">TypeScript strict: true — no exceptions</div>
+        <div class="sm-item">No any — use unknown + type guard</div>
+        <div class="sm-item">Explicit return types on all functions</div>
+        <div class="sm-item">Python type hints on all signatures</div>
+        <div class="sm-item">mypy strict — no untyped code</div>
+        <div class="sm-item">No bare except — always type exceptions</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">P3+P4</span>Structure &amp; Tooling · Q15–Q27</div>
+      <div class="sm-items">
+        <div class="sm-item">Max 200 lines per file — split if over</div>
+        <div class="sm-item">Single responsibility per module</div>
+        <div class="sm-item">ESLint + Prettier on every save + commit</div>
+        <div class="sm-item">Husky pre-commit blocks lint failures</div>
+        <div class="sm-item">Ruff + Black + mypy on Python</div>
+        <div class="sm-item">CI blocks merge on any lint/type failure</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">P5+P6+P7</span>Review, Docs &amp; Angular · Q28–Q44</div>
+      <div class="sm-items">
+        <div class="sm-item">Max 400 lines per PR</div>
+        <div class="sm-item">2 approvals required — never self-merge</div>
+        <div class="sm-item">Every public function has JSDoc/docstring</div>
+        <div class="sm-item">Angular: OnPush + standalone enforced by lint</div>
+        <div class="sm-item">Angular: no NgModule in new code</div>
+        <div class="sm-item">Angular: Vitest — never Karma/Jasmine</div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- PART 1: FORMATTING & LINTING -->
+<!-- ══════════════════════════════════════════ PART 1: TYPESCRIPT STANDARDS ══════════════════════════════════════════ -->
 <hr class="divider"/>
-<div class="section-runner" id="part1">§ Part 1 — Code Formatting &amp; Linting (CQ1–CQ5)</div>
+<div class="section-runner" id="p1">§ Part 1 — TypeScript Standards (Q1–Q8)</div>
 
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:12px;color:var(--muted);line-height:1.6">Consistent, automated code style. No manual formatting debates. All style decisions are made by tools, not humans.</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">tsconfig Requirements</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✓</span> "strict": true</li>
+          <li><span class="rn">✓</span> "noImplicitAny": true</li>
+          <li><span class="rn">✓</span> "strictNullChecks": true</li>
+          <li><span class="rn">✓</span> "noUnusedLocals": true</li>
+          <li><span class="rn">✓</span> "noUnusedParameters": true</li>
+          <li><span class="rn">✓</span> "exactOptionalPropertyTypes": true</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Type Forbidden List</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✗</span> any — use unknown</li>
+          <li><span class="rn">✗</span> // @ts-ignore</li>
+          <li><span class="rn">✗</span> // @ts-nocheck</li>
+          <li><span class="rn">✗</span> as any casts</li>
+          <li><span class="rn">✗</span> Non-null assertion !</li>
+          <li><span class="rn">✗</span> Object without shape</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 1 / CQ1–CQ5</span><span class="part-title">Code Formatting &amp; Linting</span><span class="part-desc">3 Critical · 1 High · 1 Medium</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ1</span><span class="rule-title">Prettier MUST Be Configured and Run on All Code</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Prettier configuration is mandatory. All code must be formatted before commit. No exceptions. Formatting debates are a tax on productivity — automate them away.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ2</span><span class="rule-title">ESLint Strict Rules MUST Be Configured</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">ESLint with strict rule set (including security, best practices, and accessibility rules) is mandatory. Recommended: eslint-plugin-security, eslint-plugin-unicorn, eslint-plugin-jsx-a11y.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ3</span><span class="rule-title">Linting MUST Pass Before CI Passes</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">CI pipeline must fail if any linting error exists. Zero warnings allowed in production branches.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ4</span><span class="rule-title">Pre-commit Hooks MUST Run (Husky + lint-staged)</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Pre-commit hooks must run Prettier and ESLint on staged files. Never commit unformatted code.</p><div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">.husky/pre-commit</div></div><pre><span class="cs">#!/bin/sh</span>
-npx lint-staged</pre></div></div></div>
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">CQ5</span><span class="rule-title">Max Line Length: 100 Characters</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Maximum line length is 100 characters. Exceptions allowed for long URLs or generated code with explicit comment.</p></div></div>
+      <div class="part-banner">
+        <span class="part-num">PART 1 / Q1–Q8</span>
+        <span class="part-title">TypeScript Standards</span>
+        <span class="part-desc">5 Critical · 3 High · Both TS Stacks</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q1</span><span class="rule-title">strict: true in tsconfig — No Exceptions, Both Stacks</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement"><code>"strict": true</code> is mandatory in <code>tsconfig.json</code> for both Next.js and Angular projects. This enables <code>noImplicitAny</code>, <code>strictNullChecks</code>, <code>strictFunctionTypes</code>, and all related strict checks. No per-file or per-directory overrides that weaken strictness are permitted. CI fails if tsconfig strict is disabled.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q2</span><span class="rule-title">No any — Use unknown With Type Guards</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">The <code>any</code> type is forbidden in production code. Use <code>unknown</code> when the type is genuinely unknown, then narrow it with a type guard before use. ESLint rule <code>@typescript-eslint/no-explicit-any: error</code> is enforced in both repos. Existing <code>any</code> in auto-generated files is exempt — do not modify generated code.</p>
+          <div class="compare-row">
+            <div class="compare-block compare-bad"><div class="compare-label">❌ any disables type safety</div><pre><span class="ck">function</span> <span class="cf">processData</span>(data: <span class="ct">any</span>) {
+  <span class="ck">return</span> data.value;  <span class="cc">// no safety</span>
+}</pre></div>
+            <div class="compare-block compare-good"><div class="compare-label">✅ unknown + type guard</div><pre><span class="ck">function</span> <span class="cf">processData</span>(data: <span class="ct">unknown</span>) {
+  <span class="ck">if</span> (<span class="cf">isApiResponse</span>(data))
+    <span class="ck">return</span> data.value;  <span class="cc">// type-safe</span>
+}</pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q3</span><span class="rule-title">Explicit Return Types on All Exported Functions</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">All exported functions, methods, and Arrow functions assigned to exported variables must have an explicit return type annotation. TypeScript inference alone is insufficient for public APIs — explicit types document intent and catch regressions. ESLint rule <code>@typescript-eslint/explicit-module-boundary-types: error</code> is enforced.</p>
+          <div class="stack-diff">
+            <div class="stack-diff-col">
+              <div class="stack-diff-head nj">Next.js — API route handlers</div>
+              <div class="stack-diff-body">Route handlers annotate return type as <code>Promise&lt;NextResponse&lt;ApiResponse&lt;T&gt;&gt;&gt;</code>. Custom hooks annotate their return tuple explicitly.</div>
+            </div>
+            <div class="stack-diff-col">
+              <div class="stack-diff-head ang">Angular — services and components</div>
+              <div class="stack-diff-body">Service methods annotate return types as <code>Observable&lt;T&gt;</code> or <code>Promise&lt;T&gt;</code>. Component lifecycle hooks use <code>void</code> explicitly where no value is returned.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q4</span><span class="rule-title">No @ts-ignore or @ts-nocheck — Fix the Types</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement"><code>// @ts-ignore</code> and <code>// @ts-nocheck</code> are forbidden in any production file. If TypeScript reports an error that seems incorrect, fix the types — do not silence the compiler. The only exception is auto-generated files where the generator introduces suppress comments — these files are excluded from the ESLint rule.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q5</span><span class="rule-title">Interface Over Type Alias for Object Shapes</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">Use <code>interface</code> for object shapes that represent entities or contracts (component props, API response shapes, service contracts). Use <code>type</code> for unions, intersections, mapped types, and utility types. Consistent use of <code>interface</code> for shapes enables declaration merging and improves IDE tooling.</p>
+          <div class="compare-row">
+            <div class="compare-block compare-bad"><div class="compare-label">❌ type for object shape</div><pre><span class="ck">type</span> <span class="ct">User</span> = {
+  id: <span class="ct">string</span>;
+  email: <span class="ct">string</span>;
+};</pre></div>
+            <div class="compare-block compare-good"><div class="compare-label">✅ interface for entity shape</div><pre><span class="ck">interface</span> <span class="ct">User</span> {
+  id: <span class="ct">string</span>;
+  email: <span class="ct">string</span>;
+}</pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q6</span><span class="rule-title">No Non-Null Assertion Operator — Handle null Explicitly</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">The non-null assertion operator (<code>!</code>) is forbidden in production code. Handle <code>null</code> and <code>undefined</code> explicitly with null checks, optional chaining (<code>?.</code>), or nullish coalescing (<code>??</code>). Non-null assertions hide bugs — they tell the compiler to trust you, but that trust is often misplaced.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q7</span><span class="rule-title">Const Assertions and Readonly — Immutability by Default</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">Configuration objects and fixed data structures use <code>as const</code> to create literal types. Function parameters that should not be mutated are typed as <code>Readonly&lt;T&gt;</code>. Arrays that should not change use <code>readonly T[]</code>. Default to immutability — mutability is explicitly opted into, not the default.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q8</span><span class="rule-title">Enum Over Magic Strings — TypeScript Enums or as const Objects</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">Fixed sets of string values use TypeScript <code>enum</code> or <code>as const</code> objects — never raw string literals scattered through code. This applies to status values, event names, route constants, and role names. Keeps a single definition that propagates everywhere via the type system.</p>
+        </div>
+      </div>
     </main>
   </div>
 </div>
 
-<!-- PART 2: TYPESCRIPT -->
+<!-- ══════════════════════════════════════════ PART 2: PYTHON STANDARDS ══════════════════════════════════════════ -->
 <hr class="divider"/>
-<div class="section-runner" id="part2">§ Part 2 — TypeScript Strictness (CQ6–CQ10)</div>
+<div class="section-runner" id="p2">§ Part 2 — Python Standards (Q9–Q14) · FastAPI / Angular Stack Backend</div>
 
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:12px;color:var(--muted);line-height:1.6">Type safety, catch errors at compile time. TypeScript without strict mode is just JavaScript with extra steps.</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Python Version</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">Min</span> Python 3.11</li>
+          <li><span class="rn">Type hints</span> all function signatures</li>
+          <li><span class="rn">Dataclasses</span> use Pydantic models</li>
+          <li><span class="rn">Async</span> async def for I/O always</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Python Tool Config</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">Ruff</span> linter + import sorter</li>
+          <li><span class="rn">Black</span> formatter — 88 chars</li>
+          <li><span class="rn">mypy</span> strict type checking</li>
+          <li><span class="rn">bandit</span> security linter</li>
+          <li><span class="rn">pytest</span> + pytest-asyncio</li>
+          <li><span class="rn">Coverage</span> minimum 80%</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 2 / CQ6–CQ10</span><span class="part-title">TypeScript Strictness</span><span class="part-desc">4 Critical · 1 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ6</span><span class="rule-title">strict: true MUST Be Enabled</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">TypeScript's <code>strict: true</code> mode is mandatory. This enables all strict type-checking options.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ7</span><span class="rule-title">noImplicitAny: true MUST Be Enabled</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Implicit any types are forbidden. Every parameter and variable must have a defined type or be explicitly typed as unknown.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ8</span><span class="rule-title">strictNullChecks: true MUST Be Enabled</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">null and undefined must be handled explicitly. No more "undefined is not a function" at runtime.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ9</span><span class="rule-title">any Type FORBIDDEN — Documented Exceptions Only</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">The <code>any</code> type is forbidden. Use <code>unknown</code> with type guards or proper types. Exception requires ESLint disable comment with justification.</p><div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">✅ Correct pattern</div></div><pre><span class="cc">// Use unknown with type guard</span>
-<span class="ck">function</span> <span class="cf">processData</span>(data: unknown) {
-  <span class="ck">if</span> (<span class="cf">isValidData</span>(data)) {
-    <span class="cc">// data is now properly typed</span>
+      <div class="part-banner orange-banner">
+        <span class="part-num">PART 2 / Q9–Q14</span>
+        <span class="part-title">Python Standards</span>
+        <span class="part-desc">FastAPI Backend · Angular Stack Only</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q9</span><span class="rule-title">Type Hints on All Function Signatures — mypy Strict Mode</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">Every Python function must have complete type annotations on all parameters and the return type. <code>mypy</code> runs in strict mode in CI — <code>--strict</code> flag. Untyped functions fail the CI build. Use Pydantic models for complex data shapes — not raw dicts. <code>-> None</code> is explicit for procedures; <code>-> Any</code> is forbidden.</p>
+          <div class="code-block">
+            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">services/scholarship_service.py</div></div>
+            <pre><span class="cc"># ❌ No type hints — mypy strict fails</span>
+<span class="ck">async def</span> <span class="cf">find_matches</span>(student_id, threshold):
+    <span class="ck">return</span> []
+
+<span class="cc"># ✅ Full annotations — mypy strict passes</span>
+<span class="ck">async def</span> <span class="cf">find_matches</span>(
+    student_id: <span class="ct">str</span>,
+    threshold: <span class="ct">float</span> = <span class="cn">0.7</span>
+) -> <span class="ct">list</span>[<span class="ct">ScholarshipMatch</span>]:
+    ...</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q10</span><span class="rule-title">No Bare except — Always Catch Specific Exceptions</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">Bare <code>except:</code> and <code>except Exception:</code> without re-raising are forbidden. Always catch specific exception types. If a broad catch is needed (e.g., top-level FastAPI exception handler), log the exception with full traceback, re-raise or wrap in an <code>HTTPException</code>, and never silently swallow it.</p>
+          <div class="compare-row">
+            <div class="compare-block compare-bad"><div class="compare-label">❌ Swallows all exceptions</div><pre><span class="ck">try</span>:
+    result = <span class="ck">await</span> <span class="cf">db_query</span>()
+<span class="ck">except</span>:          <span class="cc"># bare except</span>
+    <span class="ck">return</span> <span class="ck">None</span>  <span class="cc"># silent failure</span></pre></div>
+            <div class="compare-block compare-good"><div class="compare-label">✅ Typed, logged, re-raised</div><pre><span class="ck">try</span>:
+    result = <span class="ck">await</span> <span class="cf">db_query</span>()
+<span class="ck">except</span> <span class="ct">DatabaseError</span> <span class="ck">as</span> e:
+    logger.<span class="cf">error</span>(<span class="cs">"DB query failed"</span>, exc_info=e)
+    <span class="ck">raise</span> <span class="ct">HTTPException</span>(<span class="cn">500</span>, ...)</pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q11</span><span class="rule-title">Pydantic Models for All Request/Response Shapes — No Raw Dicts</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">All FastAPI request bodies, response shapes, and internal data transfer objects use Pydantic v2 models. Never accept or return raw <code>dict</code> objects in endpoint handlers. Pydantic provides validation, serialization, and schema generation for OpenAPI — using raw dicts breaks all three.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q12</span><span class="rule-title">Ruff for Linting and Import Sorting — No flake8 or isort</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">Ruff is the single linting and import-sorting tool for Python. It replaces flake8, pylint, isort, and pycodestyle. Ruff configuration lives in <code>pyproject.toml</code>. Black handles formatting. Never install or run flake8, isort, or pylint in the FastAPI repo — Ruff handles it all faster.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">ruff config</span><div class="rule-meta-val"><code>[tool.ruff] line-length = 88</code> (matches Black)</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">enabled rules</span><div class="rule-meta-val">E, F, I (isort), N (naming), UP (pyupgrade), B (bugbear)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q13</span><span class="rule-name">Bandit Security Linter — Runs in CI, Blocks High/Critical Findings</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">Bandit runs as part of every CI pipeline on the FastAPI codebase. High and Critical severity findings fail the build. Medium findings generate a warning and must be addressed before the next sprint. Findings are never silenced with <code># nosec</code> without a documented justification in the PR description.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q14</span><span class="rule-title">pytest Coverage Minimum 80% — Fails CI Below Threshold</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-py">PYTHON / FASTAPI</span></div>
+          <p class="rule-statement">pytest runs with <code>--cov=app --cov-fail-under=80</code> in CI. Coverage dropping below 80% fails the build. New features must include tests that maintain or improve coverage. Coverage is measured on the <code>app/</code> directory — test files, migrations, and generated code are excluded from the coverage count.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 3: FILE & MODULE STRUCTURE ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p3">§ Part 3 — File &amp; Module Structure (Q15–Q20)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">File Size Limits</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">Max</span> 200 lines per file</li>
+          <li><span class="rn">Max</span> 50 lines per function</li>
+          <li><span class="rn">Max</span> 4 function parameters</li>
+          <li><span class="rn">Max</span> 3 levels nesting depth</li>
+          <li><span class="rn">Exempt</span> generated files</li>
+          <li><span class="rn">Exempt</span> migration files</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Naming Conventions</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">Files</span> kebab-case (TS)</li>
+          <li><span class="rn">Files</span> snake_case (Python)</li>
+          <li><span class="rn">Classes</span> PascalCase (both)</li>
+          <li><span class="rn">Functions</span> camelCase (TS)</li>
+          <li><span class="rn">Functions</span> snake_case (Python)</li>
+          <li><span class="rn">Constants</span> SCREAMING_SNAKE</li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner blue-banner">
+        <span class="part-num">PART 3 / Q15–Q20</span>
+        <span class="part-title">File &amp; Module Structure</span>
+        <span class="part-desc">3 Critical · 3 High · All Three Stacks</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q15</span><span class="rule-title">Maximum 200 Lines Per File — Split Larger Files</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">No production file exceeds 200 lines. Files approaching this limit must be refactored into smaller focused modules before the PR is merged. Generated files, migration files, and <code>schema.prisma</code> are exempt. ESLint <code>max-lines</code> rule enforces this in TypeScript. A custom Ruff rule enforces it in Python.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q16</span><span class="rule-title">Single Responsibility — One Primary Export Per Module</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Each file has one primary responsibility and one primary export. A component file exports one component. A service file exports one service class or hook. A utility file may export multiple related utility functions. Never mix unrelated concerns in one file — auth logic does not share a file with billing logic.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q17</span><span class="rule-title">No Circular Dependencies — Imports Flow One Direction</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Circular imports between modules are forbidden. The import graph must be acyclic — dependency arrows flow in one direction only: UI → Services → Utils, never backwards. ESLint <code>import/no-cycle</code> rule detects and blocks circular imports in TypeScript. Python uses <code>ruff</code> circular import detection.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q18</span><span class="rule-title">Consistent Naming Conventions — Enforced by Linter</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Naming conventions are enforced by linter rules, not by manual review. TypeScript: <code>camelCase</code> functions/variables, <code>PascalCase</code> classes/types, <code>kebab-case</code> file names, <code>SCREAMING_SNAKE_CASE</code> constants. Python: <code>snake_case</code> functions/variables, <code>PascalCase</code> classes, <code>SCREAMING_SNAKE</code> constants. Angular components use the <code>app-</code> prefix selector convention.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q19</span><span class="rule-title">No Magic Numbers or Strings — Named Constants Only</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Numeric literals and string literals used in logic (not in display text or trivial comparisons like <code>length === 0</code>) must be named constants. Examples: <code>MAX_RETRY_ATTEMPTS = 3</code>, <code>TOKEN_EXPIRY_MINUTES = 15</code>, <code>SIMILARITY_THRESHOLD = 0.7</code>. Constants live in a <code>constants.ts</code> or <code>constants.py</code> file.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q20</span><span class="rule-title">Maximum 50 Lines Per Function — Extract Complex Logic</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">No function exceeds 50 lines of code. Functions approaching this limit must be decomposed into smaller named functions that express the sub-steps clearly. Complex business logic chains become a readable orchestration function calling well-named helpers. Max nesting depth is 3 levels — flatten with early returns.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 4: LINTING & FORMATTING ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p4">§ Part 4 — Linting &amp; Formatting (Q21–Q27)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Pre-Commit Hook Chain</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">1st</span> lint-staged (TS/Angular)</li>
+          <li><span class="rn">2nd</span> ESLint —fix</li>
+          <li><span class="rn">3rd</span> Prettier —write</li>
+          <li><span class="rn">4th</span> tsc —noEmit</li>
+          <li><span class="rn">5th</span> Tests on changed files</li>
+          <li><span class="rn">Block</span> Commit if any fail</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Python Pre-Commit</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">1st</span> ruff check —fix</li>
+          <li><span class="rn">2nd</span> black —check</li>
+          <li><span class="rn">3rd</span> mypy (changed files)</li>
+          <li><span class="rn">4th</span> bandit (changed files)</li>
+          <li><span class="rn">Block</span> Commit if any fail</li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner">
+        <span class="part-num">PART 4 / Q21–Q27</span>
+        <span class="part-title">Linting &amp; Formatting</span>
+        <span class="part-desc">4 Critical · 3 High · All Stacks</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q21</span><span class="rule-title">ESLint + Prettier — Zero Warnings Tolerated in CI</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">ESLint runs with <code>--max-warnings 0</code> in CI. Any ESLint warning or error fails the build. Prettier is the single formatter — no manual formatting disputes. The shared <code>.eslintrc</code> and <code>.prettierrc</code> configs are the standard across all TypeScript repos. Never disable ESLint rules at the file level without a documented justification.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q22</span><span class="rule-title">Husky Pre-Commit Blocks — Commit Impossible Without Passing Checks</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Husky (TypeScript repos) and pre-commit (Python repo) hooks run automatically on every commit attempt. A commit that fails any hook is blocked — the developer must fix the issue before committing. Never bypass hooks with <code>--no-verify</code>. If a hook incorrectly blocks valid code, fix the hook configuration — do not bypass it.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q23</span><span class="rule-title">TypeScript Must Compile Without Errors — tsc --noEmit in CI</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement"><code>tsc --noEmit</code> runs in CI as a separate check step. TypeScript compilation errors fail the build — even if the runtime behaviour appears correct. This catches type errors that ESLint may miss, particularly in complex generic types and conditional types. Both Next.js and Angular repos run this check independently.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q24</span><span class="rule-title">No Console.log in Production Code — Use Structured Logger</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement"><code>console.log</code>, <code>console.error</code>, and <code>console.warn</code> are forbidden in committed TypeScript code. Use the centralised structured logger (Next.js: <code>lib/logger.ts</code>, Angular: <code>core/services/logger.service.ts</code>). ESLint rule <code>no-console: error</code> is enforced. Python: never use <code>print()</code> — always use the <code>logging</code> module with structured output.</p>
+          <div class="stack-diff-3">
+            <div class="stack-diff-col">
+              <div class="stack-diff-head nj">Next.js</div>
+              <div class="stack-diff-body"><code>import { logger } from '@/lib/logger'</code><br/>Uses pino or Winston — structured JSON logs forwarded to Better Stack.</div>
+            </div>
+            <div class="stack-diff-col">
+              <div class="stack-diff-head ang">Angular</div>
+              <div class="stack-diff-body"><code>LoggerService</code> injectable — wraps console in dev, sends to Sentry in production. Never import console directly.</div>
+            </div>
+            <div class="stack-diff-col">
+              <div class="stack-diff-head py">Python</div>
+              <div class="stack-diff-body"><code>import structlog</code> — structured JSON output. <code>logger = structlog.get_logger()</code> at module level. Never use bare <code>print()</code>.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q25</span><span class="rule-title">Import Order — Sorted by Group, Enforced by Linter</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Imports are grouped and sorted: (1) external packages, (2) internal absolute imports (<code>@/</code>), (3) relative imports. Each group is separated by a blank line. Order within groups is alphabetical. This is automatically enforced — ESLint <code>import/order</code> for TypeScript, Ruff <code>I</code> rules for Python. No manual ordering debates.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q26</span><span class="rule-title">No Unused Imports or Variables — Zero Tolerance</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Unused imports and unused variables are errors — not warnings — in both ESLint (TypeScript) and Ruff (Python). They indicate incomplete refactors, dead code paths, or forgotten cleanup. CI fails on any unused import. The only exemption is function parameters prefixed with <code>_</code> (Python convention) or intentionally unused destructured values prefixed with <code>_</code>.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q27</span><span class="rule-title">Prettier Config — 2-Space Indent, 100-Char Line Width, Single Quotes</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH TS STACKS</span></div>
+          <p class="rule-statement">All TypeScript code is formatted by Prettier with these locked settings: <code>tabWidth: 2</code>, <code>printWidth: 100</code>, <code>singleQuote: true</code>, <code>trailingComma: "es5"</code>, <code>semi: true</code>. The <code>.prettierrc</code> is shared across all TypeScript repos via the <code>system-design-template</code> repository. Never override these settings per-project.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 5: CODE REVIEW ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p5">§ Part 5 — Code Review Process (Q28–Q35)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">PR Requirements</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">Max</span> 400 lines changed</li>
+          <li><span class="rn">Min</span> 2 reviewer approvals</li>
+          <li><span class="rn">Pass</span> All CI checks</li>
+          <li><span class="rn">Pass</span> All tests</li>
+          <li><span class="rn">No</span> self-merge ever</li>
+          <li><span class="rn">Time</span> Review within 24 hours</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Merge Strategy</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✓</span> Squash merge to main</li>
+          <li><span class="rn">✓</span> Feature branches off main</li>
+          <li><span class="rn">✗</span> Direct push to main</li>
+          <li><span class="rn">✗</span> Merge commits in history</li>
+          <li><span class="rn">✗</span> Force push to shared branches</li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner green-banner">
+        <span class="part-num">PART 5 / Q28–Q35</span>
+        <span class="part-title">Code Review Process</span>
+        <span class="part-desc">4 Critical · 4 High · All Stacks</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q28</span><span class="rule-title">Two Approvals Required — Never Self-Merge</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Every PR requires exactly two approvals from reviewers other than the PR author before merging. The author cannot approve their own PR. The main branch is protected — direct pushes and self-merges are blocked by GitHub branch protection rules. No exceptions for "small" or "obvious" changes.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q29</span><span class="rule-title">Maximum 400 Lines Per PR — Split Larger Changes</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Pull requests exceeding 400 lines of changed code (excluding generated files, <code>package-lock.json</code>, <code>prisma/migrations/</code>) must be split into smaller PRs before review. Large PRs are a review quality problem — reviewers lose focus and bugs slip through. A CI check flags PRs over 400 lines and requires a justification label to proceed.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q30</span><span class="rule-title">All CI Checks Must Pass Before Review Is Requested</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">A PR with failing CI checks must not be submitted for review. Fix CI failures before requesting reviewers. Reviewers may dismiss their reviews if CI breaks after approval — the author is responsible for keeping CI green. Draft PRs are used for work-in-progress — never open a real PR when CI is red.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q31</span><span class="rule-title">PR Description — What, Why, How, and Test Evidence</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Every PR description must contain four sections: (1) <strong>What</strong> — what changed in plain English, (2) <strong>Why</strong> — the reason or problem being solved, (3) <strong>How</strong> — the technical approach taken, (4) <strong>Test Evidence</strong> — screenshot, test output, or curl response showing the change works. PRs without complete descriptions are returned to the author.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q32</span><span class="rule-title">Squash Merge Strategy — One Commit Per PR on Main</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">All PRs are merged to main using squash merge. The squash commit message follows the conventional commit format: <code>type(scope): description</code>. Types: <code>feat</code>, <code>fix</code>, <code>refactor</code>, <code>docs</code>, <code>test</code>, <code>chore</code>. This keeps main history clean and readable — every commit on main represents one complete feature or fix.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q33</span><span class="rule-title">Review Within 24 Hours — Acknowledge or Defer Within 4 Hours</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Reviewers acknowledge a review request within 4 hours of receiving it — even if only to say when they will review. Full review is completed within 24 hours. PRs that sit unreviewed for 48 hours may be escalated. Review is a team responsibility — nobody's work is blocked by unacknowledged reviews.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q34</span><span class="rule-title">Comments Are Questions or Suggestions — Never Demands</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Review comments are framed as questions or suggestions, never demands. Use prefixes: <code>nit:</code> for minor style suggestions that are non-blocking, <code>suggestion:</code> for improvements the reviewer thinks are worthwhile, <code>question:</code> for clarification needed, <code>issue:</code> for actual problems that must be fixed. This makes the review intent unambiguous.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q35</span><span class="rule-title">Cross-Constitution PRs Require Both Frontend and Backend Reviewer</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">PRs that change the API contract, database schema, auth strategy, or shared types must include a reviewer from both the frontend and backend teams. The cross-constitution CI label check enforces this — PRs with the <code>Frontend-Review-Required</code> or <code>Backend-Review-Required</code> labels require at least one approval from each domain.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 6: DOCUMENTATION ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p6">§ Part 6 — Documentation Standards (Q36–Q40)</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Docs Required On</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✓</span> All public functions</li>
+          <li><span class="rn">✓</span> All exported interfaces</li>
+          <li><span class="rn">✓</span> All API endpoints</li>
+          <li><span class="rn">✓</span> All non-obvious logic blocks</li>
+          <li><span class="rn">✓</span> All env var usages</li>
+          <li><span class="rn">✗</span> Obvious getters/setters</li>
+          <li><span class="rn">✗</span> Auto-generated code</li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner gold-banner">
+        <span class="part-num">PART 6 / Q36–Q40</span>
+        <span class="part-title">Documentation Standards</span>
+        <span class="part-desc">2 Critical · 3 High · All Stacks</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q36</span><span class="rule-title">JSDoc/Docstring on All Public Functions — What It Does, Not How</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Every exported function, class method, and API endpoint handler must have a JSDoc comment (TypeScript) or docstring (Python) describing what it does, its parameters, and its return value. Document the intent and contract — not the implementation. If the implementation is obvious from the signature, a one-line description is sufficient. Private helper functions need comments only when the logic is non-obvious.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">Q37</span><span class="rule-title">README in Every Feature Directory — Purpose, Inputs, Outputs</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Every feature directory (<code>features/auth/</code>, <code>features/dashboard/</code>, Python <code>app/api/v1/</code>) must contain a <code>README.md</code> describing: (1) the feature's purpose, (2) key files and their roles, (3) external dependencies. A new developer must be able to understand what a feature does by reading only its README and the code structure.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q38</span><span class="rule-title">Inline Comments on Non-Obvious Logic — The Why, Not the What</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Inline comments explain <em>why</em> code is written a particular way — not what it does (the code itself shows that). Comments like <code>// loop through array</code> add no value. Comments like <code>// FastAPI B2 constraint: never expose this endpoint publicly</code> or <code>// similarity threshold per F14 — below 0.7 discarded</code> add context that cannot be inferred from code alone.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q39</span><span class="rule-title">TODO and FIXME Comments — Must Include Ticket Reference</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">TODO and FIXME comments are permitted only when they reference a GitHub issue number: <code>// TODO(#142): Add pagination after MVP launch</code>. Orphaned TODOs without issue references are stale and misleading — ESLint rule <code>no-warning-comments</code> warns on TODOs without a pattern matching <code>#\d+</code>. TODOs older than one sprint are escalated in code review.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">Q40</span><span class="rule-title">Environment Variables — Every Usage Commented with Purpose</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL STACKS</span></div>
+          <p class="rule-statement">Every environment variable access (<code>process.env.X</code>, <code>settings.X</code>) must have a comment or the variable name itself must be self-documenting. The <code>.env.example</code> file in every repo documents every variable with: the variable name, a description, an example value, and whether it is required or optional.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 7: ANGULAR QUALITY ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p7">§ Part 7 — Angular-Specific Quality Rules (Q41–Q44) · NEW IN v3.0</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Scope</div>
+        <div style="font-size:11.5px;color:var(--muted);line-height:1.7;">
+          Rules Q41–Q44 apply ONLY to:<br>
+          — <strong>FundsLink Academy</strong><br>
+          — <strong>KSDRILL Reserve Bank</strong><br><br>
+          Angular-specific code quality rules enforced by Angular ESLint and CI.
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Angular ESLint Rules</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">Error</span> @angular-eslint/prefer-on-push</li>
+          <li><span class="rn">Error</span> no-template-forms</li>
+          <li><span class="rn">Error</span> use-component-selector</li>
+          <li><span class="rn">Error</span> no-empty-lifecycle</li>
+          <li><span class="rn">Warn</span> prefer-standalone</li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner" style="background:var(--ang-red);">
+        <span class="part-num">PART 7 / Q41–Q44 · NEW</span>
+        <span class="part-title">Angular-Specific Quality</span>
+        <span class="part-desc">FundsLink · Reserve Bank · Angular Stack Only</span>
+      </div>
+
+      <div class="callout callout-new">
+        <span class="callout-icon">+</span>
+        <div class="callout-body"><strong>New in v3.0:</strong> Part 7 (Q41–Q44) is entirely new. These rules codify the Angular-specific quality standards that complement the Frontend Constitution's Angular rules (Rules 67–72) and enforce them at the code quality and tooling level.</div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">Q41</span><span class="rule-title">Angular ESLint Config — Enforces OnPush, Standalone, No Template Forms</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">The Angular ESLint configuration enforces: (1) <code>@angular-eslint/prefer-on-push</code> as an error — every component must declare <code>ChangeDetectionStrategy.OnPush</code>, (2) a custom rule blocking <code>ngModel</code> and <code>FormsModule</code> — template-driven forms are forbidden, (3) <code>@angular-eslint/use-component-selector</code> — all components must have a selector. These rules run in pre-commit and CI.</p>
+          <div class="code-block">
+            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">.eslintrc.json — Angular rules excerpt</div></div>
+            <pre>{
+  <span class="cs">"rules"</span>: {
+    <span class="cs">"@angular-eslint/prefer-on-push-component-change-detection"</span>: <span class="cs">"error"</span>,
+    <span class="cs">"@angular-eslint/use-component-selector"</span>: <span class="cs">"error"</span>,
+    <span class="cs">"@angular-eslint/no-empty-lifecycle-method"</span>: <span class="cs">"error"</span>,
+    <span class="cs">"@angular-eslint/prefer-standalone"</span>: <span class="cs">"warn"</span>,  <span class="cc">// warn until fully migrated</span>
+    <span class="cs">"no-restricted-imports"</span>: [<span class="cs">"error"</span>, { <span class="cs">"name"</span>: <span class="cs">"@angular/forms"</span>,
+      <span class="cs">"importNames"</span>: [<span class="cs">"FormsModule"</span>],
+      <span class="cs">"message"</span>: <span class="cs">"Use ReactiveFormsModule only. See Rule 67."</span>
+    }]
   }
-}</pre></div></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ10</span><span class="rule-title">@ts-ignore FORBIDDEN — Use @ts-expect-error</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement"><code>@ts-ignore</code> is forbidden. Use <code>@ts-expect-error</code> with an explanation comment instead.</p></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 3: CODE REVIEW PROCESS -->
-<hr class="divider"/>
-<div class="section-runner" id="part3">§ Part 3 — Code Review Process (CQ11–CQ16)</div>
-
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Review Focus</div><ul style="font-size:11px;color:var(--muted);list-style:none;padding-left:0;"><li style="padding:2px 0;">✅ Correctness</li><li style="padding:2px 0;">✅ Security</li><li style="padding:2px 0;">✅ Performance</li><li style="padding:2px 0;">✅ Maintainability</li><li style="padding:2px 0;">✅ Test coverage</li><li style="padding:2px 0;">❌ Formatting (automated)</li><li style="padding:2px 0;">❌ Style (automated)</li></ul></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 3 / CQ11–CQ16</span><span class="part-title">Code Review Process</span><span class="part-desc">2 Critical · 3 High · 1 Medium</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ11</span><span class="rule-title">Every PR MUST Have at Least One Approving Review</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">No self-merging. Every pull request requires at least one approving review before merge. Branch protection must enforce this.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ12</span><span class="rule-title">PR Author MUST Respond to All Comments Before Merge</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">All review comments must be addressed (resolved, replied to, or marked as follow-up) before merging. Unresolved discussions block merge.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ13</span><span class="rule-title">Review Focus: Correctness, Security, Performance, Maintainability, Test Coverage</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Reviewers focus on substance, not style. Style and formatting are automated.</p></div></div>
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">CQ14</span><span class="rule-title">Review SHOULD NOT Focus on Formatting or Style</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Do not comment on formatting or style in code reviews. That's what Prettier and ESLint are for.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ15</span><span class="rule-title">PRs MUST Be Acknowledged Within 24h, Reviewed Within 48h</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">PRs must be acknowledged within 24 business hours (a simple "Looking at this today" counts). Full review within 48 business hours. Deep Work exception: "Looking EOD" comment counts as acknowledgement.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ16</span><span class="rule-title">Cognitive Load > Line Count — 400-Line Guideline with Exceptions</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">PRs should target <400 lines. Exception: PRs with high cognitive load (complex logic changes) require tech lead approval regardless of line count. Low cognitive load PRs (renames, generated code) may exceed 400 lines without approval.</p><div class="callout callout-info" style="margin-top:8px;"><span class="callout-icon">🧠</span><div class="callout-body"><strong>Cognitive Load Assessment:</strong> Rename refactor (any lines) → Auto-approve. Generated code (OpenAPI, migrations) → Auto-approve. Complex algorithm modification → Tech lead approval required.</div></div></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 4: PULL REQUEST STANDARDS -->
-<hr class="divider"/>
-<div class="section-runner" id="part4">§ Part 4 — Pull Request Standards (CQ17–CQ20)</div>
-
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">PR Template Required Fields</div><ul style="font-size:11px;color:var(--muted);list-style:none;padding-left:0;"><li style="padding:2px 0;">📝 What changed?</li><li style="padding:2px 0;">❓ Why?</li><li style="padding:2px 0;">🧪 Testing performed</li><li style="padding:2px 0;">🤖 AI attribution (new)</li><li style="padding:2px 0;">📦 Dependency changes</li></ul></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 4 / CQ17–CQ20</span><span class="part-title">Pull Request Standards</span><span class="part-desc">1 Critical · 2 High · 1 Medium</span></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ17</span><span class="rule-title">PR Title MUST Follow Conventional Commits</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">PR titles must follow Conventional Commits format: <code>feat:</code>, <code>fix:</code>, <code>docs:</code>, <code>style:</code>, <code>refactor:</code>, <code>perf:</code>, <code>test:</code>, <code>chore:</code>.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ18</span><span class="rule-title">PR Description MUST Include: What, Why, Testing Performed, Screenshots (if UI)</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Empty PR descriptions are forbidden. Every PR must explain what changed, why, and how it was tested.</p></div></div>
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">CQ19</span><span class="rule-title">PR MUST Link to Issue or Ticket</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Every PR must reference a tracking issue or ticket. This provides context and traceability.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ20</span><span class="rule-title">PR MUST Include Tests for New Functionality</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">New features require new tests (unit, integration, or E2E depending on scope). Bug fixes require regression tests.</p></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 5: DOCUMENTATION -->
-<hr class="divider"/>
-<div class="section-runner" id="part5">§ Part 5 — Documentation Requirements (CQ21–CQ24)</div>
-
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:12px;color:var(--muted);line-height:1.6">Code that explains itself. Comments explain "why" not "what". Exported APIs have documentation.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 5 / CQ21–CQ24</span><span class="part-title">Documentation Requirements</span><span class="part-desc">2 High · 2 Medium</span></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ21</span><span class="rule-title">Every Exported/Public Function MUST Have JSDoc/TSDoc Comment</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">All exported functions, types, and interfaces must have documentation comments. This enables IDE IntelliSense and API documentation generation.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ22</span><span class="rule-title">Complex Logic MUST Have Inline Comments Explaining "Why" (Not "What")</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Comments explain why code exists, not what it does (the code itself should be readable enough for that).</p></div></div>
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">CQ23</span><span class="rule-title">README MUST Exist in Every Major Package/Service</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Every package or service must have a README explaining its purpose, setup, and usage.</p></div></div>
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">CQ24</span><span class="rule-title">ADRs REQUIRED for Significant Decisions</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Architecture Decision Records (ADRs) are required for significant technical decisions. Use Michael Nygard's format.</p></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 6: DEPENDENCIES -->
-<hr class="divider"/>
-<div class="section-runner" id="part6">§ Part 6 — Dependency Management (CQ25–CQ28)</div>
-
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Justification Template</div><div style="font-size:11px;line-height:1.7;color:var(--muted)">• Why is this dependency needed?<br/>• What alternatives were considered?<br/>• What is the bundle size impact?<br/>• Is the license compatible?</div></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 6 / CQ25–CQ28</span><span class="part-title">Dependency Management</span><span class="part-desc">1 Critical · 2 High · 1 Medium</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ25</span><span class="rule-title">Dependencies MUST Be Pinned to Exact Versions (No ^ or ~)</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Use exact versions (<code>"react": "18.2.0"</code>, not <code>"^18.2.0"</code>). Range versions lead to inconsistent builds and unexpected breakage.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ26</span><span class="rule-title">Dependabot (or Equivalent) MUST Be Enabled</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Automated dependency updates are required. Dependabot or equivalent must be configured with weekly updates and security patches as immediate PRs.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ27</span><span class="rule-title">Unused Dependencies MUST Be Removed — depcheck in CI</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement"><code>depcheck</code> must run in CI. Unused dependencies fail the build and must be removed.</p></div></div>
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">CQ28</span><span class="rule-title">New Dependencies MUST Be Justified in PR: Why, Alternatives, Bundle Impact, License Compatibility</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Adding a dependency is a decision with long-term consequences. Justify every new dependency in the PR description and verify license compatibility.</p></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 7: TECHNICAL DEBT -->
-<hr class="divider"/>
-<div class="section-runner" id="part7">§ Part 7 — Technical Debt Management (CQ29–CQ32)</div>
-
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">TODO Format</div><div style="font-size:11px;line-height:1.7;color:var(--muted)"><code>// TODO(#123): Description @owner</code></div></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 7 / CQ29–CQ32</span><span class="part-title">Technical Debt Management</span><span class="part-desc">3 High · 1 Medium</span></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ29</span><span class="rule-title">TODO Comments MUST Have Issue Link and Owner</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Every TODO comment must reference a tracking issue and assign an owner. TODOs without issues become permanent residents of the codebase.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ30</span><span class="rule-title">Technical Debt MUST Be Tracked in Issue Tracker</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">All technical debt must have corresponding issues with severity labels and priority.</p></div></div>
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">CQ31</span><span class="rule-title">Each Sprint MUST Allocate 20% Capacity to Tech Debt Reduction</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Protect time for paying down technical debt. 20% of sprint capacity is reserved for debt reduction, refactoring, and maintenance.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ32</span><span class="rule-title">Refactoring PRs MUST Have Zero Functional Changes</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Refactoring PRs must be pure refactors — no behavior changes, no new features, no bug fixes. Separate functional changes into different PRs.</p></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 8: SUPPLY CHAIN SECURITY (NEW) -->
-<hr class="divider"/>
-<div class="section-runner" id="part8">§ Part 8 — Supply Chain Security (CQ33–CQ35) 🆕</div>
-
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:12px;color:var(--muted);line-height:1.6">Proactive defense against dependency attacks and supply chain compromise. Prevent dependency confusion, verify package provenance, and manage flaky tests.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 8 / CQ33–CQ35</span><span class="part-title">Supply Chain Security</span><span class="part-desc">2 Critical · 1 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ33</span><span class="rule-title">Package Provenance Verification — npm audit signatures in CI</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">All production dependencies MUST have verified provenance attestation. <code>npm audit signatures</code> or equivalent MUST run in CI. Fail the build if any package lacks valid signature.</p><div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">.github/workflows/ci.yml</div></div><pre>- name: Verify package signatures
-  run: npm audit signatures</pre></div></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ34</span><span class="rule-title">Dependency Confusion Prevention — Scoped Internal Packages</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">All internal/private packages MUST be scoped (<code>@company/package</code>). Registry configuration MUST prefer internal registry over public npm. <code>.npmrc</code> MUST be committed and verified.</p><div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">.npmrc</div></div><pre>@acme:registry=https://npm.acme.com
-//npm.acme.com/:_authToken=${NPM_TOKEN}
-always-auth=true</pre></div></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ35</span><span class="rule-title">Flaky Test Quarantine Protocol</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Any test that fails non-deterministically MUST be immediately quarantined (skipped in CI) and assigned an issue with HIGH priority. Quarantined tests MUST be fixed within the same sprint. Maximum 3 quarantined tests allowed per repository.</p><div class="callout callout-critical" style="margin-top:8px;"><span class="callout-icon">🚫</span><div class="callout-body"><strong>NEVER:</strong> "Just re-run CI until it passes" — 5 re-runs on same commit indicates a flaky test. Quarantine immediately.</div></div></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 9: AI-GENERATED CODE GOVERNANCE (NEW) -->
-<hr class="divider"/>
-<div class="section-runner" id="part9">§ Part 9 — AI-Generated Code Governance (CQ36–CQ39) 🆕</div>
-
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:12px;color:var(--muted);line-height:1.6">Transparency, accountability, and quality control for AI-assisted development. AI writes the first draft — humans own the final product.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 9 / CQ36–CQ39</span><span class="part-title">AI-Generated Code Governance</span><span class="part-desc">1 Critical · 2 High · 1 Medium</span></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ36</span><span class="rule-title">AI Code Attribution Required in PR</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Any PR containing AI-generated or AI-assisted code MUST include attribution: tool used (Copilot/Cursor/Claude/etc.), approximate % of AI contribution, and location of prompt context.</p><div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">PR Description — AI Attribution</div></div><pre><span class="cc">## AI Attribution</span>
-- Tool: Cursor (Claude 3.5 Sonnet)
-- Contribution: ~70% of `/auth/login` handler logic
-- Prompt context: `docs/prompts/2026-04-08-auth-flow.txt`
-- Human modifications: Error handling, rate limiting logic</pre></div></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">CQ37</span><span class="rule-title">AI Code Review Checklist Required</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">AI-generated code MUST pass an additional review checklist: (1) no hallucinated APIs/packages, (2) security patterns correct, (3) business logic aligns with requirements, (4) no subtle bugs in generated logic.</p><div class="callout callout-info" style="margin-top:8px;"><span class="callout-icon">🤖</span><div class="callout-body"><strong>AI Review Checklist:</strong> Hallucination Check | Security Check | Business Logic Check | Edge Cases Check | Style Consistency | Prompt Context Saved</div></div></div></div>
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">CQ38</span><span class="rule-title">Prompt Context Preservation</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Prompts used to generate significant code (>50 lines or critical logic) MUST be preserved in version control alongside the code. Format: <code>docs/prompts/YYYY-MM-DD-feature-name.md</code></p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">CQ39</span><span class="rule-title">Human Liability Clause — No "The AI Wrote It" Defense</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">The PR author retains FULL liability and accountability for AI-generated code. "The AI wrote it" is NOT an acceptable defense for bugs, security vulnerabilities, or production incidents. All AI-generated code is treated as if the author wrote it manually.</p><div class="warning-box"><div class="warning-title">LIABILITY STATEMENT</div><p style="font-size:12px;">"I understand that by submitting AI-generated code, I am certifying that I have reviewed, understood, tested, and take full responsibility for every line. In an incident, I will be the subject matter expert for this code, regardless of its origin."</p></div></div></div>
-    </main>
-  </div>
-</div>
-
-<!-- FORBIDDEN PATTERNS -->
-<hr class="divider"/>
-<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (FP01–FP23)</div>
-
-<div class="part-section" style="padding: 24px 28px;">
-  <div class="callout callout-critical" style="margin-bottom:20px"><span class="callout-icon">🚫</span><div class="callout-body"><strong>23 patterns permanently banned.</strong> Each one has caused real production failures or team dysfunction.</div></div>
-  <table class="fp-table">
-    <thead><tr><th width="8%">Code</th><th width="42%">Pattern</th><th width="32%">Why It's Banned</th><th width="18%">Rule</th></tr></thead>
-    <tbody>
-      <tr><td class="fp-code">CQF01</td><td>Manual formatting (no Prettier)</td><td>Wastes time, creates style debates</td><td class="fp-ref">CQ1</td></tr>
-      <tr><td class="fp-code">CQF02</td><td>Merging with lint errors</td><td>Lint errors indicate code quality issues</td><td class="fp-ref">CQ3</td></tr>
-      <tr><td class="fp-code">CQF03</td><td><code>strict: false</code> in tsconfig</td><td>Defeats the purpose of TypeScript</td><td class="fp-ref">CQ6</td></tr>
-      <tr><td class="fp-code">CQF04</td><td>Using <code>any</code> type</td><td>Eliminates type safety</td><td class="fp-ref">CQ9</td></tr>
-      <tr><td class="fp-code">CQF05</td><td>Using <code>@ts-ignore</code></td><td>Hides real type errors</td><td class="fp-ref">CQ10</td></tr>
-      <tr><td class="fp-code">CQF06</td><td>Self-merging without review</td><td>Bypasses quality checks</td><td class="fp-ref">CQ11</td></tr>
-      <tr><td class="fp-code">CQF07</td><td>Ignoring PR comments</td><td>Disrespects reviewer time</td><td class="fp-ref">CQ12</td></tr>
-      <tr><td class="fp-code">CQF08</td><td>PR ignored >24h without acknowledgement</td><td>Blocks progress, frustrates authors</td><td class="fp-ref">CQ15</td></tr>
-      <tr><td class="fp-code">CQF09</td><td>Non-conventional commit title</td><td>Breaks changelog generation</td><td class="fp-ref">CQ17</td></tr>
-      <tr><td class="fp-code">CQF10</td><td>Empty PR description</td><td>No context for reviewers</td><td class="fp-ref">CQ18</td></tr>
-      <tr><td class="fp-code">CQF11</td><td>PR with no linked issue</td><td>No traceability</td><td class="fp-ref">CQ19</td></tr>
-      <tr><td class="fp-code">CQF12</td><td>New feature with no tests</td><td>Untested code will break</td><td class="fp-ref">CQ20</td></tr>
-      <tr><td class="fp-code">CQF13</td><td>No JSDoc on exported function</td><td>Poor API documentation</td><td class="fp-ref">CQ21</td></tr>
-      <tr><td class="fp-code">CQF14</td><td>Using <code>^</code> or <code>~</code> in dependencies</td><td>Inconsistent builds</td><td class="fp-ref">CQ25</td></tr>
-      <tr><td class="fp-code">CQF15</td><td>Adding dependency without justification</td><td>Unreviewed dependency adds risk</td><td class="fp-ref">CQ28</td></tr>
-      <tr><td class="fp-code">CQF16</td><td>TODO without issue link</td><td>TODOs become permanent</td><td class="fp-ref">CQ29</td></tr>
-      <tr><td class="fp-code">CQF17</td><td>Refactor PR with behavior change</td><td>Harder to review, riskier to merge</td><td class="fp-ref">CQ32</td></tr>
-      <tr><td class="fp-code">CQF18</td><td>Installing package without signature verification</td><td>Supply chain attack risk</td><td class="fp-ref">CQ33</td></tr>
-      <tr><td class="fp-code">CQF19</td><td>Unscoped internal package name</td><td>Dependency confusion vulnerability</td><td class="fp-ref">CQ34</td></tr>
-      <tr><td class="fp-code">CQF20</td><td>"Just re-run CI" on flaky test without quarantine</td><td>Erodes trust in CI</td><td class="fp-ref">CQ35</td></tr>
-      <tr><td class="fp-code">CQF21</td><td>AI-generated code merged without attribution</td><td>No transparency, can't debug intent</td><td class="fp-ref">CQ36</td></tr>
-      <tr><td class="fp-code">CQF22</td><td>AI code merged without additional review checklist</td><td>AI hallucinations may be missed</td><td class="fp-ref">CQ37</td></tr>
-      <tr><td class="fp-code">CQF23</td><td>"The AI wrote it" as bug defense</td><td>Author remains accountable</td><td class="fp-ref">CQ39</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- READINESS CHECKLIST -->
-<hr class="divider"/>
-<div class="section-runner">§ Annex B — Production Readiness Checklist</div>
-
-<div class="part-section" style="padding: 24px 28px;">
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-    <div><div class="checklist-section"><div class="cl-header"><span class="cl-tag">READY</span> Code Quality — All Must Pass</div>
-      <div class="cl-group"><div class="cl-group-title">Formatting &amp; TypeScript</div>
-        <div class="cl-item"><div class="cl-box"></div>Prettier configured (CQ1)<div class="cl-ref">CQ1</div></div>
-        <div class="cl-item"><div class="cl-box"></div>ESLint strict configured (CQ2)<div class="cl-ref">CQ2</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Lint fails CI (CQ3)<div class="cl-ref">CQ3</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Pre-commit hooks (CQ4)<div class="cl-ref">CQ4</div></div>
-        <div class="cl-item"><div class="cl-box"></div>strict: true (CQ6)<div class="cl-ref">CQ6</div></div>
-        <div class="cl-item"><div class="cl-box"></div>ESLint rule for no-explicit-any (CQ9)<div class="cl-ref">CQ9</div></div>
+}</pre>
+          </div>
+        </div>
       </div>
-      <div class="cl-group"><div class="cl-group-title">Code Review &amp; PRs</div>
-        <div class="cl-item"><div class="cl-box"></div>Branch protection: require review (CQ11)<div class="cl-ref">CQ11</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Review SLA: 24h ack / 48h review (CQ15)<div class="cl-ref">CQ15</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Commitlint for Conventional Commits (CQ17)<div class="cl-ref">CQ17</div></div>
-        <div class="cl-item"><div class="cl-box"></div>PR template with AI attribution (CQ18, CQ36)<div class="cl-ref">CQ18</div></div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">Q42</span><span class="rule-title">Vitest Is the Unit Test Runner — Never Karma or Jasmine</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">All Angular unit and component tests use Vitest with Angular Testing Utilities (<code>@angular/core/testing</code>). Karma, Jasmine, and TestBed bootstrapped with Karma are forbidden — they are Angular's legacy test runners. The <code>vitest.config.ts</code> in each Angular repo configures the Angular-specific transform. CI runs <code>vitest run --coverage</code> — minimum 75% coverage required.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">Unit/Component runner</span><div class="rule-meta-val">Vitest + <code>@analogjs/vitest-angular</code></div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">E2E runner</span><div class="rule-meta-val">Playwright (same as Next.js stack)</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Coverage minimum</span><div class="rule-meta-val">75% lines — <code>vitest run --coverage</code></div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Visual regression</span><div class="rule-meta-val">Playwright at 320/375/390px — Rule 5</div></div>
+          </div>
+        </div>
       </div>
-    </div></div>
-    <div><div class="checklist-section"><div class="cl-header"><span class="cl-tag">READY</span> Dependencies &amp; AI Governance</div>
-      <div class="cl-group"><div class="cl-group-title">Dependencies &amp; Supply Chain</div>
-        <div class="cl-item"><div class="cl-box"></div>Exact versions (no ^ or ~) (CQ25)<div class="cl-ref">CQ25</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Dependabot enabled (CQ26)<div class="cl-ref">CQ26</div></div>
-        <div class="cl-item"><div class="cl-box"></div>depcheck in CI (CQ27)<div class="cl-ref">CQ27</div></div>
-        <div class="cl-item"><div class="cl-box"></div>npm audit signatures in CI (CQ33)<div class="cl-ref">CQ33</div></div>
-        <div class="cl-item"><div class="cl-box"></div>.npmrc committed with registry config (CQ34)<div class="cl-ref">CQ34</div></div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">Q43</span><span class="rule-title">Angular Component Selector Prefix — app- for All Components</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">All Angular component selectors use the <code>app-</code> prefix: <code>app-login-form</code>, <code>app-scholarship-card</code>, <code>app-account-dashboard</code>. The Angular ESLint rule <code>@angular-eslint/component-selector</code> is configured with <code>prefix: "app"</code> as an error. Consistent prefixes prevent selector collisions with third-party components and HTML elements.</p>
+        </div>
       </div>
-      <div class="cl-group"><div class="cl-group-title">AI Governance</div>
-        <div class="cl-item"><div class="cl-box"></div>AI attribution policy documented (CQ36)<div class="cl-ref">CQ36</div></div>
-        <div class="cl-item"><div class="cl-box"></div>AI review checklist integrated (CQ37)<div class="cl-ref">CQ37</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Prompt log directory created (CQ38)<div class="cl-ref">CQ38</div></div>
-        <div class="cl-item"><div class="cl-box"></div>Human liability statement acknowledged (CQ39)<div class="cl-ref">CQ39</div></div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">Q44</span><span class="rule-title">No Empty Lifecycle Hooks — Remove Unused Lifecycle Methods</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">Angular lifecycle hooks (<code>ngOnInit</code>, <code>ngOnDestroy</code>, <code>ngOnChanges</code>, etc.) that contain no code must be removed entirely. Empty lifecycle hooks add noise, confuse readers, and indicate incomplete implementation. The ESLint rule <code>@angular-eslint/no-empty-lifecycle-method</code> enforces this automatically. Implement the interface only when the hook has actual content.</p>
+        </div>
       </div>
-    </div></div>
+    </main>
   </div>
 </div>
 
-<!-- QUALITY GATE SCRIPT -->
+<!-- ══════════════════════════════════════════ FORBIDDEN PATTERNS ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (FP01–FP20)</div>
+
+<div class="forbidden-section">
+  <div class="forbidden-header">⚠ FORBIDDEN PATTERNS — VIOLATION = BUILD FAILURE · ALL STACKS UNLESS MARKED</div>
+  <div class="forbidden-grid">
+    <div class="fp-item"><div class="fp-code">FP01 — any TYPE IN PRODUCTION CODE</div><div class="fp-desc">Using TypeScript <code>any</code> type anywhere in production TypeScript files.</div><div class="fp-fix">✓ Fix: Use <code>unknown</code> with type guard or a proper interface (Q2).</div></div>
+    <div class="fp-item"><div class="fp-code">FP02 — @ts-IGNORE OR @ts-NOCHECK</div><div class="fp-desc">Silencing TypeScript compiler errors with suppress comments instead of fixing the types.</div><div class="fp-fix">✓ Fix: Fix the underlying type error (Q4).</div></div>
+    <div class="fp-item"><div class="fp-code">FP03 — BARE except IN PYTHON</div><div class="fp-desc">Catching all exceptions with bare <code>except:</code> or swallowing with <code>except Exception: pass</code>.</div><div class="fp-fix">✓ Fix: Catch specific exception types, log, re-raise (Q10).</div></div>
+    <div class="fp-item"><div class="fp-code">FP04 — RAW DICTS IN FASTAPI HANDLERS</div><div class="fp-desc">Accepting <code>dict</code> as request body or returning <code>dict</code> instead of a Pydantic model.</div><div class="fp-fix">✓ Fix: Pydantic v2 models for all request/response shapes (Q11).</div></div>
+    <div class="fp-item"><div class="fp-code">FP05 — CONSOLE.LOG IN COMMITTED CODE</div><div class="fp-desc">Committing <code>console.log/warn/error</code> statements or Python <code>print()</code> to any branch.</div><div class="fp-fix">✓ Fix: Use the structured logger service (Q24).</div></div>
+    <div class="fp-item"><div class="fp-code">FP06 — SELF-MERGE</div><div class="fp-desc">Merging your own pull request, even with another approval already present.</div><div class="fp-fix">✓ Fix: Always requires 2 approvals from others (Q28).</div></div>
+    <div class="fp-item"><div class="fp-code">FP07 — BYPASSING PRE-COMMIT WITH --no-verify</div><div class="fp-desc">Using <code>git commit --no-verify</code> to bypass Husky or pre-commit hooks.</div><div class="fp-fix">✓ Fix: Fix the lint/format issue, never skip hooks (Q22).</div></div>
+    <div class="fp-item"><div class="fp-code">FP08 — PR OVER 400 LINES WITHOUT LABEL</div><div class="fp-desc">Opening a PR with more than 400 changed lines without the <code>large-pr-justified</code> label and explanation.</div><div class="fp-fix">✓ Fix: Split into smaller PRs (Q29).</div></div>
+    <div class="fp-item"><div class="fp-code">FP09 — MAGIC NUMBERS IN LOGIC</div><div class="fp-desc">Raw numeric or string literals in business logic: <code>if retries > 3</code>, <code>timeout = 30000</code>.</div><div class="fp-fix">✓ Fix: Named constants in constants file (Q19).</div></div>
+    <div class="fp-item"><div class="fp-code">FP10 — CIRCULAR IMPORTS</div><div class="fp-desc">Module A imports from Module B which imports from Module A — creates dependency cycles.</div><div class="fp-fix">✓ Fix: Extract shared types to a third module (Q17).</div></div>
+    <div class="fp-item"><div class="fp-code">FP11 — NON-NULL ASSERTION OPERATOR</div><div class="fp-desc">Using <code>value!</code> (non-null assertion) instead of handling null/undefined explicitly.</div><div class="fp-fix">✓ Fix: Optional chaining, nullish coalescing, or explicit guard (Q6).</div></div>
+    <div class="fp-item"><div class="fp-code">FP12 — TODO WITHOUT TICKET REFERENCE</div><div class="fp-desc">TODO/FIXME comments without a GitHub issue number: <code>// TODO: fix this later</code>.</div><div class="fp-fix">✓ Fix: <code>// TODO(#142): description</code> with issue reference (Q39).</div></div>
+    <div class="fp-item"><div class="fp-code">FP13 — STRICT: FALSE IN TSCONFIG</div><div class="fp-desc">Disabling TypeScript strict mode in any tsconfig.json file across any repo.</div><div class="fp-fix">✓ Fix: <code>"strict": true</code> always (Q1).</div></div>
+    <div class="fp-item"><div class="fp-code">FP14 — FLAKE8 OR ISORT IN PYTHON [PYTHON]</div><div class="fp-desc">Adding flake8, pylint, or isort as Python linting tools alongside Ruff.</div><div class="fp-fix">✓ Fix: Ruff covers all of these — install only Ruff (Q12).</div></div>
+    <div class="fp-item"><div class="fp-code">FP15 — KARMA/JASMINE IN ANGULAR [ANGULAR]</div><div class="fp-desc">Running Angular unit tests with the legacy Karma test runner or Jasmine matchers.</div><div class="fp-fix">✓ Fix: Vitest + Angular Testing Utilities (Q42).</div></div>
+    <div class="fp-item"><div class="fp-code">FP16 — TEMPLATE FORMS IN ANGULAR [ANGULAR]</div><div class="fp-desc">Importing FormsModule or using <code>[(ngModel)]</code> in any Angular production component.</div><div class="fp-fix">✓ Fix: ReactiveFormsModule only — ESLint blocks FormsModule import (Q41, Frontend Rule 67).</div></div>
+    <div class="fp-item"><div class="fp-code">FP17 — DEFAULT CHANGE DETECTION [ANGULAR]</div><div class="fp-desc">Angular components without explicit <code>ChangeDetectionStrategy.OnPush</code> declaration.</div><div class="fp-fix">✓ Fix: OnPush on every component — Angular ESLint enforces (Q41, Frontend Rule 71).</div></div>
+    <div class="fp-item"><div class="fp-code">FP18 — EMPTY LIFECYCLE HOOKS [ANGULAR]</div><div class="fp-desc">Implementing Angular lifecycle interfaces (OnInit, OnDestroy) with empty method bodies.</div><div class="fp-fix">✓ Fix: Remove empty hooks — implement only when body has content (Q44).</div></div>
+    <div class="fp-item"><div class="fp-code">FP19 — FILE OVER 200 LINES</div><div class="fp-desc">Any production file (excluding generated, migration, schema) exceeding 200 lines of code.</div><div class="fp-fix">✓ Fix: Split into smaller single-responsibility modules (Q15).</div></div>
+    <div class="fp-item"><div class="fp-code">FP20 — PR MERGED WITH FAILING CI</div><div class="fp-desc">Merging any PR where CI checks are not fully passing — even if the failure "seems unrelated."</div><div class="fp-fix">✓ Fix: Fix CI before requesting review or merging (Q30).</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ LOCK FOOTER ══════════════════════════════════════════ -->
 <hr class="divider-double"/>
-<div class="part-section" style="padding: 20px 28px; background: var(--paper2);">
-  <p style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--teal);font-weight:700;margin-bottom:10px;">🔧 Quality Gate Automation Script</p>
-  <div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">scripts/quality-gate.sh</div></div><pre><span class="cs">#!/bin/bash</span>
-<span class="cc"># Runs all automated checks. If this passes, human reviewers focus on LOGIC, not STYLE.</span>
-
-<span class="cf">set -e</span>
-
-<span class="cf">echo</span> <span class="cs">"🔍 CODE QUALITY GATE v2.0"</span>
-<span class="cf">echo</span> <span class="cs">"================================"</span>
-
-<span class="cf">echo</span> <span class="cs">"📝 1/8: Prettier check..."</span>
-npx prettier --check <span class="cs">"**/*.{ts,tsx,js,jsx,json,md}"</span>
-
-<span class="cf">echo</span> <span class="cs">"🔎 2/8: ESLint check..."</span>
-npx eslint . --max-warnings <span class="cn">0</span>
-
-<span class="cf">echo</span> <span class="cs">"🔷 3/8: TypeScript check..."</span>
-npx tsc --noEmit
-
-<span class="cf">echo</span> <span class="cs">"📦 4/8: Unused dependencies check..."</span>
-npx depcheck
-
-<span class="cf">echo</span> <span class="cs">"🔐 5/8: Package signature verification..."</span>
-npm audit signatures
-
-<span class="cf">echo</span> <span class="cs">"📄 6/8: License compatibility check..."</span>
-npx license-checker --onlyAllow <span class="cs">"MIT;Apache-2.0;ISC;BSD-3-Clause;BSD-2-Clause"</span>
-
-<span class="cf">echo</span> <span class="cs">"🧪 7/8: Test suite (excluding quarantined)..."</span>
-npm test -- --testPathIgnorePatterns=<span class="cs">".*\\.quarantine\\..*"</span>
-
-<span class="cf">echo</span> <span class="cs">"🏷️ 8/8: Commit message format check..."</span>
-npx commitlint --from HEAD~1 --to HEAD
-
-<span class="cf">echo</span> <span class="cs">""</span>
-<span class="cf">echo</span> <span class="cs">"✅ QUALITY GATE PASSED"</span>
-<span class="cf">echo</span> <span class="cs">"Human reviewer: Focus on logic, security, and architecture only."</span></pre></div>
-</div>
-
-<!-- LOCK FOOTER -->
-<div class="lock-section">
+<div class="lock-section" id="lock">
   <div class="lock-banner">
-    <div class="lock-title-main">Code Quality &amp; Review Constitution v2.0</div>
-    <div class="lock-sub">Final Lock — Effective 2026-04-08 — Next Review 2026-07-07</div>
-    <p style="font-family:var(--serif);font-style:italic;font-size:18px;color:rgba(238,242,245,.7);">"Code is read more often than it is written — make it readable."<br>"AI writes the first draft — humans own the final product."</p>
+    <div class="lock-title-main">Code Quality &amp; Review Constitution v3.0</div>
+    <div class="lock-sub">Final Lock — Effective 2026-04-14 — Next Review 2026-07-07</div>
+    <p style="font-family:var(--serif);font-style:italic;font-size:18px;color:rgba(250,248,242,.7);">"Quality is not an act — it is a habit enforced by the system."</p>
     <div class="lock-stats">
-      <div class="ls-item"><span class="ls-num">39</span><span class="ls-label">Total Rules</span></div>
-      <div class="ls-item"><span class="ls-num">18</span><span class="ls-label">Critical</span></div>
-      <div class="ls-item"><span class="ls-num">17</span><span class="ls-label">High</span></div>
-      <div class="ls-item"><span class="ls-num">4</span><span class="ls-label">Medium</span></div>
-      <div class="ls-item"><span class="ls-num">23</span><span class="ls-label">Forbidden</span></div>
-      <div class="ls-item"><span class="ls-num">314</span><span class="ls-label">System Total</span></div>
+      <div class="ls-item"><span class="ls-num">44</span><span class="ls-label">Total Rules</span></div>
+      <div class="ls-item"><span class="ls-num">20</span><span class="ls-label">Critical</span></div>
+      <div class="ls-item"><span class="ls-num">18</span><span class="ls-label">High Priority</span></div>
+      <div class="ls-item"><span class="ls-num">4</span><span class="ls-label">Angular New</span></div>
+      <div class="ls-item"><span class="ls-num">20</span><span class="ls-label">Forbidden</span></div>
+      <div class="ls-item"><span class="ls-num">355</span><span class="ls-label">System Total</span></div>
     </div>
   </div>
 
   <div class="lock-body">
     <div class="lock-col">
-      <div class="lock-col-title">Parts Breakdown (v2.0)</div>
+      <div class="lock-col-title">Parts Breakdown</div>
       <div class="parts-breakdown">
-        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">Formatting &amp; Linting (CQ1-CQ5)</span><span class="pb-rules">5 rules</span><span class="pb-crit">3 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">TypeScript (CQ6-CQ10)</span><span class="pb-rules">5 rules</span><span class="pb-crit">4 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">Code Review (CQ11-CQ16)</span><span class="pb-rules">6 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">Pull Requests (CQ17-CQ20)</span><span class="pb-rules">4 rules</span><span class="pb-crit">1 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Documentation (CQ21-CQ24)</span><span class="pb-rules">4 rules</span><span class="pb-crit">0 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P6</span><span class="pb-name">Dependencies (CQ25-CQ28)</span><span class="pb-rules">4 rules</span><span class="pb-crit">1 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P7</span><span class="pb-name">Tech Debt (CQ29-CQ32)</span><span class="pb-rules">4 rules</span><span class="pb-crit">0 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P8</span><span class="pb-name">Supply Chain (CQ33-CQ35) 🆕</span><span class="pb-rules">3 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P9</span><span class="pb-name">AI Governance (CQ36-CQ39) 🆕</span><span class="pb-rules">4 rules</span><span class="pb-crit">1 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">TypeScript Standards (Q1–Q8)</span><span class="pb-rules">8 rules</span><span class="pb-crit">5 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">Python Standards (Q9–Q14)</span><span class="pb-rules">6 rules</span><span class="pb-crit">3 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">File &amp; Module Structure (Q15–Q20)</span><span class="pb-rules">6 rules</span><span class="pb-crit">3 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">Linting &amp; Formatting (Q21–Q27)</span><span class="pb-rules">7 rules</span><span class="pb-crit">4 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Code Review Process (Q28–Q35)</span><span class="pb-rules">8 rules</span><span class="pb-crit">4 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P6</span><span class="pb-name">Documentation Standards (Q36–Q40)</span><span class="pb-rules">5 rules</span><span class="pb-crit">2 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P7 🆕</span><span class="pb-name">Angular Quality (Q41–Q44)</span><span class="pb-rules">4 rules</span><span class="pb-new">ALL NEW</span></div>
+        <div class="pb-item"><span class="pb-part">ANNEX</span><span class="pb-name">Forbidden Patterns (FP01–FP20)</span><span class="pb-rules">20 patterns</span><span class="pb-crit">ALL CRITICAL</span></div>
       </div>
     </div>
     <div class="lock-col">
-      <div class="lock-col-title">v2.0 Enhancements</div>
-      <div class="parts-breakdown">
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">CQ15: 24h ack / 48h review with Deep Work exception</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">CQ16: Cognitive load assessment > rigid line count</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">CQ28: License check required for new dependencies</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">CQ33-CQ35: Supply chain security (NEW)</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">CQ36-CQ39: AI-generated code governance (NEW)</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Quality gate automation script</span></div>
+      <div class="lock-col-title">v3.0 Changes from v2.0</div>
+      <div style="font-size:11.5px;color:var(--muted);line-height:2;">
+        + Part 7 entirely new: Angular quality rules Q41–Q44<br>
+        + Q41: Angular ESLint config with OnPush + no-template-forms<br>
+        + Q42: Vitest as Angular test runner (replaces Karma/Jasmine)<br>
+        + Q43: app- component selector prefix enforced by lint<br>
+        + Q44: No empty lifecycle hooks — ESLint error<br>
+        + Toolchain overview added — 3-column table by stack<br>
+        + Q12: Ruff replaces flake8+isort+pylint (Python)<br>
+        + Q13: Bandit security linter added to Python CI<br>
+        + Q24: Python logging added — structlog standard<br>
+        + Stack scope badges added to all rules<br>
+        + System Total corrected: 314 → <strong>355</strong><br>
+        + Forbidden patterns: 17 → 20<br>
+        + Lock date: 2026-04-08 → 2026-04-14
+      </div>
+      <div class="lock-col-title" style="margin-top:16px;">Official Signatures</div>
+      <div class="sig-line">
+        <span class="sig-role">Engineering Lead</span>
+        <div class="sig-name-line"></div>
+        <div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div>
+      </div>
+      <div class="sig-line">
+        <span class="sig-role">Product Owner — KSDRILL SA</span>
+        <div class="sig-name-line"></div>
+        <div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div>
       </div>
     </div>
   </div>
 
   <div class="lock-final">
-    <div class="lock-final-left">VIOLATION OF ANY CRITICAL RULE = SYSTEM FAILURE<br/>FOLLOW ALL RULES = SYSTEM SHIPS</div>
-    <div class="lock-final-motto">"No confusion. No over-engineering. No excuses. Just execution."</div>
-    <div class="lock-final-right">v2.0 LOCKED<br/>2026-04-08<br/>Part of 314-rule total system</div>
+    <div class="lock-final-left">VIOLATION OF ANY CRITICAL RULE = BUILD FAILURE<br/>FOLLOW ALL RULES = CLEAN CODEBASE</div>
+    <div class="lock-final-motto">"Quality is not an act — it is a habit enforced by the system."</div>
+    <div class="lock-final-right">v3.0 LOCKED · 2026-04-14<br/>TypeScript + Python + Angular · 44 rules<br/>System Total: 355 rules</div>
   </div>
 </div>
 
-</div>
+</div><!-- /page -->
 </body>
 </html>

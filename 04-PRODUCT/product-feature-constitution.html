@@ -3,979 +3,818 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Product & Feature Constitution v1.0 — LOCKED — The Final Constitution</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<title>Product &amp; Feature Constitution v3.0 — KSDRILL SA · THE CROWN JEWEL · LOCKED</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --ink:      #0a0a0a;
-  --paper:    #faf8f2;
-  --paper2:   #f0ede4;
-  --paper3:   #e6e2d6;
-  --rule:     #d4cdbc;
-  --gold:     #c6a43a;
-  --gold2:    #e6c358;
-  --gold3:    #f5e6a0;
-  --amber:    #e8a020;
-  --red:      #9b1c1c;
-  --orange:   #c05a00;
-  --green:    #1a6e3a;
-  --blue:     #1a3a6e;
-  --blue2:    #2a5a9e;
-  --teal:     #0f6e6e;
-  --purple:   #6a3e6e;
-  --violet:   #8b5cf6;
-  --rose:     #e11d48;
-  --muted:    #6b6b5e;
-  --mono:     'IBM Plex Mono', monospace;
-  --serif:    'Playfair Display', serif;
-  --sans:     'IBM Plex Sans', sans-serif;
+  --ink:#0e0e0e;--paper:#fffdf0;--paper2:#fff8d6;--paper3:#fff1b0;
+  --rule:#d4bc6a;--gold:#b8860b;--gold2:#d4a017;--amber:#e8a020;
+  --red:#9b1c1c;--orange:#c05a00;--green:#1a5c2e;--blue:#1a3a6e;
+  --ang-red:#9b1c1c;--muted:#5a4a00;
+  --mono:'IBM Plex Mono',monospace;--serif:'Playfair Display',serif;--sans:'IBM Plex Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.65;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.6;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;opacity:.10;}
+.page{max-width:1100px;margin:0 auto;padding:0 32px;position:relative;z-index:1;}
+/* MASTHEAD */
+.masthead{border-top:6px solid var(--gold);border-bottom:3px double var(--gold);}
+.masthead-top{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gold);font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.08em;}
+.masthead-main{padding:40px 0 28px;text-align:center;border-bottom:1px solid var(--gold);}
+.masthead-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.masthead-crown{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--gold);margin-bottom:10px;}
+.masthead-title{font-family:var(--serif);font-size:clamp(36px,5vw,70px);font-weight:900;line-height:1.0;letter-spacing:-.02em;margin-bottom:8px;}
+.masthead-tagline{font-family:var(--serif);font-size:18px;font-style:italic;color:var(--muted);margin-bottom:18px;}
+.masthead-meta{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+.masthead-meta strong{color:var(--ink);}
+.masthead-bottom{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--gold);}
+.stat-box{padding:14px 10px;border-right:1px solid var(--gold);text-align:center;}
+.stat-box:last-child{border-right:none;}
+.stat-num{font-family:var(--serif);font-size:28px;font-weight:900;line-height:1;color:var(--gold);display:block;}
+.stat-label{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-top:2px;}
+/* NAV */
+.part-nav{display:flex;overflow-x:auto;border-bottom:2px solid var(--gold);background:var(--paper2);}
+.pn-item{display:flex;flex-direction:column;padding:10px 16px;border-right:1px solid var(--rule);text-decoration:none;color:var(--ink);flex-shrink:0;}
+.pn-item:hover{background:var(--paper);}
+.pn-num{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.1em;}
+.pn-name{font-family:var(--serif);font-size:11px;font-weight:700;}
+.pn-count{font-family:var(--mono);font-size:9px;color:var(--gold);}
+/* RUNNERS */
+.section-runner{background:var(--gold);color:#fff;padding:6px 0;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;text-align:center;}
+/* LAYOUT */
+.col-layout{display:grid;grid-template-columns:240px 1fr;gap:0;border-left:1px solid var(--gold);border-right:1px solid var(--gold);}
+.col-sidebar{border-right:1px solid var(--rule);padding:24px 20px;background:var(--paper2);}
+.col-main{padding:24px 28px;}
+.part-section{border-left:1px solid var(--gold);border-right:1px solid var(--gold);}
+/* BANNERS */
+.part-banner{background:var(--gold);color:#fff;padding:20px 28px;margin:0 -28px 28px;display:flex;align-items:baseline;gap:20px;}
+.part-banner.dark-b{background:var(--ink);}
+.part-banner.blue-b{background:var(--blue);}
+.part-banner.green-b{background:var(--green);}
+.part-banner.orange-b{background:var(--orange);}
+.part-num{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,240,180,.7);flex-shrink:0;}
+.part-title{font-family:var(--serif);font-size:24px;font-weight:900;line-height:1.1;}
+.part-desc{font-size:12px;color:rgba(255,240,180,.6);margin-left:auto;text-align:right;max-width:260px;font-style:italic;}
+/* RULE CARDS */
+.rule-card{border:1px solid var(--rule);border-left:4px solid var(--gold);background:#fff;margin-bottom:16px;overflow:hidden;}
+.rule-card.critical{border-left-color:var(--red);}
+.rule-card.high{border-left-color:var(--orange);}
+.rule-card.medium{border-left-color:var(--gold);}
+.rule-card.new{border-left-color:var(--green);}
+.rule-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:14px 18px 10px;border-bottom:1px solid var(--rule);background:var(--paper2);}
+.rule-num-badge{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted);flex-shrink:0;margin-top:2px;}
+.rule-title{font-family:var(--serif);font-size:15px;font-weight:700;flex:1;line-height:1.3;}
+.sev-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:2px;flex-shrink:0;}
+.sev-critical{background:var(--red);color:#fff;}
+.sev-high{background:var(--orange);color:#fff;}
+.sev-medium{background:var(--gold);color:#fff;}
+.sev-new{background:var(--green);color:#fff;}
+.rule-card-body{padding:14px 18px;}
+.rule-statement{font-size:13.5px;line-height:1.6;margin-bottom:12px;font-weight:500;}
+/* SCOPE */
+.scope-bar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.scope-chip{font-family:var(--mono);font-size:8px;letter-spacing:.08em;padding:2px 8px;border-radius:2px;font-weight:700;}
+.scope-both{background:var(--gold);color:#fff;}
+.scope-nextjs{background:#0e0e0e;color:#fff;}
+.scope-angular{background:var(--ang-red);color:#fff;}
+.scope-new{background:var(--green);color:#fff;}
+/* STACK DIFF */
+.stack-diff{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--ink);margin-top:10px;overflow:hidden;}
+.stack-diff-head{padding:6px 12px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
+.stack-diff-head.nj{background:#0e0e0e;color:#fff;}
+.stack-diff-head.ang{background:var(--ang-red);color:#fff;}
+.stack-diff-body{padding:10px 12px;font-size:11.5px;color:var(--muted);line-height:1.8;background:var(--paper2);border-left:1px solid var(--rule);}
+.stack-diff-col:first-child .stack-diff-body{border-left:none;}
+/* META */
+.rule-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:10px;}
+.rule-meta-item{background:var(--paper2);border:1px solid var(--rule);padding:7px 10px;}
+.rule-meta-label{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:block;margin-bottom:2px;}
+.rule-meta-val{font-size:12px;line-height:1.4;}
+/* CALLOUT */
+.callout{display:flex;gap:12px;padding:10px 14px;margin:10px 0;border:1px solid var(--rule);}
+.callout-icon{font-family:var(--mono);font-size:11px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.callout-info{background:#eff6ff;border-color:#93c5fd;}.callout-info .callout-icon{background:#3b82f6;color:#fff;}
+.callout-critical{background:#fff1f2;border-color:#fca5a5;}.callout-critical .callout-icon{background:var(--red);color:#fff;}
+.callout-gold{background:var(--paper2);border-color:var(--gold);}.callout-gold .callout-icon{background:var(--gold);color:#fff;}
+.callout-body{font-size:12px;line-height:1.6;color:var(--muted);}
+.callout-body strong{color:var(--ink);}
+/* SIDEBAR */
+.sidebar-section{margin-bottom:24px;}
+.sidebar-label{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:8px;border-bottom:1px solid var(--rule);padding-bottom:4px;}
+.sb-rule-list{list-style:none;}
+.sb-rule-list li{padding:4px 0;border-bottom:1px dotted var(--rule);font-size:11.5px;color:var(--muted);display:flex;gap:6px;}
+.rn{font-family:var(--mono);font-size:9px;color:var(--gold);font-weight:700;flex-shrink:0;}
+/* TABLES */
+.const-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px;border:1.5px solid var(--rule);margin-top:10px;}
+.const-table th{background:var(--paper2);padding:8px 12px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;text-align:left;border-bottom:1.5px solid var(--gold);}
+.const-table td{padding:7px 12px;border-bottom:1px solid var(--rule);vertical-align:top;}
+.const-table tr:last-child td{border-bottom:none;}
+.const-table tr:nth-child(even) td{background:var(--paper2);}
+/* SYSTEM CARDS */
+.systems-product-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.sys-card{border:1.5px solid var(--ink);overflow:hidden;}
+.sys-card-head{padding:10px 14px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;display:flex;justify-content:space-between;}
+.sys-card-head.fl{background:var(--ang-red);color:#fff;}
+.sys-card-head.mc{background:var(--green);color:#fff;}
+.sys-card-head.rb{background:var(--blue);color:#fff;}
+.sys-card-head.su{background:var(--orange);color:#fff;}
+.sys-card-body{padding:12px 14px;background:var(--paper2);}
+.sys-mvp-item{font-size:11.5px;padding:4px 0;border-bottom:1px dotted var(--rule);color:var(--muted);}
+.sys-mvp-item:last-child{border-bottom:none;}
+.sys-mvp-item strong{color:var(--ink);}
+/* GATE QUESTIONS */
+.gate-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:2px solid var(--gold);overflow:hidden;margin-bottom:16px;}
+.gate-card{border-right:1px solid var(--rule);}
+.gate-card:last-child{border-right:none;}
+.gate-num{background:var(--gold);color:#fff;padding:8px 12px;font-family:var(--mono);font-size:10px;font-weight:700;text-align:center;}
+.gate-question{padding:12px;font-size:12px;color:var(--muted);line-height:1.7;background:var(--paper2);}
+.gate-question strong{color:var(--ink);display:block;margin-bottom:4px;}
+/* FORBIDDEN */
+.forbidden-section{border:2px solid var(--red);overflow:hidden;}
+.forbidden-header{background:var(--red);color:#fff;padding:10px 20px;font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;}
+.forbidden-grid{display:grid;grid-template-columns:1fr 1fr;}
+.fp-item{padding:12px 16px;border-right:1px solid rgba(155,28,28,.2);border-bottom:1px solid rgba(155,28,28,.2);font-family:var(--mono);font-size:10.5px;}
+.fp-item:nth-child(even){border-right:none;}
+.fp-code{color:var(--red);font-weight:700;margin-bottom:3px;font-size:10px;}
+.fp-desc{color:var(--muted);font-size:10px;line-height:1.5;}
+.fp-fix{color:var(--green);font-size:9px;margin-top:3px;}
+/* LOCK */
+.lock-section{border:4px double var(--gold);margin:0;background:var(--paper);}
+.lock-banner{background:var(--gold);color:#fff;text-align:center;padding:32px 24px;border-bottom:4px double rgba(255,255,255,.2);}
+.lock-title-main{font-family:var(--serif);font-size:clamp(24px,4vw,44px);font-weight:900;letter-spacing:-.02em;margin-bottom:8px;}
+.lock-sub{font-family:var(--mono);font-size:11px;color:rgba(255,240,180,.9);letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px;}
+.lock-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:0;border-top:1px solid rgba(255,255,255,.15);margin-top:24px;}
+.ls-item{padding:14px;border-right:1px solid rgba(255,255,255,.1);text-align:center;}
+.ls-item:last-child{border-right:none;}
+.ls-num{font-family:var(--serif);font-size:26px;font-weight:900;color:rgba(255,240,180,.9);display:block;}
+.ls-label{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,240,180,.5);display:block;margin-top:2px;}
+.lock-body{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.lock-col{padding:26px 30px;border-right:2px solid var(--gold);}
+.lock-col:last-child{border-right:none;}
+.lock-col-title{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-bottom:12px;border-bottom:1px solid var(--rule);padding-bottom:5px;}
+.parts-breakdown{display:flex;flex-direction:column;gap:5px;}
+.pb-item{display:flex;align-items:center;gap:9px;font-size:11px;padding:6px 9px;border:1px solid var(--rule);background:var(--paper2);}
+.pb-part{font-family:var(--mono);font-size:9px;color:var(--gold);font-weight:700;min-width:40px;}
+.pb-name{flex:1;font-size:10.5px;}
+.pb-rules{font-family:var(--mono);font-size:9px;color:var(--muted);}
+.pb-crit{background:var(--red);color:#fff;padding:1px 5px;font-family:var(--mono);font-size:8px;border-radius:2px;}
+.pb-new{background:var(--green);color:#fff;padding:1px 5px;font-family:var(--mono);font-size:8px;border-radius:2px;}
+.sig-line{display:flex;flex-direction:column;gap:4px;border-bottom:1px solid var(--gold);padding-bottom:10px;margin-bottom:10px;}
+.sig-role{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);}
+.sig-name-line{border-bottom:1px solid var(--gold);height:24px;}
+.sig-meta{display:flex;gap:20px;margin-top:4px;font-family:var(--mono);font-size:9px;color:var(--muted);}
+.lock-final{border-top:2px solid var(--gold);background:var(--gold);color:#fff;padding:18px 30px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.lock-final-left{font-family:var(--mono);font-size:10px;color:rgba(255,240,180,.9);letter-spacing:.06em;}
+.lock-final-motto{font-family:var(--serif);font-size:17px;font-style:italic;}
+.lock-final-right{font-family:var(--mono);font-size:9px;color:rgba(255,240,180,.45);text-align:right;}
+code{font-family:var(--mono);font-size:11px;background:var(--paper3);border:1px solid var(--rule);padding:1px 4px;color:var(--red);}
+hr.divider{height:1px;background:var(--rule);margin:0;border:none;}
+hr.divider-double{height:3px;border:none;background:var(--gold);margin:0;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.page>*{animation:fadeIn .35s ease both;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--paper);}
+::-webkit-scrollbar-thumb{background:var(--rule);}
+@media(max-width:760px){
+  .col-layout{grid-template-columns:1fr;}
+  .col-sidebar{border-right:none;border-bottom:1px solid var(--rule);}
+  .lock-body{grid-template-columns:1fr;}
+  .lock-col{border-right:none;border-bottom:2px solid var(--gold);}
+  .masthead-bottom{grid-template-columns:repeat(3,1fr);}
+  .systems-product-grid,.gate-grid,.stack-diff,.forbidden-grid{grid-template-columns:1fr;}
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--sans);
-  font-size: 14px;
-  line-height: 1.65;
-  overflow-x: hidden;
-}
-
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 9999; opacity: .6;
-}
-
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none; z-index: 0; opacity: .08;
-}
-
-.page { max-width: 1200px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
-
-.masthead {
-  border-top: 8px solid var(--gold);
-  border-bottom: 4px double var(--gold);
-  margin-bottom: 0;
-  position: relative;
-  background: linear-gradient(135deg, rgba(198,164,58,0.03) 0%, rgba(198,164,58,0) 100%);
-}
-
-.masthead-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--rule);
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: .08em;
-}
-
-.masthead-main {
-  text-align: center;
-  padding: 48px 0 40px;
-}
-
-.masthead-eyebrow {
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
-  color: var(--ink);
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .25em;
-  padding: 6px 20px;
-  margin-bottom: 20px;
-  font-weight: 700;
-  text-transform: uppercase;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.masthead-title {
-  font-family: var(--serif);
-  font-size: clamp(48px, 8vw, 96px);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -.02em;
-  background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 50%, var(--amber) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin-bottom: 8px;
-}
-
-.masthead-tagline {
-  font-family: var(--serif);
-  font-size: 20px;
-  font-style: italic;
-  color: var(--muted);
-  margin-bottom: 20px;
-  font-weight: 400;
-}
-
-.masthead-meta {
-  display: flex;
-  justify-content: center;
-  gap: 48px;
-  flex-wrap: wrap;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-
-.masthead-meta strong { color: var(--gold); }
-
-.masthead-bottom {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  border-top: 1px solid var(--rule);
-  background: linear-gradient(135deg, var(--paper2) 0%, var(--paper) 100%);
-}
-
-.stat-box {
-  padding: 16px 20px;
-  border-right: 1px solid var(--rule);
-  text-align: center;
-}
-.stat-box:last-child { border-right: none; }
-
-.stat-num {
-  font-family: var(--serif);
-  font-size: 38px;
-  font-weight: 900;
-  line-height: 1;
-  background: linear-gradient(135deg, var(--gold), var(--amber));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  display: block;
-}
-.stat-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.section-runner {
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
-  color: var(--ink);
-  padding: 8px 0;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .25em;
-  text-transform: uppercase;
-  text-align: center;
-  font-weight: 700;
-}
-
-.part-nav {
-  display: flex;
-  border-top: 2px solid var(--gold);
-  border-bottom: 2px solid var(--gold);
-  background: var(--paper2);
-  overflow-x: auto;
-}
-
-.pn-item {
-  flex: 1;
-  min-width: 80px;
-  padding: 10px 6px;
-  border-right: 1px solid var(--rule);
-  text-decoration: none;
-  color: var(--muted);
-  transition: all .2s ease;
-}
-.pn-item:last-child { border-right: none; }
-.pn-item:hover { background: var(--gold); color: var(--ink); }
-.pn-num  { font-family: var(--mono); font-size: 7px; color: var(--gold); letter-spacing: .1em; display: block; }
-.pn-name { font-family: var(--serif); font-size: 9px; font-weight: 700; line-height: 1.3; display: block; margin-top: 2px; }
-.pn-count { font-family: var(--mono); font-size: 7px; color: var(--muted); display: block; margin-top: 1px; }
-.pn-item:hover .pn-num { color: var(--ink); }
-.pn-item:hover .pn-count { color: var(--ink); }
-
-.col-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 0;
-  border-left: 1px solid var(--rule);
-  border-right: 1px solid var(--rule);
-}
-
-.col-sidebar {
-  border-right: 1px solid var(--rule);
-  padding: 28px 22px;
-  background: linear-gradient(135deg, var(--paper2) 0%, var(--paper) 100%);
-}
-
-.col-main {
-  padding: 32px 36px;
-}
-
-.part-section {
-  border-left: 1px solid var(--rule);
-  border-right: 1px solid var(--rule);
-}
-
-.part-banner {
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
-  color: var(--ink);
-  padding: 24px 32px;
-  margin: -32px -36px 32px;
-  display: flex;
-  align-items: baseline;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.part-num {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .25em;
-  text-transform: uppercase;
-  color: var(--ink);
-  flex-shrink: 0;
-  font-weight: 700;
-  opacity: 0.7;
-}
-
-.part-title {
-  font-family: var(--serif);
-  font-size: 26px;
-  font-weight: 900;
-  line-height: 1.1;
-  flex: 1;
-  color: var(--ink);
-}
-
-.part-desc {
-  font-size: 11px;
-  color: rgba(0,0,0,.5);
-  text-align: right;
-  font-style: italic;
-  font-weight: 500;
-}
-
-.rule-card {
-  border: 1px solid var(--rule);
-  border-left: 4px solid var(--gold);
-  background: #fff;
-  margin-bottom: 20px;
-  overflow: hidden;
-  transition: box-shadow 0.2s ease;
-}
-.rule-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-
-.rule-card.critical { border-left-color: var(--rose); }
-.rule-card.high     { border-left-color: var(--orange); }
-.rule-card.medium   { border-left-color: var(--gold); }
-
-.rule-card-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px 18px 10px;
-  border-bottom: 1px solid var(--rule);
-  background: var(--paper2);
-}
-
-.rule-num-badge {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  color: var(--muted);
-  flex-shrink: 0;
-}
-
-.rule-title {
-  font-family: var(--serif);
-  font-size: 15px;
-  font-weight: 700;
-  flex: 1;
-  line-height: 1.3;
-}
-
-.sev-badge {
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: 3px 10px;
-  border-radius: 3px;
-  flex-shrink: 0;
-}
-.sev-critical { background: var(--rose); color: #fff; }
-.sev-high     { background: var(--orange); color: #fff; }
-.sev-medium   { background: var(--gold); color: #fff; }
-
-.rule-card-body {
-  padding: 14px 18px;
-}
-
-.rule-statement {
-  font-size: 13px;
-  line-height: 1.65;
-  margin-bottom: 12px;
-  font-weight: 500;
-  color: var(--ink);
-}
-
-.rule-meta-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.rule-meta-item {
-  background: var(--paper2);
-  border: 1px solid var(--rule);
-  padding: 8px 10px;
-  font-size: 10.5px;
-  border-radius: 4px;
-}
-
-.rule-meta-label {
-  font-family: var(--mono);
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  color: var(--muted);
-  display: block;
-  margin-bottom: 3px;
-}
-
-.rule-meta-val { font-size: 10.5px; line-height: 1.45; }
-
-.code-block {
-  background: #1a1a2e;
-  border: 1px solid var(--gold);
-  margin: 12px 0 0;
-  overflow: hidden;
-  border-radius: 6px;
-}
-.code-bar {
-  background: #0f0f1a;
-  padding: 6px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #2a2a3e;
-}
-.code-filename {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--gold2);
-}
-.code-dots { display: flex; gap: 6px; }
-.cd { width: 10px; height: 10px; border-radius: 50%; }
-.cd-r { background: #f87171; } .cd-y { background: #fbbf24; } .cd-g { background: #34d399; }
-.code-block pre {
-  font-family: var(--mono);
-  font-size: 10px;
-  line-height: 1.65;
-  padding: 14px 16px;
-  color: #d4d4d4;
-  overflow-x: auto;
-  white-space: pre;
-}
-
-.ck  { color: #c678dd; }
-.cs  { color: #98c379; }
-.cc  { color: #5c6370; font-style: italic; }
-.ct  { color: #e5c07b; }
-.cf  { color: #61afef; }
-.cn  { color: #d19a66; }
-
-.const-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 10.5px;
-}
-.const-table thead tr { background: linear-gradient(135deg, var(--gold), var(--gold2)); color: var(--ink); }
-.const-table th {
-  font-family: var(--mono);
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  padding: 8px 10px;
-  text-align: left;
-  font-weight: 700;
-}
-.const-table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-}
-.const-table tbody tr:nth-child(even) { background: var(--paper2); }
-
-.fp-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 9.5px;
-  border: 2px solid var(--gold);
-}
-.fp-table thead tr { background: var(--rose); }
-.fp-table th {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  padding: 8px 10px;
-  color: #fff;
-  text-align: left;
-}
-.fp-table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-}
-.fp-table tbody tr:hover { background: rgba(225,29,72,0.05); }
-.fp-code { font-family: var(--mono); font-size: 8px; color: var(--rose); font-weight: 700; }
-.fp-ref  { font-family: var(--mono); font-size: 8px; color: var(--gold); }
-
-.callout {
-  display: flex;
-  gap: 12px;
-  padding: 12px 16px;
-  margin: 14px 0;
-  font-size: 11px;
-  border-left: 4px solid;
-  background: var(--paper2);
-  border-radius: 4px;
-}
-.callout-critical { border-color: var(--rose); background: rgba(225,29,72,0.05); }
-.callout-warn     { border-color: var(--orange); background: rgba(192,90,0,0.05); }
-.callout-info     { border-color: var(--gold); background: rgba(198,164,58,0.05); }
-.callout-good     { border-color: var(--green); background: rgba(26,110,58,0.05); }
-.callout-icon { font-family: var(--mono); font-size: 11px; flex-shrink: 0; font-weight: 700; }
-.callout-body { line-height: 1.6; }
-.callout-body strong { color: var(--ink); }
-
-.feature-lifecycle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--paper2);
-  padding: 20px;
-  border-radius: 8px;
-  margin: 20px 0;
-  border: 1px solid var(--rule);
-}
-.lifecycle-stage {
-  text-align: center;
-  flex: 1;
-  position: relative;
-}
-.lifecycle-stage::after {
-  content: '→';
-  position: absolute;
-  right: -15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--gold);
-  font-family: var(--mono);
-  font-size: 14px;
-}
-.lifecycle-stage:last-child::after { display: none; }
-.lifecycle-name {
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.lifecycle-icon {
-  font-size: 24px;
-  margin: 8px 0;
-}
-.lifecycle-desc {
-  font-size: 9px;
-  color: var(--muted);
-}
-
-.metrics-showcase {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin: 20px 0;
-}
-.metric-card {
-  background: linear-gradient(135deg, var(--paper2), #fff);
-  border: 1px solid var(--rule);
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
-}
-.metric-number {
-  font-family: var(--serif);
-  font-size: 32px;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.metric-label {
-  font-family: var(--mono);
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.lock-section {
-  border: 4px double var(--gold);
-  margin-top: 40px;
-  background: linear-gradient(135deg, var(--paper), var(--paper2));
-}
-.lock-banner {
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
-  color: var(--ink);
-  text-align: center;
-  padding: 36px 24px;
-  border-bottom: 4px double rgba(0,0,0,.1);
-}
-.lock-title-main {
-  font-family: var(--serif);
-  font-size: clamp(32px, 5vw, 56px);
-  font-weight: 900;
-  letter-spacing: -.02em;
-  margin-bottom: 8px;
-}
-.lock-sub {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--ink);
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-  opacity: 0.7;
-}
-.lock-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 0;
-  border-top: 1px solid rgba(0,0,0,.1);
-  margin-top: 24px;
-}
-.ls-item {
-  padding: 14px;
-  border-right: 1px solid rgba(0,0,0,.1);
-  text-align: center;
-}
-.ls-item:last-child { border-right: none; }
-.ls-num {
-  font-family: var(--serif);
-  font-size: 28px;
-  font-weight: 900;
-  color: var(--ink);
-  display: block;
-}
-.ls-label {
-  font-family: var(--mono);
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: rgba(0,0,0,.5);
-  display: block;
-  margin-top: 2px;
-}
-
-.lock-body {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-}
-.lock-col {
-  padding: 28px 32px;
-  border-right: 2px solid var(--gold);
-}
-.lock-col:last-child { border-right: none; }
-.lock-col-title {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .25em;
-  color: var(--muted);
-  margin-bottom: 14px;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 6px;
-  font-weight: 700;
-}
-
-.parts-breakdown { display: flex; flex-direction: column; gap: 6px; }
-.pb-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 9.5px;
-  padding: 6px 10px;
-  border: 1px solid var(--rule);
-  background: var(--paper2);
-  border-radius: 4px;
-}
-.pb-part { font-family: var(--mono); font-size: 8px; color: var(--gold); font-weight: 700; min-width: 35px; }
-.pb-name { flex: 1; font-size: 9px; }
-.pb-rules { font-family: var(--mono); font-size: 8px; color: var(--muted); }
-.pb-crit { background: var(--rose); color: #fff; padding: 1px 4px; font-family: var(--mono); font-size: 7px; border-radius: 3px; }
-
-.lock-final {
-  border-top: 2px solid var(--gold);
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
-  color: var(--ink);
-  padding: 20px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.lock-final-left { font-family: var(--mono); font-size: 9px; color: var(--ink); letter-spacing: .08em; font-weight: 700; opacity: 0.8; }
-.lock-final-motto { font-family: var(--serif); font-size: 16px; font-style: italic; font-weight: 700; }
-.lock-final-right { font-family: var(--mono); font-size: 8px; color: var(--ink); text-align: right; opacity: 0.7; }
-
-.divider { border: none; border-top: 2px solid var(--gold); margin: 0; }
-.divider-double { border: none; border-top: 3px double var(--gold); margin: 0; }
-
-@media (max-width: 860px) {
-  .col-layout { grid-template-columns: 1fr; }
-  .col-sidebar { border-right: none; border-bottom: 1px solid var(--rule); }
-  .lock-body { grid-template-columns: 1fr; }
-  .lock-col { border-right: none; border-bottom: 2px solid var(--gold); }
-  .masthead-bottom { grid-template-columns: repeat(3, 1fr); }
-  .metrics-showcase { grid-template-columns: repeat(2, 1fr); }
-  .feature-lifecycle { flex-direction: column; gap: 16px; }
-  .lifecycle-stage::after { display: none; }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.page > * { animation: fadeIn .4s ease both; }
 </style>
 </head>
 <body>
 <div class="page">
 
+<!-- MASTHEAD -->
 <header class="masthead">
   <div class="masthead-top">
-    <span>FINAL CONSTITUTION · LOCKED: 2026-04-08</span>
-    <span>THE COMPLETE SYSTEM · 311 TOTAL RULES</span>
+    <span>LOCKED: 2026-04-14 · KSDRILL SA</span>
+    <span>DOCUMENT CLASS: CONSTITUTION · REVISION: v3.0</span>
     <span>NEXT REVIEW: 2026-07-07</span>
   </div>
   <div class="masthead-main">
-    <div class="masthead-eyebrow">THE CROWN JEWEL — FINAL CONSTITUTION</div>
-    <h1 class="masthead-title">Product & Feature<br>Constitution v1.0</h1>
-    <p class="masthead-tagline">"Build the right thing. Build the thing right. Kill what doesn't work."</p>
+    <div class="masthead-eyebrow">PRODUCT &amp; FEATURE CONSTITUTION</div>
+    <div class="masthead-crown">The Crown Jewel — Constitution 10 of 10 — Final Constitution</div>
+    <h1 class="masthead-title">v3.0</h1>
+    <p class="masthead-tagline">"Build what solves the problem. Nothing more. Nothing less."</p>
     <div class="masthead-meta">
-      <span><strong>24</strong> TOTAL RULES</span>
-      <span><strong>12</strong> CRITICAL</span>
-      <span><strong>8</strong> HIGH PRIORITY</span>
-      <span><strong>4</strong> MEDIUM</span>
-      <span><strong>311</strong> SYSTEM TOTAL</span>
+      <span><strong>30</strong> TOTAL RULES</span>
+      <span><strong>14</strong> CRITICAL</span>
+      <span><strong>5</strong> PARTS</span>
+      <span><strong>4</strong> FLAGSHIP SYSTEMS</span>
+      <span>FUNDSLINK · MAPHOPHE · RESERVE BANK · SYNCUP</span>
     </div>
   </div>
   <div class="masthead-bottom">
-    <div class="stat-box"><span class="stat-num">24</span><span class="stat-label">Total Rules</span></div>
-    <div class="stat-box"><span class="stat-num">12</span><span class="stat-label">Critical</span></div>
-    <div class="stat-box"><span class="stat-num">8</span><span class="stat-label">High</span></div>
-    <div class="stat-box"><span class="stat-num">4</span><span class="stat-label">Medium</span></div>
-    <div class="stat-box"><span class="stat-num">311</span><span class="stat-label">System Total</span></div>
+    <div class="stat-box"><span class="stat-num">30</span><span class="stat-label">Total Rules</span></div>
+    <div class="stat-box"><span class="stat-num">14</span><span class="stat-label">Critical</span></div>
+    <div class="stat-box"><span class="stat-num">12</span><span class="stat-label">High Priority</span></div>
+    <div class="stat-box"><span class="stat-num">10</span><span class="stat-label">Constitution #</span></div>
+    <div class="stat-box"><span class="stat-num">355</span><span class="stat-label">System Total</span></div>
   </div>
 </header>
 
 <nav class="part-nav">
-  <a href="#part1" class="pn-item"><span class="pn-num">P1</span><span class="pn-name">Ideation</span><span class="pn-count">P1-P4</span></a>
-  <a href="#part2" class="pn-item"><span class="pn-num">P2</span><span class="pn-name">Prioritization</span><span class="pn-count">P5-P8</span></a>
-  <a href="#part3" class="pn-item"><span class="pn-num">P3</span><span class="pn-name">Definition</span><span class="pn-count">P9-P11</span></a>
-  <a href="#part4" class="pn-item"><span class="pn-num">P4</span><span class="pn-name">Development</span><span class="pn-count">P12-P14</span></a>
-  <a href="#part5" class="pn-item"><span class="pn-num">P5</span><span class="pn-name">Launch</span><span class="pn-count">P15-P17</span></a>
-  <a href="#part6" class="pn-item"><span class="pn-num">P6</span><span class="pn-name">Measurement</span><span class="pn-count">P18-P20</span></a>
-  <a href="#part7" class="pn-item"><span class="pn-num">P7</span><span class="pn-name">Iteration</span><span class="pn-count">P21-P22</span></a>
-  <a href="#part8" class="pn-item"><span class="pn-num">P8</span><span class="pn-name">Deprecation</span><span class="pn-count">P23-P24</span></a>
-  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden</span><span class="pn-count">PF01-PF16</span></a>
+  <a href="#p1" class="pn-item"><span class="pn-num">P1</span><span class="pn-name">Product Vision</span><span class="pn-count">PF1–PF6</span></a>
+  <a href="#p2" class="pn-item"><span class="pn-num">P2</span><span class="pn-name">Feature Governance</span><span class="pn-count">PF7–PF13</span></a>
+  <a href="#p3" class="pn-item"><span class="pn-num">P3</span><span class="pn-name">MVP Definitions</span><span class="pn-count">PF14–PF20</span></a>
+  <a href="#p4" class="pn-item"><span class="pn-num">P4</span><span class="pn-name">User Feedback</span><span class="pn-count">PF21–PF25</span></a>
+  <a href="#p5" class="pn-item"><span class="pn-num">P5</span><span class="pn-name">Roadmap Governance</span><span class="pn-count">PF26–PF30</span></a>
+  <a href="#forbidden" class="pn-item"><span class="pn-num">ANNEX</span><span class="pn-name">Forbidden Patterns</span><span class="pn-count">FP01–FP16</span></a>
 </nav>
 
-<!-- FEATURE LIFECYCLE VISUAL -->
-<div class="section-runner">§ The Feature Lifecycle — From Idea to Sunset</div>
-<div class="part-section" style="padding: 24px 28px;">
-  <div class="feature-lifecycle">
-    <div class="lifecycle-stage"><div class="lifecycle-name">IDEATION</div><div class="lifecycle-icon">💡</div><div class="lifecycle-desc">Problem Discovery</div></div>
-    <div class="lifecycle-stage"><div class="lifecycle-name">PRIORITIZATION</div><div class="lifecycle-icon">⚖️</div><div class="lifecycle-desc">ICE Scoring</div></div>
-    <div class="lifecycle-stage"><div class="lifecycle-name">DEFINITION</div><div class="lifecycle-icon">📋</div><div class="lifecycle-desc">PRD + Spec</div></div>
-    <div class="lifecycle-stage"><div class="lifecycle-name">DEVELOPMENT</div><div class="lifecycle-icon">⚙️</div><div class="lifecycle-desc">Build + Test</div></div>
-    <div class="lifecycle-stage"><div class="lifecycle-name">LAUNCH</div><div class="lifecycle-icon">🚀</div><div class="lifecycle-desc">Feature Flag + Rollout</div></div>
-    <div class="lifecycle-stage"><div class="lifecycle-name">MEASUREMENT</div><div class="lifecycle-icon">📊</div><div class="lifecycle-desc">Metrics + Feedback</div></div>
-    <div class="lifecycle-stage"><div class="lifecycle-name">ITERATION</div><div class="lifecycle-icon">🔄</div><div class="lifecycle-desc">Improve or Kill</div></div>
-    <div class="lifecycle-stage"><div class="lifecycle-name">DEPRECATION</div><div class="lifecycle-icon">🏁</div><div class="lifecycle-desc">Sunset + Remove</div></div>
+<!-- FLAGSHIP SYSTEMS OVERVIEW -->
+<div class="section-runner">§ The Four Flagship Systems — Design Complete · Build Starting Q2 2026</div>
+<div class="part-section" style="padding:20px 28px;">
+  <div class="callout callout-gold">
+    <span class="callout-icon">★</span>
+    <div class="callout-body"><strong>This is Constitution 10 of 10 — the Crown Jewel.</strong> Every other constitution governs how systems are built. This constitution governs <em>what</em> gets built and <em>why</em>. Every feature decision, every v1 scope call, every roadmap item must pass through this constitution. The other nine constitutions tell engineers how to work. This one tells them what work is worth doing.</div>
+  </div>
+
+  <div class="systems-product-grid" style="margin-top:16px;">
+    <div class="sys-card">
+      <div class="sys-card-head fl">
+        <span style="font-family:var(--serif);font-size:14px;font-weight:900">FundsLink Academy</span>
+        <span style="font-size:9px;opacity:.7">Angular Stack · Q2 2026</span>
+      </div>
+      <div class="sys-card-body">
+        <div class="sys-mvp-item"><strong>Problem:</strong> 342,000+ students excluded yearly from education funding</div>
+        <div class="sys-mvp-item"><strong>Solution:</strong> Unified application platform aggregating all funding sources with AI-powered eligibility matching</div>
+        <div class="sys-mvp-item"><strong>v1 Primary Workflow:</strong> Student creates profile → submits application → receives AI-matched funding options</div>
+        <div class="sys-mvp-item"><strong>v1 Done When:</strong> A student can apply and receive at least one matched funding opportunity end-to-end</div>
+        <div class="sys-mvp-item"><strong>Target:</strong> Q3 2026</div>
+      </div>
+    </div>
+    <div class="sys-card">
+      <div class="sys-card-head mc">
+        <span style="font-family:var(--serif);font-size:14px;font-weight:900">Maphophe Community System</span>
+        <span style="font-size:9px;opacity:.7">Next.js Stack · Q3 2026</span>
+      </div>
+      <div class="sys-card-body">
+        <div class="sys-mvp-item"><strong>Problem:</strong> Rural villages have no digital infrastructure — no traceable governance</div>
+        <div class="sys-mvp-item"><strong>Solution:</strong> Village-level governance platform — announcements, trackable service requests, voting, ward reporting</div>
+        <div class="sys-mvp-item"><strong>v1 Primary Workflow:</strong> Resident creates account → submits service request → ward admin reviews → resident sees status</div>
+        <div class="sys-mvp-item"><strong>v1 Done When:</strong> A resident can submit a service request and see its progress through the ward admin process</div>
+        <div class="sys-mvp-item"><strong>Target:</strong> Q4 2026</div>
+      </div>
+    </div>
+    <div class="sys-card">
+      <div class="sys-card-head rb">
+        <span style="font-family:var(--serif);font-size:14px;font-weight:900">KSDRILL Reserve Bank</span>
+        <span style="font-size:9px;opacity:.7">Angular Stack · Q4 2026</span>
+      </div>
+      <div class="sys-card-body">
+        <div class="sys-mvp-item"><strong>Problem:</strong> Most savings tools are passive — no discipline enforcement</div>
+        <div class="sys-mvp-item"><strong>Solution:</strong> Structured digital savings platform with enforced deposit schedules, goals, interest tracking, and lock periods</div>
+        <div class="sys-mvp-item"><strong>v1 Primary Workflow:</strong> User creates account → sets savings goal → makes first deposit → sees goal progress and projected interest</div>
+        <div class="sys-mvp-item"><strong>v1 Done When:</strong> A user can create an account, make a deposit, and see their balance and interest calculation</div>
+        <div class="sys-mvp-item"><strong>Target:</strong> Q1 2027</div>
+      </div>
+    </div>
+    <div class="sys-card">
+      <div class="sys-card-head su">
+        <span style="font-family:var(--serif);font-size:14px;font-weight:900">SyncUp Creator Platform</span>
+        <span style="font-size:9px;opacity:.7">Next.js Stack · Q1 2027</span>
+      </div>
+      <div class="sys-card-body">
+        <div class="sys-mvp-item"><strong>Problem:</strong> Creators waste time in unstructured DM negotiations with no formal process</div>
+        <div class="sys-mvp-item"><strong>Solution:</strong> Structured collaboration platform with template-based pitches, 10-message negotiation limit, privacy controls</div>
+        <div class="sys-mvp-item"><strong>v1 Primary Workflow:</strong> Creator discovers another creator → sends structured pitch → negotiation completes within 10 messages → outcome recorded</div>
+        <div class="sys-mvp-item"><strong>v1 Done When:</strong> A creator can send a pitch and receive a response through the structured negotiation flow</div>
+        <div class="sys-mvp-item"><strong>Target:</strong> Q2 2027</div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- PART 1: IDEATION -->
+<!-- PART 1: PRODUCT VISION -->
 <hr class="divider"/>
-<div class="section-runner" id="part1">§ Part 1 — Ideation (P1-P4)</div>
+<div class="section-runner" id="p1">§ Part 1 — Product Vision &amp; Philosophy (PF1–PF6)</div>
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Purpose</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Discover real problems worth solving. Features without problems are solutions in search of a disease.</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">KSDRILL SA Mission</div>
+        <div style="font-size:11.5px;color:var(--muted);line-height:1.8;font-style:italic;">"Build what should already exist, with the precision, care, and permanence it deserves."</div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Product Principles</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">1</span> Real problem, real people</li>
+          <li><span class="rn">2</span> Primary workflow first</li>
+          <li><span class="rn">3</span> Design before code</li>
+          <li><span class="rn">4</span> Sequential — one at a time</li>
+          <li><span class="rn">5</span> African roots, global impact</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 1 / P1-P4</span><span class="part-title">Ideation — Problem Discovery</span><span class="part-desc">2 Critical · 2 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P1</span><span class="rule-title">Problem Before Solution</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every feature MUST start with a documented problem statement. No "feature because it's cool" without a problem to solve.</p><div class="callout callout-info"><span class="callout-icon">⚠️</span><div class="callout-body"><strong>The Question:</strong> "What problem does this solve for the user?" — If you cannot answer, do not build it.</div></div></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P2</span><span class="rule-title">User Research Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Major features (>1 week of work) MUST be validated with user research (interviews, surveys, data analysis). Not just internal assumptions.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P3</span><span class="rule-title">Competitive Analysis</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">New features SHOULD include analysis of how competitors solve the same problem. Build differentiation, not parity.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P4</span><span class="rule-title">One Feature, One Problem</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Each feature MUST solve ONE specific problem. Features that try to solve multiple problems become bloated, confusing, and hard to measure.</p></div></div>
+      <div class="part-banner dark-b">
+        <span class="part-num">PART 1 / PF1–PF6</span>
+        <span class="part-title">Product Vision &amp; Philosophy</span>
+        <span class="part-desc">4 Critical · 2 High · All Systems</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF1</span><span class="rule-title">Every Platform Solves a Real Problem Felt by Real People — Not a Technology Problem</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Every KSDRILL SA platform must solve a problem that real people experience in their daily lives — not a technology problem, not an engineering problem, and not a problem invented to justify a technology choice. FundsLink exists because students are excluded from funding. Maphophe exists because villages have no governance infrastructure. Reserve Bank exists because people save inconsistently. SyncUp exists because creator negotiations are unstructured. The problem must be documented before the solution is designed.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF2</span><span class="rule-title">The Primary User Workflow Is Sacred — Everything Else Is Secondary</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Every platform has one primary user workflow — the sequence of steps a user must complete to receive the core value. This workflow is the product. Everything else is a feature. The primary workflow must work flawlessly before any secondary feature is built. A beautifully designed admin panel on a broken primary workflow is a worse product than a plain interface with a working primary workflow.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">FundsLink</span><div class="rule-meta-val">Student applies → receives matched funding</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Maphophe</span><div class="rule-meta-val">Resident submits request → sees status update</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Reserve Bank</span><div class="rule-meta-val">User deposits → sees balance and interest</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">SyncUp</span><div class="rule-meta-val">Creator pitches → receives negotiated response</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF3</span><span class="rule-title">Sequential Build — One System Fully Before the Next Begins</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">KSDRILL SA builds one flagship system at a time. FundsLink MVP must ship before Reserve Bank development begins. No parallel platform development. The build order is locked: FundsLink Academy (Q2 2026) → Maphophe Community System (Q3 2026) → KSDRILL Reserve Bank (Q4 2026) → SyncUp (Q1 2027). This is not random scheduling — each system builds engineering confidence and user feedback loops before the next begins.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF4</span><span class="rule-title">Design-First — Full Architecture Locked Before the First Line of Code</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">No platform begins coding until the full system design is locked: architecture, database schema, module definitions, interface designs, and constitutional registration. The design phase is not optional or abbreviated. "We'll figure it out as we build" produces systems that cannot be maintained. All four flagship systems are fully designed — the build phase implements the design.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF5</span><span class="rule-title">African Context Is a Design Constraint — Not an Afterthought</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">KSDRILL SA builds for South African users first. This means: Maphophe is optimised for low-bandwidth rural connections (PWA offline-ready, minimum data usage). FundsLink is designed for students without reliable internet (fast load times, form-saving). Reserve Bank addresses the South African savings behaviour gap. These are not accessibility add-ons — they are primary design requirements validated before v1 ships.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF6</span><span class="rule-title">GrowthCore Solutions Is a Separate Entity — No Product Overlap</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">KSDRILL SA and GrowthCore Solutions are separate companies with separate missions. KSDRILL SA builds platforms that solve real-world challenges. GrowthCore Solutions delivers client web development, marketing, and analytics services. No KSDRILL SA system is built as a GrowthCore client project. No GrowthCore client project uses KSDRILL SA constitutional frameworks without explicit authorisation. Sprint work never overlaps between the two entities.</p>
+        </div>
+      </div>
     </main>
   </div>
 </div>
 
-<!-- PART 2: PRIORITIZATION -->
+<!-- PART 2: FEATURE GOVERNANCE -->
 <hr class="divider"/>
-<div class="section-runner" id="part2">§ Part 2 — Prioritization (P5-P8)</div>
+<div class="section-runner" id="p2">§ Part 2 — Feature Governance (PF7–PF13)</div>
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">ICE Framework</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Impact × Confidence × Ease = Score. Highest scores win.</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Feature Decision Flow</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">1st</span> Problem statement written</li>
+          <li><span class="rn">2nd</span> 5 gate questions answered</li>
+          <li><span class="rn">3rd</span> Stack + DB impact assessed</li>
+          <li><span class="rn">4th</span> OpenAPI contract drafted</li>
+          <li><span class="rn">5th</span> Sprint slot assigned</li>
+          <li><span class="rn">6th</span> Build begins</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Feature Group Hierarchy</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">G1</span> Core primary workflow</li>
+          <li><span class="rn">G2</span> Supporting primary workflow</li>
+          <li><span class="rn">G3</span> Secondary features</li>
+          <li><span class="rn">G4</span> Nice-to-have</li>
+          <li><span class="rn">v1</span> Groups 1+2 only</li>
+          <li><span class="rn">v2+</span> Groups 3+4</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 2 / P5-P8</span><span class="part-title">Prioritization — ICE Scoring</span><span class="part-desc">2 Critical · 1 High · 1 Medium</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P5</span><span class="rule-title">ICE Scoring Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every feature MUST be scored using ICE (Impact, Confidence, Ease) before sprint planning. Scores: 1-10 each, multiplied. Minimum score for v1: 125 (5×5×5).</p><div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">ICE Scoring Template</div></div><pre><span class="cc"># Feature: [Name]</span>
+      <div class="part-banner blue-b">
+        <span class="part-num">PART 2 / PF7–PF13</span>
+        <span class="part-title">Feature Governance</span>
+        <span class="part-desc">4 Critical · 3 High · All Systems</span>
+      </div>
 
-<span class="ck">Impact</span> (1-10): _  <span class="cc"># How much does this improve user experience/revenue?</span>
-<span class="ck">Confidence</span> (1-10): _  <span class="cc"># How certain are we of the impact? (Data vs guess)</span>
-<span class="ck">Ease</span> (1-10): _  <span class="cc"># How easy/quick is it to build? (10 = very easy)</span>
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF7</span><span class="rule-title">5 Gate Questions — Every Feature Must Pass All Five Before Code Is Written</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Every feature proposed for any platform — regardless of how small or "obvious" it seems — must pass all five gate questions before being added to a sprint. Failing any gate defers the feature to v2. There are no exceptions for "quick wins" or "obviously needed" features. The gate questions are the constitutional check against scope creep.</p>
+          <div class="gate-grid">
+            <div class="gate-card">
+              <div class="gate-num">Q1</div>
+              <div class="gate-question"><strong>User Workflow</strong>Does a real user need this to complete the primary workflow?</div>
+            </div>
+            <div class="gate-card">
+              <div class="gate-num">Q2</div>
+              <div class="gate-question"><strong>Removability</strong>Does removing this feature break the primary workflow or core value?</div>
+            </div>
+            <div class="gate-card">
+              <div class="gate-num">Q3</div>
+              <div class="gate-question"><strong>Buildability</strong>Can this be designed, built, and tested within 2–4 weeks?</div>
+            </div>
+            <div class="gate-card">
+              <div class="gate-num">Q4</div>
+              <div class="gate-question"><strong>Backend Ready</strong>Does the OpenAPI contract exist? Is the DB schema defined?</div>
+            </div>
+            <div class="gate-card">
+              <div class="gate-num">Q5</div>
+              <div class="gate-question"><strong>Validated</strong>Has a real user (not the builder) confirmed they need this?</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<span class="ck">ICE Score</span>: Impact × Confidence × Ease = ___</pre></div></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P6</span><span class="rule-title">Data-Driven Prioritization</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Prioritization MUST use data (usage metrics, user feedback, revenue impact) not politics or "gut feeling." Confidence score of 1-3 requires validation before building.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P7</span><span class="rule-title">Weekly Backlog Grooming</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Backlog MUST be reviewed weekly (30 min). Re-score features based on new data. Remove features that no longer meet ICE threshold.</p></div></div>
-      <div class="rule-card medium"><div class="rule-card-head"><span class="rule-num-badge">P8</span><span class="rule-title">Technical Debt vs Features</span><span class="sev-badge sev-medium">Medium</span></div><div class="rule-card-body"><p class="rule-statement">Technical debt reduction MUST compete on ICE score with new features. 20% capacity reserved for debt (Code Quality CQ31), but debt items must still justify their priority.</p></div></div>
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF8</span><span class="rule-title">v1 Contains Maximum 6 Features — Hard Limit, Not a Guideline</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Every platform ships v1 with a maximum of 6 features (where authentication counts as one feature). If more than 6 features pass all 5 gate questions, the lowest-impact features are cut to v2. This is a hard limit — not a target. A v1 with 4 features that are flawless outperforms a v1 with 8 features that are half-finished.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">FundsLink v1 max</span><div class="rule-meta-val">Auth + Profile + Application + AI Match + Status = 5</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Maphophe v1 max</span><div class="rule-meta-val">Auth + Announcements + Service Requests + Status = 4</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Reserve Bank v1 max</span><div class="rule-meta-val">Auth + Account + Deposits + Goals + Interest View = 5</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">SyncUp v1 max</span><div class="rule-meta-val">Auth + Profiles + Pitch + Negotiation Engine = 4</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF9</span><span class="rule-title">Groups 1+2 Only in v1 — No Secondary Features Before Primary Workflow Ships</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">v1 ships only Group 1 (core primary workflow) and Group 2 (directly supporting the primary workflow) features. Group 3 (secondary features: admin dashboards, analytics, bulk operations) and Group 4 (nice-to-have: customisation, advanced settings) are deferred to v2+. A single admin dashboard in v1 is a distraction that delays the primary workflow shipping.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF10</span><span class="rule-title">Feature Flags for All New Features — Ship Dark, Enable When Ready</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Every new feature beyond the initial v1 set ships behind a feature flag stored in the database. The feature is deployed but disabled — it goes live only when the flag is enabled. This decouples deployment from release, enables instant kill switches, and allows staged rollouts to specific user groups. Feature flags are never hardcoded — always stored in the <code>FeatureFlag</code> PostgreSQL table with a default of <code>false</code>.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF11</span><span class="rule-title">Stack Impact Must Be Assessed Before Feature Approval</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Before any feature is approved, its impact on the platform stack must be assessed and documented: Does it require a new database table or collection? Does it add a new endpoint (does it push the count toward the v1 limit)? Does it require a new background job? Does it require new env vars? Features that expand the stack complexity beyond v1 limits are deferred.</p>
+          <div class="stack-diff">
+            <div class="stack-diff-col">
+              <div class="stack-diff-head nj">Next.js Stack (Maphophe · SyncUp)</div>
+              <div class="stack-diff-body">Check against: Next.js API route count (max 15), Prisma table additions, BullMQ job additions. No new external service integrations in v1.</div>
+            </div>
+            <div class="stack-diff-col">
+              <div class="stack-diff-head ang">Angular Stack (FundsLink · Reserve Bank)</div>
+              <div class="stack-diff-body">Check against: FastAPI endpoint count (max 15), Prisma + MongoDB schema additions, Railway service count, LangChain chain additions (FundsLink).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF12</span><span class="rule-title">No Feature That Requires a Different Framework — Stack Is Locked</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">A feature proposal that requires switching or adding a framework is automatically deferred. FundsLink cannot add React components. Maphophe cannot add a FastAPI backend. SyncUp cannot add Angular forms. The framework assignment for each system is locked by the Backend Constitution (B1) and Team & Process Constitution (T4). Features must fit the existing stack — the stack does not change to fit the feature.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF13</span><span class="rule-title">Feature Proposals Written in Plain Language — No Technical Jargon</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Feature proposals are written as user stories in plain language: "As a [user type], I need to [action] so that [outcome]." Technical implementation details belong in the OpenAPI contract and Prisma schema — not in the feature proposal. A feature that cannot be described in one plain-language sentence is not well enough understood to build.</p>
+        </div>
+      </div>
     </main>
   </div>
 </div>
 
-<!-- PART 3: DEFINITION -->
+<!-- PART 3: MVP DEFINITIONS -->
 <hr class="divider"/>
-<div class="section-runner" id="part3">§ Part 3 — Definition (P9-P11)</div>
+<div class="section-runner" id="p3">§ Part 3 — MVP Definitions Per System (PF14–PF20)</div>
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">PRD Required Fields</div><p style="font-size:9px;color:var(--muted);line-height:1.5">Problem · Success Metrics · User Stories · Acceptance Criteria · Technical Notes · Rollout Plan</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">MVP Definition Principle</div>
+        <div style="font-size:11.5px;color:var(--muted);line-height:1.8;">MVP is not minimum — it is the minimum that delivers real value. A user must be able to complete the primary workflow start to finish without hitting a dead end or error that prevents completion.</div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Universal MVP Gates</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✓</span> Primary workflow complete E2E</li>
+          <li><span class="rn">✓</span> Auth working + RBAC enforced</li>
+          <li><span class="rn">✓</span> Error states handled gracefully</li>
+          <li><span class="rn">✓</span> Feedback mechanism live</li>
+          <li><span class="rn">✓</span> Mobile-first at 320px</li>
+          <li><span class="rn">✓</span> All CI checks passing</li>
+          <li><span class="rn">✓</span> Staging validated first</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 3 / P9-P11</span><span class="part-title">Definition — PRD & Specs</span><span class="part-desc">2 Critical · 1 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P9</span><span class="rule-title">PRD Required for Features >1 Week</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Features estimated >1 week MUST have a Product Requirements Document (PRD) approved before development starts.</p><div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">PRD Template</div></div><pre><span class="cc"># PRD: [Feature Name]</span>
+      <div class="part-banner green-b">
+        <span class="part-num">PART 3 / PF14–PF20</span>
+        <span class="part-title">MVP Definitions</span>
+        <span class="part-desc">3 Critical · 4 High · System-Specific</span>
+      </div>
 
-<span class="ck">## Problem Statement</span>
-[What problem does this solve? Who has this problem? How do they solve it today?]
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF14</span><span class="rule-title">MVP Is Defined Before Build Begins — Done Criteria Written, Not Assumed</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">The definition of done for v1 is written and approved before the first sprint begins. "Done" is not "feature complete" — it is "the primary user workflow works end-to-end in production, validated by at least 3 real users." The definition of done is documented in the system's GitHub repository README and reviewed at every sprint retrospective.</p>
+        </div>
+      </div>
 
-<span class="ck">## Success Metrics</span>
-- [ ] Metric 1: [target]
-- [ ] Metric 2: [target]
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF15</span><span class="rule-title">FundsLink v1 Done — Student Can Apply and Receive a Matched Funding Result</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — FUNDSLINK</span></div>
+          <p class="rule-statement">FundsLink v1 is done when: A student can create an account, complete their academic profile, submit an application, and receive at least one AI-matched funding opportunity — all without hitting an unhandled error. The AI matching must return results (minimum 1 match above 0.7 similarity) for at least 80% of test applications run during staging validation. Admin portal, funder dashboards, and bulk application management are v2 features.</p>
+        </div>
+      </div>
 
-<span class="ck">## User Stories</span>
-- As a [user], I want [goal] so that [benefit]
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF16</span><span class="rule-title">Reserve Bank v1 Done — User Can Create Account, Deposit, and See Balance + Interest</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — RESERVE BANK</span></div>
+          <p class="rule-statement">Reserve Bank v1 is done when: A user can create an account, make a deposit, see their balance update correctly, see their projected interest calculation, and set a savings goal. Financial data integrity must be verified: sum of all deposits must equal account balance for 100% of test accounts. Lock periods, automated deposit schedules (BullMQ), and interest compounding run correctly in staging. Investment features, multiple account types, and social savings are v2.</p>
+        </div>
+      </div>
 
-<span class="ck">## Acceptance Criteria</span>
-- [ ] Criterion 1
-- [ ] Criterion 2
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF17</span><span class="rule-title">Maphophe v1 Done — Resident Can Submit Request and Ward Admin Can Respond</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-nextjs">NEXT.JS STACK — MAPHOPHE</span></div>
+          <p class="rule-statement">Maphophe v1 is done when: A resident can create an account, submit a service request with a category and description, and see its status change as the ward admin reviews it. A ward admin can see all submitted requests, update a request status, and post a response. The PWA must function offline for request submission (data syncs when connectivity returns). Voting, announcements, and ward reporting are v2.</p>
+        </div>
+      </div>
 
-<span class="ck">## Technical Notes</span>
-[Architecture considerations, dependencies, constraints]
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF18</span><span class="rule-title">SyncUp v1 Done — Creator Can Send Pitch and Receive Structured Response</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-nextjs">NEXT.JS STACK — SYNCUP</span></div>
+          <p class="rule-statement">SyncUp v1 is done when: A creator can create a profile, discover another creator, send a structured pitch using a template, and receive a response within the 10-message negotiation limit. The negotiation must auto-close when the limit is reached or when both parties agree. Creator profiles must be SEO-indexed. Drop-based subscriptions, DRM-protected content, and advanced privacy controls are v2.</p>
+        </div>
+      </div>
 
-<span class="ck">## Rollout Plan</span>
-[Feature flag? Beta users? Gradual rollout?]</pre></div></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P10</span><span class="rule-title">Acceptance Criteria MUST Be Testable</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every acceptance criterion MUST be testable (QA can verify pass/fail). "Looks good" or "feels fast" are NOT acceptable.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P11</span><span class="rule-title">Technical Spec for Complex Features</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Complex features (>3 days of backend work or architectural changes) MUST have a technical design document reviewed before coding.</p></div></div>
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF19</span><span class="rule-title">Staging Validation Required — Real User Testing Before Production Launch</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Before any platform launches to production, the v1 primary workflow must be validated by at least 3 real users (not the builders) in the staging environment. Their feedback is collected, critical blockers are fixed, and the validation is repeated. A platform validated only by its builders is not validated — it is assumed. The 3 users must represent the actual target user group.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF20</span><span class="rule-title">No Admin Panel in v1 — Self-Service Primary Workflow Only</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Admin dashboards, analytics panels, bulk operations, and platform management interfaces are v2 features for all systems. v1 validates the primary user workflow — admin tools validate that the platform can be managed at scale, which is a v2 problem. The only admin capability in v1 is the minimum needed to support the primary workflow (e.g., ward admin responding to requests on Maphophe).</p>
+        </div>
+      </div>
     </main>
   </div>
 </div>
 
-<!-- PART 4: DEVELOPMENT -->
+<!-- PART 4: USER FEEDBACK -->
 <hr class="divider"/>
-<div class="section-runner" id="part4">§ Part 4 — Development (P12-P14)</div>
+<div class="section-runner" id="p4">§ Part 4 — User Feedback (PF21–PF25)</div>
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">MVP First</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Build the smallest thing that could work. Add complexity only when validated.</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Feedback Requirements</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✓</span> Live from day 1</li>
+          <li><span class="rn">✓</span> Rating 1–5 + comment</li>
+          <li><span class="rn">✓</span> Tied to primary workflow</li>
+          <li><span class="rn">✓</span> Reviewed weekly</li>
+          <li><span class="rn">✓</span> Drives v2 priorities</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 4 / P12-P14</span><span class="part-title">Development — Build & Test</span><span class="part-desc">2 Critical · 1 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P12</span><span class="rule-title">Feature Flag Required for All Features</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every feature MUST be behind a feature flag (Backend B42, Frontend R65). Flag default = FALSE for new features.</p><div class="callout callout-warn"><span class="callout-icon">⚠️</span><div class="callout-body"><strong>No flag, no merge.</strong> Feature flags are how we ship safely and rollback instantly.</div></div></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P13</span><span class="rule-title">Tests Required Before Merge</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Feature PRs MUST include tests (unit for logic, integration for API, E2E for critical paths) per Testing Constitution T5-T16.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P14</span><span class="rule-title">Documentation Before Launch</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">User-facing features MUST have documentation (help center, tooltips, or onboarding) before launch.</p></div></div>
+      <div class="part-banner orange-b">
+        <span class="part-num">PART 4 / PF21–PF25</span>
+        <span class="part-title">User Feedback &amp; Validation</span>
+        <span class="part-desc">3 Critical · 2 High · All Systems</span>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF21</span><span class="rule-title">Feedback Mechanism Live at v1 Launch — Not a v2 Feature</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Every platform ships a user feedback mechanism active from the first day of production. Minimum viable feedback: a persistent button accessible from every page that captures a 1–5 star rating and an optional comment, stored in the database with the user's id and the page they were on. Feedback is not a v2 feature — it is the primary data source for v2 prioritisation.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF22</span><span class="rule-title">Feedback Reviewed Weekly — Actions Documented Monthly</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">User feedback is reviewed every week without exception. Monthly, a summary of feedback themes is written and three product improvement actions are documented in the system's GitHub. These actions are prioritised against existing roadmap items using the same 5 gate questions as new features. Feedback that sits unreviewed for more than two weeks is a product failure.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF23</span><span class="rule-title">User Interviews — Minimum 3 Real Users Interviewed Before v2 Planning</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Before any v2 feature planning begins for a platform, a minimum of 3 real users who have used the v1 platform are interviewed. The interviews are recorded and summarised in writing. v2 features that do not appear in user interview themes are deprioritised regardless of how obvious they seem to the builder. What seems obvious to the builder is often irrelevant to the user.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF24</span><span class="rule-title">Quantitative Metrics — Active Users, Completion Rate, Error Rate Tracked Weekly</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Three quantitative metrics are tracked for every platform from launch: (1) Weekly active users (WAU), (2) Primary workflow completion rate (% of users who start the primary flow and complete it), (3) Error rate (% of requests returning 4xx or 5xx). These metrics are reviewed weekly alongside qualitative feedback. A declining completion rate is a product emergency — not a metric to ignore.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF25</span><span class="rule-title">Feedback Drives v2 — Features Not Requested by Users Are Lowest Priority</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">v2 feature prioritisation is driven by user feedback data first, then by strategic product direction, then by technical debt. A feature that no user has requested is not automatically excluded — but it must justify itself against user-requested features for sprint slots. "I think users would want this" is not evidence. "Three users in interviews said they need this" is evidence.</p>
+        </div>
+      </div>
     </main>
   </div>
 </div>
 
-<!-- PART 5: LAUNCH -->
+<!-- PART 5: ROADMAP GOVERNANCE -->
 <hr class="divider"/>
-<div class="section-runner" id="part5">§ Part 5 — Launch (P15-P17)</div>
+<div class="section-runner" id="p5">§ Part 5 — Roadmap Governance (PF26–PF30)</div>
 <div class="part-section">
   <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Rollout Phases</div><p style="font-size:9px;color:var(--muted);line-height:1.5">Internal → 1% → 10% → 50% → 100% (with monitoring after each)</p></div></aside>
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Roadmap Cadence</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">Weekly</span> Sprint tickets reviewed</li>
+          <li><span class="rn">Monthly</span> Feedback analysis + 3 actions</li>
+          <li><span class="rn">Quarterly</span> Constitutional review</li>
+          <li><span class="rn">Per MVP</span> User interviews before v2</li>
+          <li><span class="rn">Annual</span> Full roadmap reset</li>
+        </ul>
+      </div>
+    </aside>
     <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 5 / P15-P17</span><span class="part-title">Launch — Rollout & Release</span><span class="part-desc">1 Critical · 2 High</span></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P15</span><span class="rule-title">Launch Checklist Required</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Every feature launch MUST have a completed checklist: tests passing, docs updated, metrics configured, runbook created, feature flag ready.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P16</span><span class="rule-title">Gradual Rollout Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Features MUST roll out gradually: internal testers → 1% users → 10% → 50% → 100%. Monitor metrics after each step. Rollback immediately if negative impact.</p><div class="callout callout-good"><span class="callout-icon">✅</span><div class="callout-body"><strong>Rollback is not failure.</strong> It is the system working as designed. Celebrate good rollbacks.</div></div></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P17</span><span class="rule-title">Launch Communication</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Features affecting users MUST have launch communication: changelog entry, email/Slack notification (if applicable), and support team briefing.</p></div></div>
-    </main>
-  </div>
-</div>
+      <div class="part-banner dark-b">
+        <span class="part-num">PART 5 / PF26–PF30</span>
+        <span class="part-title">Roadmap Governance</span>
+        <span class="part-desc">3 Critical · 2 High · All Systems</span>
+      </div>
 
-<!-- PART 6: MEASUREMENT -->
-<hr class="divider"/>
-<div class="section-runner" id="part6">§ Part 6 — Measurement (P18-P20)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Metrics Dashboard</div><p style="font-size:9px;color:var(--muted);line-height:1.5">Usage · Engagement · Revenue · Performance · Support tickets</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 6 / P18-P20</span><span class="part-title">Measurement — Success Metrics</span><span class="part-desc">1 Critical · 2 High</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P18</span><span class="rule-title">Success Metrics Defined Before Launch</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Every feature MUST have success metrics defined in the PRD. Metrics MUST be measurable and have targets.</p><div class="code-block"><div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">Example Success Metrics</div></div><pre>- Adoption: 30% of active users use feature in first month
-- Engagement: Average 5 sessions/week per user
-- Conversion: 15% of users upgrade after using feature
-- Performance: Feature loads in <500ms p95
-- Support: <5 support tickets about feature in first month</pre></div></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P19</span><span class="rule-title">Weekly Feature Review</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">New features MUST be reviewed weekly for first month: metrics vs targets, user feedback, technical issues. Document findings.</p></div></div>
-      <div class="rule-card high"><div class="rule-card-head"><span class="rule-num-badge">P20</span><span class="rule-title">User Feedback Collection</span><span class="sev-badge sev-high">High</span></div><div class="rule-card-body"><p class="rule-statement">Every feature MUST have a feedback mechanism (in-app survey, feedback button, or user interview outreach). (Frontend R42).</p></div></div>
-    </main>
-  </div>
-</div>
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF26</span><span class="rule-title">Roadmap Items Are Hypotheses — Validated or Invalidated by User Data</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Every item on the product roadmap is a hypothesis about what users need — not a commitment. Hypotheses are validated by user interviews, feedback data, and usage metrics. A roadmap item that survives 3 months without user validation evidence is removed from the roadmap or promoted to "investigate with users" status. Roadmaps are living documents — not immutable plans.</p>
+        </div>
+      </div>
 
-<!-- PART 7: ITERATION -->
-<hr class="divider"/>
-<div class="section-runner" id="part7">§ Part 7 — Iteration (P21-P22)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Build-Measure-Learn</div><p style="font-size:10px;color:var(--muted);line-height:1.6">The Lean Startup cycle. Every feature is a hypothesis to be tested.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 7 / P21-P22</span><span class="part-title">Iteration — Improve or Kill</span><span class="part-desc">2 Critical</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P21</span><span class="rule-title">Kill Features That Don't Meet Metrics</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">If feature does not meet success metrics after 30 days, it MUST be reviewed. Decision: iterate (with plan), kill (remove flag), or accept (document why). "Just leave it" is NOT an option.</p><div class="callout callout-critical"><span class="callout-icon">⚠️</span><div class="callout-body"><strong>Killing a feature is success.</strong> You learned what not to build. Celebrate the learning, not the code.</div></div></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P22</span><span class="rule-title">Iteration Requires Hypothesis</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Feature iterations MUST have a hypothesis: "We believe [change] will improve [metric] from X to Y." Measure before and after.</p></div></div>
-    </main>
-  </div>
-</div>
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF27</span><span class="rule-title">Scope Creep Is Actively Managed — Any Feature Added Mid-Build Requires Owner Approval</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Adding any feature to a sprint that was not in the sprint plan requires explicit written approval from Maluleke Kurhula Success. "While I'm in this area of code, I'll just add X" is the most common source of scope creep. The constitutional framework exists precisely to prevent this. The cost of mid-sprint scope additions is always higher than it appears — they delay the primary workflow shipping, create untested code paths, and undermine sprint predictability.</p>
+        </div>
+      </div>
 
-<!-- PART 8: DEPRECATION -->
-<hr class="divider"/>
-<div class="section-runner" id="part8">§ Part 8 — Deprecation (P23-P24)</div>
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar"><div class="sidebar-section"><div class="sidebar-label" style="font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:10px;">Sunset Policy</div><p style="font-size:10px;color:var(--muted);line-height:1.6">Features die. Plan for it. Communicate it. Remove it cleanly.</p></div></aside>
-    <main class="col-main">
-      <div class="part-banner"><span class="part-num">PART 8 / P23-P24</span><span class="part-title">Deprecation — Sunset & Remove</span><span class="part-desc">2 Critical</span></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P23</span><span class="rule-title">Deprecation Notice Required</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">Deprecated features MUST have notice: minimum 30 days for internal, 90 days for external/API users (Backend B44). Include migration path or alternative.</p></div></div>
-      <div class="rule-card critical"><div class="rule-card-head"><span class="rule-num-badge">P24</span><span class="rule-title">Feature Removal Cleanup</span><span class="sev-badge sev-critical">Critical</span></div><div class="rule-card-body"><p class="rule-statement">When feature is fully deprecated, remove ALL related code: frontend components, API routes, database columns, feature flags, documentation. No dead code accumulation.</p></div></div>
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">PF28</span><span class="rule-title">Platform Confidentiality — Additional Platforms Protected Until Constitutional Registration</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">Platforms beyond the four flagship systems that are in development or design phase are protected under company confidentiality until they are registered in the Constitutional Order and publicly announced. No details of unannounced platforms are shared externally. This protects competitive positioning and allows design work to proceed without premature market exposure.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF29</span><span class="rule-title">Quarterly Constitutional Review Applies to This Constitution Too</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">This constitution — like all 10 — is reviewed quarterly. The review asks: Are the MVP definitions still accurate? Do any gate questions need updating based on what we've learned? Are the feature group definitions serving us? Constitutional amendments to this document require owner approval and affect all future systems. Past systems' v1 definitions remain locked — only future systems benefit from updates.</p>
+        </div>
+      </div>
+
+      <div class="rule-card high">
+        <div class="rule-card-head"><span class="rule-num-badge">PF30</span><span class="rule-title">This Constitution Is Last — It Can Only Be Applied After All Others Are in Place</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">ALL SYSTEMS</span></div>
+          <p class="rule-statement">The Product & Feature Constitution is Constitution 10 of 10 because product decisions are only meaningful when the team, code, infrastructure, auth, database, testing, and incident response frameworks are already in place. Building a product feature on a system without the other nine constitutions active is building on sand. This constitution is the crown jewel — it governs what gets built — but it sits on the foundation of the other nine.</p>
+          <div class="callout callout-gold">
+            <span class="callout-icon">★</span>
+            <div class="callout-body"><strong>The sky is the limit — KSDRILL SA.</strong> Every platform exists because the gap is real and the people behind it are real. The best systems are not built for recognition — they are built because the absence of them costs real people real things. KSDRILL SA exists to build what should already exist, with the precision, care, and permanence it deserves.</div>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 </div>
 
 <!-- FORBIDDEN PATTERNS -->
 <hr class="divider"/>
-<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (PF01-PF16)</div>
-<div class="part-section" style="padding: 24px 28px;">
-  <div class="callout callout-critical" style="margin-bottom:20px;"><span class="callout-icon">■</span><div class="callout-body"><strong>16 patterns permanently banned.</strong> Each one has caused product failure, wasted engineering time, or user frustration.</div></div>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-    <div><table class="fp-table"><thead><tr><th>Code</th><th>Pattern</th><th>Rule</th></tr></thead><tbody>
-      <tr><td class="fp-code">PF01</td><td>Building features without problem statement</td><td class="fp-ref">P1</td></tr>
-      <tr><td class="fp-code">PF02</td><td>Prioritizing by "who shouts loudest"</td><td class="fp-ref">P6</td></tr>
-      <tr><td class="fp-code">PF03</td><td>No PRD for major features</td><td class="fp-ref">P9</td></tr>
-      <tr><td class="fp-code">PF04</td><td>Untestable acceptance criteria</td><td class="fp-ref">P10</td></tr>
-      <tr><td class="fp-code">PF05</td><td>No feature flag</td><td class="fp-ref">P12</td></tr>
-      <tr><td class="fp-code">PF06</td><td>No tests for features</td><td class="fp-ref">P13</td></tr>
-      <tr><td class="fp-code">PF07</td><td>Big bang launch (100% at once)</td><td class="fp-ref">P16</td></tr>
-      <tr><td class="fp-code">PF08</td><td>No success metrics defined</td><td class="fp-ref">P18</td></tr>
-    </tbody></table></div>
-    <div><table class="fp-table"><thead><tr><th>Code</th><th>Pattern</th><th>Rule</th></tr></thead><tbody>
-      <tr><td class="fp-code">PF09</td><td>No feedback collection mechanism</td><td class="fp-ref">P20</td></tr>
-      <tr><td class="fp-code">PF10</td><td>Leaving dead features "just in case"</td><td class="fp-ref">P21</td></tr>
-      <tr><td class="fp-code">PF11</td><td>Iterating without hypothesis</td><td class="fp-ref">P22</td></tr>
-      <tr><td class="fp-code">PF12</td><td>Deprecating without notice</td><td class="fp-ref">P23</td></tr>
-      <tr><td class="fp-code">PF13</td><td>Leaving deprecated code in codebase</td><td class="fp-ref">P24</td></tr>
-      <tr><td class="fp-code">PF14</td><td>Scope creep (feature solves multiple problems)</td><td class="fp-ref">P4</td></tr>
-      <tr><td class="fp-code">PF15</td><td>No user research for major features</td><td class="fp-ref">P2</td></tr>
-      <tr><td class="fp-code">PF16</td><td>Technical debt not prioritized alongside features</td><td class="fp-ref">P8</td></tr>
-    </tbody></table></div>
+<div class="section-runner" id="forbidden">§ Annex A — Forbidden Patterns (FP01–FP16)</div>
+<div class="forbidden-section">
+  <div class="forbidden-header">⚠ FORBIDDEN PATTERNS — VIOLATION = SCOPE CREEP · CONSTITUTIONAL BREACH</div>
+  <div class="forbidden-grid">
+    <div class="fp-item"><div class="fp-code">FP01 — ADMIN PANEL IN v1</div><div class="fp-desc">Building an admin dashboard, analytics panel, or bulk operations interface as part of v1.</div><div class="fp-fix">✓ Fix: Admin tools are v2 features. v1 = primary user workflow only (PF20).</div></div>
+    <div class="fp-item"><div class="fp-code">FP02 — MORE THAN 6 v1 FEATURES</div><div class="fp-desc">Shipping v1 with more than 6 features — including counting auth separately from the core workflow.</div><div class="fp-fix">✓ Fix: Hard limit of 6 features in v1 — cut the lowest-impact to v2 (PF8).</div></div>
+    <div class="fp-item"><div class="fp-code">FP03 — FEATURE WITHOUT 5 GATE QUESTIONS</div><div class="fp-desc">Adding a feature to a sprint without answering and passing all 5 gate questions.</div><div class="fp-fix">✓ Fix: All 5 gates must pass before sprint assignment (PF7).</div></div>
+    <div class="fp-item"><div class="fp-code">FP04 — MID-SPRINT SCOPE ADDITION WITHOUT APPROVAL</div><div class="fp-desc">Adding any feature to an active sprint without written approval from the owner.</div><div class="fp-fix">✓ Fix: Owner approval required in writing before any mid-sprint addition (PF27).</div></div>
+    <div class="fp-item"><div class="fp-code">FP05 — PARALLEL PLATFORM DEVELOPMENT</div><div class="fp-desc">Starting development of a second platform before the first platform's v1 has shipped.</div><div class="fp-fix">✓ Fix: Sequential build — one system fully before the next (PF3, T1).</div></div>
+    <div class="fp-item"><div class="fp-code">FP06 — BUILDING BEFORE DESIGN IS LOCKED</div><div class="fp-desc">Writing code for a system before its architecture, database schema, and interface design are locked.</div><div class="fp-fix">✓ Fix: Design-first — full architecture locked before first line of code (PF4).</div></div>
+    <div class="fp-item"><div class="fp-code">FP07 — NO FEEDBACK MECHANISM AT LAUNCH</div><div class="fp-desc">Launching a platform to production without a live user feedback mechanism collecting ratings.</div><div class="fp-fix">✓ Fix: Feedback button with 1–5 rating active from day 1 (PF21).</div></div>
+    <div class="fp-item"><div class="fp-code">FP08 — v2 WITHOUT USER INTERVIEWS</div><div class="fp-desc">Beginning v2 feature planning without completing at least 3 real user interviews on the v1 platform.</div><div class="fp-fix">✓ Fix: 3 user interviews required before v2 planning begins (PF23).</div></div>
+    <div class="fp-item"><div class="fp-code">FP09 — FRAMEWORK CHANGE MID-BUILD</div><div class="fp-desc">Proposing to add or switch a frontend/backend framework mid-build because a feature "needs it."</div><div class="fp-fix">✓ Fix: Stack is locked. Features fit the stack — not the reverse (PF12).</div></div>
+    <div class="fp-item"><div class="fp-code">FP10 — FEATURE WITHOUT USER STORY</div><div class="fp-desc">Adding a feature to a sprint without a plain-language user story in the format "As a [user], I need to..."</div><div class="fp-fix">✓ Fix: Every feature has a one-sentence user story before approval (PF13).</div></div>
+    <div class="fp-item"><div class="fp-code">FP11 — FINANCIAL FEATURE WITHOUT INTEGRITY CHECK</div><div class="fp-desc">Shipping a Reserve Bank feature without verifying financial data integrity in staging (sum deposits == balance).</div><div class="fp-fix">✓ Fix: Financial integrity check required before every Reserve Bank deploy (PF16).</div></div>
+    <div class="fp-item"><div class="fp-code">FP12 — PRODUCTION LAUNCH WITHOUT STAGING VALIDATION</div><div class="fp-desc">Launching any platform to production before 3 real users validate the primary workflow in staging.</div><div class="fp-fix">✓ Fix: 3 real-user staging validations required before production (PF19).</div></div>
+    <div class="fp-item"><div class="fp-code">FP13 — ROADMAP ITEM WITHOUT EXPIRY</div><div class="fp-desc">Keeping a roadmap item with no user validation evidence for more than 3 months without action.</div><div class="fp-fix">✓ Fix: Unvalidated roadmap items are removed or moved to "investigate" (PF26).</div></div>
+    <div class="fp-item"><div class="fp-code">FP14 — FEATURE FLAG HARDCODED</div><div class="fp-desc">Hardcoding a feature flag value in code instead of storing it in the FeatureFlag PostgreSQL table.</div><div class="fp-fix">✓ Fix: All flags in FeatureFlag table with default false (PF10, B42).</div></div>
+    <div class="fp-item"><div class="fp-code">FP15 — UNANNOUNCED PLATFORM DISCLOSED</div><div class="fp-desc">Sharing details of an unregistered, unannounced KSDRILL SA platform with external parties.</div><div class="fp-fix">✓ Fix: Confidentiality until Constitutional Order registration and public announcement (PF28).</div></div>
+    <div class="fp-item"><div class="fp-code">FP16 — GROUP 3/4 FEATURES IN v1</div><div class="fp-desc">Including Group 3 (secondary features) or Group 4 (nice-to-have) features in the v1 sprint plan.</div><div class="fp-fix">✓ Fix: v1 = Groups 1+2 only. Groups 3+4 are deferred to v2+ (PF9).</div></div>
   </div>
 </div>
 
-<!-- METRICS SHOWCASE -->
+<!-- LOCK FOOTER -->
 <hr class="divider-double"/>
-<div class="section-runner">§ The Complete System — 311 Total Rules</div>
-<div class="part-section" style="padding: 28px 32px; background: linear-gradient(135deg, var(--paper2), var(--paper));">
-  <div class="metrics-showcase">
-    <div class="metric-card"><div class="metric-number">66</div><div class="metric-label">Frontend v16.0</div></div>
-    <div class="metric-card"><div class="metric-number">61</div><div class="metric-label">Backend v2.2</div></div>
-    <div class="metric-card"><div class="metric-number">38</div><div class="metric-label">Database v1.0</div></div>
-    <div class="metric-card"><div class="metric-number">44</div><div class="metric-label">Infrastructure v1.1</div></div>
-    <div class="metric-card"><div class="metric-number">34</div><div class="metric-label">Testing v1.0</div></div>
-    <div class="metric-card"><div class="metric-number">40</div><div class="metric-label">Incident Response v1.1</div></div>
-    <div class="metric-card"><div class="metric-number">24</div><div class="metric-label">Product & Feature v1.0</div></div>
-    <div class="metric-card"><div class="metric-number">311</div><div class="metric-label">TOTAL SYSTEM RULES</div></div>
-  </div>
-</div>
-
-<!-- FINAL LOCK STATEMENT -->
-<div class="lock-section">
+<div class="lock-section" id="lock">
   <div class="lock-banner">
-    <div class="lock-title-main">Product & Feature Constitution v1.0</div>
-    <div class="lock-sub">The Final Constitution — Complete System Locked</div>
-    <p style="font-family:var(--serif);font-style:italic;font-size:18px;margin-bottom:0;">"Build the right thing. Build the thing right. Kill what doesn't work."</p>
+    <div class="lock-title-main">Product &amp; Feature Constitution v3.0</div>
+    <div class="lock-sub">The Crown Jewel — Constitution 10 of 10 — Final Lock · 2026-04-14 — Next Review 2026-07-07</div>
+    <p style="font-family:var(--serif);font-style:italic;font-size:18px;color:rgba(255,240,180,.8);">"Build what solves the problem. Nothing more. Nothing less."</p>
     <div class="lock-stats">
-      <div class="ls-item"><span class="ls-num">24</span><span class="ls-label">Total Rules</span></div>
-      <div class="ls-item"><span class="ls-num">12</span><span class="ls-label">Critical</span></div>
-      <div class="ls-item"><span class="ls-num">8</span><span class="ls-label">High</span></div>
-      <div class="ls-item"><span class="ls-num">4</span><span class="ls-label">Medium</span></div>
+      <div class="ls-item"><span class="ls-num">30</span><span class="ls-label">Total Rules</span></div>
+      <div class="ls-item"><span class="ls-num">14</span><span class="ls-label">Critical</span></div>
+      <div class="ls-item"><span class="ls-num">12</span><span class="ls-label">High Priority</span></div>
       <div class="ls-item"><span class="ls-num">16</span><span class="ls-label">Forbidden</span></div>
-      <div class="ls-item"><span class="ls-num">311</span><span class="ls-label">System Total</span></div>
+      <div class="ls-item"><span class="ls-num">4</span><span class="ls-label">Systems</span></div>
+      <div class="ls-item"><span class="ls-num">355</span><span class="ls-label">System Total</span></div>
     </div>
   </div>
-
   <div class="lock-body">
     <div class="lock-col">
-      <div class="lock-col-title">Parts Breakdown (v1.0)</div>
+      <div class="lock-col-title">Parts Breakdown</div>
       <div class="parts-breakdown">
-        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">Ideation (P1-P4)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">Prioritization (P5-P8)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">Definition (P9-P11)</span><span class="pb-rules">3 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">Development (P12-P14)</span><span class="pb-rules">3 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Launch (P15-P17)</span><span class="pb-rules">3 rules</span><span class="pb-crit">1 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P6</span><span class="pb-name">Measurement (P18-P20)</span><span class="pb-rules">3 rules</span><span class="pb-crit">1 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P7</span><span class="pb-name">Iteration (P21-P22)</span><span class="pb-rules">2 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P8</span><span class="pb-name">Deprecation (P23-P24)</span><span class="pb-rules">2 rules</span><span class="pb-crit">2 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">Product Vision (PF1–PF6)</span><span class="pb-rules">6 rules</span><span class="pb-crit">4 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">Feature Governance (PF7–PF13)</span><span class="pb-rules">7 rules</span><span class="pb-crit">4 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">MVP Definitions (PF14–PF20)</span><span class="pb-rules">7 rules</span><span class="pb-crit">3 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">User Feedback (PF21–PF25)</span><span class="pb-rules">5 rules</span><span class="pb-crit">3 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Roadmap Governance (PF26–PF30)</span><span class="pb-rules">5 rules</span><span class="pb-crit">3 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">ANNEX</span><span class="pb-name">Forbidden Patterns (FP01–FP16)</span><span class="pb-rules">16 patterns</span><span class="pb-crit">ALL CRITICAL</span></div>
       </div>
     </div>
     <div class="lock-col">
-      <div class="lock-col-title">The Complete Constitution System</div>
-      <div class="parts-breakdown">
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Frontend Constitution v16.0 — 66 rules</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Backend Constitution v2.2 — 61 rules</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Database Constitution v1.0 — 38 rules</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Infrastructure Constitution v1.1 — 44 rules</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Testing Constitution v1.0 — 34 rules</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Incident Response Constitution v1.1 — 40 rules</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Code Quality Constitution v2.0 — 39 rules</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Team & Process Constitution v1.1 — 24 rules</span></div>
-        <div class="pb-item"><span class="pb-part">✅</span><span class="pb-name">Product & Feature Constitution v1.0 — 24 rules</span></div>
-        <div class="pb-item" style="background: linear-gradient(135deg, var(--gold3), var(--gold2));"><span class="pb-part">🎯</span><span class="pb-name" style="font-weight:700;">TOTAL SYSTEM — 311 RULES — COMPLETE</span></div>
+      <div class="lock-col-title">v3.0 Changes from v1.0</div>
+      <div style="font-size:11.5px;color:var(--muted);line-height:2;">
+        + Flagship system cards with full MVP definitions<br>
+        + PF15: FundsLink v1 done criteria (80% AI match rate)<br>
+        + PF16: Reserve Bank v1 done criteria (financial integrity check)<br>
+        + PF17: Maphophe v1 done criteria (PWA offline requirement)<br>
+        + PF18: SyncUp v1 done criteria (SEO-indexed profiles)<br>
+        + PF11: Stack impact assessment by stack (NJ vs Angular)<br>
+        + PF5: African context as design constraint formalised<br>
+        + PF6: GrowthCore / KSDRILL SA separation rule<br>
+        + PF28: Platform confidentiality rule<br>
+        + 5 Gate Questions visual grid added<br>
+        + System Total corrected: 311 → <strong>355</strong><br>
+        + Forbidden patterns: 10 → 16<br>
+        + Lock date: 2026-04-08 → 2026-04-14
       </div>
+      <div class="lock-col-title" style="margin-top:16px;">Official Signatures</div>
+      <div class="sig-line"><span class="sig-role">Product Owner — Maluleke Kurhula Success · KSDRILL SA</span><div class="sig-name-line"></div><div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div></div>
     </div>
   </div>
-
   <div class="lock-final">
-    <div class="lock-final-left">ALL 9 CONSTITUTIONS LOCKED · 2026-04-08</div>
-    <div class="lock-final-motto">"No confusion. No over-engineering. No excuses. Just execution."</div>
-    <div class="lock-final-right">311 RULES · READY TO BUILD</div>
+    <div class="lock-final-left">THE CROWN JEWEL · CONSTITUTION 10 OF 10<br/>THE SKY IS THE LIMIT — KSDRILL SA</div>
+    <div class="lock-final-motto">"Build what should already exist, with the precision, care, and permanence it deserves."</div>
+    <div class="lock-final-right">v3.0 LOCKED · 2026-04-14<br/>Product &amp; Feature · 30 rules<br/>System Total: 355 rules · 10/10 Constitutions</div>
   </div>
 </div>
 

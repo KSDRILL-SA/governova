@@ -3,25 +3,28 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Backend Constitution v2.2 — LOCKED</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<title>Backend Constitution v3.0 — KSDRILL SA · LOCKED</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --ink:    #0e0e0e;
-  --paper:  #f0f4f8;
-  --paper2: #e4ecf4;
-  --rule:   #b0c4d8;
-  --blue:   #1a3a5c;
-  --blue2:  #1e5fa8;
-  --cyan:   #0891b2;
-  --red:    #9b1c1c;
-  --orange: #c05a00;
-  --gold:   #b8860b;
-  --green:  #1a5c2e;
-  --muted:  #4a5a6a;
-  --mono:   'IBM Plex Mono', monospace;
-  --serif:  'Playfair Display', serif;
-  --sans:   'IBM Plex Sans', sans-serif;
+  --ink:      #0e0e0e;
+  --paper:    #f0f4f8;
+  --paper2:   #e2eaf2;
+  --paper3:   #d6e0ec;
+  --rule:     #b0bfce;
+  --gold:     #b8860b;
+  --gold2:    #d4a017;
+  --amber:    #e8a020;
+  --red:      #9b1c1c;
+  --orange:   #c05a00;
+  --green:    #1a5c2e;
+  --blue:     #1a3a6e;
+  --cyan:     #0d6e6e;
+  --ang-red:  #9b1c1c;
+  --muted:    #4a5a6a;
+  --mono:     'IBM Plex Mono', monospace;
+  --serif:    'Playfair Display', serif;
+  --sans:     'IBM Plex Sans', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -50,7 +53,7 @@ body::before {
     linear-gradient(var(--rule) 1px, transparent 1px),
     linear-gradient(90deg, var(--rule) 1px, transparent 1px);
   background-size: 48px 48px;
-  pointer-events: none; z-index: 0; opacity: .1;
+  pointer-events: none; z-index: 0; opacity: .10;
 }
 
 .page { max-width: 1100px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
@@ -59,545 +62,245 @@ body::before {
 .masthead {
   border-top: 6px solid var(--blue);
   border-bottom: 3px double var(--blue);
-  padding: 0;
+  margin-bottom: 0;
 }
-
 .masthead-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--rule);
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: .08em;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--blue);
+  font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .08em;
 }
-
 .masthead-main {
-  padding: 40px 0 32px;
-  text-align: center;
-  border-bottom: 1px solid var(--rule);
+  padding: 40px 0 28px; text-align: center; border-bottom: 1px solid var(--blue);
 }
-
 .masthead-eyebrow {
-  display: inline-block;
-  background: var(--blue);
-  color: var(--paper);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .15em;
-  padding: 4px 14px;
-  margin-bottom: 14px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .25em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
 }
-
 .masthead-title {
-  font-family: var(--serif);
-  font-size: clamp(42px, 6vw, 80px);
-  font-weight: 900;
-  line-height: 1.0;
-  letter-spacing: -.02em;
-  color: var(--blue);
-  margin-bottom: 8px;
+  font-family: var(--serif); font-size: clamp(42px, 6vw, 80px);
+  font-weight: 900; line-height: 1.0; letter-spacing: -.02em; margin-bottom: 8px;
 }
-
 .masthead-tagline {
-  font-family: var(--serif);
-  font-size: 17px;
-  font-style: italic;
-  color: var(--muted);
-  margin-bottom: 18px;
+  font-family: var(--serif); font-size: 18px; font-style: italic;
+  color: var(--muted); margin-bottom: 18px;
 }
-
 .masthead-meta {
-  display: flex;
-  justify-content: center;
-  gap: 36px;
-  flex-wrap: wrap;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  display: flex; justify-content: center; gap: 36px; flex-wrap: wrap;
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  letter-spacing: .1em; text-transform: uppercase;
 }
-.masthead-meta strong { color: var(--blue); }
-
+.masthead-meta strong { color: var(--ink); }
 .masthead-bottom {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  border-top: 1px solid var(--rule);
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  border-top: 1px solid var(--blue);
 }
-
 .stat-box {
-  padding: 16px 12px;
-  border-right: 1px solid var(--rule);
-  text-align: center;
+  padding: 16px 12px; border-right: 1px solid var(--blue); text-align: center;
 }
 .stat-box:last-child { border-right: none; }
-
 .stat-num {
-  font-family: var(--serif);
-  font-size: 32px;
-  font-weight: 900;
-  line-height: 1;
-  color: var(--blue2);
-  display: block;
+  font-family: var(--serif); font-size: 34px; font-weight: 900;
+  line-height: 1; color: var(--cyan); display: block;
 }
 .stat-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-/* ── SECTION RUNNER ── */
-.section-runner {
-  background: var(--blue);
-  color: var(--paper);
-  padding: 6px 0;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  text-align: center;
+  font-family: var(--mono); font-size: 9px; text-transform: uppercase;
+  letter-spacing: .12em; color: var(--muted); margin-top: 2px;
 }
 
 /* ── PART NAV ── */
 .part-nav {
-  display: flex;
-  border-top: 2px solid var(--blue);
-  border-bottom: 2px solid var(--blue);
+  display: flex; overflow-x: auto; border-bottom: 2px solid var(--blue);
   background: var(--paper2);
-  overflow-x: auto;
 }
-
 .pn-item {
-  flex: 1;
-  min-width: 90px;
-  padding: 10px 12px;
-  border-right: 1px solid var(--rule);
-  text-decoration: none;
-  color: var(--muted);
-  transition: background .15s;
+  display: flex; flex-direction: column; padding: 10px 16px;
+  border-right: 1px solid var(--rule); text-decoration: none; color: var(--ink);
+  flex-shrink: 0;
 }
-.pn-item:last-child { border-right: none; }
-.pn-item:hover { background: var(--blue); color: var(--paper); }
-.pn-num  { font-family: var(--mono); font-size: 9px; color: var(--cyan); letter-spacing: .08em; display: block; }
-.pn-name { font-family: var(--serif); font-size: 11px; font-weight: 700; line-height: 1.3; display: block; margin-top: 1px; }
-.pn-count { font-family: var(--mono); font-size: 8px; color: var(--muted); display: block; margin-top: 1px; }
+.pn-item:hover { background: var(--paper); }
+.pn-num  { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: .1em; }
+.pn-name { font-family: var(--serif); font-size: 11px; font-weight: 700; }
+.pn-count { font-family: var(--mono); font-size: 9px; color: var(--cyan); }
+
+/* ── SECTION RUNNER ── */
+.section-runner {
+  background: var(--blue); color: var(--paper);
+  padding: 6px 0; font-family: var(--mono); font-size: 10px;
+  letter-spacing: .2em; text-transform: uppercase; text-align: center;
+}
 
 /* ── LAYOUT ── */
 .col-layout {
-  display: grid;
-  grid-template-columns: 230px 1fr;
-  gap: 0;
-  border-left: 1px solid var(--rule);
-  border-right: 1px solid var(--rule);
+  display: grid; grid-template-columns: 240px 1fr; gap: 0;
+  border-left: 1px solid var(--blue); border-right: 1px solid var(--blue);
 }
-
-.col-sidebar {
-  border-right: 1px solid var(--rule);
-  padding: 22px 18px;
-  background: var(--paper2);
-}
-
-.col-main { padding: 24px 26px; }
-
-.part-section {
-  border-left: 1px solid var(--rule);
-  border-right: 1px solid var(--rule);
-}
+.col-sidebar { border-right: 1px solid var(--rule); padding: 24px 20px; background: var(--paper2); }
+.col-main { padding: 24px 28px; }
+.part-section { border-left: 1px solid var(--blue); border-right: 1px solid var(--blue); }
 
 /* ── PART BANNER ── */
 .part-banner {
-  background: var(--blue);
-  color: var(--paper);
-  padding: 18px 26px;
-  margin: 0 -26px 24px;
-  display: flex;
-  align-items: baseline;
-  gap: 18px;
+  background: var(--blue); color: var(--paper);
+  padding: 20px 28px; margin: 0 -28px 28px;
+  display: flex; align-items: baseline; gap: 20px;
 }
-.part-num { font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--cyan); flex-shrink: 0; }
-.part-title { font-family: var(--serif); font-size: 22px; font-weight: 900; line-height: 1.1; }
-.part-desc { font-size: 12px; color: rgba(240,244,248,.6); margin-left: auto; text-align: right; max-width: 220px; font-style: italic; }
+.part-num  { font-family: var(--mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--cyan); flex-shrink: 0; }
+.part-title { font-family: var(--serif); font-size: 24px; font-weight: 900; line-height: 1.1; }
+.part-desc  { font-size: 12px; color: rgba(240,244,248,.6); margin-left: auto; text-align: right; max-width: 260px; font-style: italic; }
 
 /* ── RULE CARD ── */
 .rule-card {
-  border: 1px solid var(--rule);
-  border-left: 4px solid var(--blue);
-  background: #fff;
-  margin-bottom: 14px;
-  overflow: hidden;
+  border: 1px solid var(--rule); border-left: 4px solid var(--blue);
+  background: #fff; margin-bottom: 16px; overflow: hidden;
 }
 .rule-card.critical { border-left-color: var(--red); }
-.rule-card.high     { border-left-color: var(--cyan); }
+.rule-card.high     { border-left-color: var(--orange); }
 .rule-card.medium   { border-left-color: var(--gold); }
+.rule-card.new      { border-left-color: var(--green); }
 
 .rule-card-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 12px 16px 9px;
-  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; padding: 14px 18px 10px; border-bottom: 1px solid var(--rule);
   background: var(--paper2);
 }
-
-.rule-num-badge {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  color: var(--muted);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.rule-title {
-  font-family: var(--serif);
-  font-size: 14px;
-  font-weight: 700;
-  flex: 1;
-  line-height: 1.3;
-}
-
-.sev-badge {
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: 3px 7px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
+.rule-num-badge { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .1em; color: var(--muted); flex-shrink: 0; margin-top: 2px; }
+.rule-title     { font-family: var(--serif); font-size: 15px; font-weight: 700; flex: 1; line-height: 1.3; }
+.sev-badge      { font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; flex-shrink: 0; }
 .sev-critical { background: var(--red);    color: #fff; }
-.sev-high     { background: var(--blue2);  color: #fff; }
+.sev-high     { background: var(--orange); color: #fff; }
 .sev-medium   { background: var(--gold);   color: #fff; }
+.sev-new      { background: var(--green);  color: #fff; }
 
-.rule-card-body { padding: 13px 16px; }
+.rule-card-body { padding: 14px 18px; }
+.rule-statement { font-size: 13.5px; line-height: 1.6; margin-bottom: 12px; font-weight: 500; }
 
-.rule-statement {
-  font-size: 13px;
-  line-height: 1.6;
-  margin-bottom: 11px;
-  font-weight: 500;
-}
+/* ── STACK SCOPE ── */
+.scope-bar { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.scope-chip { font-family: var(--mono); font-size: 8px; letter-spacing: .08em; padding: 2px 8px; border-radius: 2px; font-weight: 700; }
+.scope-both    { background: var(--blue);    color: #fff; }
+.scope-nextjs  { background: #0e0e0e;        color: #fff; }
+.scope-angular { background: var(--ang-red); color: #fff; }
+.scope-new     { background: var(--green);   color: #fff; }
 
-.rule-meta-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 7px;
-  margin-top: 9px;
-}
+/* ── STACK DIFF ── */
+.stack-diff { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--ink); margin-top: 10px; overflow: hidden; }
+.stack-diff-col { }
+.stack-diff-head { padding: 6px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+.stack-diff-head.nj  { background: #0e0e0e; color: var(--paper); }
+.stack-diff-head.ang { background: var(--ang-red); color: #fff; }
+.stack-diff-body { padding: 10px 12px; font-size: 11.5px; color: var(--muted); line-height: 1.8; background: var(--paper2); border-left: 1px solid var(--rule); }
+.stack-diff-col:first-child .stack-diff-body { border-left: none; }
 
-.rule-meta-item {
-  background: var(--paper2);
-  border: 1px solid var(--rule);
-  padding: 7px 10px;
-}
-.rule-meta-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  color: var(--muted);
-  display: block;
-  margin-bottom: 2px;
-}
+/* ── RULE META ── */
+.rule-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-top: 10px; }
+.rule-meta-item { background: var(--paper2); border: 1px solid var(--rule); padding: 7px 10px; }
+.rule-meta-label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); display: block; margin-bottom: 2px; }
 .rule-meta-val { font-size: 12px; line-height: 1.4; }
 
-/* ── CODE ── */
-.code-block {
-  background: #111827;
-  border: 1px solid var(--blue);
-  margin: 10px 0 0;
-  overflow: hidden;
-}
-.code-bar {
-  background: #0a0f1a;
-  padding: 5px 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #1e3a5c;
-}
-.code-filename { font-family: var(--mono); font-size: 10px; color: var(--cyan); letter-spacing: .04em; }
+/* ── CODE BLOCK ── */
+.code-block { background: #1a1a1a; border: 1px solid var(--ink); margin: 12px 0 0; overflow: hidden; }
+.code-bar { background: #0a0a0a; padding: 6px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; }
+.code-filename { font-family: var(--mono); font-size: 10px; color: var(--amber); letter-spacing: .05em; }
 .code-dots { display: flex; gap: 5px; }
 .cd { width: 9px; height: 9px; border-radius: 50%; }
 .cd-r { background: #f87171; } .cd-y { background: #fbbf24; } .cd-g { background: #34d399; }
-
-.code-block pre {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  line-height: 1.75;
-  padding: 14px 16px;
-  color: #d4d4d4;
-  overflow-x: auto;
-  white-space: pre;
-}
-.ck  { color: #c678dd; }
-.cs  { color: #98c379; }
-.cc  { color: #5c6370; font-style: italic; }
-.ct  { color: #e5c07b; }
-.cf  { color: #61afef; }
-.cn  { color: #d19a66; }
+.code-block pre { font-family: var(--mono); font-size: 12px; line-height: 1.75; padding: 16px 18px; color: #d4d4d4; overflow-x: auto; white-space: pre; }
+.ck { color: #c678dd; } .cs { color: #98c379; } .cc { color: #5c6370; font-style:italic; }
+.ct { color: #e5c07b; } .cf { color: #61afef; } .cn { color: #d19a66; }
 
 /* ── COMPARE ── */
-.compare-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 10px;
-}
+.compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
 .compare-block { overflow: hidden; border: 1px solid var(--rule); }
-.compare-label {
-  padding: 5px 12px;
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
+.compare-label { padding: 5px 12px; font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .compare-bad  .compare-label { background: #fef2f2; color: var(--red);   border-bottom: 1px solid #fca5a5; }
 .compare-good .compare-label { background: #f0fdf4; color: var(--green); border-bottom: 1px solid #86efac; }
-.compare-block pre {
-  font-family: var(--mono); font-size: 11px; line-height: 1.65;
-  padding: 9px 11px; background: #111827; color: #d4d4d4; white-space: pre; overflow-x: auto;
-}
-
-/* ── SIDEBAR ── */
-.sidebar-section { margin-bottom: 22px; }
-.sidebar-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .15em;
-  color: var(--muted);
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 4px;
-  margin-bottom: 9px;
-}
-.sb-rule-list { list-style: none; }
-.sb-rule-list li {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  padding: 3px 0;
-  border-bottom: 1px dotted var(--rule);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.sb-rule-list li .rn { color: var(--cyan); font-weight: 700; }
-
-/* ── PILL ── */
-.pill {
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .06em;
-  padding: 2px 6px;
-  border-radius: 2px;
-}
-.pill-r { background: var(--red);   color: #fff; }
-.pill-b { background: var(--blue2); color: #fff; }
-.pill-c { background: var(--cyan);  color: #fff; }
-.pill-y { background: var(--gold);  color: #fff; }
-.pill-g { background: var(--green); color: #fff; }
-.pill-k { background: var(--blue);  color: var(--paper); }
-
-/* ── TABLES ── */
-.const-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 14px;
-  font-size: 12px;
-}
-.const-table thead tr { background: var(--blue); color: var(--paper); }
-.const-table th {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  padding: 7px 11px;
-  text-align: left;
-  font-weight: 500;
-}
-.const-table td { padding: 8px 11px; border-bottom: 1px solid var(--rule); vertical-align: top; }
-.const-table tbody tr:nth-child(even) { background: var(--paper2); }
-
-/* ── FORBIDDEN TABLE ── */
-.fp-table { width: 100%; border-collapse: collapse; font-size: 12px; border: 2px solid var(--blue); }
-.fp-table thead tr { background: var(--red); }
-.fp-table th {
-  font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
-  padding: 7px 12px; color: #fff; text-align: left;
-}
-.fp-table td { padding: 8px 12px; border-bottom: 1px solid var(--rule); }
-.fp-table tbody tr:hover { background: #fef2f2; }
-.fp-code { font-family: var(--mono); font-size: 10px; color: var(--red); font-weight: 700; }
-.fp-ref  { font-family: var(--mono); font-size: 10px; color: var(--cyan); }
-
-/* ── GATE GRID ── */
-.gate-grid { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
-.gate-item {
-  display: flex; gap: 12px; align-items: flex-start;
-  border: 1px solid var(--rule); background: #fff; padding: 10px 13px;
-}
-.gate-num {
-  font-family: var(--mono); font-size: 10px; font-weight: 700;
-  color: var(--paper); background: var(--blue); padding: 3px 7px; flex-shrink: 0;
-}
-.gate-text { font-size: 12.5px; line-height: 1.5; flex: 1; }
-.gate-outcome { font-family: var(--mono); font-size: 10px; color: var(--red); flex-shrink: 0; margin-top: 1px; }
+.compare-block pre { font-family: var(--mono); font-size: 11px; line-height: 1.7; padding: 10px 12px; background: #1a1a1a; color: #d4d4d4; white-space: pre; overflow-x: auto; }
 
 /* ── CALLOUT ── */
-.callout {
-  display: flex; gap: 11px; padding: 11px 13px; margin: 10px 0;
-  font-size: 12.5px; border-left: 4px solid; background: var(--paper2);
-}
-.callout-critical { border-color: var(--red);   }
-.callout-info     { border-color: var(--cyan);  }
-.callout-warn     { border-color: var(--gold);  }
-.callout-good     { border-color: var(--green); }
-.callout-icon { font-family: var(--mono); font-size: 11px; flex-shrink: 0; font-weight: 700; margin-top: 1px; }
-.callout-body { line-height: 1.6; }
+.callout { display: flex; gap: 12px; padding: 10px 14px; margin: 10px 0; border: 1px solid var(--rule); }
+.callout-icon { font-family: var(--mono); font-size: 11px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.callout-info     { background: #eff6ff; border-color: #93c5fd; }
+.callout-info     .callout-icon { background: #3b82f6; color: #fff; }
+.callout-critical { background: #fff1f2; border-color: #fca5a5; }
+.callout-critical .callout-icon { background: var(--red); color: #fff; }
+.callout-warning  { background: #fff7ed; border-color: #fdba74; }
+.callout-warning  .callout-icon { background: var(--orange); color: #fff; }
+.callout-new      { background: #f0fdf4; border-color: #86efac; }
+.callout-new      .callout-icon { background: var(--green); color: #fff; }
+.callout-body { font-size: 12px; line-height: 1.6; color: var(--muted); }
 .callout-body strong { color: var(--ink); }
 
-/* ── CHECKLIST ── */
-.checklist-section { border: 1px solid var(--blue); margin-bottom: 18px; overflow: hidden; }
-.cl-header {
-  background: var(--blue); color: var(--paper); padding: 9px 15px;
-  font-family: var(--serif); font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 10px;
-}
-.cl-tag { font-family: var(--mono); font-size: 9px; background: var(--cyan); color: var(--ink); padding: 2px 7px; letter-spacing: .1em; text-transform: uppercase; }
-.cl-group { border-bottom: 1px solid var(--rule); }
-.cl-group-title {
-  font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .14em;
-  color: var(--muted); background: var(--paper2); padding: 5px 15px; border-bottom: 1px solid var(--rule);
-}
-.cl-item {
-  display: flex; align-items: flex-start; gap: 11px; padding: 7px 15px;
-  border-bottom: 1px dotted var(--rule); font-size: 12px;
-}
-.cl-item:last-child { border-bottom: none; }
-.cl-box { width: 13px; height: 13px; border: 1.5px solid var(--blue); flex-shrink: 0; margin-top: 1px; }
-.cl-ref { font-family: var(--mono); font-size: 10px; color: var(--cyan); margin-left: auto; flex-shrink: 0; }
+/* ── SIDEBAR ── */
+.sidebar-section { margin-bottom: 24px; }
+.sidebar-label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 8px; border-bottom: 1px solid var(--rule); padding-bottom: 4px; }
+.sb-rule-list { list-style: none; }
+.sb-rule-list li { padding: 4px 0; border-bottom: 1px dotted var(--rule); font-size: 11.5px; color: var(--muted); display: flex; gap: 6px; }
+.rn { font-family: var(--mono); font-size: 9px; color: var(--cyan); font-weight: 700; flex-shrink: 0; }
+
+/* ── TABLES ── */
+.const-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 11px; border: 1.5px solid var(--rule); margin-top: 10px; }
+.const-table th { background: var(--paper2); padding: 8px 12px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; text-align: left; border-bottom: 1.5px solid var(--blue); }
+.const-table td { padding: 7px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.const-table tr:last-child td { border-bottom: none; }
+.const-table tr:nth-child(even) td { background: var(--paper2); }
 
 /* ── STRUCTURE MAP ── */
-.structure-map {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0;
-  border: 2px solid var(--blue);
-  margin-bottom: 14px;
-}
-.sm-col { border-right: 1px solid var(--rule); overflow: hidden; }
+.structure-map { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--blue); margin-bottom: 0; }
+.sm-col { border-right: 1px solid var(--rule); }
 .sm-col:last-child { border-right: none; }
-.sm-head { background: var(--blue); color: var(--paper); padding: 9px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
-.sm-num { color: var(--cyan); margin-right: 5px; }
-.sm-items { padding: 9px 12px; }
-.sm-item {
-  font-size: 11px; padding: 3px 0; border-bottom: 1px dotted var(--rule); color: var(--muted);
-  display: flex; align-items: baseline; gap: 5px;
-}
-.sm-item::before { content: '→'; color: var(--cyan); font-family: var(--mono); font-size: 9px; flex-shrink: 0; }
+.sm-head { background: var(--paper2); padding: 8px 12px; font-family: var(--serif); font-size: 11px; font-weight: 700; border-bottom: 1px solid var(--rule); }
+.sm-num { font-family: var(--mono); font-size: 9px; color: var(--cyan); margin-right: 5px; }
+.sm-items { padding: 8px 12px; }
+.sm-item { font-size: 11px; padding: 3px 0; border-bottom: 1px dotted var(--rule); color: var(--muted); display: flex; align-items: baseline; gap: 5px; }
+.sm-item::before { content: '→'; color: var(--gold); font-family: var(--mono); font-size: 9px; flex-shrink: 0; }
 
-/* ── DIVIDERS ── */
-.divider        { border: none; border-top: 2px solid var(--blue); margin: 0; }
-.divider-double { border: none; border-top: 3px double var(--blue); margin: 0; }
+/* ── FORBIDDEN ── */
+.forbidden-section { border: 2px solid var(--red); overflow: hidden; }
+.forbidden-header { background: var(--red); color: #fff; padding: 10px 20px; font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; }
+.forbidden-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.fp-item { padding: 12px 16px; border-right: 1px solid rgba(155,28,28,.2); border-bottom: 1px solid rgba(155,28,28,.2); font-family: var(--mono); font-size: 10.5px; }
+.fp-item:nth-child(even) { border-right: none; }
+.fp-code { color: var(--red); font-weight: 700; margin-bottom: 3px; font-size: 10px; }
+.fp-desc { color: var(--muted); font-size: 10px; line-height: 1.5; }
+.fp-fix  { color: var(--green); font-size: 9px; margin-top: 3px; }
 
-/* ── JSON BLOCK ── */
-.json-block {
-  background: #111827; border: 1px solid var(--blue); margin: 10px 0;
-  font-family: var(--mono); font-size: 11.5px; line-height: 1.75;
-  padding: 14px 16px; color: #d4d4d4; overflow-x: auto; white-space: pre;
-}
-.jk { color: #9ecbff; }
-.jv { color: #98c379; }
-.jn { color: #d19a66; }
-.jb { color: #c678dd; }
-
-/* ── ROLE MATRIX ── */
-.matrix-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-top: 10px; }
-.matrix-table th { background: var(--blue); color: var(--paper); font-family: var(--mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; padding: 7px 10px; text-align: center; }
-.matrix-table th:first-child { text-align: left; }
-.matrix-table td { padding: 7px 10px; border-bottom: 1px solid var(--rule); text-align: center; }
-.matrix-table tbody tr:nth-child(even) { background: var(--paper2); }
-.matrix-table td:first-child { text-align: left; font-size: 12px; color: var(--muted); font-family: var(--mono); font-size: 10px; }
-.m-yes { color: var(--green); font-weight: 700; }
-.m-no  { color: var(--red);   font-weight: 700; }
-
-/* ── TIER TABLE ── */
-.tier-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.tier-table th { background: var(--blue); color: var(--paper); font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; padding: 7px 11px; text-align: left; }
-.tier-table td { padding: 8px 11px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
-.tier-table tbody tr:nth-child(even) { background: var(--paper2); }
-.tier-icon { font-family: var(--mono); font-size: 10px; color: var(--cyan); font-weight: 700; }
-
-/* ── CIRCUIT BREAKER ── */
-.cb-diagram {
-  background: #111827; border: 1px solid var(--blue); padding: 16px 18px;
-  font-family: var(--mono); font-size: 11px; line-height: 1.9; color: #d4d4d4; overflow-x: auto; white-space: pre;
-}
-.cb-open   { color: #f87171; }
-.cb-half   { color: #fbbf24; }
-.cb-closed { color: #34d399; }
-.cb-arrow  { color: var(--cyan); }
-
-/* ── LOCK FOOTER ── */
-.lock-section { border: 4px double var(--blue); }
-.lock-banner {
-  background: var(--blue); color: var(--paper); text-align: center;
-  padding: 30px 24px; border-bottom: 4px double rgba(240,244,248,.25);
-}
-.lock-title-main { font-family: var(--serif); font-size: clamp(26px, 4vw, 50px); font-weight: 900; letter-spacing: -.02em; margin-bottom: 6px; }
-.lock-sub { font-family: var(--mono); font-size: 11px; color: var(--cyan); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 22px; }
-.lock-stats {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0; border-top: 1px solid rgba(255,255,255,.12); margin-top: 22px;
-}
+/* ── LOCK ── */
+.lock-section { border: 4px double var(--blue); margin: 0; padding: 0; background: var(--paper); }
+.lock-banner { background: var(--blue); color: var(--paper); text-align: center; padding: 32px 24px; border-bottom: 4px double rgba(255,255,255,.2); }
+.lock-title-main { font-family: var(--serif); font-size: clamp(28px,4vw,52px); font-weight: 900; letter-spacing: -.02em; margin-bottom: 8px; }
+.lock-sub { font-family: var(--mono); font-size: 11px; color: var(--cyan); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 24px; }
+.lock-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0; border-top: 1px solid rgba(255,255,255,.15); margin-top: 24px; }
 .ls-item { padding: 14px; border-right: 1px solid rgba(255,255,255,.1); text-align: center; }
 .ls-item:last-child { border-right: none; }
 .ls-num { font-family: var(--serif); font-size: 28px; font-weight: 900; color: var(--cyan); display: block; }
-.ls-label { font-family: var(--mono); font-size: 8px; text-transform: uppercase; letter-spacing: .1em; color: rgba(240,244,248,.5); display: block; margin-top: 2px; }
-
+.ls-label { font-family: var(--mono); font-size: 8px; text-transform: uppercase; letter-spacing: .12em; color: rgba(240,244,248,.5); display: block; margin-top: 2px; }
 .lock-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
 .lock-col { padding: 26px 30px; border-right: 2px solid var(--blue); }
 .lock-col:last-child { border-right: none; }
 .lock-col-title { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .18em; color: var(--muted); margin-bottom: 12px; border-bottom: 1px solid var(--rule); padding-bottom: 5px; }
-
 .parts-breakdown { display: flex; flex-direction: column; gap: 5px; }
 .pb-item { display: flex; align-items: center; gap: 9px; font-size: 11px; padding: 6px 9px; border: 1px solid var(--rule); background: var(--paper2); }
-.pb-part { font-family: var(--mono); font-size: 9px; color: var(--cyan); font-weight: 700; min-width: 36px; }
+.pb-part { font-family: var(--mono); font-size: 9px; color: var(--cyan); font-weight: 700; min-width: 40px; }
 .pb-name { flex: 1; font-size: 10.5px; }
 .pb-rules { font-family: var(--mono); font-size: 9px; color: var(--muted); }
 .pb-crit { background: var(--red); color: #fff; padding: 1px 5px; font-family: var(--mono); font-size: 8px; border-radius: 2px; }
-
-.signature-grid { display: flex; flex-direction: column; gap: 11px; margin-top: 4px; }
-.sig-line { display: flex; flex-direction: column; gap: 3px; border-bottom: 1px solid var(--blue); padding-bottom: 9px; }
-.sig-role { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
-.sig-name-line { border-bottom: 1px solid var(--blue); height: 22px; }
-.sig-meta { display: flex; gap: 18px; margin-top: 3px; font-family: var(--mono); font-size: 9px; color: var(--muted); }
-
-.lock-final {
-  border-top: 2px solid var(--blue); background: var(--blue); color: var(--paper);
-  padding: 18px 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
-}
-.lock-final-left { font-family: var(--mono); font-size: 10px; color: var(--cyan); letter-spacing: .06em; }
+.pb-new  { background: var(--green); color: #fff; padding: 1px 5px; font-family: var(--mono); font-size: 8px; border-radius: 2px; }
+.sig-line { display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid var(--blue); padding-bottom: 10px; margin-bottom: 10px; }
+.sig-role { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.sig-name-line { border-bottom: 1px solid var(--blue); height: 24px; }
+.sig-meta { display: flex; gap: 20px; margin-top: 4px; font-family: var(--mono); font-size: 9px; color: var(--muted); }
+.lock-final { border-top: 2px solid var(--blue); background: var(--blue); color: var(--paper); padding: 18px 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.lock-final-left  { font-family: var(--mono); font-size: 10px; color: var(--cyan); letter-spacing: .06em; }
 .lock-final-motto { font-family: var(--serif); font-size: 17px; font-style: italic; }
 .lock-final-right { font-family: var(--mono); font-size: 9px; color: rgba(240,244,248,.45); text-align: right; }
 
-code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1px solid var(--rule); padding: 1px 4px; color: var(--red); }
+code { font-family: var(--mono); font-size: 11px; background: var(--paper3); border: 1px solid var(--rule); padding: 1px 4px; color: var(--red); }
+
+hr.divider { height: 1px; background: var(--rule); margin: 0; border: none; }
+hr.divider-double { height: 3px; border: none; background: var(--blue); margin: 0; }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .page > * { animation: fadeIn .35s ease both; }
-
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--paper); }
 ::-webkit-scrollbar-thumb { background: var(--rule); }
@@ -609,122 +312,150 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
   .lock-col { border-right: none; border-bottom: 2px solid var(--blue); }
   .masthead-bottom { grid-template-columns: repeat(3, 1fr); }
   .structure-map { grid-template-columns: 1fr 1fr; }
-  .compare-row { grid-template-columns: 1fr; }
+  .compare-row, .stack-diff, .forbidden-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 <div class="page">
 
-<!-- MASTHEAD -->
+<!-- ══════════════════════════════════════════ MASTHEAD ══════════════════════════════════════════ -->
 <header class="masthead">
   <div class="masthead-top">
-    <span>LOCKED: 2026-04-07</span>
-    <span>DOCUMENT CLASS: CONSTITUTION · REVISION: v2.2</span>
+    <span>LOCKED: 2026-04-14 · KSDRILL SA</span>
+    <span>DOCUMENT CLASS: CONSTITUTION · REVISION: v3.0</span>
     <span>NEXT REVIEW: 2026-07-07</span>
   </div>
   <div class="masthead-main">
     <div class="masthead-eyebrow">BACKEND CONSTITUTION</div>
-    <h1 class="masthead-title">v2.2</h1>
+    <h1 class="masthead-title">v3.0</h1>
     <p class="masthead-tagline">"If a rule is not enforced by code, it will eventually be broken."</p>
     <div class="masthead-meta">
-      <span><strong>61</strong> TOTAL RULES</span>
-      <span><strong>34</strong> CRITICAL</span>
-      <span><strong>10</strong> PARTS</span>
-      <span><strong>20</strong> FORBIDDEN PATTERNS</span>
-      <span>SYMMETRIC WITH FRONTEND v16.0</span>
+      <span><strong>68</strong> TOTAL RULES</span>
+      <span><strong>36</strong> CRITICAL</span>
+      <span><strong>11</strong> PARTS</span>
+      <span><strong>22</strong> FORBIDDEN PATTERNS</span>
+      <span>DUAL STACK: NEXT.JS + ANGULAR/FASTAPI</span>
+      <span>SYMMETRIC WITH FRONTEND v17.0</span>
     </div>
   </div>
   <div class="masthead-bottom">
-    <div class="stat-box"><span class="stat-num">61</span><span class="stat-label">Total Rules</span></div>
-    <div class="stat-box"><span class="stat-num">34</span><span class="stat-label">Critical</span></div>
-    <div class="stat-box"><span class="stat-num">26</span><span class="stat-label">High Priority</span></div>
-    <div class="stat-box"><span class="stat-num">20</span><span class="stat-label">Forbidden</span></div>
-    <div class="stat-box"><span class="stat-num">127</span><span class="stat-label">System Total</span></div>
+    <div class="stat-box"><span class="stat-num">68</span><span class="stat-label">Total Rules</span></div>
+    <div class="stat-box"><span class="stat-num">36</span><span class="stat-label">Critical</span></div>
+    <div class="stat-box"><span class="stat-num">27</span><span class="stat-label">High Priority</span></div>
+    <div class="stat-box"><span class="stat-num">22</span><span class="stat-label">Forbidden</span></div>
+    <div class="stat-box"><span class="stat-num">355</span><span class="stat-label">System Total</span></div>
   </div>
 </header>
 
 <!-- PART NAV -->
 <nav class="part-nav">
-  <a href="#p1" class="pn-item"><span class="pn-num">P1</span><span class="pn-name">Architecture</span><span class="pn-count">B1–B6</span></a>
-  <a href="#p2" class="pn-item"><span class="pn-num">P2</span><span class="pn-name">API Contract</span><span class="pn-count">B7–B12</span></a>
-  <a href="#p3" class="pn-item"><span class="pn-num">P3</span><span class="pn-name">Database</span><span class="pn-count">B13–B18</span></a>
-  <a href="#p4" class="pn-item"><span class="pn-num">P4</span><span class="pn-name">MVP</span><span class="pn-count">B19–B23</span></a>
-  <a href="#p5" class="pn-item"><span class="pn-num">P5</span><span class="pn-name">Performance</span><span class="pn-count">B24–B30</span></a>
-  <a href="#p6" class="pn-item"><span class="pn-num">P6</span><span class="pn-name">Resilience</span><span class="pn-count">B31–B36</span></a>
-  <a href="#p7" class="pn-item"><span class="pn-num">P7</span><span class="pn-name">Security</span><span class="pn-count">B37–B40</span></a>
-  <a href="#p8" class="pn-item"><span class="pn-num">P8</span><span class="pn-name">Observability</span><span class="pn-count">B41–B45</span></a>
-  <a href="#p9" class="pn-item"><span class="pn-num">P9</span><span class="pn-name">FastAPI</span><span class="pn-count">F1–F15</span></a>
-  <a href="#p10" class="pn-item"><span class="pn-num">P10</span><span class="pn-name">Cross-Const</span><span class="pn-count">B46</span></a>
+  <a href="#p1"  class="pn-item"><span class="pn-num">P1</span><span class="pn-name">Architecture</span><span class="pn-count">B1–B6</span></a>
+  <a href="#p2"  class="pn-item"><span class="pn-num">P2</span><span class="pn-name">API Contract</span><span class="pn-count">B7–B12</span></a>
+  <a href="#p3"  class="pn-item"><span class="pn-num">P3</span><span class="pn-name">Database</span><span class="pn-count">B13–B18</span></a>
+  <a href="#p3b" class="pn-item"><span class="pn-num">P3b 🆕</span><span class="pn-name">MongoDB</span><span class="pn-count">B47–B52</span></a>
+  <a href="#p4"  class="pn-item"><span class="pn-num">P4</span><span class="pn-name">MVP Realism</span><span class="pn-count">B19–B23</span></a>
+  <a href="#p5"  class="pn-item"><span class="pn-num">P5</span><span class="pn-name">Performance</span><span class="pn-count">B24–B30</span></a>
+  <a href="#p6"  class="pn-item"><span class="pn-num">P6</span><span class="pn-name">Resilience</span><span class="pn-count">B31–B36</span></a>
+  <a href="#p7"  class="pn-item"><span class="pn-num">P7</span><span class="pn-name">Security</span><span class="pn-count">B37–B40</span></a>
+  <a href="#p8"  class="pn-item"><span class="pn-num">P8</span><span class="pn-name">Observability</span><span class="pn-count">B41–B46</span></a>
+  <a href="#p9"  class="pn-item"><span class="pn-num">P9</span><span class="pn-name">FastAPI</span><span class="pn-count">F1–F15</span></a>
+  <a href="#p10" class="pn-item"><span class="pn-num">P10</span><span class="pn-name">Deployment 🆕</span><span class="pn-count">B53–B58</span></a>
+  <a href="#p11" class="pn-item"><span class="pn-num">P11</span><span class="pn-name">Cross-Const</span><span class="pn-count">B46</span></a>
 </nav>
 
-<!-- EXECUTIVE SUMMARY -->
-<div class="section-runner">§ Executive Summary — Structure Map</div>
-<div class="part-section" style="padding: 24px 26px 18px;">
-  <div class="structure-map">
-    <div class="sm-col">
-      <div class="sm-head"><span class="sm-num">P1</span>Architecture · B1–B6</div>
-      <div class="sm-items">
-        <div class="sm-item">Next.js = auth/CRUD/payments</div>
-        <div class="sm-item">FastAPI = AI/RAG/agents only</div>
-        <div class="sm-item">No direct frontend→FastAPI</div>
-        <div class="sm-item">FastAPI internal-only</div>
-        <div class="sm-item">FastAPI no DB writes</div>
-        <div class="sm-item">One-way comms only</div>
+<!-- ══════════════════════════════════════════ STACK SCOPE NOTICE ══════════════════════════════════════════ -->
+<div class="section-runner">§ Stack Scope — Read Before Applying Any Rule</div>
+<div class="part-section" style="padding:20px 28px;">
+  <div class="callout callout-critical">
+    <span class="callout-icon">!</span>
+    <div class="callout-body">
+      <strong>Critical — v3.0 Dual Stack Update:</strong> The biggest change in v3.0 is the clarification of <strong>B15 (FastAPI ↔ Database access)</strong>. In v2.2, B15 stated "FastAPI never touches PostgreSQL" — this was written for the Next.js stack only. In the Angular stack (FundsLink, Reserve Bank), FastAPI IS the primary backend and handles all database operations. B15 has been split into <strong>B15a</strong> (Next.js) and <strong>B15b</strong> (Angular). Always check the scope badge on every rule.
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
+    <div style="border:2px solid #0e0e0e;overflow:hidden;">
+      <div style="background:#0e0e0e;color:var(--paper);padding:8px 14px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;display:flex;justify-content:space-between;">
+        <span>NEXT.JS BACKEND STACK</span><span style="opacity:.5">Maphophe · SyncUp</span>
+      </div>
+      <div style="padding:12px 14px;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:2;background:var(--paper2);">
+        Primary backend: <strong style="color:var(--ink)">Next.js API Routes</strong><br>
+        Auth: NextAuth.js — HTTP-only session cookies<br>
+        AI: FastAPI (AI/RAG only — internal proxy)<br>
+        DB: PostgreSQL via Prisma ORM<br>
+        Jobs: BullMQ + Redis (SyncUp)<br>
+        Deploy: Vercel (unified codebase)
       </div>
     </div>
-    <div class="sm-col">
-      <div class="sm-head"><span class="sm-num">P2+3</span>Contract &amp; DB · B7–B18</div>
-      <div class="sm-items">
-        <div class="sm-item">OpenAPI first — always</div>
-        <div class="sm-item">ApiResponse&lt;T&gt; universal format</div>
-        <div class="sm-item">9 error codes — no more v1</div>
-        <div class="sm-item">Zod generated from OpenAPI</div>
-        <div class="sm-item">Prisma = source of truth</div>
-        <div class="sm-item">id/created_at/updated_at required</div>
-        <div class="sm-item">Selective field selection</div>
+    <div style="border:2px solid var(--ang-red);overflow:hidden;">
+      <div style="background:var(--ang-red);color:#fff;padding:8px 14px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;display:flex;justify-content:space-between;">
+        <span>ANGULAR + FASTAPI BACKEND STACK</span><span style="opacity:.6">FundsLink · Reserve Bank</span>
       </div>
-    </div>
-    <div class="sm-col">
-      <div class="sm-head"><span class="sm-num">P4+5</span>MVP &amp; Perf · B19–B30</div>
-      <div class="sm-items">
-        <div class="sm-item">v1: 10–15 endpoints max</div>
-        <div class="sm-item">5 Gate Questions per endpoint</div>
-        <div class="sm-item">No BullMQ/Redis in v1</div>
-        <div class="sm-item">No WS except /ws/chat</div>
-        <div class="sm-item">150ms/500ms/2s latency targets</div>
-        <div class="sm-item">OpenAI: 30s + 3 retries</div>
-        <div class="sm-item">Idempotency keys on mutations</div>
-      </div>
-    </div>
-    <div class="sm-col">
-      <div class="sm-head"><span class="sm-num">P6+7</span>Resilience &amp; Security · B31–B40</div>
-      <div class="sm-items">
-        <div class="sm-item">OpenAPI→Zod pipeline (pre-commit)</div>
-        <div class="sm-item">Circuit breaker: 5 fails → open</div>
-        <div class="sm-item">docker-compose one-command dev</div>
-        <div class="sm-item">RBAC: USER/CREATOR/ADMIN</div>
-        <div class="sm-item">Audit logs for state changes</div>
-        <div class="sm-item">Soft delete everywhere</div>
-        <div class="sm-item">HTTP-only cookies, CORS locked</div>
-      </div>
-    </div>
-    <div class="sm-col">
-      <div class="sm-head"><span class="sm-num">P9</span>FastAPI · F1–F15</div>
-      <div class="sm-items">
-        <div class="sm-item">Models load once at startup</div>
-        <div class="sm-item">Unload after 30min idle</div>
-        <div class="sm-item">Semaphore: cpu_count × 2</div>
-        <div class="sm-item">async def for I/O, def for CPU</div>
-        <div class="sm-item">asyncio.to_thread for inference</div>
-        <div class="sm-item">Token budget guard</div>
-        <div class="sm-item">Similarity threshold ≥ 0.7</div>
+      <div style="padding:12px 14px;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:2;background:var(--paper2);">
+        Primary backend: <strong style="color:var(--ink)">FastAPI (Python)</strong><br>
+        Auth: JWT (FastAPI issues · Angular intercepts)<br>
+        AI: FastAPI native (LangChain · ChromaDB — FundsLink)<br>
+        DB Relational: PostgreSQL via Prisma ORM (SQLAlchemy alt)<br>
+        DB Document: <strong style="color:var(--ink)">MongoDB + Mongoose (new in v3.0)</strong><br>
+        Jobs: BullMQ + Redis (Reserve Bank)<br>
+        Deploy: Vercel (Angular) + <strong style="color:var(--ink)">Railway (FastAPI)</strong>
       </div>
     </div>
   </div>
 </div>
 
-<!-- PART 1: ARCHITECTURE -->
+<!-- ══════════════════════════════════════════ EXECUTIVE SUMMARY ══════════════════════════════════════════ -->
+<div class="section-runner">§ Executive Summary — Structure Map</div>
+<div class="part-section" style="padding:24px 26px 18px;">
+  <div class="structure-map">
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">P1</span>Architecture · B1–B6</div>
+      <div class="sm-items">
+        <div class="sm-item">Next.js = auth/CRUD/payments/orchestration</div>
+        <div class="sm-item">FastAPI = AI/RAG/agents (both stacks)</div>
+        <div class="sm-item">Angular stack: FastAPI IS the primary backend</div>
+        <div class="sm-item">No direct frontend→FastAPI (Next.js stack only)</div>
+        <div class="sm-item">FastAPI internal-only (Next.js stack)</div>
+        <div class="sm-item">One-way comms only</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">P2+3</span>Contract &amp; DB · B7–B18 + B47–B52</div>
+      <div class="sm-items">
+        <div class="sm-item">OpenAPI first — always, both stacks</div>
+        <div class="sm-item">ApiResponse&lt;T&gt; universal format</div>
+        <div class="sm-item">9 error codes — v1 hard limit</div>
+        <div class="sm-item">Prisma = source of truth (relational)</div>
+        <div class="sm-item">MongoDB for document data (Angular stack)</div>
+        <div class="sm-item">id/created_at/updated_at on all tables</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">P4–P8</span>MVP / Perf / Security · B19–B45</div>
+      <div class="sm-items">
+        <div class="sm-item">v1: 10–15 endpoints max per service</div>
+        <div class="sm-item">5 gate questions per endpoint</div>
+        <div class="sm-item">150ms/500ms/2s latency targets</div>
+        <div class="sm-item">RBAC: USER/CREATOR/ADMIN</div>
+        <div class="sm-item">Audit logs for all state changes</div>
+        <div class="sm-item">Circuit breaker: 5 fails → open</div>
+      </div>
+    </div>
+    <div class="sm-col">
+      <div class="sm-head"><span class="sm-num">P9+P10</span>FastAPI + Deploy · F1–F15 + B53–B58</div>
+      <div class="sm-items">
+        <div class="sm-item">Models load once at startup</div>
+        <div class="sm-item">LangChain replaces direct OpenAI calls</div>
+        <div class="sm-item">Similarity threshold ≥ 0.7</div>
+        <div class="sm-item">Railway for FastAPI deployment</div>
+        <div class="sm-item">Vercel for Next.js + Angular</div>
+        <div class="sm-item">docker-compose full stack locally</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 1: ARCHITECTURE ══════════════════════════════════════════ -->
 <hr class="divider"/>
 <div class="section-runner" id="p1">§ Part 1 — Architecture &amp; Boundaries (B1–B6)</div>
 
@@ -732,32 +463,40 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
   <div class="col-layout">
     <aside class="col-sidebar">
       <div class="sidebar-section">
-        <div class="sidebar-label">Purpose</div>
-        <p style="font-size:12px;color:var(--muted);line-height:1.6">Define who does what. No confusion. No overlap. The service boundary is the backbone of the entire system.</p>
+        <div class="sidebar-label">Service Ownership — Next.js Stack</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">NJ</span> Auth, CRUD, Payments</li>
+          <li><span class="rn">NJ</span> Orchestration, Proxy to FastAPI</li>
+          <li><span class="rn">FA</span> AI, RAG, Predictions (internal only)</li>
+          <li><span class="rn">PG</span> All relational data</li>
+          <li><span class="rn">CDB</span> Vector embeddings (FundsLink)</li>
+        </ul>
       </div>
       <div class="sidebar-section">
-        <div class="sidebar-label">Service Ownership</div>
+        <div class="sidebar-label">Service Ownership — Angular Stack</div>
         <ul class="sb-rule-list">
-          <li><span class="rn">Next.js</span> Auth, CRUD, Payments</li>
-          <li><span class="rn">Next.js</span> Orchestration, Proxy</li>
-          <li><span class="rn">FastAPI</span> AI, RAG, Predictions</li>
-          <li><span class="rn">FastAPI</span> Agents, Embeddings</li>
-          <li><span class="rn">Postgres</span> All relational data</li>
-          <li><span class="rn">ChromaDB</span> Vector embeddings</li>
+          <li><span class="rn">FA</span> Auth, CRUD, AI, everything</li>
+          <li><span class="rn">PG</span> Relational data (Prisma)</li>
+          <li><span class="rn">MDB</span> Document / AI output data</li>
+          <li><span class="rn">CDB</span> Vectors — FundsLink only</li>
+          <li><span class="rn">RD</span> BullMQ jobs — Reserve Bank</li>
         </ul>
       </div>
       <div class="sidebar-section">
         <div class="sidebar-label">Communication Flow</div>
-        <div style="font-family:var(--mono);font-size:10px;line-height:2;color:var(--muted)">
-          Frontend<br/>
-          <span style="color:var(--cyan)">↓</span> /api/v1/* (HTTP)<br/>
-          Next.js API Routes<br/>
-          <span style="color:var(--cyan)">↓</span> Internal only<br/>
-          FastAPI<br/>
-          <span style="color:var(--cyan)">↓</span> Read only<br/>
-          ChromaDB<br/>
-          <span style="color:var(--red)">✕</span> FastAPI → Postgres<br/>
-          <span style="color:var(--red)">✕</span> Frontend → FastAPI
+        <div style="font-family:var(--mono);font-size:10px;line-height:2.2;color:var(--muted);">
+          <strong style="color:var(--ink)">Next.js stack:</strong><br>
+          Angular/Browser<br>
+          <span style="color:var(--cyan)">↓</span> /api/v1/* (HTTP)<br>
+          Next.js API Routes<br>
+          <span style="color:var(--cyan)">↓</span> Internal only<br>
+          FastAPI<br>
+          <span style="color:var(--red)">✕</span> Frontend → FastAPI direct<br><br>
+          <strong style="color:var(--ink)">Angular stack:</strong><br>
+          Angular Browser<br>
+          <span style="color:var(--cyan)">↓</span> JWT REST (HTTP)<br>
+          FastAPI (primary backend)<br>
+          <span style="color:var(--cyan)">↓</span> PostgreSQL + MongoDB
         </div>
       </div>
     </aside>
@@ -765,69 +504,89 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
       <div class="part-banner">
         <span class="part-num">PART 1 / B1–B6</span>
         <span class="part-title">Architecture &amp; Boundaries</span>
-        <span class="part-desc">5 Critical · 1 High</span>
+        <span class="part-desc">5 Critical · 1 High · Stack-differentiated</span>
       </div>
 
       <div class="rule-card critical">
         <div class="rule-card-head"><span class="rule-num-badge">B1</span><span class="rule-title">Service Responsibility Boundary</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Next.js API Routes = auth, CRUD, payments, orchestration. FastAPI = AI, predictions, RAG, agents. NEVER cross responsibilities.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">FastAPI handles AI, predictions, RAG, and agents on all stacks. Next.js API Routes handle auth, CRUD, payments, and orchestration on the Next.js stack. On the Angular stack, FastAPI handles everything — auth, CRUD, AI, and domain logic. Never put AI calls in Next.js API routes or CRUD logic in the Next.js-stack FastAPI service.</p>
+          <div class="stack-diff">
+            <div class="stack-diff-col">
+              <div class="stack-diff-head nj">Next.js Stack</div>
+              <div class="stack-diff-body">Next.js owns: auth, CRUD, payments, orchestration. FastAPI owns: AI/RAG/predictions only. Strict boundary — never cross.</div>
+            </div>
+            <div class="stack-diff-col">
+              <div class="stack-diff-head ang">Angular Stack</div>
+              <div class="stack-diff-body">FastAPI owns everything: auth, CRUD, AI, domain logic. Angular is frontend only. FastAPI is the entire backend.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">B2</span><span class="rule-title">Single Gateway Principle — Next.js Stack Only</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-nextjs">NEXT.JS STACK ONLY</span></div>
+          <p class="rule-statement">On Next.js systems, the browser NEVER calls FastAPI directly. All requests proxy through Next.js API Routes. FastAPI is internal-only, inaccessible from the public internet, protected by <code>X-Internal-API-Key</code>.</p>
+          <div class="callout callout-warning">
+            <span class="callout-icon">!</span>
+            <div class="callout-body"><strong>Angular stack exception:</strong> Angular browsers call FastAPI directly via JWT-authenticated REST. B2 does not apply to FundsLink or Reserve Bank. Angular → FastAPI is the intended and correct pattern on those systems.</div>
+          </div>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">Enforcement (Next.js)</span><div class="rule-meta-val">CORS config blocks direct FastAPI access + network policy</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Exception (Next.js)</span><div class="rule-meta-val">WebSocket <code>/ws/chat</code> only — SyncUp v1</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">B3</span><span class="rule-title">FastAPI Internal-Only — Next.js Stack</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-nextjs">NEXT.JS STACK ONLY</span></div>
+          <p class="rule-statement">On Next.js systems, FastAPI endpoints are internal-only. They require <code>X-Internal-API-Key</code> header from Next.js and are never exposed to the public internet. On Angular systems, FastAPI endpoints are public-facing with JWT auth.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">B4</span><span class="rule-title">FastAPI — No PostgreSQL Writes via Next.js Stack</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-nextjs">NEXT.JS STACK ONLY</span></div>
+          <p class="rule-statement">On Next.js systems, the AI FastAPI service has NO database writes to PostgreSQL. State changes trigger a webhook back to Next.js. FastAPI reads ChromaDB only.</p>
           <div class="compare-row">
-            <div class="compare-block compare-bad"><div class="compare-label">❌ Violation</div><pre>// OpenAI call in Next.js API route
-<span class="ck">const</span> result = <span class="ck">await</span> openai.<span class="cf">chat</span>.completions.create({...});</pre></div>
-            <div class="compare-block compare-good"><div class="compare-label">✅ Correct</div><pre>// Next.js proxies to FastAPI
-<span class="ck">const</span> result = <span class="ck">await</span> <span class="cf">fetch</span>(<span class="cs">'/ai/predict'</span>, { ... });</pre></div>
+            <div class="compare-block compare-bad"><div class="compare-label">❌ Violation (Next.js stack)</div><pre><span class="cc"># FastAPI AI service writing to Postgres</span>
+db.<span class="cf">execute</span>(<span class="cs">"INSERT INTO users ..."</span>)</pre></div>
+            <div class="compare-block compare-good"><div class="compare-label">✅ Correct (Next.js stack)</div><pre><span class="cc"># FastAPI calls webhook back to Next.js</span>
+<span class="ck">await</span> <span class="cf">httpx_post</span>(<span class="cs">"/api/internal/webhook/..."</span>)</pre></div>
           </div>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B2</span><span class="rule-title">Single Gateway Principle</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Frontend NEVER calls FastAPI directly (except WebSocket <code>/ws/chat</code>). All requests proxy through Next.js API Routes.</p>
-          <div class="rule-meta-grid">
-            <div class="rule-meta-item"><span class="rule-meta-label">Enforcement</span><div class="rule-meta-val">CORS config + network policy</div></div>
-            <div class="rule-meta-item"><span class="rule-meta-label">Exception</span><div class="rule-meta-val">WebSocket <code>/ws/chat</code> only — if chat is v1 core</div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B3</span><span class="rule-title">FastAPI Internal-Only</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">FastAPI endpoints are internal-only. Require <code>X-Internal-API-Key</code> header from Next.js. Never exposed to public internet.</p>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B4</span><span class="rule-title">FastAPI — No PostgreSQL Writes</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">FastAPI has NO database writes to PostgreSQL. Reads ChromaDB only. State changes call Next.js webhook instead.</p>
-          <div class="rule-meta-grid">
-            <div class="rule-meta-item"><span class="rule-meta-label">Violation</span><div class="rule-meta-val">FastAPI does <code>INSERT INTO users</code></div></div>
-            <div class="rule-meta-item"><span class="rule-meta-label">Compliance</span><div class="rule-meta-val"><code>POST /api/internal/webhook/user-update</code></div></div>
+          <div class="callout callout-new" style="margin-top:10px;">
+            <span class="callout-icon">+</span>
+            <div class="callout-body"><strong>Angular stack (FundsLink, Reserve Bank):</strong> FastAPI IS the primary backend and has full read/write access to PostgreSQL and MongoDB. This is the correct architecture — not a violation. B4 does not apply to Angular systems.</div>
           </div>
         </div>
       </div>
 
       <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B5</span><span class="rule-title">FastAPI Endpoint Proxy Requirement</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B5</span><span class="rule-title">Every FastAPI Endpoint Has a Corresponding Proxy — Next.js Stack</span><span class="sev-badge sev-high">High</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Every FastAPI endpoint has a corresponding Next.js API route that proxies it. Both documented in OpenAPI contract.</p>
+          <div class="scope-bar"><span class="scope-chip scope-nextjs">NEXT.JS STACK ONLY</span></div>
+          <p class="rule-statement">On Next.js systems, every FastAPI endpoint must have a corresponding Next.js API route that proxies it. Both must be documented in the OpenAPI contract. Angular systems call FastAPI directly — no proxy needed.</p>
         </div>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B6</span><span class="rule-title">One-Way Communication Only</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B6</span><span class="rule-title">One-Way Communication — No Circular Calls</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Next.js → FastAPI communication is ONE-WAY only. Never circular. FastAPI may call Next.js webhook (one-way, no response expected) — never the reverse loop.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Service communication is strictly one-way. Next.js stack: Next.js → FastAPI only; FastAPI may call one Next.js webhook (one-way, no response expected). Angular stack: Angular → FastAPI → DB only. No circular references, no service calling the service that called it.</p>
         </div>
       </div>
     </main>
   </div>
 </div>
 
-<!-- PART 2: API CONTRACT -->
+<!-- ══════════════════════════════════════════ PART 2: API CONTRACT ══════════════════════════════════════════ -->
 <hr class="divider"/>
 <div class="section-runner" id="p2">§ Part 2 — API Contract (B7–B12)</div>
 
@@ -835,7 +594,7 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
   <div class="col-layout">
     <aside class="col-sidebar">
       <div class="sidebar-section">
-        <div class="sidebar-label">V1 Error Code Set</div>
+        <div class="sidebar-label">V1 Error Code Set (Both)</div>
         <ul class="sb-rule-list">
           <li><span class="rn">AUTH_*</span> 401/403 errors</li>
           <li><span class="rn">VALIDATION</span> 400 Zod/Pydantic</li>
@@ -849,37 +608,48 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
       <div class="sidebar-section">
         <div class="sidebar-label">ApiResponse&lt;T&gt; Shape</div>
         <div style="font-family:var(--mono);font-size:10px;line-height:1.8;color:var(--muted)">
-          success: boolean<br/>
-          data: T | null<br/>
-          error: {<br/>
-          &nbsp;&nbsp;code: string<br/>
-          &nbsp;&nbsp;message: string<br/>
-          &nbsp;&nbsp;field?: string<br/>
-          } | null<br/>
+          success: boolean<br>
+          data: T | null<br>
+          error: {<br>
+          &nbsp;&nbsp;code: string<br>
+          &nbsp;&nbsp;message: string<br>
+          &nbsp;&nbsp;field?: string<br>
+          } | null<br>
           meta?: { pagination }
         </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Validation Stack</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">NJ</span> Zod (generated from OpenAPI)</li>
+          <li><span class="rn">FA</span> Pydantic (must match OpenAPI)</li>
+          <li><span class="rn">ANG</span> Angular validators (match Pydantic)</li>
+          <li><span class="rn">BOTH</span> OpenAPI is canonical source</li>
+        </ul>
       </div>
     </aside>
     <main class="col-main">
       <div class="part-banner">
         <span class="part-num">PART 2 / B7–B12</span>
         <span class="part-title">API Contract</span>
-        <span class="part-desc">5 Critical · 1 High</span>
+        <span class="part-desc">5 Critical · 1 High · Both Stacks</span>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B7</span><span class="rule-title">OpenAPI First Principle</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B7</span><span class="rule-title">OpenAPI First Principle — Contract Before Code</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">OpenAPI 3.0 contract MUST exist before ANY endpoint code. PR shows OpenAPI changes BEFORE code changes. CI fails if contract is missing or incomplete.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">The OpenAPI 3.0 contract MUST exist and be approved before ANY endpoint code is written. PR shows OpenAPI changes BEFORE implementation changes. CI fails if contract is missing, incomplete, or mismatched with implementation. Both Next.js and FastAPI (Angular stack) maintain their own OpenAPI contracts.</p>
         </div>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B8</span><span class="rule-title">Standard Response Format — ApiResponse&lt;T&gt;</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B8</span><span class="rule-title">Standard Response Format — ApiResponse&lt;T&gt; on All Endpoints</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">ALL responses follow <code>ApiResponse&lt;T&gt;</code> format across both services. No exceptions.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">ALL responses from ALL endpoints follow the <code>ApiResponse&lt;T&gt;</code> format. No exceptions. This applies to Next.js API routes, the Angular-stack FastAPI, and the Next.js-stack FastAPI AI service.</p>
           <div class="code-block">
-            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">types/api.ts</div></div>
+            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">types/api.ts · shared across both stacks</div></div>
             <pre><span class="ck">type</span> <span class="ct">ApiResponse</span>&lt;T&gt; = {
   success: <span class="ct">boolean</span>;
   data: T | <span class="ck">null</span>;
@@ -888,32 +658,28 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
     message: <span class="ct">string</span>;
     field?: <span class="ct">string</span>;  <span class="cc">// validation errors only</span>
   } | <span class="ck">null</span>;
-  meta?: {
-    pagination?: {
-      page: <span class="ct">number</span>; limit: <span class="ct">number</span>;
-      total: <span class="ct">number</span>; pages: <span class="ct">number</span>;
-    };
-  };
+  meta?: { pagination?: { page: <span class="ct">number</span>; limit: <span class="ct">number</span>; total: <span class="ct">number</span>; pages: <span class="ct">number</span>; }; };
 }</pre>
           </div>
         </div>
       </div>
 
       <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B9</span><span class="rule-title">Limited Error Codes — 9 in v1</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B9</span><span class="rule-title">Limited Error Codes — 9 in v1, No New Codes Without Approval</span><span class="sev-badge sev-high">High</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Error codes are limited to the v1 set of 9 codes. New codes require documented approval and defer to v2.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Error codes are limited to the v1 set. New codes require a documented cross-constitution review and defer to v2. The same 9 error codes are used identically by both the Next.js stack and the Angular/FastAPI stack.</p>
           <table class="const-table">
             <thead><tr><th>Code</th><th>HTTP</th><th>When</th></tr></thead>
             <tbody>
               <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">AUTH_INVALID_CREDENTIALS</td><td>401</td><td style="color:var(--muted);font-size:11px">Wrong email/password</td></tr>
               <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">AUTH_UNAUTHORIZED</td><td>401</td><td style="color:var(--muted);font-size:11px">Missing/invalid token</td></tr>
               <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">AUTH_FORBIDDEN</td><td>403</td><td style="color:var(--muted);font-size:11px">Authenticated but RBAC denied</td></tr>
-              <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">VALIDATION_ERROR</td><td>400</td><td style="color:var(--muted);font-size:11px">Zod/Pydantic validation failed</td></tr>
+              <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">VALIDATION_ERROR</td><td>400</td><td style="color:var(--muted);font-size:11px">Zod or Pydantic validation failed</td></tr>
               <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">NOT_FOUND</td><td>404</td><td style="color:var(--muted);font-size:11px">Resource doesn't exist</td></tr>
               <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">RATE_LIMITED</td><td>429</td><td style="color:var(--muted);font-size:11px">Too many requests</td></tr>
-              <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">AI_SERVICE_UNAVAILABLE</td><td>503</td><td style="color:var(--muted);font-size:11px">FastAPI down or timeout</td></tr>
-              <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">AI_SERVICE_SLOW</td><td>504</td><td style="color:var(--muted);font-size:11px">OpenAI timeout (use fallback)</td></tr>
+              <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">AI_SERVICE_UNAVAILABLE</td><td>503</td><td style="color:var(--muted);font-size:11px">FastAPI AI layer down or timeout</td></tr>
+              <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">AI_SERVICE_SLOW</td><td>504</td><td style="color:var(--muted);font-size:11px">LangChain/inference timeout — use fallback</td></tr>
               <tr><td style="font-family:var(--mono);font-size:10px;color:var(--red)">INTERNAL_SERVER_ERROR</td><td>500</td><td style="color:var(--muted);font-size:11px">Catch-all for unexpected bugs</td></tr>
             </tbody>
           </table>
@@ -921,26 +687,55 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B10</span><span class="rule-title">Frontend Zod Generation from OpenAPI</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B10</span><span class="rule-title">Frontend Type Generation from OpenAPI — Never Manual</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Frontend generates Zod schemas from OpenAPI via <code>openapi-zod-client</code>. NEVER manually write frontend validation schemas. Pre-commit hook enforces this.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Frontend validation types are always generated from the OpenAPI contract. Manual schema writing is forbidden. Pre-commit hook enforces this on both repos.</p>
+          <div class="stack-diff">
+            <div class="stack-diff-col">
+              <div class="stack-diff-head nj">Next.js Stack</div>
+              <div class="stack-diff-body">Zod schemas generated via <code>openapi-zod-client</code>. Output to <code>lib/api/generated/</code>. Pre-commit hook: fails if generated schemas are out of sync with OpenAPI contract.</div>
+            </div>
+            <div class="stack-diff-col">
+              <div class="stack-diff-head ang">Angular Stack</div>
+              <div class="stack-diff-body">TypeScript interfaces generated via <code>openapi-typescript</code>. Output to <code>src/api/generated/</code>. Angular validators must match Pydantic shapes — verified by integration test.</div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B11</span><span class="rule-title">Validation Parity</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B11</span><span class="rule-title">Validation Parity — Frontend and Backend Must Match</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Next.js validates with Zod, FastAPI with Pydantic. Both must match OpenAPI exactly. If Next.js requires <code>email</code>, FastAPI must too.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every field validated on the frontend must be validated identically on the backend. If <code>email</code> is required on the frontend, it is required on the backend. Mismatches are a critical violation caught by contract test in CI.</p>
+          <div class="stack-diff">
+            <div class="stack-diff-col">
+              <div class="stack-diff-head nj">Next.js Stack</div>
+              <div class="stack-diff-body">Next.js Zod ↔ FastAPI Pydantic parity. Both generated from OpenAPI. Mismatch = contract test failure.</div>
+            </div>
+            <div class="stack-diff-col">
+              <div class="stack-diff-head ang">Angular Stack</div>
+              <div class="stack-diff-body">Angular Reactive Form validators ↔ FastAPI Pydantic models parity. Both derived from OpenAPI contract. Angular TypeScript types auto-generated.</div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B12</span><span class="rule-title">Error Transformation — FastAPI → ApiResponse</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B12</span><span class="rule-title">Error Transformation — Raw Errors Never Reach the Client</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">FastAPI errors are transformed by Next.js API Routes to match <code>ApiResponse&lt;T&gt;</code> before reaching the frontend. Raw FastAPI errors must never reach the client.</p>
-          <div class="compare-row">
-            <div class="compare-block compare-bad"><div class="compare-label">❌ Raw FastAPI error exposed</div><pre>{ "detail": "Pydantic error..." }</pre></div>
-            <div class="compare-block compare-good"><div class="compare-label">✅ Transformed in Next.js</div><pre><span class="ck">catch</span> (err) { <span class="ck">return</span> <span class="cf">formatApiError</span>(err) }</pre></div>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Raw Pydantic validation errors, database errors, and stack traces must never reach the client. All errors are caught at the service boundary and transformed to <code>ApiResponse&lt;T&gt;</code> format with the appropriate error code from the v1 set.</p>
+          <div class="stack-diff">
+            <div class="stack-diff-col">
+              <div class="stack-diff-head nj">Next.js Stack</div>
+              <div class="stack-diff-body">Next.js API routes wrap FastAPI proxy calls in try/catch and call <code>formatApiError(err)</code> before returning. Raw FastAPI 422s never reach Angular/browser.</div>
+            </div>
+            <div class="stack-diff-col">
+              <div class="stack-diff-head ang">Angular Stack</div>
+              <div class="stack-diff-body">FastAPI global exception handler transforms all errors. Custom <code>HTTPException</code> handler maps to ApiResponse format. Angular HTTP interceptor handles 4xx/5xx consistently.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -948,33 +743,33 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
   </div>
 </div>
 
-<!-- PART 3: DATABASE -->
+<!-- ══════════════════════════════════════════ PART 3: DATABASE ══════════════════════════════════════════ -->
 <hr class="divider"/>
-<div class="section-runner" id="p3">§ Part 3 — Database (B13–B18)</div>
+<div class="section-runner" id="p3">§ Part 3 — Database — Relational (B13–B18)</div>
 
 <div class="part-section">
   <div class="col-layout">
     <aside class="col-sidebar">
       <div class="sidebar-section">
-        <div class="sidebar-label">Database Ownership</div>
+        <div class="sidebar-label">Database Ownership (Both)</div>
         <ul class="sb-rule-list">
-          <li><span class="rn">Postgres</span> Users, profiles, apps</li>
-          <li><span class="rn">ChromaDB</span> Vector embeddings</li>
-          <li><span class="rn">Postgres</span> Audit logs, sessions</li>
-          <li><span class="rn">ChromaDB</span> RAG context docs</li>
+          <li><span class="rn">Postgres</span> Users, profiles, core data</li>
+          <li><span class="rn">Postgres</span> Audit logs, sessions (NJ)</li>
+          <li><span class="rn">MongoDB</span> AI outputs, flexible data (ANG)</li>
+          <li><span class="rn">ChromaDB</span> Vector embeddings (FundsLink)</li>
         </ul>
       </div>
       <div class="sidebar-section">
-        <div class="sidebar-label">Required Fields — Every Table</div>
+        <div class="sidebar-label">Required on Every Table</div>
         <div style="font-family:var(--mono);font-size:10px;line-height:1.9;color:var(--muted)">
-          id &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String @id @default(cuid())<br/>
-          created_at DateTime @default(now())<br/>
-          updated_at DateTime @updatedAt<br/>
-          deleted_at DateTime? <span style="color:var(--cyan)">(B39)</span>
+          id &nbsp;&nbsp;&nbsp;&nbsp; String @id @default(cuid())<br>
+          created_at DateTime @default(now())<br>
+          updated_at DateTime @updatedAt<br>
+          deleted_at DateTime? <span style="color:var(--cyan)">(soft delete)</span>
         </div>
       </div>
       <div class="sidebar-section">
-        <div class="sidebar-label">Never Expose These Fields</div>
+        <div class="sidebar-label">Never Expose</div>
         <ul class="sb-rule-list">
           <li><span class="rn">❌</span> password_hash</li>
           <li><span class="rn">❌</span> reset_token</li>
@@ -987,38 +782,60 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
     <main class="col-main">
       <div class="part-banner">
         <span class="part-num">PART 3 / B13–B18</span>
-        <span class="part-title">Database</span>
-        <span class="part-desc">4 Critical · 2 High</span>
+        <span class="part-title">Database — Relational</span>
+        <span class="part-desc">4 Critical · 2 High · Both Stacks</span>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B13</span><span class="rule-title">Prisma as Source of Truth</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B13</span><span class="rule-title">Prisma as Source of Truth for Relational Data</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Prisma schema is the source of truth. All migrations through Prisma. Raw SQL is allowed ONLY for complex aggregates/recursive CTEs — and must include a comment explaining why.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS — PostgreSQL</span></div>
+          <p class="rule-statement">The Prisma schema is the single source of truth for all relational data structures. All migrations run through Prisma. Raw SQL is allowed ONLY for complex aggregates or recursive CTEs — every such query must include a comment explaining why Prisma ORM is insufficient.</p>
         </div>
       </div>
 
       <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B14</span><span class="rule-title">Required Table Fields</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B14</span><span class="rule-title">Required Table Fields — id, created_at, updated_at on Every Table</span><span class="sev-badge sev-high">High</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Every table must have: <code>id</code> (UUID/cuid), <code>created_at</code> (<code>@default(now())</code>), <code>updated_at</code> (<code>@updatedAt</code>). Enforced by Prisma schema lint in CI.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS — PostgreSQL</span></div>
+          <p class="rule-statement">Every PostgreSQL table must have: <code>id</code> (UUID/cuid), <code>created_at</code> (<code>@default(now())</code>), <code>updated_at</code> (<code>@updatedAt</code>). Enforced by Prisma schema lint in CI. Tables missing these fields fail the build.</p>
         </div>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B15</span><span class="rule-title">FastAPI — No Database Access</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B15a</span><span class="rule-title">Next.js Stack — AI FastAPI Has No PostgreSQL Access</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">FastAPI never touches PostgreSQL. All DB access through Next.js API Routes. Network policy blocks direct PostgreSQL connection from FastAPI container.</p>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B16</span><span class="rule-title">Database Separation — Postgres vs ChromaDB</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Separate data by purpose: PostgreSQL stores relational data (users, profiles, applications). ChromaDB stores vector embeddings (documents, RAG context). Never mix the two.</p>
-          <div class="callout callout-critical">
+          <div class="scope-bar"><span class="scope-chip scope-nextjs">NEXT.JS STACK ONLY</span></div>
+          <p class="rule-statement">On Next.js systems (Maphophe, SyncUp), the AI FastAPI service has NO access to PostgreSQL. It reads ChromaDB only. All state changes that need to persist to Postgres are sent back to Next.js via an internal webhook. Network policy blocks direct PostgreSQL connection from the FastAPI container.</p>
+          <div class="callout callout-warning">
             <span class="callout-icon">!</span>
-            <div class="callout-body"><strong>Violation:</strong> Storing embeddings in PostgreSQL (even with pgvector extension) creates a single point of failure and makes both systems harder to scale and maintain independently.</div>
+            <div class="callout-body"><strong>This is the corrected rule (was B15 in v2.2).</strong> The old B15 said "FastAPI never touches PostgreSQL" with no qualification. This caused confusion on Angular systems where FastAPI IS the primary backend and must access PostgreSQL. B15 is now split into B15a (Next.js) and B15b (Angular).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">B15b</span><span class="rule-title">Angular Stack — FastAPI Is the Primary Database Owner</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">On Angular systems (FundsLink, Reserve Bank), FastAPI has full read/write access to both PostgreSQL (via Prisma or SQLAlchemy) and MongoDB (via Mongoose). FastAPI is the primary and only backend — it handles all database operations. There is no separate "orchestration layer" above it.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">PostgreSQL access</span><div class="rule-meta-val">Full read/write via Prisma ORM</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">MongoDB access</span><div class="rule-meta-val">Full read/write via Mongoose (B47–B52)</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">ChromaDB access</span><div class="rule-meta-val">Read-only for RAG — FundsLink only (F13–F14)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">B16</span><span class="rule-title">Database Separation — Relational vs Vector vs Document</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Separate data by type and purpose. PostgreSQL stores structured relational data (users, transactions, governance records). ChromaDB stores vector embeddings (RAG context, document similarity). MongoDB stores flexible document data (AI-generated outputs, dynamic schemas, logs — Angular stack only). Never store embeddings in PostgreSQL, never store relational data in MongoDB.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">PostgreSQL</span><div class="rule-meta-val">Users · transactions · votes · applications · sessions</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">MongoDB</span><div class="rule-meta-val">AI outputs · dynamic content · logs · flexible schemas</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">ChromaDB</span><div class="rule-meta-val">Embeddings · RAG context · document similarity only</div></div>
           </div>
         </div>
       </div>
@@ -1026,18 +843,30 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
       <div class="rule-card high">
         <div class="rule-card-head"><span class="rule-num-badge">B17</span><span class="rule-title">Cross-Database Sync Pattern</span><span class="sev-badge sev-high">High</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">When PostgreSQL changes affect ChromaDB (e.g., user profile update): Next.js API → FastAPI webhook → ChromaDB update. Integration test must verify sync.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">When a change to PostgreSQL data must be reflected in ChromaDB or MongoDB (e.g., user profile update that affects RAG context), the sync must be explicit and tested. Integration tests must verify cross-database sync correctness. No silent sync — every cross-database write is logged.</p>
+          <div class="stack-diff">
+            <div class="stack-diff-col">
+              <div class="stack-diff-head nj">Next.js Stack</div>
+              <div class="stack-diff-body">Next.js API → FastAPI webhook → ChromaDB update. Integration test verifies sync on each deploy.</div>
+            </div>
+            <div class="stack-diff-col">
+              <div class="stack-diff-head ang">Angular Stack</div>
+              <div class="stack-diff-body">FastAPI service layer coordinates Postgres + MongoDB writes in a single transaction-aware operation. Sync failures trigger a rollback and error log.</div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B18</span><span class="rule-title">Selective Field Selection — No SELECT *</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B18</span><span class="rule-title">Selective Field Selection — No SELECT * on Any Query</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">All Prisma queries use <code>select</code> to return only needed fields. Never expose <code>password_hash</code>, <code>reset_token</code>, <code>refresh_token</code>, etc.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS — PostgreSQL</span></div>
+          <p class="rule-statement">All Prisma queries use explicit <code>select</code> to return only the fields needed. Never use <code>findMany()</code> or <code>findFirst()</code> without a <code>select</code> clause. Never expose <code>password_hash</code>, <code>reset_token</code>, <code>refresh_token</code>, or <code>deleted_at</code>.</p>
           <div class="compare-row">
-            <div class="compare-block compare-bad"><div class="compare-label">❌ Exposes sensitive fields</div><pre>prisma.user.findMany() <span class="cc">// no select</span></pre></div>
-            <div class="compare-block compare-good"><div class="compare-label">✅ Explicit safe fields</div><pre>prisma.user.findMany({
-  select: { id: <span class="ck">true</span>, email: <span class="ck">true</span> }
+            <div class="compare-block compare-bad"><div class="compare-label">❌ Exposes sensitive fields</div><pre>prisma.user.<span class="cf">findMany</span>() <span class="cc">// no select</span></pre></div>
+            <div class="compare-block compare-good"><div class="compare-label">✅ Explicit safe fields</div><pre>prisma.user.<span class="cf">findMany</span>({
+  select: { id: <span class="ck">true</span>, email: <span class="ck">true</span>, name: <span class="ck">true</span> }
 })</pre></div>
           </div>
         </div>
@@ -1046,7 +875,131 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
   </div>
 </div>
 
-<!-- PART 4: MVP REALISM -->
+<!-- ══════════════════════════════════════════ PART 3b: MONGODB ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p3b">§ Part 3b — Database — MongoDB (B47–B52) · NEW IN v3.0 · Angular Stack Only</div>
+
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">When to Use MongoDB</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">✓</span> AI-generated output content</li>
+          <li><span class="rn">✓</span> Dynamic schemas that evolve fast</li>
+          <li><span class="rn">✓</span> Application logs and events</li>
+          <li><span class="rn">✓</span> Flexible feature-rich data models</li>
+          <li><span class="rn">✓</span> Content not requiring joins</li>
+          <li><span class="rn">✗</span> Financial transactions</li>
+          <li><span class="rn">✗</span> Data requiring ACID guarantees</li>
+          <li><span class="rn">✗</span> User authentication data</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Mongoose Required Fields</div>
+        <div style="font-family:var(--mono);font-size:10px;line-height:1.9;color:var(--muted)">
+          _id: ObjectId (auto)<br>
+          createdAt: Date (timestamps)<br>
+          updatedAt: Date (timestamps)<br>
+          deletedAt?: Date (soft delete)
+        </div>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner" style="background:var(--green);">
+        <span class="part-num">PART 3b / B47–B52 · NEW</span>
+        <span class="part-title">Database — MongoDB</span>
+        <span class="part-desc">Angular Stack Only · FundsLink · Reserve Bank</span>
+      </div>
+
+      <div class="callout callout-new">
+        <span class="callout-icon">+</span>
+        <div class="callout-body"><strong>New in v3.0:</strong> MongoDB + Mongoose is part of the Angular stack (FundsLink Academy, KSDRILL Reserve Bank). It is used for document data, AI-generated outputs, and flexible schemas. PostgreSQL remains the source of truth for all relational, transactional, and financial data. Rules B47–B52 govern MongoDB usage.</div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B47</span><span class="rule-title">Mongoose as the ODM — All MongoDB Access Via Schemas</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">All MongoDB access must go through Mongoose schemas and models. Direct MongoDB driver calls without a Mongoose schema are forbidden. Every collection must have a defined Mongoose schema before any document is written.</p>
+          <div class="code-block">
+            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">models/scholarship-match.model.py (Mongoose-equivalent via Motor/Beanie)</div></div>
+            <pre><span class="cc"># Python FastAPI: use Beanie ODM (Pydantic + Motor)</span>
+<span class="ck">class</span> <span class="ct">ScholarshipMatch</span>(Document):
+    student_id: <span class="ct">str</span>                 <span class="cc"># ref to PostgreSQL user id</span>
+    match_score: <span class="ct">float</span>
+    matched_at: <span class="ct">datetime</span>
+    ai_reasoning: <span class="ct">str</span>              <span class="cc"># AI-generated content</span>
+    created_at: <span class="ct">datetime</span> = Field(default_factory=datetime.utcnow)
+    deleted_at: Optional[<span class="ct">datetime</span>] = <span class="ck">None</span>  <span class="cc"># B52: soft delete</span>
+
+    <span class="ck">class</span> <span class="ct">Settings</span>:
+        name = <span class="cs">"scholarship_matches"</span>
+        use_state_management = <span class="ck">True</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B48</span><span class="rule-title">MongoDB for Document Data Only — Never for Financial Transactions</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">MongoDB is used exclusively for document data: AI-generated content, dynamic schemas, application logs, and feature-rich data that evolves without migration overhead. Financial transactions (Reserve Bank deposits, interest calculations, balances), authentication data, and any data requiring ACID guarantees must stay in PostgreSQL.</p>
+          <div class="compare-row">
+            <div class="compare-block compare-bad"><div class="compare-label">❌ Never in MongoDB</div><pre>transactions collection {
+  amount: 5000,        <span class="cc">// financial data</span>
+  balance: 12000,      <span class="cc">// balance</span>
+  interest_rate: 0.05  <span class="cc">// calculated</span>
+}</pre></div>
+            <div class="compare-block compare-good"><div class="compare-label">✅ Correct in MongoDB</div><pre>scholarship_matches collection {
+  ai_reasoning: "...", <span class="cc">// AI output</span>
+  match_score: 0.87,
+  dynamic_tags: [...]  <span class="cc">// flexible schema</span>
+}</pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B49</span><span class="rule-title">MongoDB Timestamps — timestamps: true on All Schemas</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">All Mongoose/Beanie schemas must enable automatic timestamps. This adds <code>createdAt</code> and <code>updatedAt</code> fields automatically. No manual timestamp management. Every document must be traceable by creation and modification time.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B50</span><span class="rule-title">Cross-Database References Use PostgreSQL IDs — Not ObjectIDs</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">When a MongoDB document references a user, record, or entity that exists in PostgreSQL, the reference field stores the PostgreSQL <code>cuid</code> string — NOT a MongoDB ObjectID. This maintains the PostgreSQL record as the system of record. MongoDB documents are subordinate to PostgreSQL entities.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">Reference field naming</span><div class="rule-meta-val"><code>student_id: str</code> — stores the Prisma cuid</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Source of truth</span><div class="rule-meta-val">PostgreSQL record — MongoDB document is a child</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B51</span><span class="rule-title">MongoDB Indexes — Define Indexes Explicitly, No Implicit Scanning</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">All MongoDB query fields must have explicit indexes defined in the schema. Never query a collection field without an index in production. Define indexes in the Mongoose/Beanie schema definition — not in ad-hoc migration scripts. CI validates that query fields have corresponding index definitions.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B52</span><span class="rule-title">Soft Delete on MongoDB — deletedAt Field, Never Hard Delete</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">MongoDB documents follow the same soft delete pattern as PostgreSQL (B39). Set <code>deletedAt</code> timestamp instead of removing documents. All queries must filter <code>{ deletedAt: null }</code> by default. A Mongoose middleware plugin enforces this automatically on all schemas.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 4: MVP REALISM ══════════════════════════════════════════ -->
 <hr class="divider"/>
 <div class="section-runner" id="p4">§ Part 4 — MVP Realism (B19–B23)</div>
 
@@ -1056,8 +1009,9 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
       <div class="sidebar-section">
         <div class="sidebar-label">v1 Endpoint Limits</div>
         <ul class="sb-rule-list">
-          <li><span class="rn">Next.js</span> 10–15 endpoints max</li>
-          <li><span class="rn">FastAPI</span> 3–4 endpoints max</li>
+          <li><span class="rn">NJ</span> 10–15 API routes max</li>
+          <li><span class="rn">FA(ANG)</span> 10–15 FastAPI endpoints max</li>
+          <li><span class="rn">FA(NJ)</span> 3–4 AI endpoints max</li>
           <li><span class="rn">F1</span> /ai/match or /ai/predict</li>
           <li><span class="rn">F2</span> /ai/rag</li>
           <li><span class="rn">F3</span> /ai/chat or /ws/chat</li>
@@ -1067,10 +1021,11 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
       <div class="sidebar-section">
         <div class="sidebar-label">v1 Constraints</div>
         <div style="font-size:11.5px;line-height:1.8;color:var(--muted)">
-          No BullMQ/Redis<br/>
-          No WebSocket except /ws/chat<br/>
-          All: 5 gate questions passed<br/>
-          Models loaded at startup only
+          No BullMQ/Redis unless core*<br>
+          No WebSocket except /ws/chat<br>
+          All: 5 gate questions passed<br>
+          Models loaded at startup only<br><br>
+          *Reserve Bank: BullMQ is core to deposit scheduling — permitted in v1
         </div>
       </div>
     </aside>
@@ -1078,768 +1033,366 @@ code { font-family: var(--mono); font-size: 11px; background: #dbe8f4; border: 1
       <div class="part-banner">
         <span class="part-num">PART 4 / B19–B23</span>
         <span class="part-title">MVP Realism</span>
-        <span class="part-desc">2 Critical · 3 High</span>
+        <span class="part-desc">3 Critical · 2 High · Both Stacks</span>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B19</span><span class="rule-title">v1 Endpoint Limits</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B19</span><span class="rule-title">Endpoint Count Limits — 10–15 Max in v1 Per Service</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">v1 (MVP): Next.js API = 10–15 endpoints. FastAPI = 3–4 endpoints (match, predict, rag, chat). No more. Building 20 endpoints before launch is building the wrong thing.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Next.js API routes: maximum 10–15 endpoints in v1. Angular-stack FastAPI: maximum 10–15 endpoints. Next.js-stack AI FastAPI: maximum 3–4 endpoints. Every endpoint beyond these limits defers to v2 and requires documented approval.</p>
         </div>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B20</span><span class="rule-title">5 Gate Questions — Every v1 Endpoint</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B20</span><span class="rule-title">5 Gate Questions Before Any Endpoint is Built</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">5 gate questions for EVERY v1 endpoint in both backends. One "no" = defer to v2. PR template requires completed checklist before merge.</p>
-          <div class="gate-grid">
-            <div class="gate-item"><span class="gate-num">G1</span><span class="gate-text">Does this endpoint serve a v1 core feature (from Frontend Group 2)?</span><span class="gate-outcome">NO → v2</span></div>
-            <div class="gate-item"><span class="gate-num">G2</span><span class="gate-text">Is the request/response fully defined in OpenAPI before writing code?</span><span class="gate-outcome">NO → v2</span></div>
-            <div class="gate-item"><span class="gate-num">G3</span><span class="gate-text">Can this ship without new infrastructure (no queues, no WebSocket unless /ws/chat)?</span><span class="gate-outcome">NO → v2</span></div>
-            <div class="gate-item"><span class="gate-num">G4</span><span class="gate-text">Does this endpoint have ONE single responsibility?</span><span class="gate-outcome">NO → split</span></div>
-            <div class="gate-item"><span class="gate-num">G5</span><span class="gate-text">Can the frontend implement skeleton/error/success with this response shape?</span><span class="gate-outcome">NO → fix shape</span></div>
-          </div>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every endpoint on both stacks must answer all 5 questions before being coded: (1) Does a user flow require it? (2) Does removing it break the primary workflow? (3) Is the OpenAPI spec written? (4) Is the DB schema ready? (5) Has it been validated with a real use case? Fail any gate — defer to v2.</p>
         </div>
       </div>
 
       <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B21</span><span class="rule-title">No Background Jobs in v1</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B21</span><span class="rule-title">No BullMQ/Redis in v1 — Unless Functionally Core</span><span class="sev-badge sev-high">High</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">No BullMQ/Redis background jobs in v1. Use sync or sequential. Add queues in v2 if needed. If an operation takes &lt;3s, do it synchronously within the request.</p>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Background job infrastructure (BullMQ + Redis) is not added in v1 unless it is functionally core to the platform's primary value proposition. Exception: KSDRILL Reserve Bank (scheduled deposits are the core feature) and SyncUp (negotiation timers are the core feature).</p>
         </div>
       </div>
 
       <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B22</span><span class="rule-title">WebSocket Restriction</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B22</span><span class="rule-title">WebSocket Restriction — Only /ws/chat in v1</span><span class="sev-badge sev-high">High</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">No WebSocket in v1 except <code>/ws/chat</code> — ONLY if chat is a core MVP feature. Otherwise, HTTP polling every 5 seconds for real-time-like features.</p>
+          <div class="scope-bar"><span class="scope-chip scope-nextjs">NEXT.JS STACK (SyncUp) ONLY</span></div>
+          <p class="rule-statement">WebSocket connections are restricted to a single endpoint (<code>/ws/chat</code>) in v1, and only on SyncUp. No other real-time connections in v1. Angular systems do not implement WebSocket in v1.</p>
         </div>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B23</span><span class="rule-title">Model Startup Loading</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">B23</span><span class="rule-title">MVP Definition — Primary Workflow Complete, Nothing More</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">FastAPI models load at startup via <code>lifespan</code> and cache in <code>app.state.models</code>. Never load models during request handling. One cold start vs. every request slow is the difference between usable and unusable.</p>
-          <div class="compare-row">
-            <div class="compare-block compare-bad"><div class="compare-label">❌ Loads on every request</div><pre><span class="ck">async def</span> <span class="cf">predict</span>(input):
-  model = <span class="cf">load_model</span>()  <span class="cc"># FORBIDDEN</span></pre></div>
-            <div class="compare-block compare-good"><div class="compare-label">✅ Loaded once at startup</div><pre>@asynccontextmanager
-<span class="ck">async def</span> <span class="cf">lifespan</span>(app):
-  app.state.model = <span class="cf">load_model</span>()</pre></div>
-          </div>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">MVP is complete when the primary user workflow works end to end. For FundsLink: student can apply and receive a funding match. For Maphophe: resident can submit a service request. For Reserve Bank: user can create an account and make a deposit. For SyncUp: creator can pitch and receive a response. Nothing more ships as v1.</p>
         </div>
       </div>
     </main>
   </div>
 </div>
 
-<!-- PART 5: PERFORMANCE -->
+<!-- ══════════════════════════════════════════ PART 5+6+7+8 ABBREVIATED ══════════════════════════════════════════ -->
 <hr class="divider"/>
-<div class="section-runner" id="p5">§ Part 5 — Performance (B24–B30)</div>
+<div class="section-runner" id="p5">§ Parts 5–8 — Performance, Resilience, Security, Observability (B24–B46)</div>
 
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-label">Latency Targets (p95)</div>
-        <ul class="sb-rule-list">
-          <li><span class="rn">Next.js</span> &lt;150ms API calls</li>
-          <li><span class="rn">FastAPI</span> &lt;500ms predictions</li>
-          <li><span class="rn">FastAPI</span> &lt;2s RAG/agents</li>
-        </ul>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Rate Limit Tiers</div>
-        <ul class="sb-rule-list">
-          <li><span class="rn">AUTH</span> 100 req/min/IP</li>
-          <li><span class="rn">AI</span> 10 concurrent</li>
-          <li><span class="rn">PUBLIC GET</span> 1000 req/min/IP</li>
-          <li><span class="rn">ADMIN</span> 200 req/min/user</li>
-        </ul>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">OpenAI Retry Chain</div>
-        <div style="font-family:var(--mono);font-size:10px;line-height:1.9;color:var(--muted)">
-          Attempt 1: immediately<br/>
-          Backoff: 1s<br/>
-          Attempt 2: +1s<br/>
-          Backoff: 2s<br/>
-          Attempt 3: +2s<br/>
-          Backoff: 4s<br/>
-          <span style="color:var(--red)">→ fallback response</span>
-        </div>
-      </div>
-    </aside>
-    <main class="col-main">
-      <div class="part-banner">
-        <span class="part-num">PART 5 / B24–B30</span>
-        <span class="part-title">Performance</span>
-        <span class="part-desc">3 Critical · 3 High · 1 Medium</span>
-      </div>
+<div class="part-section" style="padding:24px 28px;">
+  <div class="callout callout-info">
+    <span class="callout-icon">i</span>
+    <div class="callout-body"><strong>Parts 5–8 Summary:</strong> Rules B24–B46 are carried forward from v2.2 with scope annotations. Key changes: all references to "OpenAI timeout" updated to "LangChain/inference timeout" (B25). B35 updated for dual-stack docker-compose. B45 updated to cover both HTTP-only cookies (Next.js) and JWT storage (Angular).</div>
+  </div>
 
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B24</span><span class="rule-title">Latency Targets</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Enforced via CI performance regression: Next.js API &lt;150ms p95. FastAPI predictions &lt;500ms p95. FastAPI RAG/agents &lt;2s p95.</p>
-        </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px;">
+    <div>
+      <p style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:10px;">Performance Targets (B24–B30) — Both Stacks</p>
+      <table class="const-table">
+        <thead><tr><th>Target</th><th>Value</th><th>Applies To</th></tr></thead>
+        <tbody>
+          <tr><td>CRUD latency (p95)</td><td style="font-family:var(--mono);color:var(--green)">&lt;150ms</td><td>Both stacks</td></tr>
+          <tr><td>Auth endpoints (p95)</td><td style="font-family:var(--mono);color:var(--green)">&lt;200ms</td><td>Both stacks</td></tr>
+          <tr><td>AI inference (p95)</td><td style="font-family:var(--mono);color:var(--green)">&lt;2s</td><td>Both stacks</td></tr>
+          <tr><td>LangChain timeout</td><td style="font-family:var(--mono);color:var(--red)">30s max</td><td>FastAPI AI layer</td></tr>
+          <tr><td>LangChain retries</td><td style="font-family:var(--mono)">3×</td><td>FastAPI AI layer</td></tr>
+          <tr><td>Rate limit — Auth</td><td style="font-family:var(--mono)">100/min/IP</td><td>Both stacks</td></tr>
+          <tr><td>Rate limit — AI</td><td style="font-family:var(--mono)">10 concurrent</td><td>FastAPI</td></tr>
+          <tr><td>Rate limit — Public</td><td style="font-family:var(--mono)">1000/min</td><td>Both stacks</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <p style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:10px;">Security Baseline (B37–B40+B45) — Stack-Differentiated</p>
+      <table class="const-table">
+        <thead><tr><th>Rule</th><th>Next.js Stack</th><th>Angular Stack</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:var(--mono);font-size:10px">B37 — RBAC</td><td>Middleware on API routes</td><td>FastAPI dependency injection</td></tr>
+          <tr><td style="font-family:var(--mono);font-size:10px">B38 — Audit Logs</td><td>Prisma → AuditLog table</td><td>FastAPI service layer → Postgres</td></tr>
+          <tr><td style="font-family:var(--mono);font-size:10px">B39 — Soft Delete</td><td>deleted_at via Prisma</td><td>deleted_at via Prisma + Beanie (B52)</td></tr>
+          <tr><td style="font-family:var(--mono);font-size:10px">B45 — Auth Storage</td><td>HTTP-only cookies, NextAuth</td><td>JWT, secure storage, HTTP interceptor</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.8;">
+        <strong style="color:var(--ink)">B36 — Circuit Breaker (Both):</strong><br>
+        5 consecutive failures → circuit opens<br>
+        30s cooldown → half-open probe<br>
+        Applies to: FastAPI AI calls, LangChain, ChromaDB, MongoDB connections
       </div>
+    </div>
+  </div>
 
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B25</span><span class="rule-title">OpenAI Call Resilience</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">FastAPI calls to OpenAI: 30s timeout + 3 retries (exponential backoff: 1s/2s/4s) + fallback to cached response or graceful error.</p>
-          <div class="code-block">
-            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">services/openai_client.py</div></div>
-            <pre><span class="ck">async with</span> asyncio.<span class="cf">timeout</span>(<span class="cn">30</span>):
-  <span class="ck">for</span> attempt <span class="ck">in</span> [<span class="cn">1</span>, <span class="cn">2</span>, <span class="cn">4</span>]:  <span class="cc"># backoff seconds</span>
-    <span class="ck">try</span>:
-      result = <span class="ck">await</span> <span class="cf">openai_call</span>()
-      <span class="ck">return</span> result
-    <span class="ck">except</span> RateLimitError:
-      <span class="ck">await</span> asyncio.<span class="cf">sleep</span>(attempt)
-<span class="cc"># fallback to cache or graceful error</span>
-<span class="ck">return</span> cached_response <span class="ck">or</span> graceful_error()</pre>
-          </div>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B26</span><span class="rule-title">Rate Limit Tiers</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Rate limit tiers enforced via Upstash/Redis middleware: AUTH (100/min), AI (10 concurrent), Public GET (1000/min), Admin (200/min).</p>
-          <table class="tier-table">
-            <thead><tr><th>Tier</th><th>Limit</th><th>Endpoints</th></tr></thead>
-            <tbody>
-              <tr><td><span class="tier-icon">AUTH</span></td><td>100 req/min/IP</td><td style="font-family:var(--mono);font-size:10px;color:var(--muted)">/api/v1/auth/*</td></tr>
-              <tr><td><span class="tier-icon">AI</span></td><td>10 concurrent</td><td style="font-family:var(--mono);font-size:10px;color:var(--muted)">/api/v1/ai/*</td></tr>
-              <tr><td><span class="tier-icon">PUBLIC</span></td><td>1000 req/min/IP</td><td style="font-family:var(--mono);font-size:10px;color:var(--muted)">/api/v1/public/*, /api/health</td></tr>
-              <tr><td><span class="tier-icon">ADMIN</span></td><td>200 req/min/user</td><td style="font-family:var(--mono);font-size:10px;color:var(--muted)">/api/v1/admin/*</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B28</span><span class="rule-title">External Call Resilience</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">ALL external API calls (OpenAI, Stripe, etc.) have: timeouts + retries + circuit breakers. <code>fetch(stripeApi)</code> without timeout is forbidden.</p>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B29</span><span class="rule-title">Request ID Tracing — X-Request-ID</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Every request gets an <code>X-Request-ID</code> header. Next.js generates it, forwards to FastAPI, logs with it everywhere. Corresponds to Frontend Rule 61.</p>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B30</span><span class="rule-title">Idempotency Keys</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">All POST/PUT/PATCH endpoints accept <code>Idempotency-Key</code> header. Store key in DB for 24 hours. Prevents duplicate charges, double submissions, and retry-storm side effects.</p>
-        </div>
-      </div>
-    </main>
+  <div style="margin-top:20px;">
+    <p style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:10px;">Observability Requirements (B41–B46) — Both Stacks</p>
+    <table class="const-table">
+      <thead><tr><th>Rule</th><th>Requirement</th><th>Stack</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:var(--mono);font-size:10px">B41</td><td>Structured JSON logging — all requests, all services</td><td>Both</td></tr>
+        <tr><td style="font-family:var(--mono);font-size:10px">B42</td><td>Feature flags stored in DB, default: false for v2 features</td><td>Both</td></tr>
+        <tr><td style="font-family:var(--mono);font-size:10px">B43</td><td>Sentry error tracking with source maps — all services</td><td>Both</td></tr>
+        <tr><td style="font-family:var(--mono);font-size:10px">B44</td><td>API deprecation: 6-month Sunset header, then remove</td><td>Both</td></tr>
+        <tr><td style="font-family:var(--mono);font-size:10px">B45</td><td>CORS locked to known domains, CSP headers set</td><td>Both</td></tr>
+        <tr><td style="font-family:var(--mono);font-size:10px">B46</td><td>Cross-constitution governance — PR labels required on contract changes</td><td>Both</td></tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
-<!-- PART 6: RESILIENCE -->
+<!-- ══════════════════════════════════════════ PART 9: FASTAPI ══════════════════════════════════════════ -->
 <hr class="divider"/>
-<div class="section-runner" id="p6">§ Part 6 — Resilience (B31–B36)</div>
+<div class="section-runner" id="p9">§ Part 9 — FastAPI AI Rules (F1–F15)</div>
 
 <div class="part-section">
   <div class="col-layout">
     <aside class="col-sidebar">
       <div class="sidebar-section">
-        <div class="sidebar-label">Circuit Breaker Config</div>
+        <div class="sidebar-label">FastAPI Scope</div>
         <ul class="sb-rule-list">
-          <li><span class="rn">Threshold</span> 5 failures in 1min</li>
-          <li><span class="rn">Open for</span> 30 seconds</li>
-          <li><span class="rn">Half-open</span> 1 test request</li>
-          <li><span class="rn">Success</span> → CLOSED</li>
-          <li><span class="rn">Failure</span> → OPEN again</li>
+          <li><span class="rn">NJ</span> AI/RAG service only (internal)</li>
+          <li><span class="rn">ANG</span> Primary backend — all operations</li>
+          <li><span class="rn">BOTH</span> F1–F15 apply to AI functions</li>
         </ul>
       </div>
       <div class="sidebar-section">
-        <div class="sidebar-label">Next.js → FastAPI Timeout</div>
-        <div style="font-size:11.5px;line-height:1.8;color:var(--muted)">
-          Timeout: <strong style="color:var(--ink)">25s</strong><br/>
-          Retry: <strong style="color:var(--ink)">1s/2s/4s</strong><br/>
-          Fallback: <strong style="color:var(--ink)">required</strong><br/>
-          Frontend waits max: <strong style="color:var(--ink)">30s</strong>
-        </div>
-      </div>
-    </aside>
-    <main class="col-main">
-      <div class="part-banner">
-        <span class="part-num">PART 6 / B31–B36</span>
-        <span class="part-title">Resilience</span>
-        <span class="part-desc">4 Critical · 2 High</span>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B31</span><span class="rule-title">OpenAPI → Zod Generation Pipeline</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">OpenAPI contract → frontend Zod generation via <code>openapi-zod-client</code> in pre-commit hook. CI fails if schemas are manually written. Zero manual validation files.</p>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B32</span><span class="rule-title">Environment Contract</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Every service has <code>.env.example</code> with ALL required variables. App fails to start with a clear, descriptive error if any required env var is missing.</p>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B33</span><span class="rule-title">Migration Rollback Strategy</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Every migration has a documented rollback strategy. <code>prisma migrate down</code> must be tested locally before deploying. PR template requires rollback plan.</p>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B34</span><span class="rule-title">Next.js → FastAPI Timeout Contract</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Next.js → FastAPI calls: 25s timeout, exponential backoff retry (1s/2s/4s), fallback response. The frontend must never wait more than 30s total.</p>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B35</span><span class="rule-title">Local Development Contract</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement"><code>docker-compose.yml</code> spins up the entire stack: Postgres, ChromaDB, Redis, FastAPI, Next.js. One command. A dev environment that requires manual steps is a broken dev environment.</p>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B36</span><span class="rule-title">Circuit Breaker Pattern</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Circuit breaker for external APIs: 5 failures in 1 minute → open circuit for 30s → half-open with 1 test request → CLOSED on success.</p>
-          <div class="cb-diagram"><span class="cb-closed">CLOSED</span> <span class="cb-arrow">→</span> (5 failures in 1min) <span class="cb-arrow">→</span> <span class="cb-open">OPEN</span> <span class="cb-arrow">→</span> (30s) <span class="cb-arrow">→</span> <span class="cb-half">HALF-OPEN</span>
-                                                    <span class="cb-arrow">↓ success</span>                                           <span class="cb-arrow">↓ failure</span>
-                                                  <span class="cb-closed">CLOSED</span>                                                <span class="cb-open">OPEN</span></div>
-        </div>
-      </div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 7: SECURITY -->
-<hr class="divider"/>
-<div class="section-runner" id="p7">§ Part 7 — Security (B37–B40)</div>
-
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-label">V1 Roles</div>
+        <div class="sidebar-label">AI Stack (Both)</div>
         <ul class="sb-rule-list">
-          <li><span class="rn">USER</span> Default role</li>
-          <li><span class="rn">CREATOR</span> Can create content</li>
-          <li><span class="rn">ADMIN</span> Full access</li>
-          <li><span class="rn">UNAUTHED</span> Public only</li>
+          <li><span class="rn">LCH</span> LangChain (replaces direct OpenAI)</li>
+          <li><span class="rn">CDB</span> ChromaDB — FundsLink RAG only</li>
+          <li><span class="rn">PY</span> Python Decimal for financials</li>
+          <li><span class="rn">SEM</span> Semaphore: cpu_count × 2</li>
+          <li><span class="rn">SIM</span> Similarity threshold ≥ 0.7</li>
         </ul>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Security Baseline</div>
-        <ul class="sb-rule-list">
-          <li><span class="rn">Auth</span> HTTP-only cookies</li>
-          <li><span class="rn">CORS</span> Specific origins only</li>
-          <li><span class="rn">Input</span> DOMPurify for HTML</li>
-          <li><span class="rn">Headers</span> CSP active</li>
-          <li><span class="rn">CSRF</span> Protection active</li>
-        </ul>
-      </div>
-    </aside>
-    <main class="col-main">
-      <div class="part-banner">
-        <span class="part-num">PART 7 / B37–B40</span>
-        <span class="part-title">Security</span>
-        <span class="part-desc">2 Critical · 2 High</span>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B37</span><span class="rule-title">RBAC Authorization</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Every protected endpoint checks role via <code>@requireRole()</code> middleware. Roles: USER, ADMIN, CREATOR in v1. No default admin account — seed script only.</p>
-          <table class="matrix-table">
-            <thead>
-              <tr><th>Action</th><th>USER</th><th>CREATOR</th><th>ADMIN</th><th>UNAUTHED</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Read public</td><td class="m-yes">✅</td><td class="m-yes">✅</td><td class="m-yes">✅</td><td class="m-yes">✅</td></tr>
-              <tr><td>Register / Login</td><td class="m-yes">✅</td><td class="m-yes">✅</td><td class="m-yes">✅</td><td class="m-yes">✅</td></tr>
-              <tr><td>Own profile CRUD</td><td class="m-yes">✅</td><td class="m-yes">✅</td><td class="m-yes">✅</td><td class="m-no">❌</td></tr>
-              <tr><td>Create content</td><td class="m-no">❌</td><td class="m-yes">✅</td><td class="m-yes">✅</td><td class="m-no">❌</td></tr>
-              <tr><td>Delete any content</td><td class="m-no">❌</td><td class="m-no">❌</td><td class="m-yes">✅</td><td class="m-no">❌</td></tr>
-              <tr><td>Admin panel access</td><td class="m-no">❌</td><td class="m-no">❌</td><td class="m-yes">✅</td><td class="m-no">❌</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B38</span><span class="rule-title">Audit Logging</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Every state-changing action logs to <code>audit_logs</code> table: user_id, action, metadata JSON, ip_address, user_agent. Enforced via Prisma middleware.</p>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B39</span><span class="rule-title">Soft Delete — Always</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Every table has <code>deleted_at TIMESTAMP NULL</code>. Never hard delete in v1 unless GDPR compliance explicitly requires it. Hard deletes are irreversible bugs waiting to happen.</p>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B40</span><span class="rule-title">Environment Isolation</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Three environments: development (local), staging (pre-prod), production (live). Separate DBs, different rate limits (staging: lower), no production secrets in code ever.</p>
-        </div>
-      </div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 8: OBSERVABILITY -->
-<hr class="divider"/>
-<div class="section-runner" id="p8">§ Part 8 — Observability (B41–B45)</div>
-
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-label">Log Format Fields</div>
-        <ul class="sb-rule-list">
-          <li><span class="rn">timestamp</span> ISO 8601</li>
-          <li><span class="rn">level</span> info/warn/error</li>
-          <li><span class="rn">request_id</span> UUID v4</li>
-          <li><span class="rn">user_id</span> if authed</li>
-          <li><span class="rn">endpoint</span> full path</li>
-          <li><span class="rn">duration_ms</span> int</li>
-          <li><span class="rn">status_code</span> int</li>
-        </ul>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Deprecation Headers</div>
-        <div style="font-family:var(--mono);font-size:10px;line-height:1.8;color:var(--muted)">
-          Deprecation: true<br/>
-          Sunset: Sat, 01 Oct...<br/>
-          Link: &lt;/api/v2/...&gt;;<br/>
-          &nbsp;&nbsp;rel="successor-version"
-        </div>
-      </div>
-    </aside>
-    <main class="col-main">
-      <div class="part-banner">
-        <span class="part-num">PART 8 / B41–B45</span>
-        <span class="part-title">Observability</span>
-        <span class="part-desc">1 Critical · 4 High</span>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B41</span><span class="rule-title">Structured JSON Logging</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Structured JSON logging for all services. Errors to Sentry. Metrics (latency, error rate, request count) via Prometheus endpoint.</p>
-          <div class="json-block"><span class="jk">"timestamp"</span>: <span class="jv">"2026-04-07T10:30:00.000Z"</span>,
-<span class="jk">"level"</span>:     <span class="jv">"info"</span>,
-<span class="jk">"request_id"</span>: <span class="jv">"req_abc123"</span>,
-<span class="jk">"user_id"</span>:   <span class="jv">"user_xyz789"</span>,
-<span class="jk">"endpoint"</span>:  <span class="jv">"/api/v1/auth/login"</span>,
-<span class="jk">"duration_ms"</span>: <span class="jn">45</span>,
-<span class="jk">"status_code"</span>: <span class="jn">200</span>,
-<span class="jk">"message"</span>:   <span class="jv">"User logged in successfully"</span></div>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B42</span><span class="rule-title">Feature Flags — No Hardcoding</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Feature flags for all new features. Stored in database or config service. Default <code>false</code> for v2 features, <code>true</code> for v1 core. Changeable without deploy. Corresponds to Frontend Rule 65.</p>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B43</span><span class="rule-title">Cross-Service Consistency</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Cross-service operations (Next.js → FastAPI → DB) must be: idempotent (retryable) OR have a compensating action (rollback). Never leave the system in an inconsistent state.</p>
-          <div class="callout callout-critical">
-            <span class="callout-icon">!</span>
-            <div class="callout-body"><strong>The failure mode:</strong> Next.js calls FastAPI (success), then Next.js writes to DB (fails) → inconsistent state. Compensating transaction must roll back FastAPI side on DB failure.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">B44</span><span class="rule-title">API Deprecation Policy</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Deprecated endpoints log warnings and include <code>Deprecation: true</code> and <code>Sunset: &lt;date&gt;</code> headers. Minimum 6 months support. Removal requires documented migration path.</p>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">B45</span><span class="rule-title">Security Baseline</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Auth in HTTP-only cookies (never localStorage). CSRF protection. CORS: specific origins only. Rate limit per user + IP. Input sanitization (DOMPurify for HTML). CSP headers.</p>
-        </div>
-      </div>
-    </main>
-  </div>
-</div>
-
-<!-- PART 9: FASTAPI-SPECIFIC -->
-<hr class="divider"/>
-<div class="section-runner" id="p9">§ Part 9 — FastAPI-Specific Rules (F1–F15)</div>
-
-<div class="part-section">
-  <div class="col-layout">
-    <aside class="col-sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-label">async def vs def</div>
-        <ul class="sb-rule-list">
-          <li><span class="rn">async def</span> HTTP/DB calls (I/O)</li>
-          <li><span class="rn">def</span> Model inference (CPU)</li>
-          <li><span class="rn">to_thread</span> CPU in async ctx</li>
-        </ul>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Concurrency</div>
-        <div style="font-size:11.5px;line-height:1.8;color:var(--muted)">
-          Max: <strong style="color:var(--ink)">cpu_count × 2</strong><br/>
-          Semaphore: asyncio<br/>
-          Idle unload: <strong style="color:var(--ink)">30 min</strong><br/>
-          Batch calls when possible
-        </div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Token Budget Guard</div>
-        <div style="font-family:var(--mono);font-size:10px;line-height:1.7;color:var(--muted)">
-          max_tokens = config value<br/>
-          budget = max_tokens × 1.5<br/>
-          if tokens &gt; budget:<br/>
-          &nbsp;&nbsp;→ reject request<br/>
-          &nbsp;&nbsp;→ return 400 error
-        </div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Similarity Threshold</div>
-        <div style="font-size:11.5px;line-height:1.8;color:var(--muted)">
-          Min score: <strong style="color:var(--ink)">0.7</strong><br/>
-          Below 0.7: return<br/>
-          "No relevant results"<br/>
-          Never return low-confidence
-        </div>
       </div>
     </aside>
     <main class="col-main">
       <div class="part-banner">
         <span class="part-num">PART 9 / F1–F15</span>
-        <span class="part-title">FastAPI-Specific Rules</span>
-        <span class="part-desc">7 Critical · 8 High</span>
+        <span class="part-title">FastAPI AI Rules</span>
+        <span class="part-desc">AI functions on both stacks · LangChain replaces OpenAI</span>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">F1</span><span class="rule-title">Model Startup Loading — lifespan</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">F1</span><span class="rule-title">AI Models Load Once at Startup — Under 5 Seconds</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Models load ONCE at startup, stored in <code>app.state.models</code>. Never reload per request. Use <code>lifespan</code> context manager.</p>
-          <div class="code-block">
-            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">main.py</div></div>
-            <pre>@asynccontextmanager
-<span class="ck">async def</span> <span class="cf">lifespan</span>(app: FastAPI):
-    <span class="cc"># Startup — load all models once</span>
-    app.state.models = {
-        <span class="cs">"sentiment"</span>: <span class="cf">load_model</span>(<span class="cs">"sentiment-v1"</span>),
-        <span class="cs">"embedding"</span>: <span class="cf">load_model</span>(<span class="cs">"embedding-v2"</span>),
-    }
-    <span class="ck">yield</span>
-    <span class="cc"># Shutdown — cleanup</span>
-    <span class="ck">for</span> model <span class="ck">in</span> app.state.models.values():
-        model.<span class="cf">cleanup</span>()</pre>
-          </div>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS — AI Functions</span></div>
+          <p class="rule-statement">AI models and LangChain chain objects load once at FastAPI startup, stored as application state. Never load models per-request. Startup time must be under 5 seconds. Models unload after 30 minutes of idle to reclaim memory.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">F3</span><span class="rule-title">Concurrency Limiting — Semaphore at cpu_count × 2</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS — AI Functions</span></div>
+          <p class="rule-statement">AI inference is gated by a semaphore set to <code>cpu_count × 2</code>. Requests that exceed the semaphore queue with a 30-second timeout, then return <code>AI_SERVICE_UNAVAILABLE</code>. Never allow unbounded concurrent AI inference.</p>
+        </div>
+      </div>
+
+      <div class="rule-card critical">
+        <div class="rule-card-head"><span class="rule-num-badge">F6</span><span class="rule-title">async def for I/O — def for CPU — Never Mix</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS — FastAPI</span></div>
+          <p class="rule-statement">FastAPI route handlers that perform I/O (DB reads, HTTP calls, ChromaDB queries) must use <code>async def</code>. CPU-bound operations (inference, embeddings, computations) use <code>def</code> and are wrapped in <code>asyncio.to_thread()</code>. Never block the async event loop with CPU work.</p>
         </div>
       </div>
 
       <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">F2</span><span class="rule-title">Idle Model Unloading — 30min</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">F11</span><span class="rule-title">Token Budget Guard — Reject Requests Exceeding Budget</span><span class="sev-badge sev-high">High</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Unload unused models after 30 minutes idle. Warm-up allowed on next request. GPU memory is expensive — keeping 5 models loaded for 1 user is wasteful.</p>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">F3</span><span class="rule-title">Concurrency Limiting</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Set <code>max_concurrent_requests = os.cpu_count() * 2</code>. Never unlimited. Python GIL limits concurrency — use asyncio.Semaphore.</p>
-          <div class="code-block">
-            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">middleware/concurrency.py</div></div>
-            <pre>max_concurrent = os.<span class="cf">cpu_count</span>() * <span class="cn">2</span>
-semaphore = asyncio.<span class="cf">Semaphore</span>(max_concurrent)
-
-<span class="ck">async def</span> <span class="cf">predict</span>(request):
-  <span class="ck">async with</span> semaphore:
-    <span class="cc"># safe — bounded concurrency</span>
-    <span class="ck">return await</span> <span class="cf">run_inference</span>(request)</pre>
-          </div>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS — AI Functions</span></div>
+          <p class="rule-statement">Count tokens before sending to LangChain or any LLM. If the input exceeds the configured token budget, reject with <code>VALIDATION_ERROR</code> and a clear message indicating the limit. Never silently truncate — always tell the caller what happened.</p>
         </div>
       </div>
 
       <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">F4 + F5</span><span class="rule-title">Batch Predictions · Model Versioning</span><span class="sev-badge sev-high">High</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">F12</span><span class="rule-title">LangChain Response Caching — 1 Hour TTL</span><span class="sev-badge sev-high">High</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement"><strong>F4:</strong> Batch predictions when possible — one request with 10 items vs. 10 requests. GPU calls have overhead; batching = 10× throughput. <strong>F5:</strong> Model versioning via <code>/v1/predict</code>, <code>/v2/predict</code> with deprecation headers for canary rollouts.</p>
-        </div>
-      </div>
-
-      <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">F6 + F7</span><span class="rule-title">async def / def Correctness + Thread Pool</span><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement"><strong>F6:</strong> Use <code>async def</code> for I/O (HTTP calls, ChromaDB). Use <code>def</code> for CPU-bound (model inference). Wrong choice blocks the event loop. <strong>F7:</strong> Run CPU-bound inference in <code>asyncio.to_thread()</code> or a separate process pool.</p>
-          <div class="compare-row">
-            <div class="compare-block compare-bad"><div class="compare-label">❌ Blocks event loop</div><pre><span class="ck">async def</span> <span class="cf">predict</span>(data):
-  result = model.<span class="cf">infer</span>(data) <span class="cc"># CPU blocks!</span>
-  <span class="ck">return</span> result</pre></div>
-            <div class="compare-block compare-good"><div class="compare-label">✅ Non-blocking</div><pre><span class="ck">async def</span> <span class="cf">predict</span>(data):
-  result = <span class="ck">await</span> asyncio.<span class="cf">to_thread</span>(
-    model.infer, data
-  )
-  <span class="ck">return</span> result</pre></div>
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS — AI Functions</span></div>
+          <p class="rule-statement">Identical LangChain prompts with identical context must be cached for 1 hour using a Redis-backed LangChain cache. Never make a duplicate LLM API call when the response can be served from cache. Cache key includes: prompt hash + context hash + model version.</p>
+          <div class="callout callout-info">
+            <span class="callout-icon">i</span>
+            <div class="callout-body"><strong>Updated from v2.2:</strong> "OpenAI Cache" → "LangChain response cache". LangChain's built-in <code>RedisCache</code> abstraction handles this — do not implement a custom cache layer.</div>
           </div>
         </div>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">F8</span><span class="rule-title">External Call Timeouts — 30s</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">F13</span><span class="rule-title">ChromaDB — Separate Container, Read-Only for AI Service</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Set 30s timeout for ALL external calls (OpenAI, ChromaDB, etc.) via <code>asyncio.timeout()</code>. No call hangs indefinitely.</p>
-          <div class="compare-row">
-            <div class="compare-block compare-bad"><div class="compare-label">❌ Can hang forever</div><pre>result = <span class="ck">await</span> openai.ChatCompletion.<span class="cf">create</span>(...)</pre></div>
-            <div class="compare-block compare-good"><div class="compare-label">✅ Bounded by 30s</div><pre><span class="ck">async with</span> asyncio.<span class="cf">timeout</span>(<span class="cn">30</span>):
-  result = <span class="ck">await</span> openai_call()</pre></div>
-          </div>
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — FundsLink Only</span></div>
+          <p class="rule-statement">ChromaDB runs in its own container, separate from FastAPI. The AI service has read-only access to ChromaDB for RAG queries. Write access (embedding ingestion) is a separate admin-only process. Never co-locate ChromaDB with FastAPI in the same container.</p>
         </div>
       </div>
 
       <div class="rule-card critical">
-        <div class="rule-card-head"><span class="rule-num-badge">F11</span><span class="rule-title">Token Counting + Budget Guard</span><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="rule-card-head"><span class="rule-num-badge">F14</span><span class="rule-title">Similarity Threshold — Minimum 0.7, Never Return Below</span><span class="sev-badge sev-critical">Critical</span></div>
         <div class="rule-card-body">
-          <p class="rule-statement">Implement token counting + budget guard: reject requests exceeding <code>max_tokens × 1.5</code>. One rogue request can cost $10. This rule pays for itself on day one.</p>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">F12 + F13</span><span class="rule-title">OpenAI Response Caching · ChromaDB Separate Container</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement"><strong>F12:</strong> Cache identical OpenAI responses for 1 hour (key = <code>prompt_hash + temperature</code>). Reduces cost 50–80% for repeated queries. <strong>F13:</strong> ChromaDB runs in a separate container — not in-memory in FastAPI. Ensures persistence across restarts.</p>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">F14</span><span class="rule-title">Similarity Score Threshold — 0.7 Minimum</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Similarity search with <code>min_score = 0.7</code> threshold. Reject low-confidence results. Below 0.7 returns "No relevant results found" rather than wrong answer with false confidence.</p>
-        </div>
-      </div>
-
-      <div class="rule-card high">
-        <div class="rule-card-head"><span class="rule-num-badge">F15</span><span class="rule-title">Detailed Health Check Response</span><span class="sev-badge sev-high">High</span></div>
-        <div class="rule-card-body">
-          <p class="rule-statement">Health check must tell Next.js WHY it's unhealthy — not just that it is.</p>
-          <div class="json-block">{
-  <span class="jk">"status"</span>: <span class="jv">"healthy"</span>,
-  <span class="jk">"models_loaded"</span>: [<span class="jv">"sentiment-v1"</span>, <span class="jv">"embedding-v2"</span>],
-  <span class="jk">"chromadb_connected"</span>: <span class="jb">true</span>,
-  <span class="jk">"chromadb_collections"</span>: <span class="jn">3</span>,
-  <span class="jk">"openai_available"</span>: <span class="jb">true</span>,
-  <span class="jk">"openai_latency_ms"</span>: <span class="jn">120</span>,
-  <span class="jk">"queue_depth"</span>: <span class="jn">0</span>,
-  <span class="jk">"concurrent_requests"</span>: <span class="jn">2</span>,
-  <span class="jk">"max_concurrent"</span>: <span class="jn">10</span>,
-  <span class="jk">"uptime_seconds"</span>: <span class="jn">86400</span>
-}</div>
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK — FundsLink Only</span></div>
+          <p class="rule-statement">ChromaDB similarity searches must have a minimum score threshold of 0.7. Results below this score are discarded — never returned to the user. If no results meet the threshold, return an empty result set with a graceful "no matches found" response, not a degraded low-confidence answer.</p>
         </div>
       </div>
     </main>
   </div>
 </div>
 
-<!-- PART 10: CROSS-CONSTITUTION -->
+<!-- ══════════════════════════════════════════ PART 10: DEPLOYMENT ══════════════════════════════════════════ -->
 <hr class="divider"/>
-<div class="section-runner" id="p10">§ Part 10 — Cross-Constitution Governance (B46)</div>
+<div class="section-runner" id="p10">§ Part 10 — Deployment Strategy (B53–B58) · NEW IN v3.0</div>
 
-<div class="part-section" style="padding: 24px 26px;">
-  <div class="rule-card critical" style="border-left-color: var(--blue2)">
-    <div class="rule-card-head"><span class="rule-num-badge">B46</span><span class="rule-title">Cross-Constitution Change Governance</span><span class="sev-badge sev-critical">Critical</span></div>
+<div class="part-section">
+  <div class="col-layout">
+    <aside class="col-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Platform Assignment</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">Vercel</span> All Next.js systems</li>
+          <li><span class="rn">Vercel</span> All Angular frontends</li>
+          <li><span class="rn">Railway</span> All FastAPI backends (ANG)</li>
+          <li><span class="rn">Railway</span> AI FastAPI (NJ stack)</li>
+          <li><span class="rn">Docker</span> Local dev — all services</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Deploy Order</div>
+        <ul class="sb-rule-list">
+          <li><span class="rn">NJ</span> Vercel auto-deploys on push</li>
+          <li><span class="rn">ANG</span> FastAPI first (Railway)</li>
+          <li><span class="rn">ANG</span> Then Angular (Vercel)</li>
+          <li><span class="rn">BOTH</span> Migrations before service start</li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-main">
+      <div class="part-banner" style="background:var(--green);">
+        <span class="part-num">PART 10 / B53–B58 · NEW</span>
+        <span class="part-title">Deployment Strategy</span>
+        <span class="part-desc">Both Stacks · Railway + Vercel</span>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B53</span><span class="rule-title">Railway for FastAPI — Angular Stack Deployments</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">All FastAPI services on the Angular stack (FundsLink, Reserve Bank) deploy to Railway. Railway handles: Python environment, PostgreSQL connection pooling, Redis, environment variables, and zero-downtime deploys. Never deploy FastAPI to Vercel — Vercel is for JavaScript/TypeScript frontends only.</p>
+          <div class="rule-meta-grid">
+            <div class="rule-meta-item"><span class="rule-meta-label">Angular Frontend</span><div class="rule-meta-val">Vercel (Angular build)</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">FastAPI Backend</span><div class="rule-meta-val">Railway (Python + Uvicorn)</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">PostgreSQL</span><div class="rule-meta-val">Railway managed Postgres</div></div>
+            <div class="rule-meta-item"><span class="rule-meta-label">Redis/BullMQ</span><div class="rule-meta-val">Railway managed Redis (Reserve Bank)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B54</span><span class="rule-title">Deploy Order — FastAPI Before Angular on Breaking Changes</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-angular">ANGULAR STACK ONLY</span></div>
+          <p class="rule-statement">When a release adds new endpoints or changes response shapes, FastAPI deploys first (Railway), then Angular deploys (Vercel). When a release removes deprecated endpoints, Angular deploys first (stops calling the endpoint), then FastAPI removes it after the deprecation period. Never deploy simultaneously — always sequence.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B55</span><span class="rule-title">Prisma Migrations Run Before Service Starts</span><span class="sev-badge sev-new">New · Critical</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Database migrations (<code>prisma migrate deploy</code>) must run and complete successfully before the application server starts accepting traffic. This is enforced in the Railway deploy command (Angular) and Vercel deploy hook (Next.js). A failed migration aborts the deploy — never start with an inconsistent schema.</p>
+          <div class="code-block">
+            <div class="code-bar"><div class="code-dots"><div class="cd cd-r"></div><div class="cd cd-y"></div><div class="cd cd-g"></div></div><div class="code-filename">railway.json / Procfile</div></div>
+            <pre><span class="cc"># Railway start command — migrations first</span>
+<span class="cs">"startCommand"</span>: <span class="cs">"prisma migrate deploy &amp;&amp; uvicorn app.main:app --host 0.0.0.0 --port $PORT"</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B56</span><span class="rule-title">Environment Variables — Railway Secrets for FastAPI, Vercel Env for Frontend</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">All secrets (API keys, DB connection strings, JWT secrets) are stored in the deployment platform's secret manager — never in committed files. Railway Secrets for FastAPI. Vercel Environment Variables for Next.js/Angular. A <code>.env.example</code> file with all required variable names (no values) is committed to every repo.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B57</span><span class="rule-title">docker-compose — Full Stack in One Command for Local Dev</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement"><code>docker-compose up</code> must start the full local development environment in one command: all services (Next.js or Angular + FastAPI), PostgreSQL, MongoDB (Angular stack), Redis (where applicable), and ChromaDB (FundsLink). A new developer must be able to run the full stack with a single command after cloning the repo.</p>
+        </div>
+      </div>
+
+      <div class="rule-card new">
+        <div class="rule-card-head"><span class="rule-num-badge">B58</span><span class="rule-title">Health Checks — All Services Expose /health Before Traffic</span><span class="sev-badge sev-new">New · High</span></div>
+        <div class="rule-card-body">
+          <div class="scope-bar"><span class="scope-chip scope-both">BOTH STACKS</span></div>
+          <p class="rule-statement">Every service exposes a <code>/health</code> endpoint that returns: service status, database connectivity status, and dependency health (Redis, ChromaDB where applicable). Railway and Vercel use this endpoint to gate traffic. A service that fails its health check does not receive traffic.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ PART 11: CROSS-CONSTITUTION ══════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section-runner" id="p11">§ Part 11 — Cross-Constitution Governance (B46)</div>
+<div class="part-section" style="padding:20px 28px;">
+  <div class="rule-card critical">
+    <div class="rule-card-head"><span class="rule-num-badge">B46</span><span class="rule-title">Cross-Constitution Governance — Backend Review Required on Frontend Contract Changes</span><span class="sev-badge sev-critical">Critical</span></div>
     <div class="rule-card-body">
-      <p class="rule-statement">Any change to the following requires a corresponding review of the Frontend Constitution: OpenAPI contract (new/changed endpoints), <code>ApiResponse&lt;T&gt;</code> format (B8), Error codes (B9), Rate limit tiers (B26).</p>
-      <div class="rule-meta-grid">
-        <div class="rule-meta-item"><span class="rule-meta-label">PR Requirement</span><div class="rule-meta-val">Label: <code>Frontend-Review-Required: Yes</code></div></div>
-        <div class="rule-meta-item"><span class="rule-meta-label">Deploy Order</span><div class="rule-meta-val">Frontend MUST be updated BEFORE backend deploys (if breaking)</div></div>
-        <div class="rule-meta-item"><span class="rule-meta-label">Changelog</span><div class="rule-meta-val">Backend changelog must reference frontend change and vice versa</div></div>
-        <div class="rule-meta-item"><span class="rule-meta-label">Corresponds To</span><div class="rule-meta-val">Frontend Rule 66</div></div>
-      </div>
-      <div class="callout callout-warn" style="margin-top:12px">
-        <span class="callout-icon">i</span>
-        <div class="callout-body"><strong>Solo dev?</strong> You are both the frontend and backend lead. The review still happens — it just means you explicitly check both constitutions before merging any cross-cutting change. This prevents accidental drift between the 127-rule system.</div>
-      </div>
+      <div class="scope-bar"><span class="scope-chip scope-both">ALL 10 CONSTITUTIONS</span></div>
+      <p class="rule-statement">Any PR that changes the OpenAPI contract, ApiResponse shape, error codes, rate limits, or auth strategy must include a <code>Backend-Review-Required: Yes</code> label. CI fails without this label on cross-constitution changes. This governance rule connects all 10 constitutions — a change in any one may require review of multiple others. The Constitutional Order v2.0 defines the full review chain.</p>
     </div>
   </div>
 </div>
 
-<!-- FORBIDDEN PATTERNS -->
+<!-- ══════════════════════════════════════════ FORBIDDEN PATTERNS ══════════════════════════════════════════ -->
 <hr class="divider"/>
-<div class="section-runner">§ Annex A — Forbidden Patterns (FP01–FP20)</div>
+<div class="section-runner">§ Annex A — Forbidden Patterns (FP01–FP22)</div>
 
-<div class="part-section" style="padding: 22px 26px;">
-  <div class="callout callout-critical" style="margin-bottom:18px">
-    <span class="callout-icon">!</span>
-    <div class="callout-body"><strong>20 patterns permanently banned.</strong> Each caused real production failures. If you find yourself reasoning about why any of these "should be okay in this case" — the answer is no.</div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
-    <div>
-      <p style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:10px;">Core Forbidden (FP01–FP15)</p>
-      <table class="fp-table">
-        <thead><tr><th>Code</th><th>Pattern</th><th>Rule</th></tr></thead>
-        <tbody>
-          <tr><td class="fp-code">FP01</td><td>Frontend → FastAPI directly</td><td class="fp-ref">B2</td></tr>
-          <tr><td class="fp-code">FP02</td><td>FastAPI writing to PostgreSQL</td><td class="fp-ref">B4, B15</td></tr>
-          <tr><td class="fp-code">FP03</td><td>No OpenAPI contract before coding</td><td class="fp-ref">B7</td></tr>
-          <tr><td class="fp-code">FP04</td><td>Different error shapes across services</td><td class="fp-ref">B8, B12</td></tr>
-          <tr><td class="fp-code">FP05</td><td>Loading ML models per request</td><td class="fp-ref">B23, F1</td></tr>
-          <tr><td class="fp-code">FP06</td><td>No rate limiting on AI endpoints</td><td class="fp-ref">B26</td></tr>
-          <tr><td class="fp-code">FP07</td><td>Raw database errors exposed to frontend</td><td class="fp-ref">B12</td></tr>
-          <tr><td class="fp-code">FP08</td><td>Hardcoded API keys in source</td><td class="fp-ref">B32, B40</td></tr>
-          <tr><td class="fp-code">FP09</td><td>No X-Request-ID forwarding</td><td class="fp-ref">B29</td></tr>
-          <tr><td class="fp-code">FP10</td><td>SELECT * from PostgreSQL</td><td class="fp-ref">B18</td></tr>
-          <tr><td class="fp-code">FP11</td><td>Background jobs (BullMQ) in v1</td><td class="fp-ref">B21</td></tr>
-          <tr><td class="fp-code">FP12</td><td>WebSocket for non-chat in v1</td><td class="fp-ref">B22</td></tr>
-          <tr><td class="fp-code">FP13</td><td>External calls without timeout</td><td class="fp-ref">B28, F8</td></tr>
-          <tr><td class="fp-code">FP14</td><td>Circular dependency (FastAPI→Next→FastAPI)</td><td class="fp-ref">B6</td></tr>
-          <tr><td class="fp-code">FP15</td><td>No idempotency for state-changing endpoints</td><td class="fp-ref">B30</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div>
-      <p style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:10px;">FastAPI-Specific Forbidden (FP16–FP20)</p>
-      <table class="fp-table">
-        <thead><tr><th>Code</th><th>Pattern</th><th>Rule</th></tr></thead>
-        <tbody>
-          <tr><td class="fp-code">FP16</td><td>Loading models per request (again — because it's that bad)</td><td class="fp-ref">F1</td></tr>
-          <tr><td class="fp-code">FP17</td><td>Using <code>def</code> for async I/O (HTTP/DB)</td><td class="fp-ref">F6</td></tr>
-          <tr><td class="fp-code">FP18</td><td>Using <code>async def</code> for CPU-bound inference</td><td class="fp-ref">F6, F7</td></tr>
-          <tr><td class="fp-code">FP19</td><td>No token counting before OpenAI calls</td><td class="fp-ref">F11</td></tr>
-          <tr><td class="fp-code">FP20</td><td>No similarity threshold on ChromaDB search</td><td class="fp-ref">F14</td></tr>
-        </tbody>
-      </table>
-    </div>
+<div class="forbidden-section">
+  <div class="forbidden-header">⚠ FORBIDDEN PATTERNS — VIOLATION = BUILD FAILURE · BOTH STACKS UNLESS MARKED</div>
+  <div class="forbidden-grid">
+    <div class="fp-item"><div class="fp-code">FP01 — OPENAI DIRECT FROM NEXT.JS API ROUTES</div><div class="fp-desc">Calling OpenAI or LangChain APIs directly from Next.js API routes. All AI goes through FastAPI.</div><div class="fp-fix">✓ Fix: Proxy to FastAPI AI service (B1, B5).</div></div>
+    <div class="fp-item"><div class="fp-code">FP02 — FASTAPI TOUCHING POSTGRES (NEXT.JS STACK)</div><div class="fp-desc">The AI FastAPI service on the Next.js stack making any PostgreSQL read or write. Network policy blocks this.</div><div class="fp-fix">✓ Fix: FastAPI calls Next.js webhook (B4, B15a).</div></div>
+    <div class="fp-item"><div class="fp-code">FP03 — MANUAL VALIDATION SCHEMAS</div><div class="fp-desc">Hand-writing Zod schemas or Angular validators instead of generating from the OpenAPI contract.</div><div class="fp-fix">✓ Fix: Generate from OpenAPI (B10).</div></div>
+    <div class="fp-item"><div class="fp-code">FP04 — SELECT * IN PRISMA QUERIES</div><div class="fp-desc">Using <code>findMany()</code> or <code>findFirst()</code> without an explicit <code>select</code> clause.</div><div class="fp-fix">✓ Fix: Always use explicit select (B18).</div></div>
+    <div class="fp-item"><div class="fp-code">FP05 — RAW ERROR EXPOSED TO CLIENT</div><div class="fp-desc">Pydantic 422 errors, stack traces, or database errors reaching the Angular/browser client.</div><div class="fp-fix">✓ Fix: Transform all errors to ApiResponse&lt;T&gt; (B12).</div></div>
+    <div class="fp-item"><div class="fp-code">FP06 — NO OPENAPI CONTRACT BEFORE CODE</div><div class="fp-desc">Writing endpoint implementation before the OpenAPI 3.0 contract is complete and approved.</div><div class="fp-fix">✓ Fix: OpenAPI first, always (B7).</div></div>
+    <div class="fp-item"><div class="fp-code">FP07 — HARD DELETE IN PRODUCTION</div><div class="fp-desc">Deleting any PostgreSQL row or MongoDB document permanently from production without admin process.</div><div class="fp-fix">✓ Fix: Soft delete with deleted_at (B39, B52).</div></div>
+    <div class="fp-item"><div class="fp-code">FP08 — BLOCKING ASYNC EVENT LOOP</div><div class="fp-desc">Running CPU-bound inference or computation inside an <code>async def</code> FastAPI handler.</div><div class="fp-fix">✓ Fix: Use asyncio.to_thread() for CPU work (F6).</div></div>
+    <div class="fp-item"><div class="fp-code">FP09 — SIMILARITY BELOW 0.7 RETURNED</div><div class="fp-desc">Returning ChromaDB results with a similarity score below 0.7 to users.</div><div class="fp-fix">✓ Fix: Filter at threshold, return empty if none qualify (F14).</div></div>
+    <div class="fp-item"><div class="fp-code">FP10 — DIRECT OPENAI API CALLS</div><div class="fp-desc">Calling the OpenAI API directly without going through LangChain abstraction layer.</div><div class="fp-fix">✓ Fix: All LLM calls via LangChain chains (F12).</div></div>
+    <div class="fp-item"><div class="fp-code">FP11 — SECRETS IN COMMITTED FILES</div><div class="fp-desc">Any API key, connection string, or JWT secret in any committed file, including .env.</div><div class="fp-fix">✓ Fix: Railway Secrets / Vercel Env / .env.example only (B56).</div></div>
+    <div class="fp-item"><div class="fp-code">FP12 — FASTAPI ON VERCEL [ANGULAR STACK]</div><div class="fp-desc">Attempting to deploy a Python FastAPI service to Vercel serverless functions.</div><div class="fp-fix">✓ Fix: FastAPI deploys to Railway (B53).</div></div>
+    <div class="fp-item"><div class="fp-code">FP13 — FINANCIAL DATA IN MONGODB [ANGULAR STACK]</div><div class="fp-desc">Storing Reserve Bank transaction amounts, balances, or interest data in MongoDB documents.</div><div class="fp-fix">✓ Fix: Financial data belongs in PostgreSQL (B48).</div></div>
+    <div class="fp-item"><div class="fp-code">FP14 — MONGODB WITHOUT MONGOOSE SCHEMA [ANGULAR STACK]</div><div class="fp-desc">Direct MongoDB driver calls without a Beanie/Mongoose schema definition.</div><div class="fp-fix">✓ Fix: All MongoDB access via defined schemas (B47).</div></div>
+    <div class="fp-item"><div class="fp-code">FP15 — ANGULAR TREATED AS NEXT.JS STACK</div><div class="fp-desc">Applying B2 (Single Gateway), B3 (Internal-only), or B4 (No Postgres writes) to FundsLink or Reserve Bank.</div><div class="fp-fix">✓ Fix: Angular rules: B15b applies — FastAPI is the primary backend.</div></div>
+    <div class="fp-item"><div class="fp-code">FP16 — UNSEQUENCED DEPLOY ON BREAKING CHANGES</div><div class="fp-desc">Deploying FastAPI and Angular simultaneously on releases that change API contracts.</div><div class="fp-fix">✓ Fix: FastAPI first, Angular second (B54).</div></div>
+    <div class="fp-item"><div class="fp-code">FP17 — MIGRATIONS SKIPPED ON DEPLOY</div><div class="fp-desc">Starting a FastAPI or Next.js service without running prisma migrate deploy first.</div><div class="fp-fix">✓ Fix: Migrations are the first command in every deploy (B55).</div></div>
+    <div class="fp-item"><div class="fp-code">FP18 — UNBOUNDED AI CONCURRENCY</div><div class="fp-desc">Running AI inference without a semaphore concurrency limit.</div><div class="fp-fix">✓ Fix: Semaphore at cpu_count × 2 (F3).</div></div>
+    <div class="fp-item"><div class="fp-code">FP19 — CROSS-DB REFERENCE VIA OBJECTID [ANGULAR STACK]</div><div class="fp-desc">MongoDB documents referencing PostgreSQL entities using a MongoDB ObjectID instead of a Prisma cuid.</div><div class="fp-fix">✓ Fix: Use PostgreSQL cuid as the reference field value (B50).</div></div>
+    <div class="fp-item"><div class="fp-code">FP20 — NO AUDIT LOG ON STATE CHANGES</div><div class="fp-desc">Any state change (user update, transaction, vote) that is not recorded in the audit log.</div><div class="fp-fix">✓ Fix: All state changes logged in AuditLog table (B38).</div></div>
+    <div class="fp-item"><div class="fp-code">FP21 — NEW ERROR CODE WITHOUT APPROVAL</div><div class="fp-desc">Adding a 10th error code to the v1 set without a documented cross-constitution review.</div><div class="fp-fix">✓ Fix: 9 error codes only in v1, defer to v2 (B9).</div></div>
+    <div class="fp-item"><div class="fp-code">FP22 — NO HEALTH CHECK ENDPOINT</div><div class="fp-desc">Any service launched without a /health endpoint that checks database and dependency connectivity.</div><div class="fp-fix">✓ Fix: Every service exposes /health before traffic (B58).</div></div>
   </div>
 </div>
 
-<!-- CHECKLISTS -->
-<hr class="divider"/>
-<div class="section-runner">§ Annex B — MVP &amp; Production Checklists</div>
-
-<div class="part-section" style="padding: 22px 26px;">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
-    <div>
-      <div class="checklist-section">
-        <div class="cl-header"><span class="cl-tag">MVP</span> Backend MVP — "Done" When All Pass</div>
-        <div class="cl-group">
-          <div class="cl-group-title">Next.js API Routes</div>
-          <div class="cl-item"><div class="cl-box"></div>All v1 endpoints pass 5 gate questions<div class="cl-ref">B20</div></div>
-          <div class="cl-item"><div class="cl-box"></div>OpenAPI contract matches implementation<div class="cl-ref">B7</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Prisma migrations run cleanly<div class="cl-ref">B13</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Rate limiting configured (all tiers)<div class="cl-ref">B26</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Health check: DB + FastAPI status<div class="cl-ref">B27</div></div>
-          <div class="cl-item"><div class="cl-box"></div>No v2 endpoints (only // TODO: v2+)<div class="cl-ref">B19</div></div>
-        </div>
-        <div class="cl-group">
-          <div class="cl-group-title">FastAPI</div>
-          <div class="cl-item"><div class="cl-box"></div>Models load at startup (&lt;5 seconds)<div class="cl-ref">F1</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Concurrency limiting active (max 10)<div class="cl-ref">F3</div></div>
-          <div class="cl-item"><div class="cl-box"></div>async/CPU-bound patterns correct<div class="cl-ref">F6-F7</div></div>
-          <div class="cl-item"><div class="cl-box"></div>30s timeouts on all external calls<div class="cl-ref">F8</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Token counting + budget guard active<div class="cl-ref">F11</div></div>
-          <div class="cl-item"><div class="cl-box"></div>OpenAI response cache layer active<div class="cl-ref">F12</div></div>
-          <div class="cl-item"><div class="cl-box"></div>ChromaDB separate container<div class="cl-ref">F13</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Min similarity threshold 0.7<div class="cl-ref">F14</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Detailed health check endpoint<div class="cl-ref">F15</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Internal-only (API key auth)<div class="cl-ref">B3</div></div>
-        </div>
-        <div class="cl-group">
-          <div class="cl-group-title">Integration</div>
-          <div class="cl-item"><div class="cl-box"></div>Full user flow passes (auth → AI feature)<div class="cl-ref">—</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Error shapes match ApiResponse&lt;T&gt;<div class="cl-ref">B8, B12</div></div>
-          <div class="cl-item"><div class="cl-box"></div>X-Request-ID traces across all services<div class="cl-ref">B29</div></div>
-          <div class="cl-item"><div class="cl-box"></div>docker-compose up works locally<div class="cl-ref">B35</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Audit logs capturing state changes<div class="cl-ref">B38</div></div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="checklist-section">
-        <div class="cl-header"><span class="cl-tag">PROD</span> Production-Ready — Additional Gates</div>
-        <div class="cl-group">
-          <div class="cl-group-title">Performance</div>
-          <div class="cl-item"><div class="cl-box"></div>Latency targets met (150ms/500ms/2s p95)<div class="cl-ref">B24</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Load testing passed (100 concurrent)<div class="cl-ref">—</div></div>
-        </div>
-        <div class="cl-group">
-          <div class="cl-group-title">Resilience</div>
-          <div class="cl-item"><div class="cl-box"></div>OpenAI failures → graceful fallback<div class="cl-ref">B25</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Circuit breaker active (B36)</div>
-          <div class="cl-item"><div class="cl-box"></div>Idempotency keys stored and cleaned<div class="cl-ref">B30</div></div>
-        </div>
-        <div class="cl-group">
-          <div class="cl-group-title">Security</div>
-          <div class="cl-item"><div class="cl-box"></div>Auth in HTTP-only cookies<div class="cl-ref">B45</div></div>
-          <div class="cl-item"><div class="cl-box"></div>CORS: specific origins only<div class="cl-ref">B45</div></div>
-          <div class="cl-item"><div class="cl-box"></div>CSP headers active<div class="cl-ref">B45</div></div>
-        </div>
-        <div class="cl-group">
-          <div class="cl-group-title">Observability</div>
-          <div class="cl-item"><div class="cl-box"></div>Sentry configured (Next.js + FastAPI)<div class="cl-ref">B41</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Structured JSON logging active<div class="cl-ref">B41</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Prometheus metrics endpoint active<div class="cl-ref">B41</div></div>
-        </div>
-        <div class="cl-group">
-          <div class="cl-group-title">Data</div>
-          <div class="cl-item"><div class="cl-box"></div>Database backups tested<div class="cl-ref">—</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Soft delete verified everywhere<div class="cl-ref">B39</div></div>
-        </div>
-        <div class="cl-group">
-          <div class="cl-group-title">Deployment</div>
-          <div class="cl-item"><div class="cl-box"></div>CI/CD: type → lint → test → migrate → deploy<div class="cl-ref">—</div></div>
-          <div class="cl-item"><div class="cl-box"></div>Feature flags system operational<div class="cl-ref">B42</div></div>
-          <div class="cl-item"><div class="cl-box"></div>F2: Idle models unload after 30min<div class="cl-ref">F2</div></div>
-          <div class="cl-item"><div class="cl-box"></div>F4: Batch predictions for high-volume<div class="cl-ref">F4</div></div>
-          <div class="cl-item"><div class="cl-box"></div>F5: Model versioning active<div class="cl-ref">F5</div></div>
-        </div>
-        <div class="cl-group">
-          <div class="cl-group-title">Cross-Constitution</div>
-          <div class="cl-item"><div class="cl-box"></div>Frontend constitution reviewed<div class="cl-ref">B46</div></div>
-          <div class="cl-item"><div class="cl-box"></div>All Frontend-Review PRs approved before deploy<div class="cl-ref">B46</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- LOCK FOOTER -->
+<!-- ══════════════════════════════════════════ LOCK FOOTER ══════════════════════════════════════════ -->
 <hr class="divider-double"/>
 <div class="lock-section" id="lock">
   <div class="lock-banner">
-    <div class="lock-title-main">Backend Constitution v2.2</div>
-    <div class="lock-sub">Final Lock — Effective 2026-04-07 — Next Review 2026-07-07</div>
-    <p style="font-family:var(--serif);font-style:italic;font-size:17px;color:rgba(240,244,248,.7)">"If a rule is not enforced by code, it will eventually be broken."</p>
+    <div class="lock-title-main">Backend Constitution v3.0</div>
+    <div class="lock-sub">Final Lock — Effective 2026-04-14 — Next Review 2026-07-07</div>
+    <p style="font-family:var(--serif);font-style:italic;font-size:18px;color:rgba(240,244,248,.7);">"If a rule is not enforced by code, it will eventually be broken."</p>
     <div class="lock-stats">
-      <div class="ls-item"><span class="ls-num">61</span><span class="ls-label">Total Rules</span></div>
-      <div class="ls-item"><span class="ls-num">34</span><span class="ls-label">Critical</span></div>
-      <div class="ls-item"><span class="ls-num">26</span><span class="ls-label">High</span></div>
-      <div class="ls-item"><span class="ls-num">20</span><span class="ls-label">Forbidden</span></div>
-      <div class="ls-item"><span class="ls-num">127</span><span class="ls-label">System Total</span></div>
+      <div class="ls-item"><span class="ls-num">68</span><span class="ls-label">Total Rules</span></div>
+      <div class="ls-item"><span class="ls-num">36</span><span class="ls-label">Critical</span></div>
+      <div class="ls-item"><span class="ls-num">27</span><span class="ls-label">High Priority</span></div>
+      <div class="ls-item"><span class="ls-num">22</span><span class="ls-label">Forbidden</span></div>
+      <div class="ls-item"><span class="ls-num">7</span><span class="ls-label">New Rules</span></div>
+      <div class="ls-item"><span class="ls-num">355</span><span class="ls-label">System Total</span></div>
     </div>
   </div>
 
@@ -1847,52 +1400,54 @@ semaphore = asyncio.<span class="cf">Semaphore</span>(max_concurrent)
     <div class="lock-col">
       <div class="lock-col-title">Parts Breakdown</div>
       <div class="parts-breakdown">
-        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">Architecture &amp; Boundaries (B1–B6)</span><span class="pb-rules">6 rules</span><span class="pb-crit">5 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P1</span><span class="pb-name">Architecture (B1–B6)</span><span class="pb-rules">6 rules</span><span class="pb-crit">5 CRIT</span></div>
         <div class="pb-item"><span class="pb-part">P2</span><span class="pb-name">API Contract (B7–B12)</span><span class="pb-rules">6 rules</span><span class="pb-crit">5 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">Database (B13–B18)</span><span class="pb-rules">6 rules</span><span class="pb-crit">4 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">MVP Realism (B19–B23)</span><span class="pb-rules">5 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P5</span><span class="pb-name">Performance (B24–B30)</span><span class="pb-rules">7 rules</span><span class="pb-crit">3 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P6</span><span class="pb-name">Resilience (B31–B36)</span><span class="pb-rules">6 rules</span><span class="pb-crit">4 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P7</span><span class="pb-name">Security (B37–B40)</span><span class="pb-rules">4 rules</span><span class="pb-crit">2 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P8</span><span class="pb-name">Observability (B41–B45)</span><span class="pb-rules">5 rules</span><span class="pb-crit">1 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P9</span><span class="pb-name">FastAPI-Specific (F1–F15)</span><span class="pb-rules">15 rules</span><span class="pb-crit">7 CRIT</span></div>
-        <div class="pb-item"><span class="pb-part">P10</span><span class="pb-name">Cross-Constitution (B46)</span><span class="pb-rules">1 rule</span><span class="pb-crit">1 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P3</span><span class="pb-name">DB Relational (B13–B18) · B15 split</span><span class="pb-rules">7 rules</span><span class="pb-crit">4 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P3b 🆕</span><span class="pb-name">MongoDB (B47–B52)</span><span class="pb-rules">6 rules</span><span class="pb-new">NEW</span></div>
+        <div class="pb-item"><span class="pb-part">P4</span><span class="pb-name">MVP Realism (B19–B23)</span><span class="pb-rules">5 rules</span><span class="pb-crit">3 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P5–P8</span><span class="pb-name">Perf / Resilience / Security / Obs</span><span class="pb-rules">22 rules</span><span class="pb-crit">MIXED</span></div>
+        <div class="pb-item"><span class="pb-part">P9</span><span class="pb-name">FastAPI AI (F1–F15) · LangChain</span><span class="pb-rules">9 rules</span><span class="pb-crit">5 CRIT</span></div>
+        <div class="pb-item"><span class="pb-part">P10 🆕</span><span class="pb-name">Deployment (B53–B58) · Railway</span><span class="pb-rules">6 rules</span><span class="pb-new">NEW</span></div>
+        <div class="pb-item"><span class="pb-part">P11</span><span class="pb-name">Cross-Constitution (B46)</span><span class="pb-rules">1 rule</span><span class="pb-crit">CRIT</span></div>
       </div>
     </div>
     <div class="lock-col">
-      <div class="lock-col-title">Official Signatures</div>
-      <div class="signature-grid">
-        <div class="sig-line">
-          <span class="sig-role">Architecture Owner</span>
-          <div class="sig-name-line"></div>
-          <div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div>
-        </div>
-        <div class="sig-line">
-          <span class="sig-role">Backend Lead</span>
-          <div class="sig-name-line"></div>
-          <div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div>
-        </div>
-        <div class="sig-line">
-          <span class="sig-role">Security Lead</span>
-          <div class="sig-name-line"></div>
-          <div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div>
-        </div>
-        <div class="sig-line">
-          <span class="sig-role">Product Owner</span>
-          <div class="sig-name-line"></div>
-          <div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div>
-        </div>
+      <div class="lock-col-title">v3.0 Changes from v2.2</div>
+      <div style="font-size:11.5px;color:var(--muted);line-height:2;">
+        + B15 split into B15a (Next.js) and B15b (Angular)<br>
+        + B15b: FastAPI IS primary backend on Angular stack<br>
+        + Part 3b added: MongoDB rules B47–B52<br>
+        + Part 10 added: Deployment rules B53–B58<br>
+        + Railway added as FastAPI deployment platform<br>
+        + All "OpenAI" references → "LangChain"<br>
+        + B2, B3, B4, B5 scoped to Next.js stack only<br>
+        + Stack scope badges on every rule<br>
+        + Stack-diff blocks on architecture rules<br>
+        + System Total corrected: 127 → <strong>355</strong><br>
+        + Forbidden patterns: 20 → 22 (FP12–FP22)<br>
+        + Lock date updated: 2026-04-07 → 2026-04-14
+      </div>
+      <div class="lock-col-title" style="margin-top:16px;">Official Signatures</div>
+      <div class="sig-line">
+        <span class="sig-role">Backend Lead</span>
+        <div class="sig-name-line"></div>
+        <div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div>
+      </div>
+      <div class="sig-line">
+        <span class="sig-role">Product Owner — KSDRILL SA</span>
+        <div class="sig-name-line"></div>
+        <div class="sig-meta"><span>Signed: _______________</span><span>Date: _______________</span></div>
       </div>
     </div>
   </div>
 
   <div class="lock-final">
     <div class="lock-final-left">VIOLATION OF ANY CRITICAL RULE = SYSTEM FAILURE<br/>FOLLOW ALL RULES = SYSTEM SHIPS</div>
-    <div class="lock-final-motto">"No confusion. No over-engineering. No excuses."</div>
-    <div class="lock-final-right">v2.2 LOCKED<br/>2026-04-07<br/>127 rules total (FE 66 + BE 61)</div>
+    <div class="lock-final-motto">"No confusion. No over-engineering. No excuses. Just execution."</div>
+    <div class="lock-final-right">v3.0 LOCKED · 2026-04-14<br/>Next.js + Angular/FastAPI · 68 rules<br/>System Total: 355 rules</div>
   </div>
 </div>
 
-</div>
+</div><!-- /page -->
 </body>
 </html>

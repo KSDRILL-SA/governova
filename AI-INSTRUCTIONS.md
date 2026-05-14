@@ -16,6 +16,25 @@ Every standard in every constitution has a unique ID (`S{C}.{N}`). When you cite
 
 ---
 
+## The KSDRILL SA AI Engineering Team
+
+KSDRILL SA operates five AI engineers in a fixed relay. Know where you are in this relay before you begin.
+
+| # | Engineer | Role | Permission | Reads First |
+|---|----------|------|------------|-------------|
+| 01 | **Claude** | Principal Architect — design only | L1, L2 | This file + system context |
+| 02 | **Claude Code** | Senior Engineer — build only (Cursor) | L3 | This file + system context + **CONSTITUTION-INDEX.md** |
+| 03 | **ChatGPT** | Debugger + UI Engineer + Adversarial Reviewer | L1, L2, L3 | This file + system context |
+| 04 | **DeepSeek** | Reasoning & Algorithm Engine — targeted only | L1, L2 | This file + system context |
+| 05 | **Kimi** | Experimental Lab Engineer — lab only | L1 only | This file + system context |
+| — | **Founder** | Tech Lead — approves every handoff | **L4 — always** | — |
+
+**The relay is linear. One engineer at a time. The Founder approves every transition. (`S10.6`, `S10.8`)**
+
+Full relay diagram, Handoff Protocol (Parts A–D), and Repo Verification checklist: `workflow/ksdrill-sa-ai-workflow.md`
+
+---
+
 ## Your Role and Permission Boundaries
 
 | Level | Category | You May | You May NOT |
@@ -61,17 +80,26 @@ Every standard in every constitution has a unique ID (`S{C}.{N}`). When you cite
 
 ```
 1. Read this file (done — you are reading it)
-2. Read system-contexts/{system}-context.md
+2. Identify your engineer role (see relay table above)
+   - Which position in the relay are you?
+   - What is your permission level?
+   - What did the previous engineer hand off?
+3. Read workflow/ksdrill-sa-ai-workflow.md §4.5 Part A
+   (Handoff Protocol — Before Starting)
+4. Read system-contexts/{system}-context.md
    - Identifies: stack, build phase, active group, operating mode (SOLO/TEAM)
-3. Load the correct overlay:
+5. Perform Repo Verification (workflow §4.5 Part C)
+   - Does the repo match what the previous engineer claimed?
+   - If NO → stop. Report to Founder. Do not proceed.
+6. If Claude Code in Cursor: confirm CONSTITUTION-INDEX.md is loaded (S10.21)
+7. Load the correct overlay:
    - SOLO → overlays/solo-dev-overlay.md
    - TEAM → overlays/team-overlay.md
-4. Check indexes/standards-index.md for standards relevant to today's task
-5. Load the full constitution only when the index entry is insufficient
-6. Confirm CONSTITUTION-INDEX.md exists in the project workspace (S10.21)
+8. Check indexes/standards-index.md for standards relevant to today's task
+9. Load the full constitution only when the index entry is insufficient
 ```
 
-**If any step cannot be completed** (file missing, context file not created), stop and flag it before proceeding. A missing system context file means the build session is not ready to start.
+**If any step cannot be completed** (file missing, context file not created, repo verification fails), stop and report to the Founder before proceeding. Do not self-route around a failed step.
 
 ---
 
@@ -149,7 +177,21 @@ Consequence: {what breaks or fails}
 Correct approach: {what should be done instead}
 ```
 
-Then wait for the human to decide how to proceed. Your job is detection and explanation — not unilateral correction.
+Then wait for the Founder to decide how to proceed. Your job is detection and explanation — not unilateral correction.
+
+---
+
+## When Completing Your Session (Handoff Report)
+
+Before closing any session, deliver the Handoff Report to the Founder using the format in `workflow/ksdrill-sa-ai-workflow.md §4.5 Part B`. The report must include:
+
+- Full build history from all previous engineers in this relay
+- What you built in this session
+- Standards you satisfied (cite S{C}.{N} IDs)
+- Next task and which engineer owns it
+- Complete brief for the next engineer (paste-ready for the Founder)
+
+**A session without a handoff report is a protocol violation. (`S10.6`)**
 
 ---
 

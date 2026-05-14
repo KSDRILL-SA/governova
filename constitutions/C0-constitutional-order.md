@@ -353,25 +353,23 @@ lock date and back-filled here.
 
 ### 5.1 — Core Constitutions
 
-| # | Constitution | Phase | Standards | Paired With | Status |
-|---|---|---|---|---|---|
-| **C0** | Constitutional Order | Master | — | — | LOCKED |
-| **C1** | Engineering Standards | Phase 0 | S1.1–S1.N | — | LOCKED |
-| **C2** | Backend Constitution | Phase 1 | S2.1–S2.N | C2 Backend Implementation Guide | LOCKED |
-| **C3** | Auth Constitution | Phase 1 | S3.1–S3.N | C3 Auth Implementation Guide | LOCKED |
-| **C4** | Frontend Constitution | Phase 1 | S4.1–S4.N | C4 Frontend Implementation Guide | LOCKED |
-| **C5** | Database Constitution | Phase 1 | S5.1–S5.N | C5 Database Implementation Guide | LOCKED |
-| **C6** | Full-Stack Architecture Constitution | Phase 1 | S6.1–S6.N | — | LOCKED |
-| **C7** | Testing Constitution | Phase 2 | S7.1–S7.N | — | LOCKED |
-| **C8** | Platform Reliability Constitution | Phase 2 | S8.1–S8.N | — | LOCKED |
-| **C9** | Product & Feature Constitution | Phase 3 | S9.1–S9.N | — | LOCKED |
-| **C10** | AI Collaboration Constitution | Phase 3 | S10.1–S10.N | — | LOCKED |
+| # | Constitution | Phase | Standards | Count | Paired With | Status |
+|---|---|---|---|---|---|---|
+| **C0** | Constitutional Order | Master | §1–§14 | — | — | LOCKED |
+| **C1** | Engineering Standards | Phase 0 | S1.1–S1.97 | 97 | — | LOCKED |
+| **C2** | Backend Constitution | Phase 1 | S2.1–S2.80 | 80 | C2 Backend Implementation Guide | LOCKED |
+| **C3** | Auth Constitution | Phase 1 | S3.1–S3.36 | 36 | C3 Auth Implementation Guide | LOCKED |
+| **C4** | Frontend Constitution | Phase 1 | S4.1–S4.82 | 82 | C4 Frontend Implementation Guide | LOCKED |
+| **C5** | Database Constitution | Phase 1 | S5.1–S5.64 | 64 | C5 Database Implementation Guide | LOCKED |
+| **C6** | Full-Stack Architecture | Phase 1 | S6.1–S6.44 | 44 | — | LOCKED |
+| **C7** | Testing Constitution | Phase 2 | S7.1–S7.43 | 43 | — | LOCKED |
+| **C8** | Platform Reliability | Phase 2 | S8.1–S8.82 | 82 | — | LOCKED |
+| **C9** | Product & Feature | Phase 3 | S9.1–S9.30 | 30 | — | LOCKED |
+| **C10** | AI Collaboration | Phase 3 | S10.1–S10.36 | 36 | — | LOCKED |
 
-> **Note on standard counts:** The `S{C}.N` ranges in the Standards column above are
-> populated as each constitution is locked. The system total is derived by summing unique
-> standard counts across all constitutions — no shared standards, no overlap footnotes.
+> **System total: 594 unique standards across 11 constitutions.**
 > Every standard has exactly one home constitution. Cross-references do not imply shared
-> ownership.
+> ownership. No overlap. No footnotes.
 
 ---
 
@@ -860,7 +858,7 @@ new failure pattern produces a new entry. The register grows — it is never pru
 
 | Version | Date | Change | Reason |
 |---------|------|--------|--------|
-| v1.0 | 2026-05-08 | Initial lock — full rebuild of the KSDRILL SA constitutional system | Version reset across all constitutions. HTML → Markdown. New terminology system (Standards, Anti-Patterns, Practices). Constitution-scoped standard ID format (`S{C}.{N}`). Solo/team split moved to overlays only. C1 formed by merging Team & Process + Code Quality + MentorConnect workflow. C6 formed by merging Full System Design + Full-Stack Integration. C8 formed by merging Infrastructure + Incident Response. C10 AI Collaboration added as new Phase 3 constitution. Implementation guides introduced for C2, C3, C4, C5. Auth localStorage regression (CF-01) documented and fixed in C3. API versioning standards gap addressed in C2. Observability gap consolidated into C8. |
+| v1.0 | 2026-05-08 | Initial lock — full rebuild of the KSDRILL SA constitutional system. HTML → Markdown. New terminology system (Standards, Anti-Patterns, Practices). Constitution-scoped standard ID format (`S{C}.{N}`). Solo/team split moved to overlays only. C1 formed by merging Team & Process + Code Quality + MentorConnect workflow. C6 formed by merging Full System Design + Full-Stack Integration. C8 formed by merging Infrastructure + Incident Response. C10 AI Collaboration added as new Phase 3 constitution with five-engineer relay model (Claude, Claude Code, ChatGPT, DeepSeek, Kimi). Implementation guides for C2, C3, C4, C5 at full depth. Auth localStorage regression (CF-01) fixed in C3 S3.14. API versioning gap addressed in C2 S2.76–S2.80. Observability consolidated into C8. Tailwind+Custom CSS dual-tool philosophy formalised in C4. ORM+Raw SQL dual-tool philosophy formalised in C5. ADRs for all four flagship systems locked. CONSTITUTION-INDEX.md template added. AI Engineer Workflow constitutionalized in workflow/. §5 standard counts populated: 594 total unique standards across C1–C10. | Full system rebuild — version reset. |
 
 ---
 

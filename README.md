@@ -1,365 +1,199 @@
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=2563EB&height=200&section=header&text=System%20Design%20Template&fontSize=48&fontColor=white&fontAlignY=40&fontAlign=50" alt="Header" />
-</p>
+# KSDRILL SA — Constitutional System
 
-<p align="center">
-  <img src="https://img.shields.io/badge/System_Design_Template-2563EB?style=for-the-badge&logo=codefactor&logoColor=white" alt="System Design Template" />
-</p>
+> *"Build constitutions in the order your system would fail without them."*
 
-<h1 align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Inter&weight=600&size=32&duration=2800&pause=500&color=2563EB&center=true&vCenter=true&width=650&lines=10+Locked+Constitutions;355+Total+Rules;Production-Grade+Governance;Build+in+the+Right+Order" alt="Typing animation" />
-</h1>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Status-Locked-2563EB?style=flat-square" alt="Status Locked" />
-  <img src="https://img.shields.io/badge/Version-v1.0-2563EB?style=flat-square" alt="Version 1.0" />
-  <img src="https://img.shields.io/badge/Total_Rules-355-2563EB?style=flat-square" alt="Total Rules 355" />
-  <img src="https://img.shields.io/badge/Constitutions-10-2563EB?style=flat-square" alt="10 Constitutions" />
-  <img src="https://img.shields.io/badge/License-MIT-25D366?style=flat-square" alt="MIT License" />
-</p>
-
-<p align="center">
-  <i>"We build fast within strict constitutional boundaries. Failures are predictable, traceable, and easy to debug."</i>
-</p>
+[![Constitutions](https://img.shields.io/badge/Constitutions-11-blue)](constitutions/)
+[![Version](https://img.shields.io/badge/Version-v1.0-green)](constitutions/C00-constitutional-order.md)
+[![Status](https://img.shields.io/badge/Status-LOCKED-red)](constitutions/C00-constitutional-order.md)
+[![Locked](https://img.shields.io/badge/Locked-2026--05--08-orange)](constitutions/C00-constitutional-order.md)
 
 ---
 
-<br/>
+## What This Is
 
-## Table of Contents
+`system-design-template` is the constitutional governance system for all KSDRILL SA engineering work. It contains 11 constitutions governing every technical and product decision, 4 implementation guides with production-ready code patterns, supporting indexes, overlays, runbooks, and templates.
 
-| Section | Link |
-| :--- | :--- |
-| **The Philosophy** | [goto →](#the-philosophy) |
-| **What Is This Repository?** | [goto →](#what-is-this-repository) |
-| **The Constitutional Order** | [goto →](#the-constitutional-order) |
-| **Phase 0: Foundation** | [goto →](#phase-0-foundation) |
-| **Phase 1: Core Architecture** | [goto →](#phase-1-core-architecture) |
-| **Phase 2: Quality & Reliability** | [goto →](#phase-2-quality--reliability) |
-| **Phase 3: Product & Improvement** | [goto →](#phase-3-product--improvement) |
-| **Quick Start** | [goto →](#quick-start) |
-| **How to Use This Template** | [goto →](#how-to-use-this-template) |
-| **Repository Structure** | [goto →](#repository-structure) |
-| **Industry Standards** | [goto →](#industry-standards) |
-| **Progress Tracker** | [goto →](#progress-tracker) |
-| **License** | [goto →](#license) |
-
----
-
-<br/>
-
-## <a id="the-philosophy"></a><img src="https://img.shields.io/badge/The_Philosophy-2563EB?style=for-the-badge&logo=philosophy&logoColor=white" alt="The Philosophy" />
-
-<br/>
-
-### 🧠 Controlled Imperfection Engineering
-
-This system does **not** claim to prevent all bugs. That is impossible in real-world systems.
-
-Instead, it ensures that **when failures happen** — and they will — they are:
-
-| Principle | How This System Delivers |
-| :--- | :--- |
-| **Observable** | X-Request-ID, structured logging, error codes |
-| **Traceable** | Request tracing across all services |
-| **Isolated** | Circuit breakers, timeouts, retries |
-| **Predictable** | 3-state UI, standard `ApiResponse<T>` format |
-| **Reversible** | Rollback plans, feature flags, idempotency |
-
-> *"We don't remove failure. We shape it, limit it, expose it, and make it recoverable."*
-
-### 🎯 What These Constitutions Actually Do
-
-| Without Rules | With Your Constitutions |
-| :--- | :--- |
-| Infinite possible bugs | Known categories of bugs |
-| Random UI crashes | Predictable error states |
-| Inconsistent API responses | Standard `ApiResponse<T>` format |
-| Unpredictable state bugs | 3-state system (loading/error/success) |
-
-### 🧠 AI's Role
-
-**AI reduces randomness, not errors.** It increases predictability of system behavior under failure.
-
-| Without AI | With AI |
-| :--- | :--- |
-| Random inconsistencies | Enforced patterns |
-| Manual validation everywhere | Generated Zod schemas from OpenAPI |
-| Slow debugging | Structured failure analysis |
-
-### ⚖️ The Maturity Scale
-
-| Level | Mindset | This System |
-| :--- | :--- | :--- |
-| Beginner | "Just build it and see what happens" | ❌ |
-| Intermediate | "Try to prevent all bugs" | ❌ |
-| Senior | "Assume everything breaks and design for failure" | ✅ |
-| **Architect** | **"Define boundaries so failure is structured, visible, and cheap to fix"** | ✅✅ |
-
----
-
-<br/>
-
-## <a id="what-is-this-repository"></a><img src="https://img.shields.io/badge/What_Is_This_Repository-2563EB?style=for-the-badge&logo=aboutdotme&logoColor=white" alt="What Is This Repository" />
-
-<br/>
-
-This repository contains **10 locked constitutions** that govern every aspect of building production-grade systems. Each constitution defines **non-negotiable rules** for a specific domain:
-
-| Constitution | Focus |
-| :--- | :--- |
-| **Team & Process** | How the team operates |
-| **Code Quality** | How code is written |
-| **Backend** | How APIs are built |
-| **Auth Domain** | How users authenticate |
-| **Frontend** | How UIs are built |
-| **Database** | How data is stored |
-| **Testing** | How code is verified |
-| **Infrastructure** | Where code runs |
-| **Incident Response** | How failures are handled |
-| **Product & Feature** | What to build next |
-
-**Total: 355 rules + Auth Domain specification**
-
----
-
-<br/>
-
-## <a id="the-constitutional-order"></a><img src="https://img.shields.io/badge/The_Constitutional_Order-FF6F00?style=for-the-badge&logo=stack&logoColor=white" alt="The Constitutional Order" />
-
-<br/>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/BUILD_ORDER_FOUNDATION-2563EB?style=for-the-badge&logo=rocket&logoColor=white" alt="Foundation" />
-  <img src="https://img.shields.io/badge/⬇-2563EB?style=for-the-badge" alt="Arrow" />
-  <img src="https://img.shields.io/badge/CORE_ARCHITECTURE-2563EB?style=for-the-badge&logo=code&logoColor=white" alt="Core Architecture" />
-  <img src="https://img.shields.io/badge/⬇-2563EB?style=for-the-badge" alt="Arrow" />
-  <img src="https://img.shields.io/badge/QUALITY_&_RELIABILITY-2563EB?style=for-the-badge&logo=shield&logoColor=white" alt="Quality" />
-  <img src="https://img.shields.io/badge/⬇-2563EB?style=for-the-badge" alt="Arrow" />
-  <img src="https://img.shields.io/badge/PRODUCT_&_IMPROVEMENT-2563EB?style=for-the-badge&logo=chart&logoColor=white" alt="Product" />
-</p>
-
-> **Golden Rule:** Build constitutions in the order your system would fail without them.
-
----
-
-<br/>
-
-## <a id="phase-0-foundation"></a><img src="https://img.shields.io/badge/Phase_0_Foundation-181717?style=for-the-badge&logo=foundation&logoColor=white" alt="Phase 0 Foundation" />
-
-<br/>
-
-| Order | Constitution | Why First | Status |
-| :---: | :--- | :--- | :--- |
-| **1** | **Team & Process** | Without team process, no other constitution will be followed | <img src="https://img.shields.io/badge/Pending-FF6F00?style=flat-square" alt="Pending" /> |
-| **2** | **Code Quality & Review** | Set coding standards before writing any code | <img src="https://img.shields.io/badge/Pending-FF6F00?style=flat-square" alt="Pending" /> |
-
----
-
-<br/>
-
-## <a id="phase-1-core-architecture"></a><img src="https://img.shields.io/badge/Phase_1_Core_Architecture-FF6F00?style=for-the-badge&logo=architecture&logoColor=white" alt="Phase 1 Core Architecture" />
-
-<br/>
-
-| Order | Constitution | Why This Order | Status |
-| :---: | :--- | :--- | :--- |
-| **3** | **Backend Constitution** | Foundation of your system — APIs, auth, database patterns | <img src="https://img.shields.io/badge/Locked-25D366?style=flat-square" alt="Locked" /> |
-| **4** | **Auth Domain Specification** | First feature every system needs — security-critical | <img src="https://img.shields.io/badge/Pending-FF6F00?style=flat-square" alt="Pending" /> |
-| **5** | **Frontend Constitution** | Depends on backend and auth — build after they're locked | <img src="https://img.shields.io/badge/Locked-25D366?style=flat-square" alt="Locked" /> |
-| **6** | **Database Constitution** | Source of truth — lock after backend patterns are defined | <img src="https://img.shields.io/badge/Pending-FF6F00?style=flat-square" alt="Pending" /> |
-
----
-
-<br/>
-
-## <a id="phase-2-quality--reliability"></a><img src="https://img.shields.io/badge/Phase_2_Quality_&_Reliability-25D366?style=for-the-badge&logo=quality&logoColor=white" alt="Phase 2 Quality & Reliability" />
-
-<br/>
-
-| Order | Constitution | Why This Order | Status |
-| :---: | :--- | :--- | :--- |
-| **7** | **Testing Constitution** | Need to trust your code before production | <img src="https://img.shields.io/badge/Pending-FF6F00?style=flat-square" alt="Pending" /> |
-| **8** | **Infrastructure Constitution** | Need to deploy before production | <img src="https://img.shields.io/badge/Pending-FF6F00?style=flat-square" alt="Pending" /> |
-| **9** | **Incident Response Constitution** | Need to handle failures before launch | <img src="https://img.shields.io/badge/Pending-FF6F00?style=flat-square" alt="Pending" /> |
-
----
-
-<br/>
-
-## <a id="phase-3-product--improvement"></a><img src="https://img.shields.io/badge/Phase_3_Product_&_Improvement-764ABC?style=for-the-badge&logo=product&logoColor=white" alt="Phase 3 Product & Improvement" />
-
-<br/>
-
-| Order | Constitution | Why Last | Status |
-| :---: | :--- | :--- | :--- |
-| **10** | **Product & Feature Constitution** | After launch — decide what to build next | <img src="https://img.shields.io/badge/Pending-FF6F00?style=flat-square" alt="Pending" /> |
-
----
-
-<br/>
-
-## <a id="quick-start"></a><img src="https://img.shields.io/badge/Quick_Start-2563EB?style=for-the-badge&logo=rocket&logoColor=white" alt="Quick Start" />
-
-<br/>
-
-### For a New System
+**This repo is never committed into an application.** Clone it beside your project:
 
 ```bash
-# Step 1: Clone this repository into your project
-git clone https://github.com/MALULEKE-KS/system-design-template.git .system-design
+# Solo development
+git clone https://github.com/MALULEKE-KS/system-design-template.git .ksdrill
 
-# Step 2: Open the constitutional order
-open .system-design/00-ORDER/constitutional-order.html
-
-# Step 3: Follow the 10-step order
-# Step 4: Use the checklist to track progress
-# Step 5: Build your Auth Domain code
+# Team development
+git clone https://github.com/MALULEKE-KS/system-design-template.git _governance
 ```
 
-For Solo Founder
-
-```bash
-# Same steps — each constitution is designed to work for solo founders
-# Simplified versions, less ceremony, same rigor
+Add to your application's `.gitignore`:
+```
+.ksdrill/
+_governance/
 ```
 
 ---
 
-<br/>
+## Quick Start
 
-<a id="how-to-use-this-template"></a><img src="https://img.shields.io/badge/How_to_Use_This_Template-25D366?style=for-the-badge&logo=code&logoColor=white" alt="How to Use This Template" />
+```bash
+# 1. Clone this repo alongside your project (above)
+# 2. AI reads first — every session
+cat AI-INSTRUCTIONS.md
 
-<br/>
+# 3. Check the complete repo map (reading clusters + ordered file list)
+open MANIFEST.md
 
-<details>
-<summary><strong>Click to expand — detailed instructions</strong></summary>
+# 4. Read the constitutional order
+open constitutions/C00-constitutional-order.md
 
-<br/>
+# 5. Find the right standard fast
+open indexes/quick-reference.md
 
-With AI (Cursor/Copilot):
-
-1. Clone this repo into .system-design/
-2. Tell your AI: "Read .system-design/00-ORDER/constitutional-order.html and guide me through Phase 0"
-3. Follow the AI's guidance
-
-Manually:
-
-1. Open 00-ORDER/constitutional-order.html in your browser
-2. Start with Constitution #1 (Team & Process)
-3. Read the rules, implement them
-4. Check off items in 00-ORDER/build-checklist.md
-5. Move to the next constitution
-
-Pro Tip: Don't skip Phase 0. Team & Process and Code Quality are the foundation that makes everything else work.
-
-</details>
+# 6. Create your system context file
+cp system-contexts/fundslink-context.md system-contexts/{your-system}-context.md
+```
 
 ---
 
-<br/>
+## Repository Structure
 
-<a id="repository-structure"></a><img src="https://img.shields.io/badge/Repository_Structure-181717?style=for-the-badge&logo=stackshare&logoColor=white" alt="Repository Structure" />
-
-<br/>
-
-```text
+```
 system-design-template/
 │
-├── 📄 README.md                        # This file
-├── 📄 LICENSE                          # MIT License
-├── 📄 .gitignore                       # Git ignore rules
+├── AI-INSTRUCTIONS.md                         ← AI reads this first, every session
+├── MANIFEST.md                                ← AI reading graph — complete file map
+├── README.md
+├── LICENSE
 │
-├── 📁 00-ORDER/                        # START HERE
-│   └── 📄 constitutional-order.html    # The 10-step build order
+├── constitutions/                             ← Constitutions C00–C10, paired with implementation guides
+│   ├── C00-constitutional-order.md            ← Master — governs all
+│   ├── C01-engineering-standards.md           ← Phase 0 — 97 standards
+│   ├── C02-backend-constitution.md            ← Phase 1 — 80 standards
+│   ├── C02-backend-implementation.md          ←   └─ paired implementation guide
+│   ├── C03-auth-constitution.md               ← Phase 1 — 36 standards (highest security authority)
+│   ├── C03-auth-implementation.md             ←   └─ paired implementation guide
+│   ├── C04-frontend-constitution.md           ← Phase 1 — 82 standards
+│   ├── C04-frontend-implementation.md         ←   └─ paired implementation guide
+│   ├── C05-database-constitution.md           ← Phase 1 — 64 standards
+│   ├── C05-database-implementation.md         ←   └─ paired implementation guide
+│   ├── C06-fullstack-architecture-constitution.md ← Phase 1 — 44 standards
+│   ├── C07-testing-constitution.md            ← Phase 2 — 43 standards
+│   ├── C08-platform-reliability-constitution.md ← Phase 2 — 82 standards
+│   ├── C09-product-feature-constitution.md    ← Phase 3 — 30 standards (The Crown Jewel)
+│   └── C10-ai-collaboration-constitution.md   ← Phase 3 — 36 standards
 │
-├── 📁 01-FOUNDATION/                   # Phase 0
-│   ├── 📄 team-process-constitution.html
-│   └── 📄 code-quality-constitution.html
+├── workflow/                                  ← Studio operating standards
+│   └── ksdrill-sa-ai-workflow.md              ← 5-engineer relay model + Handoff Protocol
 │
-├── 📁 02-CORE-ARCHITECTURE/            # Phase 1
-│   ├── 📄 backend-constitution.html
-│   ├── 📄 auth-domain-specification.html
-│   ├── 📄 frontend-constitution.html
-│   └── 📄 database-constitution.html
+├── overlays/                                  ← Process adaptations by operating mode
+│   ├── solo-dev-overlay.md
+│   └── team-overlay.md
 │
-├── 📁 03-QUALITY-RELIABILITY/          # Phase 2
-│   ├── 📄 testing-constitution.html
-│   ├── 📄 infrastructure-constitution.html
-│   └── 📄 incident-response-constitution.html
+├── indexes/                                   ← Fast navigation layer
+│   ├── quick-reference.md                     ← Fastest path to the right standard
+│   ├── standards-index.md                     ← All 594 standards with descriptions
+│   ├── anti-patterns-index.md                 ← All anti-patterns for code review
+│   └── stack-assignment-matrix.md             ← Stack decision framework
 │
-└── 📁 04-PRODUCT/                      # Phase 3
-    └── 📄 product-feature-constitution.html
+├── adrs/                                      ← Architecture Decision Records
+│   ├── ADR-000-template.md
+│   ├── ADR-001-fundslink-stack.md             ← Angular + FastAPI — accepted
+│   ├── ADR-002-maphophe-stack.md              ← Next.js — accepted
+│   ├── ADR-003-reserve-bank-stack.md          ← Angular + FastAPI — accepted
+│   └── ADR-004-syncup-stack.md                ← Next.js — accepted
+│
+├── templates/                                 ← Mandatory document templates
+│   ├── CONSTITUTION-INDEX-template.md         ← Per-project AI session index
+│   ├── feature-proposal-template.md
+│   ├── incident-report-template.md
+│   ├── post-mortem-template.md
+│   └── sprint-retro-template.md
+│
+├── runbooks/                                  ← Step-by-step operational response
+│   ├── SEV0-response-runbook.md
+│   ├── SEV1-response-runbook.md
+│   ├── financial-freeze-runbook.md            ← Reserve Bank financial incident
+│   ├── vercel-rollback-runbook.md
+│   ├── railway-deployment-runbook.md
+│   ├── database-migration-runbook.md
+│   └── ai-degradation-runbook.md             ← FundsLink LangChain/ChromaDB
+│
+└── system-contexts/                           ← Per-system AI session startup files
+    ├── fundslink-context.md
+    ├── maphophe-context.md
+    ├── reserve-bank-context.md
+    └── syncup-context.md
 ```
 
 ---
 
-<br/>
+## Constitution Register
 
-<a id="industry-standards"></a><img src="https://img.shields.io/badge/Industry_Standards-412991?style=for-the-badge&logo=award&logoColor=white" alt="Industry Standards" />
+| # | Constitution | Phase | Standards | Paired With | Status |
+|---|---|---|---|---|---|
+| **C0** | Constitutional Order | Master | §1–§14 | — | LOCKED |
+| **C1** | Engineering Standards | Phase 0 | 97 | — | LOCKED |
+| **C2** | Backend Constitution | Phase 1 | 80 | C2 Implementation | LOCKED |
+| **C3** | Auth Constitution | Phase 1 | 36 | C3 Implementation | LOCKED |
+| **C4** | Frontend Constitution | Phase 1 | 82 | C4 Implementation | LOCKED |
+| **C5** | Database Constitution | Phase 1 | 64 | C5 Implementation | LOCKED |
+| **C6** | Full-Stack Architecture | Phase 1 | 44 | — | LOCKED |
+| **C7** | Testing Constitution | Phase 2 | 43 | — | LOCKED |
+| **C8** | Platform Reliability | Phase 2 | 82 | — | LOCKED |
+| **C9** | Product & Feature | Phase 3 | 30 | — | LOCKED |
+| **C10** | AI Collaboration | Phase 3 | 36 | — | LOCKED |
 
-<br/>
-
-All constitutions are built on industry best practices from:
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Google_SRE-4285F4?style=flat-square&logo=google&logoColor=white" alt="Google SRE" />
-  <img src="https://img.shields.io/badge/AWS_Well_Architected-FF9900?style=flat-square&logo=amazonaws&logoColor=white" alt="AWS" />
-  <img src="https://img.shields.io/badge/Stripe_Engineering-635BFF?style=flat-square&logo=stripe&logoColor=white" alt="Stripe" />
-  <img src="https://img.shields.io/badge/GitHub_Engineering-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub" />
-  <img src="https://img.shields.io/badge/Basecamp_Shape_Up-25D366?style=flat-square&logo=basecamp&logoColor=white" alt="Basecamp" />
-  <img src="https://img.shields.io/badge/OWASP-000000?style=flat-square&logo=owasp&logoColor=white" alt="OWASP" />
-</p>
-
----
-
-<br/>
-
-<a id="progress-tracker"></a><img src="https://img.shields.io/badge/Progress_Tracker-FF6F00?style=for-the-badge&logo=checklist&logoColor=white" alt="Progress Tracker" />
-
-<br/>
-
-Phase Constitutions Progress
-Phase 0 2 <img src="https://progress-bar.dev/0/?title=0%25&color=2563EB" alt="0%" />
-Phase 1 4 <img src="https://progress-bar.dev/50/?title=50%25&color=25D366" alt="50%" /> <sub>(Backend ✅, Frontend ✅, Auth ⏳, Database ⏳)</sub>
-Phase 2 3 <img src="https://progress-bar.dev/0/?title=0%25&color=2563EB" alt="0%" />
-Phase 3 1 <img src="https://progress-bar.dev/0/?title=0%25&color=2563EB" alt="0%" />
-Total 10 <img src="https://progress-bar.dev/20/?title=20%25&color=25D366" alt="20%" /> <sub>2 of 10 constitutions locked</sub>
+**Total: 594 unique standards · 11 constitutions · 4 implementation guides · Lock date: 2026-05-08**
 
 ---
 
-<br/>
+## Flagship Systems
 
-<a id="license"></a><img src="https://img.shields.io/badge/License-25D366?style=for-the-badge&logo=opensource&logoColor=white" alt="License" />
-
-<br/>
-
-This project is licensed under the MIT License — see the LICENSE file for details.
-
-```
-MIT License
-
-Copyright (c) 2026 MALULEKE-KS
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
-```
+| System | Stack | Build Phase | Primary Problem |
+|--------|-------|-------------|----------------|
+| **FundsLink Academy** | Angular + FastAPI | Q2 2026 — Active | 342,000+ students excluded from education funding |
+| **Maphophe Community System** | Next.js | Q3 2026 | Rural villages with no digital governance infrastructure |
+| **KSDRILL Reserve Bank** | Angular + FastAPI | Q4 2026 | Passive savings tools with no discipline enforcement |
+| **SyncUp Creator Platform** | Next.js | Q1 2027 | Unstructured creator negotiations with no formal process |
 
 ---
 
-<br/>
+## Key Design Decisions
 
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=2563EB&height=100&section=footer" alt="Footer wave" />
-</p>
+| Decision | What Was Decided |
+|----------|-----------------|
+| **Document format** | Markdown only — HTML eliminated |
+| **Version** | All constitutions at v1.0, locked 2026-05-08 |
+| **Terminology** | Standards / Anti-Patterns / Practices / Adaptations / Extensions |
+| **Standard IDs** | `S{C}.{N}` — constitution-scoped for unambiguous cross-references |
+| **Styling** | Tailwind (layout) + Custom CSS (brand) — both first-class, neither optional |
+| **Database access** | Prisma ORM (primary) + Raw SQL (governed, first-class) — both tools, clear criteria |
+| **Solo/team split** | Overlays only — constitutions are universal |
+| **Auth Override Rule** | C3 beats all constitutions on security decisions — C0 §7.3 |
+| **AI governance** | 5-engineer relay (Claude→Claude Code→ChatGPT→DeepSeek→Kimi) + Founder approval gate — S10.8 |
+| **AI engineer workflow** | `workflow/ksdrill-sa-ai-workflow.md` — constitutionalized relay operating standard |
 
-<p align="center">
-  <i>Built with African roots • Designed for global impact</i><br/>
-  <i>The Sky Is The Limit — by KSDRILL-SA</i>
-</p>
+---
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Locked-2026--04--08-2563EB?style=for-the-badge" alt="Locked Date" />
-  <img src="https://img.shields.io/badge/Next_Review-2026--07--07-FF6F00?style=for-the-badge" alt="Next Review" />
-</p>
+## Amendment Process
+
+All constitutional amendments follow **C0 §8 Amendment Protocol**. No standard changes without:
+1. GitHub Issue in this repo tagged `constitutional-amendment`
+2. AI adversarial review (solo) or 48h team review
+3. Owner approval: Maluleke Kurhula Success
+4. Version bump + amendment log entry + cross-constitution updates
+
+---
+
+## Industry References
+
+- [Google SRE Book](https://sre.google/sre-book/table-of-contents/) — Incident management patterns
+- [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/) — Reliability principles
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/) — Security baseline
+- [Shape Up (Basecamp)](https://basecamp.com/shapeup) — Feature scoping methodology
+- [Prisma Documentation](https://www.prisma.io/docs) — ORM standards source
+
+---
+
+**Organisation:** KSDRILL SA  
+**Owner:** Maluleke Kurhula Success  
+**Repository:** `system-design-template`  
+**Licence:** MIT

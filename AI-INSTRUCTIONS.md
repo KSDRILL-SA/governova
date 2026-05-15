@@ -62,15 +62,21 @@ Full relay diagram, Handoff Protocol (Parts A–D), and Repo Verification checkl
 
 ## How to Navigate This Repo
 
+**Start here for any navigation question:** `MANIFEST.md` — the complete AI reading graph.
+It lists every file, its cluster, its purpose, and the exact reading order for every session type.
+
 **Navigation hierarchy (fastest to slowest):**
 
-1. `indexes/quick-reference.md` — Standards organised by concern (auth, database, deployment)
-2. `indexes/standards-index.md` — All standards with one-line descriptions
-3. `indexes/anti-patterns-index.md` — All anti-patterns for fast violation checking
-4. Full constitution — when deep rationale is needed (`constitutions/C{N}-*.md`)
-5. Implementation guide — when code patterns are needed (`implementation/C{N}-*.md`)
+1. `MANIFEST.md` — full repo map, reading clusters, visual dependency graph
+2. `indexes/quick-reference.md` — standards organised by concern (auth, database, deployment)
+3. `indexes/standards-index.md` — all standards with one-line descriptions
+4. `indexes/anti-patterns-index.md` — all anti-patterns for fast violation checking
+5. Full constitution — when deep rationale is needed (`constitutions/C0N-*.md`)
+6. Implementation guide — paired with its constitution in the same folder (`constitutions/C0N-*-implementation.md`)
 
 **Index-first navigation:** Read the relevant index entry before opening the full constitution. Most questions are answerable from the index.
+
+**Constitution + implementation are co-located.** C02 constitution and C02 implementation guide both live in `constitutions/`. Read them together — never open an implementation guide without first reading its paired constitution.
 
 ---
 
@@ -80,23 +86,25 @@ Full relay diagram, Handoff Protocol (Parts A–D), and Repo Verification checkl
 
 ```
 1. Read this file (done — you are reading it)
-2. Identify your engineer role (see relay table above)
+2. Read MANIFEST.md — scan the reading clusters to orient yourself in the repo
+3. Identify your engineer role (see relay table above)
    - Which position in the relay are you?
    - What is your permission level?
    - What did the previous engineer hand off?
-3. Read workflow/ksdrill-sa-ai-workflow.md §4.5 Part A
+4. Read workflow/ksdrill-sa-ai-workflow.md §4.5 Part A
    (Handoff Protocol — Before Starting)
-4. Read system-contexts/{system}-context.md
+5. Read system-contexts/{system}-context.md
    - Identifies: stack, build phase, active group, operating mode (SOLO/TEAM)
-5. Perform Repo Verification (workflow §4.5 Part C)
+6. Perform Repo Verification (workflow §4.5 Part C)
    - Does the repo match what the previous engineer claimed?
    - If NO → stop. Report to Founder. Do not proceed.
-6. If Claude Code in Cursor: confirm CONSTITUTION-INDEX.md is loaded (S10.21)
-7. Load the correct overlay:
+7. If Claude Code in Cursor: confirm CONSTITUTION-INDEX.md is loaded (S10.21)
+8. Load the correct overlay:
    - SOLO → overlays/solo-dev-overlay.md
    - TEAM → overlays/team-overlay.md
-8. Check indexes/standards-index.md for standards relevant to today's task
-9. Load the full constitution only when the index entry is insufficient
+9. Check indexes/standards-index.md for standards relevant to today's task
+10. Load the full constitution only when the index entry is insufficient
+    - Constitution and its paired implementation guide are in the same folder (constitutions/)
 ```
 
 **If any step cannot be completed** (file missing, context file not created, repo verification fails), stop and report to the Founder before proceeding. Do not self-route around a failed step.

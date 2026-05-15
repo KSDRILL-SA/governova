@@ -3,9 +3,9 @@
 > *"Build constitutions in the order your system would fail without them."*
 
 [![Constitutions](https://img.shields.io/badge/Constitutions-11-blue)](constitutions/)
-[![Version](https://img.shields.io/badge/Version-v1.0-green)](constitutions/C0-constitutional-order.md)
-[![Status](https://img.shields.io/badge/Status-LOCKED-red)](constitutions/C0-constitutional-order.md)
-[![Locked](https://img.shields.io/badge/Locked-2026--05--08-orange)](constitutions/C0-constitutional-order.md)
+[![Version](https://img.shields.io/badge/Version-v1.0-green)](constitutions/C00-constitutional-order.md)
+[![Status](https://img.shields.io/badge/Status-LOCKED-red)](constitutions/C00-constitutional-order.md)
+[![Locked](https://img.shields.io/badge/Locked-2026--05--08-orange)](constitutions/C00-constitutional-order.md)
 
 ---
 
@@ -38,13 +38,16 @@ _governance/
 # 2. AI reads first — every session
 cat AI-INSTRUCTIONS.md
 
-# 3. Read the constitutional order
-open constitutions/C0-constitutional-order.md
+# 3. Check the complete repo map (reading clusters + ordered file list)
+open MANIFEST.md
 
-# 4. Find the right standard fast
+# 4. Read the constitutional order
+open constitutions/C00-constitutional-order.md
+
+# 5. Find the right standard fast
 open indexes/quick-reference.md
 
-# 5. Create your system context file
+# 6. Create your system context file
 cp system-contexts/fundslink-context.md system-contexts/{your-system}-context.md
 ```
 
@@ -56,27 +59,26 @@ cp system-contexts/fundslink-context.md system-contexts/{your-system}-context.md
 system-design-template/
 │
 ├── AI-INSTRUCTIONS.md                         ← AI reads this first, every session
+├── MANIFEST.md                                ← AI reading graph — complete file map
 ├── README.md
 ├── LICENSE
 │
-├── constitutions/                             ← 11 constitutions — C0 through C10
-│   ├── C0-constitutional-order.md             ← Master — governs all
-│   ├── C1-engineering-standards.md            ← Phase 0 — 97 standards
-│   ├── C2-backend-constitution.md             ← Phase 1 — 80 standards
-│   ├── C3-auth-constitution.md                ← Phase 1 — 36 standards (highest security authority)
-│   ├── C4-frontend-constitution.md            ← Phase 1 — 82 standards
-│   ├── C5-database-constitution.md            ← Phase 1 — 64 standards
-│   ├── C6-fullstack-architecture-constitution.md ← Phase 1 — 44 standards
-│   ├── C7-testing-constitution.md             ← Phase 2 — 43 standards
-│   ├── C8-platform-reliability-constitution.md ← Phase 2 — 82 standards
-│   ├── C9-product-feature-constitution.md     ← Phase 3 — 30 standards (The Crown Jewel)
+├── constitutions/                             ← Constitutions C00–C10, paired with implementation guides
+│   ├── C00-constitutional-order.md            ← Master — governs all
+│   ├── C01-engineering-standards.md           ← Phase 0 — 97 standards
+│   ├── C02-backend-constitution.md            ← Phase 1 — 80 standards
+│   ├── C02-backend-implementation.md          ←   └─ paired implementation guide
+│   ├── C03-auth-constitution.md               ← Phase 1 — 36 standards (highest security authority)
+│   ├── C03-auth-implementation.md             ←   └─ paired implementation guide
+│   ├── C04-frontend-constitution.md           ← Phase 1 — 82 standards
+│   ├── C04-frontend-implementation.md         ←   └─ paired implementation guide
+│   ├── C05-database-constitution.md           ← Phase 1 — 64 standards
+│   ├── C05-database-implementation.md         ←   └─ paired implementation guide
+│   ├── C06-fullstack-architecture-constitution.md ← Phase 1 — 44 standards
+│   ├── C07-testing-constitution.md            ← Phase 2 — 43 standards
+│   ├── C08-platform-reliability-constitution.md ← Phase 2 — 82 standards
+│   ├── C09-product-feature-constitution.md    ← Phase 3 — 30 standards (The Crown Jewel)
 │   └── C10-ai-collaboration-constitution.md   ← Phase 3 — 36 standards
-│
-├── implementation/                            ← How-to paired with each Phase 1 constitution
-│   ├── C2-backend-implementation.md
-│   ├── C3-auth-implementation.md
-│   ├── C4-frontend-implementation.md
-│   └── C5-database-implementation.md
 │
 ├── workflow/                                  ← Studio operating standards
 │   └── ksdrill-sa-ai-workflow.md              ← 5-engineer relay model + Handoff Protocol

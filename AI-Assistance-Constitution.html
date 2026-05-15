@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Assistant Constitution — Controlled Engineering Governance</title>
+
+    
+
+    <!-- Fonts -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+    
+
+    <!-- Font Awesome Icons (No emojis) -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    
+
+    <style>
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+        }
+
+        body {
+
+            font-family: 'Inter', sans-serif;
+
+            background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 50%, #0a0a0f 100%);
+
+            color: #e8e8f0;
+
+            line-height: 1.6;
+
+            overflow-x: hidden;
+
+        }
+
+        /* Custom Scrollbar */
+
+        ::-webkit-scrollbar {
+
+            width: 8px;
+
+            height: 8px;
+
+        }
+
+        ::-webkit-scrollbar-track {
+
+            background: #1a1a2a;
+
+            border-radius: 10px;
+
+        }
+
+        ::-webkit-scrollbar-thumb {
+
+            background: #3b3b5e;
+
+            border-radius: 10px;
+
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+
+            background: #5a5a8a;
+
+        }
+
+        /* Particles Background */
+
+        .particles {
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            z-index: 0;
+
+            pointer-events: none;
+
+            background-image: 
+
+                radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+
+        }
+
+        /* Main Container */
+
+        .container {
+
+            max-width: 1400px;
+
+            margin: 0 auto;
+
+            padding: 0 32px;
+
+            position: relative;
+
+            z-index: 1;
+
+        }
+
+        /* Header */
+
+        .header {
+
+            text-align: center;
+
+            padding: 80px 0 60px;
+
+            border-bottom: 1px solid rgba(59, 59, 94, 0.5);
+
+        }
+
+        .badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            background: rgba(37, 99, 235, 0.15);
+
+            border: 1px solid rgba(37, 99, 235, 0.3);
+
+            border-radius: 100px;
+
+            padding: 8px 24px;
+
+            font-size: 13px;
+
+            font-weight: 500;
+
+            letter-spacing: 0.5px;
+
+            color: #60a5fa;
+
+            margin-bottom: 32px;
+
+        }
+
+        .badge i {
+
+            font-size: 14px;
+
+            color: #3b82f6;
+
+        }
+
+        h1 {
+
+            font-size: clamp(48px, 8vw, 88px);
+
+            font-weight: 800;
+
+            letter-spacing: -0.03em;
+
+            line-height: 1.1;
+
+            margin-bottom: 24px;
+
+            background: linear-gradient(135deg, #ffffff 0%, #60a5fa 50%, #a78bfa 100%);
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            background-clip: text;
+
+        }
+
+        .subtitle {
+
+            font-size: 18px;
+
+            color: #94a3b8;
+
+            max-width: 700px;
+
+            margin: 0 auto 32px;
+
+        }
+
+        .meta-stats {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 48px;
+
+            flex-wrap: wrap;
+
+            margin-top: 40px;
+
+        }
+
+        .stat {
+
+            text-align: center;
+
+        }
+
+        .stat-value {
+
+            font-size: 32px;
+
+            font-weight: 800;
+
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            background-clip: text;
+
+        }
+
+        .stat-label {
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            color: #64748b;
+
+            margin-top: 4px;
+
+        }
+
+        /* Navigation Tabs */
+
+        .nav-tabs {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            margin: 48px 0 32px;
+
+            padding: 16px;
+
+            background: rgba(15, 23, 42, 0.6);
+
+            backdrop-filter: blur(10px);
+
+            border-radius: 60px;
+
+            border: 1px solid rgba(59, 59, 94, 0.3);
+
+            position: sticky;
+
+            top: 16px;
+
+            z-index: 100;
+
+        }
+
+        .nav-tab {
+
+            padding: 10px 24px;
+
+            border-radius: 40px;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            background: transparent;
+
+            border: none;
+
+            color: #94a3b8;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+
+            font-family: 'Inter', sans-serif;
+
+        }
+
+        .nav-tab i {
+
+            margin-right: 8px;
+
+            font-size: 14px;
+
+        }
+
+        .nav-tab:hover {
+
+            background: rgba(37, 99, 235, 0.2);
+
+            color: #e2e8f0;
+
+        }
+
+        .nav-tab.active {
+
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+
+            color: white;
+
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+
+        }
+
+        /* Section Container */
+
+        .section {
+
+            display: none;
+
+            animation: fadeIn 0.4s ease;
+
+        }
+
+        .section.active-section {
+
+            display: block;
+
+        }
+
+        @keyframes fadeIn {
+
+            from { opacity: 0; transform: translateY(20px); }
+
+            to { opacity: 1; transform: translateY(0); }
+
+        }
+
+        /* Cards */
+
+        .card {
+
+            background: rgba(15, 23, 42, 0.6);
+
+            backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(59, 59, 94, 0.3);
+
+            border-radius: 24px;
+
+            padding: 28px;
+
+            margin-bottom: 24px;
+
+            transition: all 0.2s ease;
+
+        }
+
+        .card:hover {
+
+            border-color: rgba(37, 99, 235, 0.5);
+
+            transform: translateY(-2px);
+
+        }
+
+        .card-header {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+            margin-bottom: 20px;
+
+            padding-bottom: 16px;
+
+            border-bottom: 1px solid rgba(59, 59, 94, 0.3);
+
+        }
+
+        .card-icon {
+
+            width: 48px;
+
+            height: 48px;
+
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+
+            border-radius: 16px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 24px;
+
+            color: white;
+
+        }
+
+        .card-title {
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+        }
+
+        .card-subtitle {
+
+            font-size: 14px;
+
+            color: #94a3b8;
+
+        }
+
+        /* Permission Levels */
+
+        .permission-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+            gap: 20px;
+
+            margin-bottom: 32px;
+
+        }
+
+        .permission-card {
+
+            background: rgba(15, 23, 42, 0.6);
+
+            border: 1px solid rgba(59, 59, 94, 0.3);
+
+            border-radius: 20px;
+
+            padding: 24px;
+
+            transition: all 0.2s ease;
+
+        }
+
+        .permission-card.l1 { border-top: 3px solid #3b82f6; }
+
+        .permission-card.l2 { border-top: 3px solid #10b981; }
+
+        .permission-card.l3 { border-top: 3px solid #f59e0b; }
+
+        .permission-card.l4 { border-top: 3px solid #ef4444; }
+
+        .permission-level {
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 12px;
+
+        }
+
+        .permission-name {
+
+            font-size: 24px;
+
+            font-weight: 800;
+
+            margin-bottom: 8px;
+
+        }
+
+        .permission-desc {
+
+            font-size: 14px;
+
+            color: #94a3b8;
+
+            margin-bottom: 16px;
+
+        }
+
+        .permission-badge {
+
+            display: inline-block;
+
+            padding: 4px 12px;
+
+            border-radius: 100px;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            margin-top: 12px;
+
+        }
+
+        .badge-auto { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+        .badge-approval { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
+        .badge-block { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+        /* Tables */
+
+        .table-wrapper {
+
+            overflow-x: auto;
+
+            margin: 24px 0;
+
+        }
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            font-size: 14px;
+
+        }
+
+        th {
+
+            text-align: left;
+
+            padding: 14px 16px;
+
+            background: rgba(37, 99, 235, 0.1);
+
+            border-bottom: 2px solid rgba(37, 99, 235, 0.3);
+
+            font-weight: 600;
+
+            color: #60a5fa;
+
+        }
+
+        td {
+
+            padding: 12px 16px;
+
+            border-bottom: 1px solid rgba(59, 59, 94, 0.3);
+
+        }
+
+        tr:hover {
+
+            background: rgba(37, 99, 235, 0.05);
+
+        }
+
+        /* Code Blocks */
+
+        .code-block {
+
+            background: #0a0a0f;
+
+            border: 1px solid #1a1a2a;
+
+            border-radius: 16px;
+
+            padding: 20px;
+
+            overflow-x: auto;
+
+            margin: 20px 0;
+
+        }
+
+        .code-block pre {
+
+            font-family: 'JetBrains Mono', monospace;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+            color: #cbd5e1;
+
+        }
+
+        .code-block .keyword { color: #c084fc; }
+
+        .code-block .string { color: #34d399; }
+
+        .code-block .comment { color: #64748b; }
+
+        .code-block .number { color: #60a5fa; }
+
+        /* Alert Example */
+
+        .alert-example {
+
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(245, 158, 11, 0.05));
+
+            border-left: 4px solid #ef4444;
+
+            border-radius: 16px;
+
+            padding: 24px;
+
+            margin: 24px 0;
+
+        }
+
+        /* Footer */
+
+        .footer {
+
+            text-align: center;
+
+            padding: 60px 0 40px;
+
+            border-top: 1px solid rgba(59, 59, 94, 0.3);
+
+            margin-top: 60px;
+
+        }
+
+        .footer i {
+
+            color: #3b82f6;
+
+            margin: 0 4px;
+
+        }
+
+        /* Badges */
+
+        .severity-critical { background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 600; display: inline-block; }
+
+        .severity-high { background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 600; display: inline-block; }
+
+        .severity-medium { background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 600; display: inline-block; }
+
+        .severity-low { background: rgba(100, 116, 139, 0.15); color: #94a3b8; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 600; display: inline-block; }
+
+        /* Responsive */
+
+        @media (max-width: 768px) {
+
+            .container { padding: 0 20px; }
+
+            .nav-tab { padding: 8px 16px; font-size: 12px; }
+
+            .permission-grid { grid-template-columns: 1fr; }
+
+            .meta-stats { gap: 24px; }
+
+        }
+
+        /* Typing Effect */
+
+        .typing {
+
+            overflow: hidden;
+
+            white-space: nowrap;
+
+            border-right: 2px solid #3b82f6;
+
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+
+        }
+
+        @keyframes typing {
+
+            from { width: 0; }
+
+            to { width: 100%; }
+
+        }
+
+        @keyframes blink-caret {
+
+            from, to { border-color: transparent; }
+
+            50% { border-color: #3b82f6; }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="particles"></div>
+
+<div class="container">
+
+    <!-- Header -->
+
+    <div class="header">
+
+        <div class="badge">
+
+            <i class="fas fa-robot"></i>
+
+            <span>AI ASSISTANT CONSTITUTION v1.0</span>
+
+            <i class="fas fa-lock"></i>
+
+        </div>
+
+        <h1>Controlled AI<br>Engineering System</h1>
+
+        <p class="subtitle">
+
+            "AI must be powerful, but never uncontrolled — operate within my rules, my system, my structure."
+
+        </p>
+
+        <div class="meta-stats">
+
+            <div class="stat"><div class="stat-value">5</div><div class="stat-label">Layers</div></div>
+
+            <div class="stat"><div class="stat-value">4</div><div class="stat-label">Permission Levels</div></div>
+
+            <div class="stat"><div class="stat-value">6</div><div class="stat-label">Core Runbooks</div></div>
+
+            <div class="stat"><div class="stat-value">29</div><div class="stat-label">Edge Cases</div></div>
+
+            <div class="stat"><div class="stat-value">8</div><div class="stat-label">Canonical Answers</div></div>
+
+        </div>
+
+    </div>
+
+    <!-- Navigation Tabs -->
+
+    <div class="nav-tabs">
+
+        <button class="nav-tab active" data-section="overview"><i class="fas fa-eye"></i> Overview</button>
+
+        <button class="nav-tab" data-section="permissions"><i class="fas fa-shield-alt"></i> Permission Model</button>
+
+        <button class="nav-tab" data-section="runbooks"><i class="fas fa-book"></i> Runbooks</button>
+
+        <button class="nav-tab" data-section="alerts"><i class="fas fa-bell"></i> Alert System</button>
+
+        <button class="nav-tab" data-section="edgecases"><i class="fas fa-exclamation-triangle"></i> Edge Cases</button>
+
+        <button class="nav-tab" data-section="learning"><i class="fas fa-sync-alt"></i> Closed-Loop Learning</button>
+
+        <button class="nav-tab" data-section="answers"><i class="fas fa-question-circle"></i> Canonical Answers</button>
+
+    </div>
+
+    <!-- SECTION 1: OVERVIEW -->
+
+    <div id="overview" class="section active-section">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-icon"><i class="fas fa-robot"></i></div>
+
+                <div>
+
+                    <div class="card-title">System Architecture</div>
+
+                    <div class="card-subtitle">The Five Layers of Controlled AI</div>
+
+                </div>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr><th>Layer</th><th>Component</th><th>Responsibility</th><th>Permission Level</th></tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr><td><span class="severity-critical">L1</span></td><td>You (Human)</td><td>Initiate, review, approve, learn</td><td>Full control</td></tr>
+
+                        <tr><td><span class="severity-high">L2</span></td><td>Cursor / Copilot</td><td>Execute approved actions, generate code</td><td>L1-L3</td></tr>
+
+                        <tr><td><span class="severity-medium">L3</span></td><td>Claude / DeepSeek</td><td>Reason, analyze, suggest, explain</td><td>L1-L2 only</td></tr>
+
+                        <tr><td><span class="severity-low">L4</span></td><td>OpenClaw (Restricted)</td><td>Monitor, observe, alert, safe actions</td><td>L1-L3 (L3 needs approval)</td></tr>
+
+                        <tr><td><span class="severity-low">L5</span></td><td>GitHub</td><td>Store constitutions, runbooks, logs</td><td>Read/Write with audit</td></tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+
+                <div>
+
+                    <div class="card-title">Key Principles</div>
+
+                    <div class="card-subtitle">The Foundation of Trust</div>
+
+                </div>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead><tr><th>Principle</th><th>Description</th></tr></thead>
+
+                    <tbody>
+
+                        <tr><td><i class="fas fa-check-circle" style="color:#10b981;"></i> Observable</td><td>X-Request-ID, structured logging, error codes</td></tr>
+
+                        <tr><td><i class="fas fa-check-circle" style="color:#10b981;"></i> Traceable</td><td>Request tracing across all services</td></tr>
+
+                        <tr><td><i class="fas fa-check-circle" style="color:#10b981;"></i> Isolated</td><td>Circuit breakers, timeouts, retries</td></tr>
+
+                        <tr><td><i class="fas fa-check-circle" style="color:#10b981;"></i> Predictable</td><td>3-state UI, standard ApiResponse format</td></tr>
+
+                        <tr><td><i class="fas fa-check-circle" style="color:#10b981;"></i> Reversible</td><td>Rollback plans, feature flags, idempotency</td></tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SECTION 2: PERMISSION MODEL -->
+
+    <div id="permissions" class="section">
+
+        <div class="permission-grid">
+
+            <div class="permission-card l1">
+
+                <div class="permission-level" style="color:#3b82f6;">LEVEL 1</div>
+
+                <div class="permission-name">Read-Only</div>
+
+                <div class="permission-desc">Read logs, state, files, constitutions, runbooks</div>
+
+                <span class="permission-badge badge-auto">Auto-Allowed: Yes</span>
+
+                <span class="permission-badge badge-auto" style="margin-left:8px;">Requires Approval: No</span>
+
+            </div>
+
+            <div class="permission-card l2">
+
+                <div class="permission-level" style="color:#10b981;">LEVEL 2</div>
+
+                <div class="permission-name">Analyze & Suggest</div>
+
+                <div class="permission-desc">Analyze errors, suggest fixes, generate code, match runbooks</div>
+
+                <span class="permission-badge badge-auto">Auto-Allowed: Yes (if >70% confidence)</span>
+
+                <span class="permission-badge badge-auto" style="margin-left:8px;">Requires Approval: No</span>
+
+            </div>
+
+            <div class="permission-card l3">
+
+                <div class="permission-level" style="color:#f59e0b;">LEVEL 3</div>
+
+                <div class="permission-name">Safe Actions</div>
+
+                <div class="permission-desc">Restart process, retry operation, clear temp, rollback deploy</div>
+
+                <span class="permission-badge badge-approval">Auto-Allowed: No</span>
+
+                <span class="permission-badge badge-approval" style="margin-left:8px;">Requires Approval: Yes</span>
+
+            </div>
+
+            <div class="permission-card l4">
+
+                <div class="permission-level" style="color:#ef4444;">LEVEL 4</div>
+
+                <div class="permission-name">Critical Changes</div>
+
+                <div class="permission-desc">Modify schema, delete data, change auth, install deps</div>
+
+                <span class="permission-badge badge-block">Auto-Allowed: No</span>
+
+                <span class="permission-badge badge-block" style="margin-left:8px;">Allowed: NEVER</span>
+
+            </div>
+
+        </div>
+
+        <div class="alert-example">
+
+            <i class="fas fa-gavel" style="font-size: 20px; margin-right: 12px; color: #ef4444;"></i>
+
+            <strong>Hard Block Principle:</strong> L4 isn't just restricted — it's <code>allowed: false</code> in the permission matrix. Not a warning, not a confirmation dialog — a hard block coded into the permission layer itself.
+
+        </div>
+
+        <div class="code-block">
+
+            <pre><span class="keyword">permission_matrix:</span>
+
+  <span class="keyword">L4_critical:</span>
+
+    actions:
+
+      - modify_database_schema
+
+      - delete_production_data
+
+      - change_auth_config
+
+      - install_dependencies
+
+    auto_allowed: false
+
+    <span class="keyword">allowed: false</span>  <span class="comment"># HARD BLOCK — NOT A WARNING</span>
+
+    logging: critical_audit
+
+    escalation: immediate_human</pre>
+
+        </div>
+
+    </div>
+
+    <!-- SECTION 3: RUNBOOKS -->
+
+    <div id="runbooks" class="section">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-icon"><i class="fas fa-book"></i></div>
+
+                <div>
+
+                    <div class="card-title">Core Runbooks</div>
+
+                    <div class="card-subtitle">6 Runbooks Covering All Failure Modes</div>
+
+                </div>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead><tr><th>Runbook</th><th>Purpose</th><th>Severity</th></tr></thead>
+
+                    <tbody>
+
+                        <tr><td><i class="fas fa-gavel"></i> constitution-violations.md</td><td>When AI violates locked rules</td><td><span class="severity-high">SEV2</span></td></tr>
+
+                        <tr><td><i class="fas fa-bug"></i> system-errors.md</td><td>Runtime failures, crashes</td><td><span class="severity-critical">SEV1/SEV2</span></td></tr>
+
+                        <tr><td><i class="fas fa-tasks"></i> task-failures.md</td><td>Build, deploy, test failures</td><td><span class="severity-medium">SEV2/SEV3</span></td></tr>
+
+                        <tr><td><i class="fas fa-tachometer-alt"></i> performance-issues.md</td><td>Slowdowns, timeouts, resource exhaustion</td><td><span class="severity-medium">SEV2/SEV3</span></td></tr>
+
+                        <tr><td><i class="fas fa-shield-alt"></i> security-events.md</td><td>Suspicious activity, breaches</td><td><span class="severity-critical">SEV0/SEV1</span></td></tr>
+
+                        <tr><td><i class="fas fa-cloud-upload-alt"></i> deployment-failures.md</td><td>CI/CD, rollback, environment issues</td><td><span class="severity-high">SEV1/SEV2</span></td></tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-icon"><i class="fas fa-file-alt"></i></div>
+
+                <div>
+
+                    <div class="card-title">Runbook Template</div>
+
+                    <div class="card-subtitle">Every Runbook Must Include</div>
+
+                </div>
+
+            </div>
+
+            <div class="code-block">
+
+                <pre><span class="comment"># Runbook: [Issue Type]</span>
+
+<span class="keyword">## Constitution Reference</span>
+
+- Primary: [Constitution + Rule #]
+
+- Secondary: [Constitution + Rule #]
+
+<span class="keyword">## Detection Signals</span>
+
+- [Signal 1]
+
+- [Signal 2]
+
+<span class="keyword">## Approved Actions (L3 — require approval)</span>
+
+| Action | Reversibility |
+
+|--------|---------------|
+
+| [Action 1] | Reversible |
+
+<span class="keyword">## Forbidden Actions (L4 — NEVER allowed)</span>
+
+| Action | Why Forbidden |
+
+|--------|---------------|
+
+| [Action 1] | [Reason] |</pre>
+
+            </div>
+
+            <div class="alert-example" style="border-left-color: #3b82f6;">
+
+                <i class="fas fa-key" style="margin-right: 12px; color: #3b82f6;"></i>
+
+                <strong>Key Principle:</strong> AI never improvises outside runbooks. Match a runbook before doing anything. If no runbook exists, halt and alert — never invent a path.
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SECTION 4: ALERT SYSTEM -->
+
+    <div id="alerts" class="section">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-icon"><i class="fas fa-bell"></i></div>
+
+                <div>
+
+                    <div class="card-title">Alert Channels</div>
+
+                    <div class="card-subtitle">Every Event Must Be Visible</div>
+
+                </div>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead><tr><th>Channel</th><th>Priority</th><th>Max Delay</th><th>Use Case</th></tr></thead>
+
+                    <tbody>
+
+                        <tr><td><i class="fas fa-tachometer-alt"></i> Dashboard</td><td>All</td><td>Real-time</td><td>Daily monitoring, SEV2/SEV3</td></tr>
+
+                        <tr><td><i class="fas fa-envelope"></i> Email</td><td>SEV2+</td><td>5 minutes</td><td>SEV2 escalation, daily summary</td></tr>
+
+                        <tr><td><i class="fas fa-sms"></i> SMS</td><td>SEV0/SEV1</td><td>30 seconds</td><td>Critical incidents only</td></tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-icon"><i class="fas fa-code"></i></div>
+
+                <div>
+
+                    <div class="card-title">Alert JSON Schema</div>
+
+                    <div class="card-subtitle">Structured Alert Format</div>
+
+                </div>
+
+            </div>
+
+            <div class="code-block">
+
+                <pre>{
+
+  "alert_id": "ALT-YYYYMMDD-XXX",
+
+  "severity": "SEV0|SEV1|SEV2|SEV3",
+
+  "title": "Brief description",
+
+  "event": "What happened",
+
+  "location": "File or service",
+
+  "root_cause_analysis": "AI analysis of why",
+
+  "suggested_fix": "What to do",
+
+  "confidence": "High|Medium|Low",
+
+  "requires_approval": true
+
+}</pre>
+
+            </div>
+
+            <div class="alert-example">
+
+                <i class="fas fa-lightbulb" style="margin-right: 12px; color: #f59e0b;"></i>
+
+                <strong>Key Principle:</strong> Every alert is a decision packet, not a notification. The human receiving it should be able to act without needing to investigate first.
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SECTION 5: EDGE CASES -->
+
+    <div id="edgecases" class="section">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
+
+                <div>
+
+                    <div class="card-title">Edge Cases Catalog</div>
+
+                    <div class="card-subtitle">29 Covered Failure Modes</div>
+
+                </div>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead><tr><th>Category</th><th>Edge Cases</th><th>Severity</th></tr></thead>
+
+                    <tbody>
+
+                        <tr><td><i class="fas fa-brain"></i> AI Hallucination</td><td>EC-01 to EC-05 (5 cases)</td><td>High to Low</td></tr>
+
+                        <tr><td><i class="fas fa-book"></i> Runbook Mismatch</td><td>EC-06 to EC-09 (4 cases)</td><td>High to Low</td></tr>
+
+                        <tr><td><i class="fas fa-shield-alt"></i> Permission Violations</td><td>EC-10 to EC-13 (4 cases)</td><td>Critical to Medium</td></tr>
+
+                        <tr><td><i class="fas fa-bell"></i> Communication Failures</td><td>EC-14 to EC-17 (4 cases)</td><td>Critical to Low</td></tr>
+
+                        <tr><td><i class="fas fa-sync-alt"></i> State Inconsistency</td><td>EC-18 to EC-21 (4 cases)</td><td>High to Medium</td></tr>
+
+                        <tr><td><i class="fas fa-plug"></i> External Dependency</td><td>EC-22 to EC-25 (4 cases)</td><td>High to Medium</td></tr>
+
+                        <tr><td><i class="fas fa-lock"></i> Security Vulnerabilities</td><td>EC-26 to EC-29 (4 cases)</td><td>Critical to High</td></tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="alert-example" style="border-left-color: #ef4444;">
+
+            <i class="fas fa-skull-crosshairs" style="margin-right: 12px; color: #ef4444;"></i>
+
+            <strong>Security First:</strong> Security violations are never "medium severity" — they are immediate hard stops with no AI recovery autonomy. L4 block applies.
+
+        </div>
+
+    </div>
+
+    <!-- SECTION 6: CLOSED-LOOP LEARNING -->
+
+    <div id="learning" class="section">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-icon"><i class="fas fa-sync-alt"></i></div>
+
+                <div>
+
+                    <div class="card-title">Closed-Loop Learning</div>
+
+                    <div class="card-subtitle">Incident → Document → Prevention</div>
+
+                </div>
+
+            </div>
+
+            <div class="code-block">
+
+                <pre>INCIDENT → DETECT → DIAGNOSE → FIX → DOCUMENT → PREVENT → CLOSED
+
+   │          │         │         │        │          │
+
+   ▼          ▼         ▼         ▼        ▼          ▼
+
+Happens   Alert     Runbook    Approval  Incident   Runbook
+
+          fires     matched    (you)     report     updated</pre>
+
+            </div>
+
+            <div class="alert-example" style="border-left-color: #10b981;">
+
+                <i class="fas fa-graduation-cap" style="margin-right: 12px; color: #10b981;"></i>
+
+                <strong>Learning Principle:</strong> Every incident must produce a document, every document must update a runbook, every runbook update must reference the triggering incident. This is how the system gets smarter — not through retraining, but through structured documentation.
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-icon"><i class="fas fa-file-alt"></i></div>
+
+                <div>
+
+                    <div class="card-title">Incident Document Template</div>
+
+                    <div class="card-subtitle">docs/fixed-errors/YYYY-MM-DD-incident-name.md</div>
+
+                </div>
+
+            </div>
+
+            <div class="code-block">
+
+                <pre><span class="comment"># Incident Report: [Brief Title]</span>
+
+<span class="keyword">## What Changed / What Was Updated</span>
+
+| Item | Before | After |
+
+<span class="keyword">## Why It Happened (Root Cause)</span>
+
+Primary cause: [Explanation]
+
+<span class="keyword">## Solution Applied</span>
+
+| Action | Details | Reversible |
+
+<span class="keyword">## Chances of Reoccurrence</span>
+
+Likelihood: Low / Medium / High
+
+<span class="keyword">## Prevention Measures</span>
+
+| Action | Status | Owner | Due Date |</pre>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SECTION 7: CANONICAL ANSWERS -->
+
+    <div id="answers" class="section">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-icon"><i class="fas fa-question-circle"></i></div>
+
+                <div>
+
+                    <div class="card-title">Canonical AI Governance Answers</div>
+
+                    <div class="card-subtitle">The 8 Official Answers — When Any Constitution Touches AI, Defer Here</div>
+
+                </div>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead><tr><th width="45%">Question</th><th>Answer</th></tr></thead>
+
+                    <tbody>
+
+                        <tr><td><i class="fas fa-robot"></i> How much should AI be allowed to do autonomously?</td><td>Four-level hard boundary model. L4 is <code>allowed: false</code> — a hard block, not a warning.</td></tr>
+
+                        <tr><td><i class="fas fa-chart-line"></i> When can AI act without approval?</td><td>Never on ambiguity. Confidence <70% routes to human. "Ask when uncertain" is the rule.</td></tr>
+
+                        <tr><td><i class="fas fa-book"></i> How do you prevent AI from improvising?</td><td>Match a runbook before any action. If no runbook exists, halt and alert — never invent a path.</td></tr>
+
+                        <tr><td><i class="fas fa-database"></i> What actions can AI take on critical state?</td><td>None. Reversibility is a required field. Any irreversible action is L4 (hard blocked).</td></tr>
+
+                        <tr><td><i class="fas fa-graduation-cap"></i> How does the system get smarter over time?</td><td>Not retraining — structured documentation. Every incident produces a document that updates runbooks.</td></tr>
+
+                        <tr><td><i class="fas fa-shield-alt"></i> How severe are security violations?</td><td>Never "medium severity" — immediate hard stops with no AI recovery autonomy.</td></tr>
+
+                        <tr><td><i class="fas fa-bell"></i> What makes an alert actionable?</td><td>A pre-filled decision packet. Human should act without investigating first.</td></tr>
+
+                        <tr><td><i class="fas fa-ban"></i> What can AI never do?</td><td>The MUST NEVER list: act blindly, hide uncertainty, expand scope, irreversible actions, override rules, improvise, L4 actions.</td></tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+
+    <div class="footer">
+
+        <p>
+
+            <i class="fas fa-lock"></i> Locked: 2026-04-12 
+
+            | <i class="fas fa-code-branch"></i> Version: 1.0 
+
+            | <i class="fas fa-calendar-alt"></i> Next Review: 2026-07-07
+
+        </p>
+
+        <p style="margin-top: 16px; font-size: 13px; color: #64748b;">
+
+            Built with African roots • Designed for global impact<br>
+
+            The Sky Is The Limit — by KSDRILL-SA
+
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+    // Tab Navigation
+
+    const tabs = document.querySelectorAll('.nav-tab');
+
+    const sections = {
+
+        overview: document.getElementById('overview'),
+
+        permissions: document.getElementById('permissions'),
+
+        runbooks: document.getElementById('runbooks'),
+
+        alerts: document.getElementById('alerts'),
+
+        edgecases: document.getElementById('edgecases'),
+
+        learning: document.getElementById('learning'),
+
+        answers: document.getElementById('answers')
+
+    };
+
+    tabs.forEach(tab => {
+
+        tab.addEventListener('click', () => {
+
+            const sectionId = tab.getAttribute('data-section');
+
+            
+
+            // Update active tab
+
+            tabs.forEach(t => t.classList.remove('active'));
+
+            tab.classList.add('active');
+
+            
+
+            // Update active section
+
+            Object.values(sections).forEach(section => {
+
+                if (section) section.classList.remove('active-section');
+
+            });
+
+            if (sections[sectionId]) {
+
+                sections[sectionId].classList.add('active-section');
+
+            }
+
+        });
+
+    });
+
+</script>
+
+</body>
+
+</html>

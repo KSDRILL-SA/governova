@@ -1,104 +1,53 @@
 #!/usr/bin/env python3
-"""
-Governova — Constitutional Integrity Validator
-Checks that every S{C}.{N} and AP-S{C}.{N}{letter} reference in the repo
-resolves to a real standard in the constitution core.
+"""Governova — Constitutional Integrity Validator (v2 shim).
+
+This is the documented entry path referenced by MANIFEST.md. The real
+implementation lives in the `governova_compile` and `governova_validate`
+packages (installed via the uv workspace). This shim compiles the index and
+runs the full validator so the historical path keeps working.
 
 Usage:
-  python scripts/validate-integrity.py
-  python scripts/validate-integrity.py --strict   (fails on SEV3 gaps)
+    python scripts/validate-integrity.py [--strict] [--skip-links]
+
+Prefer the installed entry points when the workspace is set up:
+    uv run governova-compile
+    uv run governova-validate [--strict]
 
 Exit codes:
-  0 — All references resolve
-  1 — Unresolved references found
-  2 — Script error
+    0 — integrity OK
+    2 — integrity failure (or warnings under --strict)
+    3 — environment error (workspace not installed)
 """
 
-import os
-import re
+from __future__ import annotations
+
 import sys
-import argparse
-from pathlib import Path
 
 
-STANDARD_PATTERN = re.compile(r'\bS(\d+)\.(\d+)\b')
-ANTI_PATTERN_PATTERN = re.compile(r'\bAP-S(\d+)\.(\d+)([a-z])\b')
-CONSTITUTION_DIR = Path('constitution/core')
-SCAN_DIRS = [
-    'constitution',
-    'protocols',
-    'governance',
-    'framework',
-    'reference-systems',
-    'templates',
-]
+def main() -> int:
+    try:
+        from governova_compile.compiler import compile_index
+        from governova_compile.discovery import resolve_repo_root
+        from governova_compile.writer import write_index
+    except ModuleNotFoundError:
+        sys.stderr.write(
+            "Governova workspace is not installed. Run `uv sync --all-packages` "
+            "from the repo root, then use `uv run governova-validate`.\n"
+        )
+        return 3
+
+    from governova_validate.__main__ import app
+
+    root = resolve_repo_root()
+    write_index(compile_index(root), root / "compiled")
+
+    # Delegate argument handling (--strict, --skip-links) to the Typer app.
+    try:
+        app(prog_name="validate-integrity.py")
+    except SystemExit as exc:
+        return int(exc.code or 0)
+    return 0
 
 
-def extract_defined_standards(constitution_dir: Path) -> set[str]:
-    """Extract all S{C}.{N} IDs defined in constitution files."""
-    defined = set()
-    for md_file in constitution_dir.rglob('*.md'):
-        content = md_file.read_text(encoding='utf-8')
-        for match in STANDARD_PATTERN.finditer(content):
-            line_start = content.rfind('\n', 0, match.start()) + 1
-            line = content[line_start:content.find('\n', match.end())]
-            if line.strip().startswith(f'S{match.group(1)}.{match.group(2)}'):
-                defined.add(f'S{match.group(1)}.{match.group(2)}')
-    return defined
-
-
-def extract_references(scan_dirs: list[str]) -> dict[str, list[tuple[str, int]]]:
-    """Extract all S{C}.{N} references with their file and line number."""
-    references = {}
-    for scan_dir in scan_dirs:
-        for md_file in Path(scan_dir).rglob('*.md'):
-            content = md_file.read_text(encoding='utf-8')
-            lines = content.split('\n')
-            for line_num, line in enumerate(lines, 1):
-                for match in STANDARD_PATTERN.finditer(line):
-                    std_id = f'S{match.group(1)}.{match.group(2)}'
-                    if std_id not in references:
-                        references[std_id] = []
-                    references[std_id].append((str(md_file), line_num))
-    return references
-
-
-def main():
-    parser = argparse.ArgumentParser(description='Validate Governova constitutional integrity')
-    parser.add_argument('--strict', action='store_true', help='Fail on any unresolved reference')
-    args = parser.parse_args()
-
-    print('Governova Constitutional Integrity Validator')
-    print('=' * 50)
-
-    if not CONSTITUTION_DIR.exists():
-        print(f'ERROR: Constitution directory not found: {CONSTITUTION_DIR}')
-        sys.exit(2)
-
-    print(f'Scanning defined standards in {CONSTITUTION_DIR}...')
-    defined = extract_defined_standards(CONSTITUTION_DIR)
-    print(f'Found {len(defined)} defined standards.')
-
-    print(f'Scanning references in {SCAN_DIRS}...')
-    references = extract_references(SCAN_DIRS)
-    print(f'Found {len(references)} unique standard references.')
-
-    unresolved = {sid: locs for sid, locs in references.items() if sid not in defined}
-
-    if not unresolved:
-        print('\n✓ All references resolve. Integrity check passed.')
-        sys.exit(0)
-
-    print(f'\n✗ {len(unresolved)} unresolved references found:')
-    for std_id, locations in sorted(unresolved.items()):
-        print(f'\n  {std_id} — not found in constitution core')
-        for filepath, line_num in locations[:3]:
-            print(f'    {filepath}:{line_num}')
-        if len(locations) > 3:
-            print(f'    ... and {len(locations) - 3} more')
-
-    sys.exit(1)
-
-
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -24,3 +24,20 @@ Thumbs.db
 # Archive (keep structure but ignore old versions)
 archive/**/*.html
 !archive/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# Node
+node_modules/
+npm-debug.log*
+
+# uv.lock IS committed (it pins the toolchain) — do not ignore it

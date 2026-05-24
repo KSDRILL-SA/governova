@@ -1,0 +1,62 @@
+name: Constitutional Integrity
+
+on:
+  pull_request:
+    branches: [Dev, main]
+  push:
+    branches: [Dev, main]
+
+jobs:
+  validate:
+    name: Compile & validate constitution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Sync workspace
+        run: uv sync --all-packages
+
+      - name: Lint
+        run: uv run ruff check scripts/
+
+      - name: Format check
+        run: uv run ruff format --check scripts/
+
+      - name: Type check
+        working-directory: scripts
+        run: uv run mypy -p governova_compile -p governova_validate -p governova_codegen
+
+      - name: Unit tests
+        run: uv run pytest scripts/tests/ -q
+
+      - name: Verify committed index is up to date
+        run: uv run governova-compile --check
+
+      - name: Validate integrity
+        run: uv run governova-validate
+
+  typecheck-ts:
+    name: TypeScript types compile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install TS type deps
+        working-directory: platform/shared/types-ts
+        run: npm install --no-audit --no-fund
+
+      - name: Typecheck generated types
+        working-directory: platform/shared/types-ts
+        run: npm run typecheck

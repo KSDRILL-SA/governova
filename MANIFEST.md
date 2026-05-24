@@ -1,4 +1,4 @@
-# KSDRILL SA — Repository Manifest
+# Governova — Repository Manifest
 
 > **This is the AI navigation spine. Read this file once to understand the complete repo
 > structure, every file's purpose, its cluster, and the exact reading order for any session
@@ -19,14 +19,15 @@
 | Step | File | When to Stop Here |
 |------|------|-------------------|
 | **1** | `AI-INSTRUCTIONS.md` | Every session. No exception. Read this first. |
-| **2** | `system-contexts/{system}-context.md` | Before any build session on a specific system |
-| **3** | `workflow/ksdrill-sa-ai-workflow.md` | When confirming relay position or handoff protocol |
-| **4** | `indexes/quick-reference.md` | When navigating a specific concern (auth, database, deploy) |
-| **5** | `indexes/standards-index.md` | When auditing standards compliance or finding a standard ID |
-| **6** | `indexes/anti-patterns-index.md` | When checking for known violation patterns |
-| **7** | `constitutions/C0-constitutional-order.md` | First onboarding, or when a constitutional conflict arises |
-| **8** | Constitution cluster for today's domain *(see clusters below)* | Before any code in that domain |
-| **9** | Implementation guide in the same cluster | When writing code in that domain |
+| **2** | `GOVERNOVA-MASTER.md` | First session on a new project, or when platform context is needed |
+| **3** | `reference-systems/{system}/context.md` | Before any build session on a specific system |
+| **4** | `protocols/relay-protocol.md` | When confirming relay position or handoff protocol |
+| **5** | `constitution/indexes/quick-reference.md` | When navigating a specific concern (auth, database, deploy) |
+| **6** | `constitution/indexes/standards-index.md` | When auditing standards compliance or finding a standard ID |
+| **7** | `constitution/indexes/anti-patterns-index.md` | When checking for known violation patterns |
+| **8** | `constitution/C00-constitutional-order.md` | First onboarding, or when a constitutional conflict arises |
+| **9** | Constitution cluster for today's domain *(see clusters below)* | Before any code in that domain |
+| **10** | Implementation guide in the same cluster | When writing code in that domain |
 
 ---
 
@@ -41,263 +42,355 @@ Clusters group every file that belongs together. Read the whole cluster before s
 | File | Purpose |
 |------|---------|
 | `AI-INSTRUCTIONS.md` | AI role definitions, permission levels, session startup protocol, navigation hierarchy, citation format |
+| `GOVERNOVA-MASTER.md` | Complete platform vision — four-layer architecture, product surfaces, business model, reference systems |
 | `MANIFEST.md` | This file. Complete repo map. |
 
 ---
 
-### Cluster 1 — Governance Root
+### Cluster 1 — Framework Layer (Universal Primitives)
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C0-constitutional-order.md` | Master document. Governs all other constitutions. Terminology, hierarchy, amendment protocol, common failure register. |
+| `framework/format-specification.md` | S{C}.{N} standard ID format, AP anti-pattern format, required document structure |
+| `framework/phase-model.md` | Four-phase read and dependency order (Phase 0–3) |
+| `framework/severity-model.md` | SEV0–SEV3 classification for violations and incidents |
+| `framework/permission-model.md` | L1–L4 AI permission levels — L4 permanently human-only |
+| `framework/conflict-resolution.md` | Constitutional hierarchy and four-step conflict resolution protocol |
+| `framework/amendment-protocol.md` | How standards are changed, audited, and versioned |
 
 ---
 
-### Cluster 2 — Engineering Standards (Phase 0)
+### Cluster 2 — Governance Root
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C1-engineering-standards.md` | 97 standards governing how work is done: feature lifecycle, Git discipline, PR process, code quality, TypeScript and Python quality, documentation |
-| `overlays/solo-dev-overlay.md` | Process adaptations when operating without a team |
-| `overlays/team-overlay.md` | Additional process requirements in a multi-person team |
+| `constitution/C00-constitutional-order.md` | Master document. Governs all other constitutions. Terminology, hierarchy, amendment protocol, common failure register. |
 
 ---
 
-### Cluster 3 — Backend (Phase 1)
+### Cluster 3 — Phase 0: Foundation
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C2-backend-constitution.md` | 80 standards: service architecture, OpenAPI-first API contracts, database access from services, performance, resilience, security middleware, FastAPI specifics |
-| `constitutions/C2-backend-implementation.md` | Practices P2.N: commands, code patterns, file locations that satisfy C2 standards |
+| `constitution/core/phase-0-foundation/C01-engineering-standards.md` | Standards governing how work is done: 8-phase feature lifecycle, Git discipline, PR process, code quality, TypeScript and Python standards, documentation |
+| `protocols/modes/personal-mode.md` | Process adaptations when operating as a solo developer |
+| `protocols/modes/team-mode.md` | Additional process requirements in a multi-person team |
+| `protocols/modes/enterprise-mode.md` | Enterprise mode — Mapping Engine, certification tracking, board reporting |
 
 ---
 
-### Cluster 4 — Authentication (Phase 1)
+### Cluster 4 — Phase 1: Backend
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C3-auth-constitution.md` | 36 standards: auth strategy per stack, NextAuth.js governance, JWT lifecycle, RBAC, split token storage, session management, audit logging |
-| `constitutions/C3-auth-implementation.md` | Practices P3.N: auth implementation patterns, token handling code, session setup |
+| `constitution/core/phase-1-core-architecture/C02-backend-constitution.md` | Universal backend standards: service architecture, OpenAPI-first API contracts, performance, resilience, security middleware |
+| `constitution/implementation/fastapi/C02-backend-fastapi.md` | FastAPI-specific implementation of C02 standards |
 
 ---
 
-### Cluster 5 — Frontend (Phase 1)
+### Cluster 5 — Phase 1: Authentication
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C4-frontend-constitution.md` | 82 standards: mobile-first, state management, Angular and Next.js specifics, group-build methodology, layer build order |
-| `constitutions/C4-frontend-implementation.md` | Practices P4.N: Angular and Next.js code patterns, layer build commands, component structure |
+| `constitution/core/phase-1-core-architecture/C03-auth-constitution.md` | Universal auth standards: auth strategy, JWT lifecycle, RBAC, OAuth, session management, audit logging |
+| `constitution/implementation/nextauth/C03-auth-nextauth.md` | NextAuth-specific implementation of C03 standards |
 
 ---
 
-### Cluster 6 — Database (Phase 1)
+### Cluster 6 — Phase 1: Frontend
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C5-database-constitution.md` | 64 standards: database assignment by data type, PostgreSQL + Prisma, MongoDB + Beanie, ChromaDB, migration governance, cross-database integrity |
-| `constitutions/C5-database-implementation.md` | Practices P5.N: migration commands, ORM patterns, seed scripts, query examples |
+| `constitution/core/phase-1-core-architecture/C04-frontend-constitution.md` | Universal frontend standards: mobile-first, state management, group-build methodology, layer build order |
+| `constitution/implementation/nextjs/C04-frontend-nextjs.md` | Next.js-specific implementation of C04 standards |
 
 ---
 
-### Cluster 7 — Full-Stack Architecture (Phase 1)
+### Cluster 7 — Phase 1: Database
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C6-fullstack-architecture-constitution.md` | 44 standards: dual-stack topology, stack assignment framework, request flows per stack, cross-stack communication, ADR process |
+| `constitution/core/phase-1-core-architecture/C05-database-constitution.md` | Universal database standards: database assignment by data type, cross-database integrity, migration governance |
+| `constitution/implementation/prisma-postgresql/C05-database-prisma.md` | Prisma + PostgreSQL implementation of C05 standards |
 
 ---
 
-### Cluster 8 — Quality & Reliability (Phase 2)
+### Cluster 8 — Phase 1: Full-Stack Integration
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C7-testing-constitution.md` | 43 standards: test strategy, toolchain per stack, coverage gates, unit/integration/E2E, test database governance |
-| `constitutions/C8-platform-reliability-constitution.md` | 82 standards: CI/CD pipeline, environment governance, observability, alert thresholds, severity framework, rollback, post-mortem |
+| `constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md` | System topology, dual-stack assignment, request flows, cross-stack communication |
+| `constitution/indexes/stack-assignment-matrix.md` | Decision framework for assigning technology stacks to new systems |
 
 ---
 
-### Cluster 9 — Product & AI Governance (Phase 3)
+### Cluster 9 — Phase 2: Quality & Reliability
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C9-product-feature-constitution.md` | 30 standards: product vision, 5-gate feature qualification, MVP definitions, roadmap governance, Crown Jewel designation |
-| `constitutions/C10-ai-collaboration-constitution.md` | 36 standards: AI role definitions, permission levels L1–L4, design-phase and build-phase AI workflow, solo dev AI pair programming, AI anti-patterns |
+| `constitution/core/phase-2-quality-reliability/C07-testing-constitution.md` | Test strategy, toolchain, coverage gates, unit/integration/E2E, test database governance |
+| `constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md` | Deployment, CI/CD, environment governance, observability, alert thresholds, SEV framework, rollback |
 
 ---
 
-### Cluster 10 — Fast Navigation Indexes
-
-> Read index entries first. Open full constitutions only when the index is insufficient.
+### Cluster 10 — Phase 3: Product & Intelligence
 
 | File | Purpose |
 |------|---------|
-| `indexes/quick-reference.md` | Standards organised by concern: auth, database, deployment, testing, incidents |
-| `indexes/standards-index.md` | Every standard across C1–C10 with one-line description and priority |
-| `indexes/anti-patterns-index.md` | Every anti-pattern across all constitutions — fast violation checking |
-| `indexes/stack-assignment-matrix.md` | Stack assignment criteria and locked assignments for all four systems |
+| `constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md` | Product vision, feature governance, MVP definitions, 5-gate qualification, roadmap governance |
+| `constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md` | AI role definitions, L1–L4 permission boundaries, relay protocols, CONSTITUTION-INDEX standard, AI anti-patterns |
 
 ---
 
-### Cluster 11 — Operational Runbooks
-
-> Use only when an operational event is active. Do not read speculatively.
-
-| File | Purpose | When |
-|------|---------|------|
-| `runbooks/SEV0-response-runbook.md` | SEV0 incident response: immediate steps, escalation | Active SEV0 |
-| `runbooks/SEV1-response-runbook.md` | SEV1 incident response | Active SEV1 |
-| `runbooks/financial-freeze-runbook.md` | Freeze financial ops on Reserve Bank or FundsLink | CF-03 or CF-07 |
-| `runbooks/railway-deployment-runbook.md` | Railway backend deployment procedure | Deploying backend |
-| `runbooks/vercel-rollback-runbook.md` | Vercel frontend rollback procedure | Rolling back frontend |
-| `runbooks/database-migration-runbook.md` | Database migration execution procedure | Running migrations |
-| `runbooks/ai-degradation-runbook.md` | Responding to AI tool degradation during a build session | AI tool failure |
-
----
-
-### Cluster 12 — Workflow & Relay
+### Cluster 11 — Implementation Bindings
 
 | File | Purpose |
 |------|---------|
-| `workflow/ksdrill-sa-ai-workflow.md` | Complete AI engineer relay: handoff protocol Parts A–D, repo verification checklist, relay diagram |
+| `constitution/implementation/angular/` | Angular implementation binding for C04 Frontend |
+| `constitution/implementation/beanie-mongodb/` | Beanie + MongoDB implementation for C05 Database |
+| `constitution/implementation/chromadb/` | ChromaDB implementation for C05 Database (vector) |
 
 ---
 
-### Cluster 13 — System Contexts
-
-> One file per system. Load the correct one at session startup before any build work.
-
-| File | System | Stack |
-|------|--------|-------|
-| `system-contexts/fundslink-context.md` | FundsLink Academy | Angular + FastAPI |
-| `system-contexts/maphophe-context.md` | Maphophe Community | Next.js |
-| `system-contexts/reserve-bank-context.md` | KSDRILL Reserve Bank | Angular + FastAPI |
-| `system-contexts/syncup-context.md` | SyncUp Creator Platform | Next.js |
-
----
-
-### Cluster 14 — Architecture Decision Records
+### Cluster 12 — Indexes
 
 | File | Purpose |
 |------|---------|
-| `adrs/ADR-000-template.md` | Template for new ADRs |
-| `adrs/ADR-001-fundslink-stack.md` | FundsLink Academy stack decision |
-| `adrs/ADR-002-maphophe-stack.md` | Maphophe Community stack decision |
-| `adrs/ADR-003-reserve-bank-stack.md` | KSDRILL Reserve Bank stack decision |
-| `adrs/ADR-004-syncup-stack.md` | SyncUp Creator Platform stack decision |
+| `constitution/indexes/quick-reference.md` | High-frequency standards grouped by concern |
+| `constitution/indexes/standards-index.md` | Every standard across all constitutions, searchable by ID and topic |
+| `constitution/indexes/anti-patterns-index.md` | Every anti-pattern across all constitutions |
+| `constitution/indexes/stack-assignment-matrix.md` | Stack decision framework |
 
 ---
 
-### Cluster 15 — Document Templates
+### Cluster 13 — Protocols
 
 | File | Purpose |
 |------|---------|
-| `templates/feature-proposal-template.md` | Mandatory before any feature build (S1.27) |
-| `templates/incident-report-template.md` | Incident documentation template |
-| `templates/post-mortem-template.md` | Post-mortem template (required after every SEV0/SEV1) |
-| `templates/sprint-retro-template.md` | Sprint retrospective template |
-| `templates/CONSTITUTION-INDEX-template.md` | Template for `CONSTITUTION-INDEX.md` in each project workspace (S10.21) |
+| `protocols/relay-protocol.md` | 5-engineer relay model — who does what, in what order, with what permissions |
+| `protocols/relay-clarification.md` | MINOR vs ARCHITECTURAL classification — when to pause the relay |
+| `protocols/relay-abort.md` | What to do when a relay diverges from the design mid-build |
+| `protocols/git-workflow.md` | Branch model, commit convention, PR process, golden rules |
+
+---
+
+### Cluster 14 — Governance: Runbooks
+
+| File | Trigger |
+|------|---------|
+| `governance/runbooks/RB-01-sev0-response.md` | Production down or data at risk |
+| `governance/runbooks/RB-02-sev1-response.md` | Functional breakage, security gap |
+| `governance/runbooks/RB-03-financial-freeze.md` | Balance discrepancy detected |
+| `governance/runbooks/RB-04-database-migration.md` | Migration failure or rollback |
+| `governance/runbooks/RB-05-ai-degradation.md` | AI pipeline failure during relay |
+| `governance/runbooks/RB-06-railway-deployment.md` | Backend deployment incident |
+| `governance/runbooks/RB-07-vercel-rollback.md` | Frontend deployment incident |
+| `governance/runbooks/RB-08-relay-abort.md` | AI output diverges from design |
+
+---
+
+### Cluster 15 — Governance: Decisions
+
+| File | Purpose |
+|------|---------|
+| `governance/decisions/ADR-000-template.md` | Template for all ADRs |
+| `governance/decisions/ADR-001-fundslink-stack.md` | FundsLink Academy — Angular + FastAPI |
+| `governance/decisions/ADR-002-maphophe-stack.md` | Maphophe — Next.js |
+| `governance/decisions/ADR-003-reserve-bank-stack.md` | KSDRILL Reserve Bank — Angular + FastAPI |
+| `governance/decisions/ADR-004-syncup-stack.md` | SyncUp — Next.js |
+| `governance/changelog/amendments-log.md` | Immutable constitutional amendment audit trail |
+
+---
+
+### Cluster 16 — Reference Systems
+
+| File | Purpose |
+|------|---------|
+| `reference-systems/fundslink-academy/context.md` | FundsLink Academy system context |
+| `reference-systems/maphophe/context.md` | Maphophe system context |
+| `reference-systems/ksdrill-reserve-bank/context.md` | KSDRILL Reserve Bank system context |
+| `reference-systems/syncup/context.md` | SyncUp system context |
+
+---
+
+### Cluster 17 — Platform (Engine + Surfaces)
+
+| File | Purpose |
+|------|---------|
+| `platform/engine/SPEC.md` | Governance engine architecture specification |
+| `platform/surfaces/ide-extension/` | VS Code + Cursor IDE extension spec |
+| `platform/surfaces/cicd-enforcer/` | GitHub Actions CI/CD enforcer spec |
+| `platform/surfaces/pr-guardian-bot/` | PR review bot spec |
+| `platform/surfaces/cli/` | `governova` CLI spec |
+| `platform/surfaces/mcp-server/` | MCP server spec |
+
+---
+
+### Cluster 18 — Templates & Scripts
+
+| File | Purpose |
+|------|---------|
+| `templates/CONSTITUTION-INDEX-template.md` | Per-project AI session index template |
+| `templates/feature-proposal-template.md` | S1.27 feature proposal |
+| `templates/domain-constitution-template.md` | Domain extension contribution template |
+| `templates/implementation-guide-template.md` | Stack binding contribution template |
+| `scripts/validate-integrity.py` | Constitutional integrity validator — checks all S{C}.{N} references resolve |
 
 ---
 
 ## Complete File Index
 
-Every file in this repository. No omissions. Sorted by reading priority.
+### Root
 
-| # | File | Cluster | Purpose |
-|---|------|---------|---------|
-| 01 | `AI-INSTRUCTIONS.md` | Entry | AI session startup — read every session |
-| 02 | `MANIFEST.md` | Entry | This file — repo map and reading graph |
-| 03 | `README.md` | Entry | Human-facing overview |
-| 04 | `constitutions/C0-constitutional-order.md` | Governance | Master constitution — supreme authority |
-| 05 | `constitutions/C1-engineering-standards.md` | Phase 0 | 97 engineering process and code quality standards |
-| 06 | `overlays/solo-dev-overlay.md` | Phase 0 | Solo dev process adaptations |
-| 07 | `overlays/team-overlay.md` | Phase 0 | Team process extensions |
-| 08 | `constitutions/C2-backend-constitution.md` | Phase 1 — Backend | 80 backend architecture standards |
-| 09 | `constitutions/C2-backend-implementation.md` | Phase 1 — Backend | Backend code patterns and commands |
-| 10 | `constitutions/C3-auth-constitution.md` | Phase 1 — Auth | 36 authentication standards |
-| 11 | `constitutions/C3-auth-implementation.md` | Phase 1 — Auth | Auth implementation patterns |
-| 12 | `constitutions/C4-frontend-constitution.md` | Phase 1 — Frontend | 82 frontend architecture standards |
-| 13 | `constitutions/C4-frontend-implementation.md` | Phase 1 — Frontend | Frontend code patterns and layer build |
-| 14 | `constitutions/C5-database-constitution.md` | Phase 1 — Database | 64 database assignment and governance standards |
-| 15 | `constitutions/C5-database-implementation.md` | Phase 1 — Database | Migration commands and ORM patterns |
-| 16 | `constitutions/C6-fullstack-architecture-constitution.md` | Phase 1 — Full-Stack | 44 stack topology and integration standards |
-| 17 | `constitutions/C7-testing-constitution.md` | Phase 2 | 43 testing strategy and coverage gate standards |
-| 18 | `constitutions/C8-platform-reliability-constitution.md` | Phase 2 | 82 deployment, CI/CD, observability, incident standards |
-| 19 | `constitutions/C9-product-feature-constitution.md` | Phase 3 | 30 product governance and feature qualification standards |
-| 20 | `constitutions/C10-ai-collaboration-constitution.md` | Phase 3 | 36 AI role, permission, and workflow standards |
-| 21 | `indexes/quick-reference.md` | Index | Standards by concern — fastest navigation |
-| 22 | `indexes/standards-index.md` | Index | All standards with IDs and one-line descriptions |
-| 23 | `indexes/anti-patterns-index.md` | Index | All anti-patterns for fast violation checking |
-| 24 | `indexes/stack-assignment-matrix.md` | Index | Stack assignment criteria and locked decisions |
-| 25 | `workflow/ksdrill-sa-ai-workflow.md` | Workflow | AI engineer relay, handoff protocol, verification checklist |
-| 26 | `system-contexts/fundslink-context.md` | System Context | FundsLink Academy build context |
-| 27 | `system-contexts/maphophe-context.md` | System Context | Maphophe Community build context |
-| 28 | `system-contexts/reserve-bank-context.md` | System Context | KSDRILL Reserve Bank build context |
-| 29 | `system-contexts/syncup-context.md` | System Context | SyncUp Creator Platform build context |
-| 30 | `adrs/ADR-000-template.md` | ADR | ADR template |
-| 31 | `adrs/ADR-001-fundslink-stack.md` | ADR | FundsLink stack decision record |
-| 32 | `adrs/ADR-002-maphophe-stack.md` | ADR | Maphophe stack decision record |
-| 33 | `adrs/ADR-003-reserve-bank-stack.md` | ADR | Reserve Bank stack decision record |
-| 34 | `adrs/ADR-004-syncup-stack.md` | ADR | SyncUp stack decision record |
-| 35 | `templates/feature-proposal-template.md` | Template | Feature proposal (required before build — S1.27) |
-| 36 | `templates/incident-report-template.md` | Template | Incident report document |
-| 37 | `templates/post-mortem-template.md` | Template | Post-mortem document (SEV0/SEV1 — S8.77) |
-| 38 | `templates/sprint-retro-template.md` | Template | Sprint retrospective document |
-| 39 | `templates/CONSTITUTION-INDEX-template.md` | Template | CONSTITUTION-INDEX.md for project workspaces (S10.21) |
-| 40 | `runbooks/SEV0-response-runbook.md` | Runbook | SEV0 response steps |
-| 41 | `runbooks/SEV1-response-runbook.md` | Runbook | SEV1 response steps |
-| 42 | `runbooks/financial-freeze-runbook.md` | Runbook | Financial operations freeze |
-| 43 | `runbooks/railway-deployment-runbook.md` | Runbook | Railway deployment procedure |
-| 44 | `runbooks/vercel-rollback-runbook.md` | Runbook | Vercel rollback procedure |
-| 45 | `runbooks/database-migration-runbook.md` | Runbook | Database migration execution |
-| 46 | `runbooks/ai-degradation-runbook.md` | Runbook | AI tool degradation response |
+| File | Purpose |
+|------|---------|
+| `README.md` | Public face of the Governova repo |
+| `GOVERNOVA-MASTER.md` | Master vision document — source of truth |
+| `AI-INSTRUCTIONS.md` | AI session instructions — read first every session |
+| `MANIFEST.md` | This file |
+| `QUICKSTART.md` | 10-step new project setup |
+| `CONTRIBUTING.md` | Domain and stack contribution process |
+| `LICENSE` | MIT licence |
+
+### framework/
+
+| File | Purpose |
+|------|---------|
+| `format-specification.md` | S{C}.{N} format, AP format, document structure |
+| `phase-model.md` | Four-phase read and dependency order |
+| `severity-model.md` | SEV0–SEV3 classification |
+| `permission-model.md` | L1–L4 permission levels |
+| `conflict-resolution.md` | Constitutional hierarchy and resolution protocol |
+| `amendment-protocol.md` | Standard change, audit, versioning |
+
+### constitution/
+
+| File | Purpose |
+|------|---------|
+| `C00-constitutional-order.md` | Master — governs all constitutions |
+
+### constitution/core/phase-0-foundation/
+
+| File | Purpose |
+|------|---------|
+| `C01-engineering-standards.md` | Engineering process and code quality standards |
+
+### constitution/core/phase-1-core-architecture/
+
+| File | Purpose |
+|------|---------|
+| `C02-backend-constitution.md` | Universal backend standards |
+| `C03-auth-constitution.md` | Universal auth standards |
+| `C04-frontend-constitution.md` | Universal frontend standards |
+| `C05-database-constitution.md` | Universal database standards |
+| `C06-fullstack-architecture-constitution.md` | System topology and integration |
+
+### constitution/core/phase-2-quality-reliability/
+
+| File | Purpose |
+|------|---------|
+| `C07-testing-constitution.md` | Testing strategy and coverage standards |
+| `C08-platform-reliability-constitution.md` | Deployment and reliability standards |
+
+### constitution/core/phase-3-product-intelligence/
+
+| File | Purpose |
+|------|---------|
+| `C09-product-feature-constitution.md` | Product and feature governance standards |
+| `C10-ai-collaboration-constitution.md` | AI governance and permission boundaries |
+
+### constitution/implementation/
+
+| File | Purpose |
+|------|---------|
+| `fastapi/C02-backend-fastapi.md` | FastAPI binding for C02 |
+| `nextauth/C03-auth-nextauth.md` | NextAuth binding for C03 |
+| `nextjs/C04-frontend-nextjs.md` | Next.js binding for C04 |
+| `prisma-postgresql/C05-database-prisma.md` | Prisma + PostgreSQL binding for C05 |
+
+### constitution/indexes/
+
+| File | Purpose |
+|------|---------|
+| `standards-index.md` | All standards — searchable by ID and topic |
+| `anti-patterns-index.md` | All anti-patterns |
+| `quick-reference.md` | High-frequency standards by concern |
+| `stack-assignment-matrix.md` | Stack selection decision framework |
+
+### protocols/
+
+| File | Purpose |
+|------|---------|
+| `relay-protocol.md` | 5-engineer relay model |
+| `relay-clarification.md` | MINOR vs ARCHITECTURAL classification |
+| `relay-abort.md` | Relay abort procedure |
+| `git-workflow.md` | Branch model, commits, PR process |
+| `modes/personal-mode.md` | Solo developer operating mode |
+| `modes/team-mode.md` | Team operating mode |
+| `modes/enterprise-mode.md` | Enterprise operating mode |
+
+### governance/runbooks/
+
+| File | Trigger |
+|------|---------|
+| `RB-01-sev0-response.md` | Production down |
+| `RB-02-sev1-response.md` | Functional breakage |
+| `RB-03-financial-freeze.md` | Balance discrepancy |
+| `RB-04-database-migration.md` | Migration failure |
+| `RB-05-ai-degradation.md` | AI pipeline failure |
+| `RB-06-railway-deployment.md` | Backend deployment incident |
+| `RB-07-vercel-rollback.md` | Frontend deployment incident |
+| `RB-08-relay-abort.md` | Relay divergence |
+
+### governance/decisions/
+
+| File | System |
+|------|--------|
+| `ADR-000-template.md` | Template |
+| `ADR-001-fundslink-stack.md` | FundsLink Academy |
+| `ADR-002-maphophe-stack.md` | Maphophe |
+| `ADR-003-reserve-bank-stack.md` | KSDRILL Reserve Bank |
+| `ADR-004-syncup-stack.md` | SyncUp |
+
+### governance/changelog/
+
+| File | Purpose |
+|------|---------|
+| `amendments-log.md` | Immutable amendment audit trail |
+
+### reference-systems/
+
+| File | Purpose |
+|------|---------|
+| `fundslink-academy/context.md` | FundsLink Academy system context |
+| `maphophe/context.md` | Maphophe system context |
+| `ksdrill-reserve-bank/context.md` | KSDRILL Reserve Bank system context |
+| `syncup/context.md` | SyncUp system context |
+
+### platform/
+
+| File | Purpose |
+|------|---------|
+| `engine/SPEC.md` | Governance engine architecture specification |
+
+### templates/
+
+| File | Purpose |
+|------|---------|
+| `CONSTITUTION-INDEX-template.md` | Per-project AI session index |
+| `feature-proposal-template.md` | S1.27 feature proposal |
+| `incident-report-template.md` | Incident documentation |
+| `post-mortem-template.md` | Post-mortem template |
+| `sprint-retro-template.md` | Sprint retrospective |
+| `domain-constitution-template.md` | Domain extension contribution |
+| `implementation-guide-template.md` | Stack binding contribution |
+
+### scripts/
+
+| File | Purpose |
+|------|---------|
+| `validate-integrity.py` | Constitutional integrity validator |
 
 ---
 
-## Reading Clusters — Visual Map
-
-```
-AI-INSTRUCTIONS.md  ←─── ALWAYS FIRST
-       │
-       ▼
-system-contexts/{system}-context.md  ←─── BEFORE EVERY BUILD SESSION
-       │
-       ▼
-MANIFEST.md (this file)  ←─── orientation pass, then follow clusters
-       │
-       ├── CLUSTER 1: Governance Root
-       │     C0-constitutional-order.md
-       │
-       ├── CLUSTER 2: Phase 0 — Engineering Standards
-       │     C1-engineering-standards.md
-       │     overlays/solo-dev-overlay.md  OR  overlays/team-overlay.md
-       │
-       ├── CLUSTER 3+4+5+6+7: Phase 1 — Core Architecture
-       │     C2-backend-constitution.md  ←→  C2-backend-implementation.md
-       │     C3-auth-constitution.md     ←→  C3-auth-implementation.md
-       │     C4-frontend-constitution.md ←→  C4-frontend-implementation.md
-       │     C5-database-constitution.md ←→  C5-database-implementation.md
-       │     C6-fullstack-architecture-constitution.md
-       │
-       ├── CLUSTER 8: Phase 2 — Quality & Reliability
-       │     C7-testing-constitution.md
-       │     C8-platform-reliability-constitution.md
-       │
-       ├── CLUSTER 9: Phase 3 — Product & AI Governance
-       │     C9-product-feature-constitution.md
-       │     C10-ai-collaboration-constitution.md
-       │
-       ├── CLUSTER 10: Fast Navigation Indexes (use before opening full constitutions)
-       │     indexes/quick-reference.md
-       │     indexes/standards-index.md
-       │     indexes/anti-patterns-index.md
-       │     indexes/stack-assignment-matrix.md
-       │
-       └── CLUSTERS 11–15: Operational, Contextual, Reference
-             runbooks/   workflow/   system-contexts/   adrs/   templates/
-```
-
----
-
-*This manifest is updated whenever a file is added, removed, or renamed. It is the single
-source of truth for repository navigation. When in doubt about what to read next, return here.*
+*Governova — v2.0 — Maluleke Kurhula Success · KSDRILL SA · 2026*

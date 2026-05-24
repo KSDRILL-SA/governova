@@ -8,7 +8,7 @@
 
 ## What This Repo Is
 
-`system-design-template` is the constitutional governance system for all KSDRILL SA engineering work. It contains 11 constitutions (C0–C10), 4 implementation guides, supporting indexes, overlays, runbooks, templates, and system context files.
+`governova` is the constitutional governance system for all KSDRILL SA engineering work and the foundation of the Governova AI development governance platform. It contains 11 constitutions organised in 4 phases across a 4-layer architecture, 4 implementation guides, framework primitives, protocols, runbooks, and reference system contexts. Full platform vision: `GOVERNOVA-MASTER.md`.
 
 This repo is never committed into an application repository. It is cloned alongside the application as `.ksdrill/` (solo projects) or `_governance/` (team projects) and gitignored.
 
@@ -31,7 +31,21 @@ KSDRILL SA operates five AI engineers in a fixed relay. Know where you are in th
 
 **The relay is linear. One engineer at a time. The Founder approves every transition. (`S10.6`, `S10.8`)**
 
-Full relay diagram, Handoff Protocol (Parts A–D), and Repo Verification checklist: `workflow/ksdrill-sa-ai-workflow.md`
+Full relay diagram, Handoff Protocol (Parts A–D), and Repo Verification checklist: `protocols/relay-protocol.md`
+
+## Repository structure
+
+All files follow the Governova four-layer structure.
+Read `MANIFEST.md` for the complete navigation map.
+Read `GOVERNOVA-MASTER.md` for the full platform vision.
+
+Key paths:
+- Constitutions: `constitution/core/phase-{N}-{name}/`
+- Implementation guides: `constitution/implementation/{stack}/`
+- Relay protocol: `protocols/relay-protocol.md`
+- Session lifecycle: `protocols/session-lifecycle.md`
+- Runbooks: `governance/runbooks/RB-{NN}-*.md`
+- System contexts: `reference-systems/{system}/context.md`
 
 ---
 
@@ -68,15 +82,15 @@ It lists every file, its cluster, its purpose, and the exact reading order for e
 **Navigation hierarchy (fastest to slowest):**
 
 1. `MANIFEST.md` — full repo map, reading clusters, visual dependency graph
-2. `indexes/quick-reference.md` — standards organised by concern (auth, database, deployment)
-3. `indexes/standards-index.md` — all standards with one-line descriptions
-4. `indexes/anti-patterns-index.md` — all anti-patterns for fast violation checking
-5. Full constitution — when deep rationale is needed (`constitutions/C0N-*.md`)
-6. Implementation guide — paired with its constitution in the same folder (`constitutions/C0N-*-implementation.md`)
+2. `constitution/indexes/quick-reference.md` — standards organised by concern (auth, database, deployment)
+3. `constitution/indexes/standards-index.md` — all standards with one-line descriptions
+4. `constitution/indexes/anti-patterns-index.md` — all anti-patterns for fast violation checking
+5. Full constitution — when deep rationale is needed (`constitution/core/phase-{N}-{name}/C{NN}-*.md`)
+6. Implementation guide — paired with its constitution (`constitution/implementation/{stack}/`)
 
 **Index-first navigation:** Read the relevant index entry before opening the full constitution. Most questions are answerable from the index.
 
-**Constitution + implementation are co-located.** C02 constitution and C02 implementation guide both live in `constitutions/`. Read them together — never open an implementation guide without first reading its paired constitution.
+**Constitution + implementation are paired.** C02 constitution lives in `constitution/core/phase-1-core-architecture/`. Its implementation guide lives in `constitution/implementation/fastapi/`. Read them together — never open an implementation guide without first reading its paired constitution.
 
 ---
 
@@ -91,20 +105,21 @@ It lists every file, its cluster, its purpose, and the exact reading order for e
    - Which position in the relay are you?
    - What is your permission level?
    - What did the previous engineer hand off?
-4. Read workflow/ksdrill-sa-ai-workflow.md §4.5 Part A
+4. Read protocols/relay-protocol.md §4.5 Part A
    (Handoff Protocol — Before Starting)
-5. Read system-contexts/{system}-context.md
+5. Read reference-systems/{system}/context.md
    - Identifies: stack, build phase, active group, operating mode (SOLO/TEAM)
-6. Perform Repo Verification (workflow §4.5 Part C)
+6. Perform Repo Verification (protocols/relay-protocol.md §4.5 Part C)
    - Does the repo match what the previous engineer claimed?
    - If NO → stop. Report to Founder. Do not proceed.
 7. If Claude Code in Cursor: confirm CONSTITUTION-INDEX.md is loaded (S10.21)
-8. Load the correct overlay:
-   - SOLO → overlays/solo-dev-overlay.md
-   - TEAM → overlays/team-overlay.md
-9. Check indexes/standards-index.md for standards relevant to today's task
+8. Load the correct mode:
+   - SOLO → protocols/modes/personal-mode.md
+   - TEAM → protocols/modes/team-mode.md
+9. Check constitution/indexes/standards-index.md for standards relevant to today's task
 10. Load the full constitution only when the index entry is insufficient
-    - Constitution and its paired implementation guide are in the same folder (constitutions/)
+    - Constitutions: constitution/core/phase-{N}-{name}/
+    - Implementation guides: constitution/implementation/{stack}/
 ```
 
 **If any step cannot be completed** (file missing, context file not created, repo verification fails), stop and report to the Founder before proceeding. Do not self-route around a failed step.
@@ -167,7 +182,7 @@ Evidence for the standard: [what production failure does this prevent?]
 Affected constitutions: [which other constitutions need updating]
 ```
 
-4. The amendment is documented as a GitHub Issue in `system-design-template` and follows C0 §8 protocol
+4. The amendment is documented as a GitHub Issue in `governova` and follows C0 §8 protocol
 
 ---
 
@@ -191,7 +206,7 @@ Then wait for the Founder to decide how to proceed. Your job is detection and ex
 
 ## When Completing Your Session (Handoff Report)
 
-Before closing any session, deliver the Handoff Report to the Founder using the format in `workflow/ksdrill-sa-ai-workflow.md §4.5 Part B`. The report must include:
+Before closing any session, deliver the Handoff Report to the Founder using the format in `protocols/relay-protocol.md §4.5 Part B`. The report must include:
 
 - Full build history from all previous engineers in this relay
 - What you built in this session

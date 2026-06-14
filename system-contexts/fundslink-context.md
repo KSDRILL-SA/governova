@@ -6,7 +6,7 @@
 |--------------------|-------|
 | **System**         | FundsLink Academy |
 | **Stack**          | Angular + FastAPI |
-| **Build Phase**    | Phase 1 — Core Architecture (Active — Q2 2026) |
+| **Build Phase**    | Phase 1 — Core Architecture · Stages 00/01/02 ✅ DONE · **Stage 03 (backend) NEXT** |
 | **Current Group**  | G1 — Core (primary workflow) |
 | **Operating Mode** | SOLO |
 | **Active Overlay** | `overlays/solo-dev-overlay.md` |
@@ -45,8 +45,8 @@ All 11 constitutions apply (C0–C10). Stack-specific scope:
 
 | # | Feature | Group | Status |
 |---|---------|-------|--------|
-| 1 | Authentication (registration, login, JWT) | G1 | — |
-| 2 | Student profile creation | G1 | — |
+| 1 | Authentication (registration, login, JWT) | G1 | ✅ DONE (Stage 02, gate G2 + hardened + DB-integrated) |
+| 2 | Student profile creation | G1 | — (Stage 03) |
 | 3 | Scholarship application submission | G1 | — |
 | 4 | AI-powered eligibility matching (LangChain + ChromaDB) | G1 | — |
 | 5 | Application status tracking | G2 | — |
@@ -101,16 +101,25 @@ All 11 constitutions apply (C0–C10). Stack-specific scope:
 
 ---
 
+## Post-phase verification (mandatory — Stage 02 onward)
+Before each handoff, the engineer verifies the phase satisfies the adversarial results in the
+app's `docs/audits/stress-test-audit.md` (ST-1…6) + edge rulings in
+`docs/product/scenarios-and-decisions.md` (D-NNN), citing the ids. See the app CONSTITUTION-INDEX
+"Post-phase verification" rule. (Stage 02 met ST-2.1/2.2/2.3/2.9 + D-015.)
+
 ## Approved Deviations
-
-*None at v1.0*
-
----
+| Deviation | Why | Scope |
+|-----------|-----|-------|
+| import-linter `allow_indirect_imports = true` on the layering contract | The rule's intent is *direct* imports — a service must not import a DB driver itself; the canonical service→repository→DB chain is an expected indirect import. A direct DB-driver import in a service is still caught (verified). | Stage 02 (first service) |
+| Contract (S2.7) expanded with auth endpoints beyond the original 4 | Founder-approved (L4) "fill all gaps": MFA enrol/activate, email-verify(+resend), forgot/reset/change-password — shapes proposed in their PRs. | Stage 02 |
+| `EMAIL_VERIFICATION_REQUIRED` config flag (default off) | S3.12 configurable verification mode; off until the email provider is live so v1 flows are unbroken. | Stage 02 |
 
 ## Open Constitutional Amendment Proposals
-
-*None at v1.0*
+| # | Proposal | Status |
+|---|----------|--------|
+| A-1 | **C5** — "Ledger tables are immutable; corrections are reversing entries" (MASTER-SPEC §16.2) | PROPOSED — ratify before v1.5 ledger build (C0 §8) |
+| A-2 | **C7/C10** — make post-phase verification against the system's stress-test audit (ST) + scenario rulings (D-NNN) a *generic* mandatory standard before any handoff | PROPOSED by sole engineer — awaiting Founder C0 §8 ratification |
 
 ---
 
-*Last updated: 2026-05-08*
+*Last updated: 2026-06-15 (Stage 02 complete; sole-operator mode — Founder collapsed the relay).*

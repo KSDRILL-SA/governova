@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C5 — Database Constitution                                         |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.0                                                               |
+| **Version**        | v1.1                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -834,6 +834,34 @@ CF-13 (Common Failure Register): service starts before migration completes, writ
 
 ---
 
+## Part 9 — Financial Ledger Integrity (`S5.65`)
+
+> Money is append-only or it is not trustworthy. This part raises immutability of financial-movement records from a per-system convention to a constitutional standard. It depends on S5.3 (financial data lives in PostgreSQL) and S5.21 (parameterised raw SQL), and is enforced at both the grant layer and the trigger layer (defense in depth).
+
+### S5.65 — Ledger Tables Are Immutable — Corrections Are Reversing Entries
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S5.65 |
+| **Priority**    | Critical |
+| **Applies To**  | Both Stacks |
+| **Phase**       | Phase 1 — Core Architecture |
+| **Depends On**  | `S5.3` (financial data in PostgreSQL only), `S5.21` (parameterised raw SQL) |
+| **Enforced By** | Database grants + append-only trigger; reviewed at schema design |
+
+**Standard:**
+Tables that record financial movements — ledgers, financial-event tables, and the audit log — are append-only. The application role holds `INSERT` and `SELECT` only; `UPDATE` and `DELETE` are revoked at the grant layer and additionally blocked by a trigger. A wrong entry is never edited or deleted: it is corrected by a new reversing entry that references the original row. Because soft delete (S5.8) is itself an `UPDATE`, ledger tables are exempt from S5.8 — they permit no mutation at all, not even a `deleted_at` stamp. This standard applies to ledger, financial-event, and audit tables in every KSDRILL system.
+
+**Rationale:**
+An editable ledger is not a ledger — it is a spreadsheet. Auditability, dispute resolution, and regulatory trust all require that a recorded financial fact can never silently change. Revoking `UPDATE`/`DELETE` at the grant layer stops the application; the trigger stops every path the grant misses (including a mistaken superuser session). Reversing entries preserve the complete, ordered history of what happened and what corrected it. Proven in the FundsLink `schema.sql` by a violation test (`UPDATE`/`DELETE` against the ledger rejected).
+
+**Anti-Patterns:**
+- `AP-S5.65a` — `UPDATE` or `DELETE` issued against a ledger, financial-event, or audit table (or a grant that permits it) — the immutable financial record can be silently rewritten; corrections must be reversing entries.
+
+**Cross-References:** `S5.3` (financial data in PostgreSQL only), `S5.8` (soft delete — superseded here: ledgers permit no mutation), `S5.28` (Decimal for money), MASTER-SPEC §16.2 (system origin of this standard).
+
+---
+
 ## Anti-Patterns Index
 
 | ID | Description | Violated Standard | Severity |
@@ -871,6 +899,7 @@ CF-13 (Common Failure Register): service starts before migration completes, writ
 | `AP-S5.33a` | Relational data with FK constraints in MongoDB | S5.33 | Critical |
 | `AP-S5.45a` | Structured data stored in ChromaDB metadata | S5.45 | High |
 | `AP-S5.53a` | No integration test for cross-database write operation | S5.53 | High |
+| `AP-S5.65a` | `UPDATE`/`DELETE` on a ledger, financial-event, or audit table (or a grant permitting it) | S5.65 | Critical |
 
 ---
 
@@ -898,10 +927,11 @@ CF-13 (Common Failure Register): service starts before migration completes, writ
 | Version | Date | Change | Reason |
 |---------|------|--------|--------|
 | v1.0 | 2026-05-08 | Initial lock — rebuilt from Database Constitution v3.0. Raw SQL governance formalised as Part 3 (S5.19–S5.24) — raw SQL elevated to first-class governed tool alongside Prisma ORM. `prisma.$queryRaw` parameterisation (S5.21) and soft delete filter obligation for raw SQL (S5.22) added. Decimal column mandate for monetary values (S5.28) added. Terminology updated. Standard IDs introduced. | Full system rebuild + raw SQL governance formalisation. |
+| v1.1 | 2026-06-15 | **Added Part 9 — Financial Ledger Integrity (S5.65 — Ledger Immutability):** financial-movement tables (ledger, financial-event, audit) are append-only — app role holds INSERT+SELECT only, UPDATE/DELETE revoked at grant layer and blocked by trigger; corrections are reversing entries; ledgers are exempt from S5.8 soft-delete (a delete-stamp is itself an UPDATE). Anti-pattern AP-S5.65a added. Count 64→65. (C0 §8 amendment A-1; origin MASTER-SPEC §16.2; proven by schema.sql violation test; adversarial + cross-constitution review in the amendment issue; Founder L4 approval 2026-06-15.) | An editable ledger is not a ledger. Append-only financial records are required for auditability, dispute resolution, and regulatory trust across every KSDRILL system. |
 
 ---
 
-> **LOCKED — v1.0 — 2026-05-08**
+> **LOCKED — v1.1 — 2026-06-15** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.

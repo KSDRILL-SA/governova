@@ -360,14 +360,14 @@ lock date and back-filled here.
 | **C2** | Backend Constitution | Phase 1 | S2.1–S2.80 | 80 | C2 Backend Implementation Guide | LOCKED |
 | **C3** | Auth Constitution | Phase 1 | S3.1–S3.36 | 36 | C3 Auth Implementation Guide | LOCKED |
 | **C4** | Frontend Constitution | Phase 1 | S4.1–S4.82 | 82 | C4 Frontend Implementation Guide | LOCKED |
-| **C5** | Database Constitution | Phase 1 | S5.1–S5.64 | 64 | C5 Database Implementation Guide | LOCKED |
+| **C5** | Database Constitution | Phase 1 | S5.1–S5.65 | 65 | C5 Database Implementation Guide | LOCKED (v1.1) |
 | **C6** | Full-Stack Architecture | Phase 1 | S6.1–S6.44 | 44 | — | LOCKED |
 | **C7** | Testing Constitution | Phase 2 | S7.1–S7.43 | 43 | — | LOCKED |
 | **C8** | Platform Reliability | Phase 2 | S8.1–S8.82 | 82 | — | LOCKED |
 | **C9** | Product & Feature | Phase 3 | S9.1–S9.30 | 30 | — | LOCKED |
-| **C10** | AI Collaboration | Phase 3 | S10.1–S10.36 | 36 | — | LOCKED |
+| **C10** | AI Collaboration | Phase 3 | S10.1–S10.37 | 37 | — | LOCKED (v1.1) |
 
-> **System total: 594 unique standards across 11 constitutions.**
+> **System total: 596 unique standards across 11 constitutions.**
 > Every standard has exactly one home constitution. Cross-references do not imply shared
 > ownership. No overlap. No footnotes.
 

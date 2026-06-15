@@ -114,12 +114,13 @@ app's `docs/audits/stress-test-audit.md` (ST-1…6) + edge rulings in
 | Contract (S2.7) expanded with auth endpoints beyond the original 4 | Founder-approved (L4) "fill all gaps": MFA enrol/activate, email-verify(+resend), forgot/reset/change-password — shapes proposed in their PRs. | Stage 02 |
 | `EMAIL_VERIFICATION_REQUIRED` config flag (default off) | S3.12 configurable verification mode; off until the email provider is live so v1 flows are unbroken. | Stage 02 |
 
-## Open Constitutional Amendment Proposals
-| # | Proposal | Status |
-|---|----------|--------|
-| A-1 | **C5** — "Ledger tables are immutable; corrections are reversing entries" (MASTER-SPEC §16.2) | PROPOSED — ratify before v1.5 ledger build (C0 §8) |
-| A-2 | **C7/C10** — make post-phase verification against the system's stress-test audit (ST) + scenario rulings (D-NNN) a *generic* mandatory standard before any handoff | PROPOSED by sole engineer — awaiting Founder C0 §8 ratification |
+## Constitutional Amendments (this system's contributions to the template)
+Both ratified by the Founder (L4) on 2026-06-15 via the C0 §8 protocol (24h sit satisfied, adversarial + cross-constitution review documented in the amendment issue) and committed to `system-design-template`.
+| # | Amendment | Status |
+|---|-----------|--------|
+| A-1 | **C5** — "Ledger tables are immutable; corrections are reversing entries" (MASTER-SPEC §16.2) | ✅ RATIFIED (L4, 2026-06-15) → **C5 v1.1, S5.65** (Part 9 — Financial Ledger Integrity). Enforce at the v1.5 ledger build. |
+| A-2 | **C10** — post-phase verification against the system's stress-test audit (ST) + scenario rulings (D-NNN), mandatory before any handoff (generic — all KSDRILL systems) | ✅ RATIFIED (L4, 2026-06-15) → **C10 v1.1, S10.37** (Part 7 — Relay Handoff Verification). |
 
 ---
 
-*Last updated: 2026-06-15 (Stage 02 complete; sole-operator mode — Founder collapsed the relay).*
+*Last updated: 2026-06-15 (Stage 02 complete; sole-operator mode — Founder collapsed the relay; C0 §8 amendments A-1 (C5 S5.65) + A-2 (C10 S10.37) ratified L4 and applied to the template).*

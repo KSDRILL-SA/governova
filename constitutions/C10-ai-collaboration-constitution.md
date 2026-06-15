@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C10 — AI Collaboration Constitution                                |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.0                                                               |
+| **Version**        | v1.1                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -45,6 +45,7 @@ The core principle is permanent: **AI may propose, recommend, and implement. AI 
 | Part 4 | Build Phase AI Workflow — CONSTITUTION-INDEX.md | S10.21–S10.26 |
 | Part 5 | Solo Dev AI Pair Programming Protocol | S10.27–S10.32 |
 | Part 6 | Team AI Governance | S10.33–S10.36 |
+| Part 7 | Relay Handoff Verification | S10.37 |
 | Anti-Patterns Index | — | AP-S10.* |
 | Cross-Constitution Dependency Map | — | — |
 | Amendment Log | — | — |
@@ -491,6 +492,34 @@ Code review by another person exists because the author of the code has blind sp
 
 ---
 
+## Part 7 — Relay Handoff Verification (`S10.37`)
+
+> A phase is not "done" because the build is green — it is done when it has been checked against the adversary. This part adds a verification precondition to the S10.6 handoff: every phase is proven against the system's own adversarial findings before the baton is passed to the next engineer.
+
+### S10.37 — Post-Phase Adversarial Verification Before Handoff
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S10.37 |
+| **Priority**    | Critical |
+| **Applies To**  | All Systems · Both Stacks · Solo Dev · Team |
+| **Phase**       | Phase 3 — Product & Intelligence |
+| **Depends On**  | `S10.6` (Founder approval gate / Handoff Protocol), `C7` (testing — verification is a testing act) |
+| **Enforced By** | The engineer at handoff; checked by the Founder at the S10.6 gate |
+
+**Standard:**
+Before delivering the S10.6 phase handoff, the engineer verifies the completed phase against the system's own adversarial findings — its stress-test / red-team audit (the `ST-x` register) and its scenario-and-decision log (`D-NNN`) — and records in the handoff report the specific ids the phase satisfies, plus any deliberately deferred to a later phase with the reason. A handoff that does not document this verification is incomplete and is not accepted at the S10.6 gate. Where a system has no such audit yet, producing one is a deliverable of the first phase that introduces adversarial surface.
+
+**Rationale:**
+Green tests prove the build does what the builder expected; they do not prove it survives what an attacker or an edge case will do. The adversarial audit (ST) and the scenario rulings (D-NNN) are where a system records the failure modes it has reasoned about. Checking each phase against them at the handoff boundary — while the work is fresh, and before the next engineer builds on top — is the cheapest place to catch the regression of a known risk. This makes "verified against the adversary" a relay invariant, not a per-engineer habit.
+
+**Anti-Patterns:**
+- `AP-S10.37a` — Phase handoff delivered with no citation of the system's ST/D findings — the build may silently regress a risk the system already reasoned about, and "tests pass" is offered in place of adversarial verification.
+
+**Cross-References:** `S10.6` (handoff is the only approval gate), `S10.27` (AI second-reviewer in solo mode), `C7` (Testing Constitution — verification mechanics), `S1.45` (author self-review checklist).
+
+---
+
 ## Anti-Patterns Index
 
 | ID | Description | Violated Standard | Severity |
@@ -513,6 +542,7 @@ Code review by another person exists because the author of the code has blind sp
 | `AP-S10.21a` | Build session started without CONSTITUTION-INDEX.md in Cursor context | S10.21 | Critical |
 | `AP-S10.22a` | CONSTITUTION-INDEX.md lists all 300+ standards instead of curated active set | S10.22 | Standard |
 | `AP-S10.27a` | PR merged to main without AI code review session documented | S10.27 | High |
+| `AP-S10.37a` | Phase handoff delivered without citing the system's ST/D adversarial findings | S10.37 | Critical |
 
 ---
 
@@ -536,10 +566,11 @@ Code review by another person exists because the author of the code has blind sp
 | Version | Date | Change | Reason |
 |---------|------|--------|--------|
 | v1.0 | 2026-05-08 | Initial lock — new constitution with no predecessor. Five AI engineer relay model formalised (S10.1–S10.7): Claude (Principal Architect), Claude Code (Senior Engineer), ChatGPT (Debugger+UI+Adversarial Reviewer), DeepSeek (Reasoning Engine), Kimi (Experimental Lab). Founder approval gate at every relay handoff formalised as S10.6 (L4 human-only extension). Relay Handoff Protocol backing standards added (S10.6a–S10.6d). Three-phase design workflow formalised (S10.15). CONSTITUTION-INDEX.md standard formalised (S10.21–S10.22). Permission boundary framework L1–L4 formalised (S10.9–S10.14). Solo dev AI protocol formalised (S10.27–S10.32). Operational workflow detail extracted to `workflow/ksdrill-sa-ai-workflow.md`. | Five-engineer relay model formalised from KSDRILL-SA_AI_Engineer_Workflow.md. Full constitutional alignment including L1–L4 mapping per engineer, standard cross-references, and Founder approval gate. |
+| v1.1 | 2026-06-15 | **Added Part 7 — Relay Handoff Verification (S10.37 — Post-Phase Adversarial Verification Before Handoff):** before the S10.6 handoff, the engineer verifies the phase against the system's stress-test audit (ST-x) and scenario-decision log (D-NNN), citing the ids satisfied/deferred in the handoff report; an unverified handoff is not accepted. Anti-pattern AP-S10.37a added. Count 36→37. (C0 §8 amendment A-2; evidence: FundsLink Stage-02 hardening caught 7 ST-2 gaps that green tests had passed; adversarial + cross-constitution review in the amendment issue; Founder L4 approval 2026-06-15.) | Green tests prove intent, not survival. Verifying each phase against the system's own adversarial findings at the handoff boundary makes it a relay invariant, not a per-engineer habit. |
 
 ---
 
-> **LOCKED — v1.0 — 2026-05-08**
+> **LOCKED — v1.1 — 2026-06-15** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.

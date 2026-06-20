@@ -159,6 +159,8 @@ Clusters group every file that belongs together. Read the whole cluster before s
 | File | Purpose |
 |------|---------|
 | `workflow/ksdrill-sa-ai-workflow.md` | Complete AI engineer relay: handoff protocol Parts A–D, repo verification checklist, relay diagram |
+| `workflow/ai-assisted-software-development-workflow.md` | The 8-step AI-assisted development lifecycle: design → implement → harden → adversarial critique → independent review → secondary review → findings → Founder approval. Loadable as a skill (`…/SKILL.md`). |
+| `workflow/ai-review-challenge-framework.md` | The 3 review layers (self / adversarial / independent), per-stage challenge questions, and the Universal Final Challenge applied before every gate. Loadable as a skill (`…/SKILL.md`). |
 
 ---
 
@@ -230,6 +232,8 @@ Every file in this repository. No omissions. Sorted by reading priority.
 | 23 | `indexes/anti-patterns-index.md` | Index | All anti-patterns for fast violation checking |
 | 24 | `indexes/stack-assignment-matrix.md` | Index | Stack assignment criteria and locked decisions |
 | 25 | `workflow/ksdrill-sa-ai-workflow.md` | Workflow | AI engineer relay, handoff protocol, verification checklist |
+| 25.1 | `workflow/ai-assisted-software-development-workflow.md` | Workflow | The 8-step AI-assisted development lifecycle (design → approve); loadable SKILL.md |
+| 25.2 | `workflow/ai-review-challenge-framework.md` | Workflow | 3 review layers + per-stage challenge questions + Universal Final Challenge; loadable SKILL.md |
 | 26 | `system-contexts/fundslink-context.md` | System Context | FundsLink Academy build context |
 | 27 | `system-contexts/maphophe-context.md` | System Context | Maphophe Community build context |
 | 28 | `system-contexts/reserve-bank-context.md` | System Context | KSDRILL Reserve Bank build context |

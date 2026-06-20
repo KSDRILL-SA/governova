@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C4 — Frontend Constitution                                         |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.0                                                               |
+| **Version**        | v1.1                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -46,6 +46,7 @@ This constitution does not govern backend API contracts — that is C2. It does 
 | Part 8 | Frontend Observability | S4.65–S4.70 |
 | Part 9 | Group-Build Methodology | S4.71–S4.78 |
 | Part 10 | Layer Build Order | S4.79–S4.82 |
+| Part 11 | Design-First (Design Package) | S4.83 |
 | Anti-Patterns Index | — | AP-S4.* |
 | Cross-Constitution Dependency Map | — | — |
 | Amendment Log | — | — |
@@ -1227,6 +1228,36 @@ A single `feat: add scholarship application form` commit containing 800 lines of
 
 ---
 
+## Part 11 — Design-First (Design Package) (`S4.83`)
+
+> Frontend work that begins in code begins blind. This part makes the design a deliverable that precedes the build session, so the build executes a ratified design rather than inventing one.
+
+---
+
+### S4.83 — The Frontend Is Fully Designed and Ratified Before the Build Session
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S4.83 |
+| **Priority**    | Critical |
+| **Applies To**  | Both Stacks |
+| **Phase**       | Phase 1 — Core Architecture |
+| **Depends On**  | `S4.79` (layer build order), `S10.15` (design phase before build), `S4.13`/`S4.14` (styling philosophy) |
+| **Enforced By** | Design review · Founder ratification before the build session |
+
+**Standard:**
+Before a frontend build session begins, the system's frontend is fully DESIGNED and Founder-ratified as a documented design package, covering: the workspace file/folder structure; the design tokens (semantic colour for light AND dark, type scale, spacing, motion) with an explicit accessibility + performance budget (WCAG 2.2 AA, Core Web Vitals targets); the component library (the four states, forms, tables, overlays); navigation and the layout shells; the marketing/public surface (if any); and a build-ready design handoff that names the read order and the contracts the UI must honour. The build session EXECUTES the design — it does not invent it. The design package lives in a discoverable docs location (e.g. `docs/experience/`) and is referenced by the stage brief. A build that begins without a ratified design package is stopped at review.
+
+**Rationale:**
+A frontend invented commit-by-commit accrues design debt: inconsistent spacing and colour, retrofitted accessibility, a navigation that fights itself, and rework when the look is finally "decided" after it is built. Designing the whole surface first — tokens, components, navigation, the budget — makes the build a translation of a ratified, coherent, accessible, premium design rather than a series of local guesses. Design is the cheapest place to get the experience right; code is the most expensive.
+
+**Anti-Patterns:**
+- `AP-S4.83a` — A frontend build session started with no ratified design package — tokens, components, and navigation are improvised in code; the result is inconsistent and accrues design debt and rework.
+
+**Cross-References:** `S4.79` (layer build order — the build follows the design), `S10.15` (design-phase-before-build), `S4.13`/`S4.14` (the styling philosophy the tokens implement).
+
+---
+
 ## Anti-Patterns Index
 
 | ID | Description | Violated Standard | Severity |
@@ -1283,6 +1314,7 @@ A single `feat: add scholarship application form` commit containing 800 lines of
 | `AP-S4.79a` | UI-first layer build order | S4.79 | Critical |
 | `AP-S4.79b` | One commit for all four layers | S4.79 | High |
 | `AP-S4.80a` | `git add .` after completing all layers | S4.80 | High |
+| `AP-S4.83a` | Frontend build session started with no ratified design package | S4.83 | Critical |
 
 ---
 
@@ -1308,10 +1340,11 @@ A single `feat: add scholarship application form` commit containing 800 lines of
 | Version | Date | Change | Reason |
 |---------|------|--------|--------|
 | v1.0 | 2026-05-08 | Initial lock — rebuilt from Frontend Constitution v18.0. Styling philosophy formalised: S4.13 (Tailwind for layout) + S4.14 (Custom CSS for brand) as co-equal first-class tools. Layer Build Order (S4.79–S4.82) added as Part 10. Terminology updated to Standards/Anti-Patterns. Standard IDs (`S4.N`) introduced. Group-build methodology formalised in Part 9. | Full system rebuild — HTML to Markdown, version reset. |
+| v1.1 | 2026-06-20 | **Added Part 11 — Design-First (S4.83 — The Frontend Is Fully Designed and Ratified Before the Build Session):** before a build session, the frontend is a ratified design package (structure, tokens light+dark with a11y+perf budget, component library, navigation/shells, marketing, build handoff); the build executes the design, it does not invent it. Anti-pattern AP-S4.83a added. Count 82→83. (C0 §8 amendment A-5; FundsLink Stage-04 evidence generalised — the entire frontend was designed as a 7-doc package and Founder-ratified before any build, eliminating design debt; Founder L4 approval 2026-06-20.) | A frontend invented commit-by-commit accrues design debt and rework. Designing the whole surface first makes the build a translation of a coherent, accessible, premium design. |
 
 ---
 
-> **LOCKED — v1.0 — 2026-05-08**
+> **LOCKED — v1.1 — 2026-06-20** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.

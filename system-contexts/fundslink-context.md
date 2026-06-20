@@ -6,7 +6,7 @@
 |--------------------|-------|
 | **System**         | FundsLink Academy |
 | **Stack**          | Angular + FastAPI |
-| **Build Phase**    | Phase 1 — Core Architecture · Stages 00/01/02 ✅ DONE · **Stage 03 (backend) NEXT** |
+| **Build Phase**    | Phase 1 — Core Architecture · Stages 00–03 ✅ DONE · **Stage 04 (frontend) DESIGNED — ready to build** |
 | **Current Group**  | G1 — Core (primary workflow) |
 | **Operating Mode** | SOLO |
 | **Active Overlay** | `overlays/solo-dev-overlay.md` |
@@ -45,11 +45,11 @@ All 11 constitutions apply (C0–C10). Stack-specific scope:
 
 | # | Feature | Group | Status |
 |---|---------|-------|--------|
-| 1 | Authentication (registration, login, JWT) | G1 | ✅ DONE (Stage 02, gate G2 + hardened + DB-integrated) |
-| 2 | Student profile creation | G1 | — (Stage 03) |
-| 3 | Scholarship application submission | G1 | — |
-| 4 | AI-powered eligibility matching (LangChain + ChromaDB) | G1 | — |
-| 5 | Application status tracking | G2 | — |
+| 1 | Authentication (registration, login, JWT) | G1 | ✅ DONE (Stage 02; G2 + hardened + DB-integrated) |
+| 2 | Student profile creation | G1 | ✅ DONE (Stage 03; SA-ID AES-GCM + blind index, document pipeline) |
+| 3 | Scholarship application submission | G1 | ✅ DONE (Stage 03; state machine + eligibility pre-screen, Human-Final) |
+| 4 | AI-matched funding options (advisory) | G1 | ✅ DONE (Stage 03; advisory matching — local heuristic + ChromaDB/Mongo seams; real model = ADR-0007 v1.x) |
+| 5 | Application status tracking | G2 | ✅ DONE (Stage 03; tracking + outbox notifications) |
 
 **Total: 5 features** — within v1 limit.
 
@@ -105,7 +105,7 @@ All 11 constitutions apply (C0–C10). Stack-specific scope:
 Before each handoff, the engineer verifies the phase satisfies the adversarial results in the
 app's `docs/audits/stress-test-audit.md` (ST-1…6) + edge rulings in
 `docs/product/scenarios-and-decisions.md` (D-NNN), citing the ids. See the app CONSTITUTION-INDEX
-"Post-phase verification" rule. (Stage 02 met ST-2.1/2.2/2.3/2.9 + D-015.)
+"Post-phase verification" rule. (Stage 02 met ST-2.1/2.2/2.3/2.9 + D-015; Stage 03 met ST-1.2/1.3/2.3/2.4/2.6/3.1/3.4 + D-001/004/006/010/011/014.)
 
 ## Approved Deviations
 | Deviation | Why | Scope |
@@ -120,7 +120,11 @@ Both ratified by the Founder (L4) on 2026-06-15 via the C0 §8 protocol (24h sit
 |---|-----------|--------|
 | A-1 | **C5** — "Ledger tables are immutable; corrections are reversing entries" (MASTER-SPEC §16.2) | ✅ RATIFIED (L4, 2026-06-15) → **C5 v1.1, S5.65** (Part 9 — Financial Ledger Integrity). Enforce at the v1.5 ledger build. |
 | A-2 | **C10** — post-phase verification against the system's stress-test audit (ST) + scenario rulings (D-NNN), mandatory before any handoff (generic — all KSDRILL systems) | ✅ RATIFIED (L4, 2026-06-15) → **C10 v1.1, S10.37** (Part 7 — Relay Handoff Verification). |
+| A-3 | **C10** — phase-status-sync: on gate completion, update EVERY living doc before the handoff so the next engineer never reads a contradicting "next stage" (S10.38) | ⏳ PROPOSED (Stage 03→04; pending C0 §8 — generic) |
+| A-4 | **C1/C8** — reproducible deps: a committed lockfile + frozen install in CI (`uv sync --frozen` / equivalent); the gate fails on lock↔manifest drift | ⏳ PROPOSED (Stage 00 hardening; generic) |
+| A-5 | **C4/C10** — design-package-first frontend: the full design (structure · tokens · components · navigation · marketing · handoff) is documented + Founder-ratified BEFORE the build session | ⏳ PROPOSED (Stage 04 design; generic) |
+| A-6 | **C10** — AI integration via Ports & Adapters: advisory-only + human-final, grounded (no hallucinated entities), cost-fused, eval-gated, local-first/POPIA (FundsLink ADR-0007 generalised) | ⏳ PROPOSED (v1.x AI-Enablement; generic) |
 
 ---
 
-*Last updated: 2026-06-15 (Stage 02 complete; sole-operator mode — Founder collapsed the relay; C0 §8 amendments A-1 (C5 S5.65) + A-2 (C10 S10.37) ratified L4 and applied to the template).*
+*Last updated: 2026-06-20 (Stage 03 complete — 6 backend modules G3, migrations →0018, eligibility + hardening passes, contract 32 ops; Stage 04 frontend DESIGN PACKAGE complete + Founder-ratified, ready to build; AI-Enablement ratified as the system's ADR-0007 for v1.x. Proposed template contributions A-3…A-6 logged for C0 §8 ratification).*

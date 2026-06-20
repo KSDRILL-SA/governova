@@ -24,7 +24,7 @@
 | **4** | `indexes/quick-reference.md` | When navigating a specific concern (auth, database, deploy) |
 | **5** | `indexes/standards-index.md` | When auditing standards compliance or finding a standard ID |
 | **6** | `indexes/anti-patterns-index.md` | When checking for known violation patterns |
-| **7** | `constitutions/C0-constitutional-order.md` | First onboarding, or when a constitutional conflict arises |
+| **7** | `constitutions/C00-constitutional-order.md` | First onboarding, or when a constitutional conflict arises |
 | **8** | Constitution cluster for today's domain *(see clusters below)* | Before any code in that domain |
 | **9** | Implementation guide in the same cluster | When writing code in that domain |
 
@@ -49,7 +49,7 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C0-constitutional-order.md` | Master document. Governs all other constitutions. Terminology, hierarchy, amendment protocol, common failure register. |
+| `constitutions/C00-constitutional-order.md` | Master document. Governs all other constitutions. Terminology, hierarchy, amendment protocol, common failure register. |
 
 ---
 
@@ -57,7 +57,7 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C1-engineering-standards.md` | 97 standards governing how work is done: feature lifecycle, Git discipline, PR process, code quality, TypeScript and Python quality, documentation |
+| `constitutions/C01-engineering-standards.md` | 97 standards governing how work is done: feature lifecycle, Git discipline, PR process, code quality, TypeScript and Python quality, documentation |
 | `overlays/solo-dev-overlay.md` | Process adaptations when operating without a team |
 | `overlays/team-overlay.md` | Additional process requirements in a multi-person team |
 
@@ -67,8 +67,8 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C2-backend-constitution.md` | 80 standards: service architecture, OpenAPI-first API contracts, database access from services, performance, resilience, security middleware, FastAPI specifics |
-| `constitutions/C2-backend-implementation.md` | Practices P2.N: commands, code patterns, file locations that satisfy C2 standards |
+| `constitutions/C02-backend-constitution.md` | 80 standards: service architecture, OpenAPI-first API contracts, database access from services, performance, resilience, security middleware, FastAPI specifics |
+| `constitutions/C02-backend-implementation.md` | Practices P2.N: commands, code patterns, file locations that satisfy C2 standards |
 
 ---
 
@@ -76,8 +76,8 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C3-auth-constitution.md` | 36 standards: auth strategy per stack, NextAuth.js governance, JWT lifecycle, RBAC, split token storage, session management, audit logging |
-| `constitutions/C3-auth-implementation.md` | Practices P3.N: auth implementation patterns, token handling code, session setup |
+| `constitutions/C03-auth-constitution.md` | 36 standards: auth strategy per stack, NextAuth.js governance, JWT lifecycle, RBAC, split token storage, session management, audit logging |
+| `constitutions/C03-auth-implementation.md` | Practices P3.N: auth implementation patterns, token handling code, session setup |
 
 ---
 
@@ -85,8 +85,8 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C4-frontend-constitution.md` | 82 standards: mobile-first, state management, Angular and Next.js specifics, group-build methodology, layer build order |
-| `constitutions/C4-frontend-implementation.md` | Practices P4.N: Angular and Next.js code patterns, layer build commands, component structure |
+| `constitutions/C04-frontend-constitution.md` | 82 standards: mobile-first, state management, Angular and Next.js specifics, group-build methodology, layer build order |
+| `constitutions/C04-frontend-implementation.md` | Practices P4.N: Angular and Next.js code patterns, layer build commands, component structure |
 
 ---
 
@@ -94,8 +94,8 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C5-database-constitution.md` | 64 standards: database assignment by data type, PostgreSQL + Prisma, MongoDB + Beanie, ChromaDB, migration governance, cross-database integrity |
-| `constitutions/C5-database-implementation.md` | Practices P5.N: migration commands, ORM patterns, seed scripts, query examples |
+| `constitutions/C05-database-constitution.md` | 64 standards: database assignment by data type, PostgreSQL + Prisma, MongoDB + Beanie, ChromaDB, migration governance, cross-database integrity |
+| `constitutions/C05-database-implementation.md` | Practices P5.N: migration commands, ORM patterns, seed scripts, query examples |
 
 ---
 
@@ -103,7 +103,7 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C6-fullstack-architecture-constitution.md` | 44 standards: dual-stack topology, stack assignment framework, request flows per stack, cross-stack communication, ADR process |
+| `constitutions/C06-fullstack-architecture-constitution.md` | 44 standards: dual-stack topology, stack assignment framework, request flows per stack, cross-stack communication, ADR process |
 
 ---
 
@@ -111,8 +111,8 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C7-testing-constitution.md` | 43 standards: test strategy, toolchain per stack, coverage gates, unit/integration/E2E, test database governance |
-| `constitutions/C8-platform-reliability-constitution.md` | 82 standards: CI/CD pipeline, environment governance, observability, alert thresholds, severity framework, rollback, post-mortem |
+| `constitutions/C07-testing-constitution.md` | 43 standards: test strategy, toolchain per stack, coverage gates, unit/integration/E2E, test database governance |
+| `constitutions/C08-platform-reliability-constitution.md` | 82 standards: CI/CD pipeline, environment governance, observability, alert thresholds, severity framework, rollback, post-mortem |
 
 ---
 
@@ -120,7 +120,7 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 | File | Purpose |
 |------|---------|
-| `constitutions/C9-product-feature-constitution.md` | 30 standards: product vision, 5-gate feature qualification, MVP definitions, roadmap governance, Crown Jewel designation |
+| `constitutions/C09-product-feature-constitution.md` | 30 standards: product vision, 5-gate feature qualification, MVP definitions, roadmap governance, Crown Jewel designation |
 | `constitutions/C10-ai-collaboration-constitution.md` | 36 standards: AI role definitions, permission levels L1–L4, design-phase and build-phase AI workflow, solo dev AI pair programming, AI anti-patterns |
 
 ---
@@ -210,22 +210,22 @@ Every file in this repository. No omissions. Sorted by reading priority.
 | 01 | `AI-INSTRUCTIONS.md` | Entry | AI session startup — read every session |
 | 02 | `MANIFEST.md` | Entry | This file — repo map and reading graph |
 | 03 | `README.md` | Entry | Human-facing overview |
-| 04 | `constitutions/C0-constitutional-order.md` | Governance | Master constitution — supreme authority |
-| 05 | `constitutions/C1-engineering-standards.md` | Phase 0 | 97 engineering process and code quality standards |
+| 04 | `constitutions/C00-constitutional-order.md` | Governance | Master constitution — supreme authority |
+| 05 | `constitutions/C01-engineering-standards.md` | Phase 0 | 97 engineering process and code quality standards |
 | 06 | `overlays/solo-dev-overlay.md` | Phase 0 | Solo dev process adaptations |
 | 07 | `overlays/team-overlay.md` | Phase 0 | Team process extensions |
-| 08 | `constitutions/C2-backend-constitution.md` | Phase 1 — Backend | 80 backend architecture standards |
-| 09 | `constitutions/C2-backend-implementation.md` | Phase 1 — Backend | Backend code patterns and commands |
-| 10 | `constitutions/C3-auth-constitution.md` | Phase 1 — Auth | 36 authentication standards |
-| 11 | `constitutions/C3-auth-implementation.md` | Phase 1 — Auth | Auth implementation patterns |
-| 12 | `constitutions/C4-frontend-constitution.md` | Phase 1 — Frontend | 82 frontend architecture standards |
-| 13 | `constitutions/C4-frontend-implementation.md` | Phase 1 — Frontend | Frontend code patterns and layer build |
-| 14 | `constitutions/C5-database-constitution.md` | Phase 1 — Database | 64 database assignment and governance standards |
-| 15 | `constitutions/C5-database-implementation.md` | Phase 1 — Database | Migration commands and ORM patterns |
-| 16 | `constitutions/C6-fullstack-architecture-constitution.md` | Phase 1 — Full-Stack | 44 stack topology and integration standards |
-| 17 | `constitutions/C7-testing-constitution.md` | Phase 2 | 43 testing strategy and coverage gate standards |
-| 18 | `constitutions/C8-platform-reliability-constitution.md` | Phase 2 | 82 deployment, CI/CD, observability, incident standards |
-| 19 | `constitutions/C9-product-feature-constitution.md` | Phase 3 | 30 product governance and feature qualification standards |
+| 08 | `constitutions/C02-backend-constitution.md` | Phase 1 — Backend | 80 backend architecture standards |
+| 09 | `constitutions/C02-backend-implementation.md` | Phase 1 — Backend | Backend code patterns and commands |
+| 10 | `constitutions/C03-auth-constitution.md` | Phase 1 — Auth | 36 authentication standards |
+| 11 | `constitutions/C03-auth-implementation.md` | Phase 1 — Auth | Auth implementation patterns |
+| 12 | `constitutions/C04-frontend-constitution.md` | Phase 1 — Frontend | 82 frontend architecture standards |
+| 13 | `constitutions/C04-frontend-implementation.md` | Phase 1 — Frontend | Frontend code patterns and layer build |
+| 14 | `constitutions/C05-database-constitution.md` | Phase 1 — Database | 64 database assignment and governance standards |
+| 15 | `constitutions/C05-database-implementation.md` | Phase 1 — Database | Migration commands and ORM patterns |
+| 16 | `constitutions/C06-fullstack-architecture-constitution.md` | Phase 1 — Full-Stack | 44 stack topology and integration standards |
+| 17 | `constitutions/C07-testing-constitution.md` | Phase 2 | 43 testing strategy and coverage gate standards |
+| 18 | `constitutions/C08-platform-reliability-constitution.md` | Phase 2 | 82 deployment, CI/CD, observability, incident standards |
+| 19 | `constitutions/C09-product-feature-constitution.md` | Phase 3 | 30 product governance and feature qualification standards |
 | 20 | `constitutions/C10-ai-collaboration-constitution.md` | Phase 3 | 36 AI role, permission, and workflow standards |
 | 21 | `indexes/quick-reference.md` | Index | Standards by concern — fastest navigation |
 | 22 | `indexes/standards-index.md` | Index | All standards with IDs and one-line descriptions |
@@ -270,25 +270,25 @@ system-contexts/{system}-context.md  ←─── BEFORE EVERY BUILD SESSION
 MANIFEST.md (this file)  ←─── orientation pass, then follow clusters
        │
        ├── CLUSTER 1: Governance Root
-       │     C0-constitutional-order.md
+       │     C00-constitutional-order.md
        │
        ├── CLUSTER 2: Phase 0 — Engineering Standards
-       │     C1-engineering-standards.md
+       │     C01-engineering-standards.md
        │     overlays/solo-dev-overlay.md  OR  overlays/team-overlay.md
        │
        ├── CLUSTER 3+4+5+6+7: Phase 1 — Core Architecture
-       │     C2-backend-constitution.md  ←→  C2-backend-implementation.md
-       │     C3-auth-constitution.md     ←→  C3-auth-implementation.md
-       │     C4-frontend-constitution.md ←→  C4-frontend-implementation.md
-       │     C5-database-constitution.md ←→  C5-database-implementation.md
-       │     C6-fullstack-architecture-constitution.md
+       │     C02-backend-constitution.md  ←→  C02-backend-implementation.md
+       │     C03-auth-constitution.md     ←→  C03-auth-implementation.md
+       │     C04-frontend-constitution.md ←→  C04-frontend-implementation.md
+       │     C05-database-constitution.md ←→  C05-database-implementation.md
+       │     C06-fullstack-architecture-constitution.md
        │
        ├── CLUSTER 8: Phase 2 — Quality & Reliability
-       │     C7-testing-constitution.md
-       │     C8-platform-reliability-constitution.md
+       │     C07-testing-constitution.md
+       │     C08-platform-reliability-constitution.md
        │
        ├── CLUSTER 9: Phase 3 — Product & AI Governance
-       │     C9-product-feature-constitution.md
+       │     C09-product-feature-constitution.md
        │     C10-ai-collaboration-constitution.md
        │
        ├── CLUSTER 10: Fast Navigation Indexes (use before opening full constitutions)

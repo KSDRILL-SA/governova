@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C1 — Engineering Standards Constitution                            |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.0                                                               |
+| **Version**        | v1.1                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -67,6 +67,7 @@ documents provide the adaptation. The standards themselves do not branch.
 | Part 14 | Documentation Standards | S1.83–S1.87 |
 | Part 15 | Angular-Specific Quality | S1.88–S1.92 |
 | Part 16 | Git Recovery Procedures | S1.93–S1.97 |
+| Part 17 | Dependency & Build Reproducibility | S1.98 |
 
 
 ---
@@ -2504,6 +2505,34 @@ If the most recent commit message is incorrect: (1) `git commit --amend -m "{cor
 
 ---
 
+## Part 17 — Dependency & Build Reproducibility (`S1.98`)
+
+---
+
+### S1.98 — Reproducible Dependency Installs (Lockfile + Frozen CI)
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S1.98 |
+| **Priority**    | Critical |
+| **Applies To**  | Both Stacks |
+| **Phase**       | Phase 0 — Foundation |
+| **Depends On**  | `S1.16`–`S1.24` (Git discipline — the lockfile is committed and reviewed) |
+| **Enforced By** | CI install step (frozen) · code review of lockfile changes |
+
+**Standard:**
+Dependency installs must be reproducible. A committed lockfile pins the full transitive dependency tree, and CI installs **frozen** — `uv sync --frozen` (Python), `npm ci` / `pnpm install --frozen-lockfile` (Node), or the stack equivalent — and the build FAILS if the lockfile and the manifest have drifted. The build can never silently resolve a different dependency tree than the one that was reviewed. Adding or upgrading a dependency means editing the manifest AND regenerating the lockfile in the same PR; an editable/unpinned install (`pip install -e`, an un-lockfiled `npm install`) is never the CI install path.
+
+**Rationale:**
+An unpinned install resolves "latest compatible" at build time, so a transitive upgrade can turn a green PR into a red `main` hours later with nothing in the diff to explain it. A committed lockfile plus a frozen CI install makes the dependency tree a reviewed, versioned artifact — the same inputs produce the same build on every machine and every day. Drift-detection at install is the cheapest place to catch a manifest/lockfile mismatch.
+
+**Anti-Patterns:**
+- `AP-S1.98a` — CI installs with a non-frozen command (or an editable install) so a transitive bump silently changes the build — the tree that ran in CI is not the tree that was reviewed.
+
+**Cross-References:** `S1.16`–`S1.24` (Git discipline), `C8` (CI/CD pipeline — the frozen install is a pipeline gate).
+
+---
+
 ## Anti-Patterns Index
 
 All anti-patterns from C1 in one scannable table for fast reference during code review
@@ -2629,6 +2658,7 @@ and constitutional auditing.
 | AP-S1.86b | Commented-out code left with an explanation comment | S1.86 | Standard |
 | AP-S1.88a | Angular component created with `@NgModule` declarations | S1.88 | Critical |
 | AP-S1.90a | `ngModel` used for two-way data binding in Angular forms | S1.90 | Critical |
+| AP-S1.98a | CI installs non-frozen (or editable) so a transitive bump silently changes the build | S1.98 | Critical |
 
 ---
 
@@ -2659,10 +2689,11 @@ and constitutional auditing.
 | Version | Date | Change | Reason |
 |---------|------|--------|--------|
 | v1.0 | 2026-05-08 | Initial lock — merged from Team & Process Constitution v3.0, Code Quality Constitution v3.0, and MentorConnect team workflow intelligence | Version reset. Three documents unified into one Engineering Standards Constitution. MentorConnect 8-phase feature lifecycle added (S1.27–S1.40). Author quality gates formalised (S1.45–S1.47). Self-review checklist with 4 quadrants (S1.45). PR description template (S1.46). Review response protocol (S1.47). Git recovery procedures added (S1.93–S1.97). First-push upstream tracking (S1.20). Branch sync procedure (S1.21). Squash merge mandate (S1.22). Post-merge cleanup (S1.23). |
+| v1.1 | 2026-06-20 | **Added Part 17 — Dependency & Build Reproducibility (S1.98 — Reproducible Dependency Installs):** a committed lockfile pins the full transitive tree and CI installs frozen (`uv sync --frozen` / `npm ci` / equivalent), failing on lock↔manifest drift; editable/unpinned installs are never the CI path. Anti-pattern AP-S1.98a added. Count 97→98. (C0 §8 amendment A-4; FundsLink Stage-00 hardening evidence generalised — an editable `pip install -e` let a transitive bump red a previously-green main; migrated to `uv` + `--frozen`; Founder L4 approval 2026-06-20.) | An unpinned install resolves at build time, so a transitive upgrade can red a previously-green main with nothing in the diff. A lockfile + frozen CI install makes the dependency tree a reviewed, versioned artifact. |
 
 ---
 
-> **LOCKED — v1.0 — 2026-05-08**
+> **LOCKED — v1.1 — 2026-06-20** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.

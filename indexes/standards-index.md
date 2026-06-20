@@ -49,6 +49,7 @@
 | `S1.83–S1.87` | Documentation standards | Standard |
 | `S1.88–S1.92` | Angular-specific quality standards | Critical |
 | `S1.93–S1.97` | Git recovery procedures | High |
+| `S1.98` | Reproducible dependency installs — lockfile + frozen CI | Critical |
 
 ---
 
@@ -167,6 +168,7 @@
 | `S4.71` | Feature groups define build sequence | Critical |
 | `S4.79` | **Layer build order: Interface → Service → Component → UI** | Critical |
 | `S4.80` | One commit per layer | High |
+| `S4.83` | Frontend designed + Founder-ratified before the build session (design package) | Critical |
 
 ---
 
@@ -319,7 +321,10 @@
 | `S10.21` | CONSTITUTION-INDEX.md required in every project | Critical |
 | `S10.22` | CONSTITUTION-INDEX.md required sections | Critical |
 | `S10.27` | AI as second code reviewer in solo mode | Critical |
+| `S10.37` | Post-phase adversarial verification before handoff | Critical |
+| `S10.38` | Phase-status sync across all living docs before handoff | Critical |
+| `S10.39` | Trustworthy AI feature integration (Ports & Adapters; advisory/grounded/cost-fused/eval-gated/private/versioned) | Critical |
 
 ---
 
-*Last updated: v1.0 — 2026-05-08*
+*Last updated: v1.1 — 2026-06-20 (C0 §8 amendments A-3…A-6: S1.98, S4.83, S10.38, S10.39; S10.37 indexed).*

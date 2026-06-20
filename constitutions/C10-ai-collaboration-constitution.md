@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C10 — AI Collaboration Constitution                                |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.1                                                               |
+| **Version**        | v1.2                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -45,7 +45,8 @@ The core principle is permanent: **AI may propose, recommend, and implement. AI 
 | Part 4 | Build Phase AI Workflow — CONSTITUTION-INDEX.md | S10.21–S10.26 |
 | Part 5 | Solo Dev AI Pair Programming Protocol | S10.27–S10.32 |
 | Part 6 | Team AI Governance | S10.33–S10.36 |
-| Part 7 | Relay Handoff Verification | S10.37 |
+| Part 7 | Relay Handoff Verification | S10.37–S10.38 |
+| Part 8 | AI Feature Integration | S10.39 |
 | Anti-Patterns Index | — | AP-S10.* |
 | Cross-Constitution Dependency Map | — | — |
 | Amendment Log | — | — |
@@ -520,6 +521,64 @@ Green tests prove the build does what the builder expected; they do not prove it
 
 ---
 
+### S10.38 — Phase-Status Sync Across All Living Docs Before Handoff
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S10.38 |
+| **Priority**    | Critical |
+| **Applies To**  | All Systems · Both Stacks · Solo Dev · Team |
+| **Phase**       | Phase 3 — Product & Intelligence |
+| **Depends On**  | `S10.6` (handoff gate), `S10.37` (post-phase verification), `S10.23` (CONSTITUTION-INDEX currency) |
+| **Enforced By** | The engineer at handoff; checked by the Founder at the S10.6 gate |
+
+**Standard:**
+The moment a phase gate passes, and before the S10.6 handoff, the engineer updates EVERY living doc so they all agree on what is done and what is next. The next engineer must never read a contradicting "next stage" — misinformation across living docs causes the next engineer to act on the wrong target. In the same handoff, update: the canonical phase-status record (the `CONSTITUTION-INDEX.md` / system-context status table — the source of truth), every navigation/index doc and its counts (a docs index, README, manifest), the next stage's session prompt or brief, and the new handoff itself. Sealed historical handoffs are point-in-time records and are never rewritten — a new handoff is added instead. A handoff that leaves any living doc pointing at the wrong stage is incomplete and is not accepted at the S10.6 gate.
+
+**Rationale:**
+A handoff is only as trustworthy as the least-current document the next engineer might open. When the status table says "Stage N done, Stage N+1 next" but a README, manifest, or session prompt still points at Stage N, the next engineer can pick up the wrong target and build on a false premise. Synchronising all living docs at the gate — while the work is fresh — keeps the documentation a single coherent truth and removes a whole class of relay error.
+
+**Anti-Patterns:**
+- `AP-S10.38a` — Handoff delivered with the status table updated but a README / manifest / session prompt still naming the previous stage as "next" — the next engineer can act on stale guidance; the living docs no longer agree.
+
+**Cross-References:** `S10.6` (handoff gate), `S10.37` (post-phase verification — the paired pre-handoff check), `S10.23` (CONSTITUTION-INDEX currency), `S1.45` (author self-review).
+
+---
+
+## Part 8 — AI Feature Integration (`S10.39`)
+
+> Parts 1–7 govern AI as the *engineer building* the system. This part governs AI as a *feature inside* the system — a model serving users. The standard below is the discipline for shipping a trustworthy AI feature, especially in systems that handle money or serve vulnerable people.
+
+### S10.39 — Trustworthy AI Feature Integration
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S10.39 |
+| **Priority**    | Critical |
+| **Applies To**  | All Systems · Both Stacks · Solo Dev · Team |
+| **Phase**       | Phase 3 — Product & Intelligence |
+| **Depends On**  | `C5` (store isolation — money/PII placement), `C7` (testing/eval), `C9` (product gates), `S10.8` (human-only approval) |
+| **Enforced By** | Design review · the CI eval gate · the S10.6 handoff |
+
+**Standard:**
+An AI feature (matching, ranking, generation, extraction, recommendation, an agent) integrates via **Ports & Adapters** — the model sits behind an abstract port so it can be swapped without touching business logic — and MUST satisfy all six:
+1. **Advisory-only + human-final** — the AI never makes a consequential decision (funding, eligibility, moderation, money movement); a human makes it, and that authority is enforced in the deepest practical layer (e.g. a database trigger), not just the UI.
+2. **Grounded** — the model may reference only real, retrieved entities; it may never invent one. Every cited entity is validated against the system of record before the output is shown or stored; a failed validation drops the AI output, never the underlying record.
+3. **Cost-fused** — every paid call passes a spend circuit breaker (budget in config) and a per-actor quota (counted in a cache store, never a money value); breaker-open degrades to a fallback, never an error.
+4. **Eval-gated** — no model or prompt ships without passing a curated golden-set evaluation (quality + a grounding/safety check), run in CI; a regression fails the build.
+5. **Privacy-first** — local/on-host by default; minimise PII sent to any external model; exclude sensitive categories (counselling, health) from AI inputs entirely; external processing is consent-gated.
+6. **Versioned + auditable** — every AI output carries its `model_version` and `prompt_version`; prompts are versioned like any other governed artifact.
+
+**Rationale:**
+For a system that funds vulnerable people or handles money, the measure of a good AI feature is not model size — it is trustworthiness. These six make the trust *structural*: it never decides, never hallucinates an entity, never leaks data, never runs away with cost, never regresses silently, and is always traceable. Ports & Adapters makes the model a controlled, swappable component rather than a load-bearing dependency, so the safety rails are proven before a real (paid, privacy-sensitive) model is introduced.
+
+**Anti-Patterns:**
+- `AP-S10.39a` — An AI feature that decides, or surfaces an entity it invented, or calls a paid model with no breaker/quota/eval gate — any one of these ships an untrustworthy AI.
+
+**Cross-References:** `C5` (store isolation — money/PII placement), `C7` (eval mechanics), `C9` (product feature gates), `S10.8` (human-only approval).
+
+---
+
 ## Anti-Patterns Index
 
 | ID | Description | Violated Standard | Severity |
@@ -543,6 +602,8 @@ Green tests prove the build does what the builder expected; they do not prove it
 | `AP-S10.22a` | CONSTITUTION-INDEX.md lists all 300+ standards instead of curated active set | S10.22 | Standard |
 | `AP-S10.27a` | PR merged to main without AI code review session documented | S10.27 | High |
 | `AP-S10.37a` | Phase handoff delivered without citing the system's ST/D adversarial findings | S10.37 | Critical |
+| `AP-S10.38a` | Handoff with the status table updated but a README/manifest/session-prompt still naming the previous stage as "next" | S10.38 | Critical |
+| `AP-S10.39a` | An AI feature that decides, hallucinates an entity, or calls a paid model with no breaker/quota/eval gate | S10.39 | Critical |
 
 ---
 
@@ -567,10 +628,11 @@ Green tests prove the build does what the builder expected; they do not prove it
 |---------|------|--------|--------|
 | v1.0 | 2026-05-08 | Initial lock — new constitution with no predecessor. Five AI engineer relay model formalised (S10.1–S10.7): Claude (Principal Architect), Claude Code (Senior Engineer), ChatGPT (Debugger+UI+Adversarial Reviewer), DeepSeek (Reasoning Engine), Kimi (Experimental Lab). Founder approval gate at every relay handoff formalised as S10.6 (L4 human-only extension). Relay Handoff Protocol backing standards added (S10.6a–S10.6d). Three-phase design workflow formalised (S10.15). CONSTITUTION-INDEX.md standard formalised (S10.21–S10.22). Permission boundary framework L1–L4 formalised (S10.9–S10.14). Solo dev AI protocol formalised (S10.27–S10.32). Operational workflow detail extracted to `workflow/ksdrill-sa-ai-workflow.md`. | Five-engineer relay model formalised from KSDRILL-SA_AI_Engineer_Workflow.md. Full constitutional alignment including L1–L4 mapping per engineer, standard cross-references, and Founder approval gate. |
 | v1.1 | 2026-06-15 | **Added Part 7 — Relay Handoff Verification (S10.37 — Post-Phase Adversarial Verification Before Handoff):** before the S10.6 handoff, the engineer verifies the phase against the system's stress-test audit (ST-x) and scenario-decision log (D-NNN), citing the ids satisfied/deferred in the handoff report; an unverified handoff is not accepted. Anti-pattern AP-S10.37a added. Count 36→37. (C0 §8 amendment A-2; evidence: FundsLink Stage-02 hardening caught 7 ST-2 gaps that green tests had passed; adversarial + cross-constitution review in the amendment issue; Founder L4 approval 2026-06-15.) | Green tests prove intent, not survival. Verifying each phase against the system's own adversarial findings at the handoff boundary makes it a relay invariant, not a per-engineer habit. |
+| v1.2 | 2026-06-20 | **Added S10.38 (Phase-Status Sync) to Part 7** — on gate completion, before the handoff, every living doc is synced so none names a contradicting "next stage"; sealed handoffs are never rewritten. **Added Part 8 — AI Feature Integration (S10.39 — Trustworthy AI Feature Integration):** AI features integrate via Ports & Adapters and must be advisory-only + human-final, grounded, cost-fused, eval-gated, privacy-first, and versioned/auditable. Anti-patterns AP-S10.38a/AP-S10.39a added. Count 37→39. (C0 §8 amendments A-3 + A-6; FundsLink Stage 03/04 evidence generalised — phase-status drift across living docs, and the ADR-0007 trustworthy-AI pattern; Founder L4 approval 2026-06-20.) | Living docs must agree at every handoff, and an AI feature serving vulnerable people must be trustworthy by construction — never deciding, never hallucinating, never leaking, never running away with cost. |
 
 ---
 
-> **LOCKED — v1.1 — 2026-06-15** (amended; originally locked v1.0 2026-05-08)
+> **LOCKED — v1.2 — 2026-06-20** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.

@@ -25,6 +25,7 @@
 | `AP-S1.27a` | Feature built without a proposal | S1.27 | High |
 | `AP-S1.45a` | PR opened without completing self-review checklist | S1.45 | High |
 | `AP-S1.Q2a` | `any` type used in TypeScript production code | S1.48 | High |
+| `AP-S1.98a` | CI installs non-frozen/editable so a transitive bump silently changes the build | S1.98 | Critical |
 
 ---
 
@@ -94,6 +95,7 @@
 | `AP-S4.55a` | `HttpClient` calls directly in Angular component | S4.55 | Critical |
 | `AP-S4.79a` | UI-first layer build order | S4.79 | Critical |
 | `AP-S4.79b` | One giant commit for all four layers | S4.79 | High |
+| `AP-S4.83a` | Frontend build session started with no ratified design package | S4.83 | Critical |
 
 ---
 
@@ -194,6 +196,9 @@
 | `AP-S10.15a` | Claude → Cursor directly, skipping adversarial review | S10.15 | Critical |
 | `AP-S10.21a` | Build session started without CONSTITUTION-INDEX.md | S10.21 | Critical |
 | `AP-S10.27a` | PR merged to main without AI code review documented | S10.27 | High |
+| `AP-S10.37a` | Phase handoff without citing the system's ST/D adversarial findings | S10.37 | Critical |
+| `AP-S10.38a` | Status table updated but a README/manifest/session-prompt still names the previous stage as "next" | S10.38 | Critical |
+| `AP-S10.39a` | An AI feature that decides, hallucinates an entity, or calls a paid model with no breaker/quota/eval gate | S10.39 | Critical |
 
 ---
 

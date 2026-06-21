@@ -75,6 +75,18 @@ def extract_references() -> dict:
     return refs
 
 
+def extract_proposed() -> set:
+    """Proposed/pending standards are forward-references named in the amendments log
+    (and their paired protocol docs) before C0 §8 ratification. Exclude them from
+    'unresolved' — they are intentionally not yet defined in the core."""
+    log = Path('governance/changelog/amendments-log.md')
+    proposed = set()
+    if log.exists():
+        for m in STD.finditer(log.read_text(encoding='utf-8')):
+            proposed.add(norm(m.group(1), m.group(2)))
+    return proposed
+
+
 def main():
     ap = argparse.ArgumentParser(description='Validate Governova constitutional integrity')
     ap.add_argument('--strict', action='store_true', help='exit non-zero on any gap')
@@ -90,14 +102,19 @@ def main():
     defined = extract_defined()
     print(f'Defined standards (authoritative): {len(defined)}')
 
+    proposed = extract_proposed()
+    print(f'Proposed (pending L4) standards excluded: {len(proposed)}')
+
     refs = extract_references()
     print(f'Unique standard references found:  {len(refs)}')
 
     # Only validate references to constitutions that define standards (C1..C10).
+    # Exclude proposed/pending standards (forward-references in the amendments log).
     defined_constitutions = {int(s[1:].split(".")[0]) for s in defined}
     unresolved = {
         sid: locs for sid, locs in refs.items()
-        if int(sid[1:].split(".")[0]) in defined_constitutions and sid not in defined
+        if int(sid[1:].split(".")[0]) in defined_constitutions
+        and sid not in defined and sid not in proposed
     }
 
     if not unresolved:

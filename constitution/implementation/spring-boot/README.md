@@ -1,18 +1,18 @@
-﻿# Spring Boot — Implementation Binding (Layer 3)
+# Spring Boot — Implementation Binding (Layer 3)
 
-**Status:** Planned — community-contributable
-**Binds:** C02 — Backend (Java/Kotlin)
-**Constitution:** `constitution/core/` (C02)
+**Status:** Active — first non-reference binding
+**Binds:** C02 — Backend
+**Stack:** Spring Boot 3.x · Java 21 / Kotlin · Spring Web · Spring Data JPA · Bean Validation · Resilience4j · springdoc-openapi
 
-Stack-specific binding of the universal C02 standards to **Spring Boot**. Shows how each
-universal `S{C}.{N}` is satisfied in this stack, and what failure looks like here
-(`AP-S{C}.{N}{letter}/spring-boot`).
+The Spring Boot binding of the universal C2 Backend standards. Each `### S2.N/spring-boot`
+binding maps one universal standard to a concrete Spring Boot pattern (with its anti-pattern),
+proving the universal core — written against a FastAPI reference — governs the JVM/Spring stack
+without changing a single core standard.
 
-This binding is a **stub**: the universal core and framework already apply to any
-Spring Boot system today. A full binding is authored via the contribution process
-(`CONTRIBUTING.md`) using `templates/implementation-guide-template.md` and the
-proven reference bindings (fastapi, nextjs, angular, nextauth, prisma-postgresql,
-beanie-mongodb, chromadb) as the pattern.
+| File | Purpose |
+|------|---------|
+| `C02-backend-spring-boot.md` | The C2 → Spring Boot bindings (registered in the engine; compiled into the index) |
 
-See `constitution/indexes/stack-selection-guide.md` for how a stack is chosen,
-and `constitution/implementation/README.md` for the binding principle.
+This binding is registered in `scripts/governova_compile/discovery.py` and is parsed into the
+compiled index (`compiled/constitution.json`) by `governova-compile`. See
+`constitution/implementation/README.md` and `constitution/indexes/stack-selection-guide.md`.

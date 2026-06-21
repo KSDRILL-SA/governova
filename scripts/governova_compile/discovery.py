@@ -158,6 +158,12 @@ IMPLEMENTATION_REGISTRY: tuple[ImplementationEntry, ...] = (
         "constitution/implementation/fastapi/C02-backend-fastapi.md",
     ),
     ImplementationEntry(
+        "spring-boot",
+        "C02",
+        "Spring Boot Backend Bindings",
+        "constitution/implementation/spring-boot/C02-backend-spring-boot.md",
+    ),
+    ImplementationEntry(
         "nextauth",
         "C03",
         "NextAuth Bindings",

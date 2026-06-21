@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
-  "compiled_at": "2026-06-21T23:01:34.870332Z",
-  "source_commit_sha": "9c3355a",
-  "checksum": "sha256:f161a9b8a3b5251d9530977de489e8d4503cbc3322375250cda5bc50aca65a08",
+  "compiled_at": "2026-06-21T23:31:05.814297Z",
+  "source_commit_sha": "d6554cc",
+  "checksum": "sha256:841a8ee11de8ae3481ac5dacadd750e001a3f5d4f6a99f99c742ca88affa6ad5",
   "framework": [
     {
       "id": "format-specification",
@@ -19714,6 +19714,144 @@
       "bindings": []
     },
     {
+      "stack": "spring-boot",
+      "binds_constitution": "C02",
+      "name": "Spring Boot Backend Bindings",
+      "header": {
+        "document": "C2 Backend Constitution — Spring Boot Implementation Bindings",
+        "organisation": "KSDRILL SA",
+        "version": "v1.0",
+        "status": "DRAFT",
+        "locked_date": null,
+        "next_review": null,
+        "applies_to": null,
+        "paired_with": null
+      },
+      "path": "constitution\\implementation\\spring-boot\\C02-backend-spring-boot.md",
+      "practices": [],
+      "bindings": [
+        {
+          "id": "S2.1/spring-boot",
+          "binds_standard": "S2.1",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Business logic lives exclusively in the service layer; controllers orchestrate, they do not decide.",
+          "anti_pattern": "AP-S2.1a"
+        },
+        {
+          "id": "S2.3/spring-boot",
+          "binds_standard": "S2.3",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Services are stateless; no request state is held on the service between calls.",
+          "anti_pattern": "AP-S2.3a"
+        },
+        {
+          "id": "S2.5/spring-boot",
+          "binds_standard": "S2.5",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Every service function declares an explicit return type — never an untyped map or generic object.",
+          "anti_pattern": "AP-S2.5a"
+        },
+        {
+          "id": "S2.11/spring-boot",
+          "binds_standard": "S2.11",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > The OpenAPI contract is written before any endpoint is implemented.",
+          "anti_pattern": "AP-S2.11a"
+        },
+        {
+          "id": "S2.13/spring-boot",
+          "binds_standard": "S2.13",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Every protected endpoint declares its auth requirement explicitly (governed by C3).",
+          "anti_pattern": "AP-S2.13a"
+        },
+        {
+          "id": "S2.14/spring-boot",
+          "binds_standard": "S2.14",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > List endpoints support pagination; they never return an unbounded collection.",
+          "anti_pattern": "AP-S2.14a"
+        },
+        {
+          "id": "S2.16/spring-boot",
+          "binds_standard": "S2.16",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Sensitive fields are never serialised into an API response.",
+          "anti_pattern": "AP-S2.16a"
+        },
+        {
+          "id": "S2.19/spring-boot",
+          "binds_standard": "S2.19",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Every single-object response uses the one mandated envelope shape.",
+          "anti_pattern": "AP-S2.19a"
+        },
+        {
+          "id": "S2.22/spring-boot",
+          "binds_standard": "S2.22",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Every error response uses the one mandated, uniform error shape.",
+          "anti_pattern": "AP-S2.22a"
+        },
+        {
+          "id": "S2.23/spring-boot",
+          "binds_standard": "S2.23",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Validation is an architectural boundary; invalid input never reaches the service layer.",
+          "anti_pattern": "AP-S2.23a"
+        },
+        {
+          "id": "S2.26/spring-boot",
+          "binds_standard": "S2.26",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Validation failures return 400/422 with per-field error detail.",
+          "anti_pattern": "AP-S2.26a"
+        },
+        {
+          "id": "S2.30/spring-boot",
+          "binds_standard": "S2.30",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Any operation that performs multiple dependent writes runs inside a transaction.",
+          "anti_pattern": "AP-S2.30a"
+        },
+        {
+          "id": "S2.34/spring-boot",
+          "binds_standard": "S2.34",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Every financial write is idempotent; a retried request never double-applies.",
+          "anti_pattern": "AP-S2.34a"
+        },
+        {
+          "id": "S2.35/spring-boot",
+          "binds_standard": "S2.35",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Auditable entities are soft-deleted, never physically removed.",
+          "anti_pattern": "AP-S2.35a"
+        },
+        {
+          "id": "S2.81/spring-boot",
+          "binds_standard": "S2.81",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Every call across a network boundary has a timeout, bounded retries, a circuit breaker, and a defined fallback.",
+          "anti_pattern": "AP-S2.81a"
+        },
+        {
+          "id": "S2.17/spring-boot",
+          "binds_standard": "S2.17",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > CORS allowed origins are configured explicitly per environment — never a wildcard in production.",
+          "anti_pattern": "AP-S2.17a"
+        },
+        {
+          "id": "S2.18/spring-boot",
+          "binds_standard": "S2.18",
+          "stack": "spring-boot",
+          "satisfies_by": "**Universal rule (from C2):** > Error responses never expose stack traces, SQL, or internal system details.",
+          "anti_pattern": "AP-S2.18a"
+        }
+      ]
+    },
+    {
       "stack": "nextauth",
       "binds_constitution": "C03",
       "name": "NextAuth Bindings",
@@ -20327,7 +20465,7 @@
   "integrity": {
     "standards_extracted": 613,
     "anti_patterns_extracted": 441,
-    "bindings_extracted": 55,
+    "bindings_extracted": 72,
     "references_resolved": 0,
     "references_unresolved": 0,
     "links_checked": 0,

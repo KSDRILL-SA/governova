@@ -41,6 +41,12 @@
 | `S6.45` | C6 | Brownfield adoption is incremental and non-breaking — no big-bang rewrite; strangler-fig migration | Big-bang rewrites of running systems are the highest-risk failure mode in adoption | `protocols/brownfield-adoption.md` §2 |
 | `S8.83` | C8 | Every brownfield conversion step is individually reversible with a ready rollback path | Non-breaking guarantee requires per-step reversibility | `protocols/brownfield-adoption.md` §2 |
 | `S1.102` | C1 | Adoption is complete only when every applicable standard is satisfied or carries an approved exception | Prevents silent partial adoption that looks compliant but isn't | `protocols/brownfield-adoption.md` §1 |
+| `S8.84` | C8 | Committed lockfile + CI vulnerability gate; SEV0/SEV1 dependency CVEs block merge | Supply-chain CVEs are a leading breach vector and are deterministically detectable | `protocols/external-governance.md` §2 |
+| `S8.85` | C8 | Dependency license allowlist; SBOM generated for releases | License violations and opaque dependency trees are legal and security liabilities | `protocols/external-governance.md` §2 |
+| `S2.81` | C2 | Every external call has timeout + bounded retry + circuit breaker + defined fallback | A system cannot be more reliable than the third parties it calls without isolation | `protocols/external-governance.md` §3 |
+| `S3.37` | C3 | Integrations use least-privilege scopes; inbound webhooks verify signatures | Over-broad scopes and unverified webhooks are common integration breach paths | `protocols/external-governance.md` §4 |
+| `S8.86` | C8 | Vendor register + exit/portability plan for every critical external vendor | Undocumented lock-in is an existential operational risk | `protocols/external-governance.md` §5 |
+| `S8.87` | C8 | Continuous temporal governance of the external surface (CVEs, framework/version changes) | The external surface decays on its own; one-time checks rot | `protocols/external-governance.md` §6 |
 
 ---
 

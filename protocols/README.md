@@ -12,6 +12,7 @@ executable procedures that make the constitutional standards actionable.
 | `relay-abort.md` | What to do when a relay diverges from the design mid-build |
 | `github-workflow.md` | **GitHub Operating Standard** — branch→issue→PR→merge order, no-AI-references rule, full issue/PR metadata, mode-based merge authority (solo/team) |
 | `brownfield-adoption.md` | **Brownfield Adoption Standard** — onboarding/converting existing systems: gap analysis, non-breaking incremental conversion, edge-case register |
+| `external-governance.md` | **External & Ecosystem Governance** — third-party frameworks, dependencies/supply-chain, external APIs, integrations, vendors, temporal governance |
 | `git-workflow.md` | Branch model, commit convention, PR process, golden rules (mechanics) |
 | `modes/` | Operating modes: personal, team, enterprise |
 | `frameworks/` | Reusable AI development frameworks (AI-assisted workflow, review-challenge) |

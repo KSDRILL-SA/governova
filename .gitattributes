@@ -1,0 +1,31 @@
+# Normalize line endings: store LF in the repo, auto-convert on checkout.
+# This settles the cross-platform CRLF/LF churn that inflated earlier diffs.
+* text=auto eol=lf
+
+# Explicit text formats
+*.md    text
+*.py    text
+*.yml   text
+*.yaml  text
+*.toml  text
+*.json  text
+*.lock  text
+*.txt   text
+*.cfg   text
+*.ini   text
+*.sh    text eol=lf
+*.ts    text
+*.tsx   text
+*.js    text
+*.css   text
+*.html  text
+
+# Binary (never normalized)
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.pdf   binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary

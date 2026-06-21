@@ -1,0 +1,44 @@
+name: Constitutional Integrity
+
+on:
+  pull_request:
+    branches: [main, Dev]
+  push:
+    branches: [main, Dev]
+
+jobs:
+  validate:
+    name: Compile & validate constitution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Sync workspace
+        run: uv sync --all-packages
+
+      # Authoritative integrity gate — covers all 613 standards across every
+      # constitution format (regex validator). This is the blocking check until
+      # the engine parser covers all formats (see issue #34).
+      - name: Validate integrity (authoritative, 613)
+        run: uv run python scripts/validate-integrity.py
+
+      - name: Engine unit tests
+        run: uv run pytest scripts/tests/ -q
+
+      # Engine steps are informational while the Phase A parser is extended (#34).
+      # They run the real engine but do not block the build yet.
+      - name: Engine compile (informational — Phase A parser)
+        run: uv run governova-compile --quiet
+        continue-on-error: true
+
+      - name: Engine structural validate (informational — see #34)
+        run: uv run governova-validate
+        continue-on-error: true

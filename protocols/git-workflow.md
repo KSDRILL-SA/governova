@@ -20,6 +20,10 @@
 
 ---
 
+> **⚠️ Order & authority update.** The authoritative workflow order is **branch → issue → PR → merge**, the no-AI-references rule, full issue/PR metadata, and mode-based merge authority are defined in **`protocols/github-workflow.md`** — read it first. Where the step ordering below (issue-first) differs, `github-workflow.md` governs. This document remains authoritative for branch/commit *mechanics* (naming, conventional commits, protection rules).
+
+---
+
 ## Table of Contents
 
 | Section | Title |

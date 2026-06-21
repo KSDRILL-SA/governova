@@ -10,7 +10,8 @@ executable procedures that make the constitutional standards actionable.
 | `relay-protocol.md` | The 5-engineer relay model — who does what, in what order, with what permissions |
 | `relay-clarification.md` | MINOR vs ARCHITECTURAL fast-path — when to pause the relay and when to proceed |
 | `relay-abort.md` | What to do when a relay diverges from the design mid-build |
-| `git-workflow.md` | Branch model, commit convention, PR process, golden rules |
+| `github-workflow.md` | **GitHub Operating Standard** — branch→issue→PR→merge order, no-AI-references rule, full issue/PR metadata, mode-based merge authority (solo/team) |
+| `git-workflow.md` | Branch model, commit convention, PR process, golden rules (mechanics) |
 | `modes/` | Operating modes: personal, team, enterprise |
 | `frameworks/` | Reusable AI development frameworks (AI-assisted workflow, review-challenge) |
 

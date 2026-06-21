@@ -27,5 +27,18 @@
 
 ---
 
+## Pending Proposals (awaiting C0 §8 ratification — L4)
+
+> Proposed standards are **not yet in force**. They are operational via their paired protocol
+> until the Founder ratifies them per the amendment protocol.
+
+| Proposed ID | Constitution | Proposed standard | Evidence | Paired protocol |
+|-------------|--------------|-------------------|----------|-----------------|
+| `S1.99` | C1 | Branch → Issue → PR → Merge workflow order; mandatory full issue/PR metadata (type, milestone, project, labels, assignee) | Untracked, metadata-less PRs broke traceability during the v2.0 restructure | `protocols/github-workflow.md` |
+| `S1.100` | C1 | No-AI-references rule across the GitHub metadata surface (commits, PRs, branches, co-authors, filenames); human attribution only | AI co-author + AI tool names found in `main` history; credibility requirement for an AI-governance product | `protocols/github-workflow.md` §2 |
+| `S10.40` | C10 | Mode-based merge authority — solo auto-merge / team human-only review; AI never holds L4 merge authority on sensitive changes | Preserves the permanent human-only L4 boundary while enabling solo speed | `protocols/github-workflow.md` §6 |
+
+---
+
 *This log is the compliance evidence that Governova's standards are actively maintained
 and that every change was reviewed and approved through the amendment protocol.*

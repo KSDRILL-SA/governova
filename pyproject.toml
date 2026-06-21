@@ -1,0 +1,69 @@
+[project]
+name = "governova"
+version = "0.1.0"
+description = "Governova — AI Development Governance Platform (monorepo root)"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Maluleke Kurhula Success" }]
+license = { text = "MIT" }
+dependencies = []
+
+[tool.uv.workspace]
+members = [
+    "scripts",
+    "platform/shared/types-py",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["compiled", "platform/shared/types-ts", ".venv"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+    "RUF",  # ruff-specific
+    "N",    # pep8-naming
+    "C4",   # flake8-comprehensions
+]
+ignore = [
+    "E501",     # line too long (formatter handles)
+    "RUF001",   # ambiguous unicode (em-dash etc. are intentional — they are the source format)
+    "RUF002",   # ambiguous unicode in docstrings
+    "RUF003",   # ambiguous unicode in comments
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["N802", "N803"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+show_error_codes = true
+namespace_packages = true
+explicit_package_bases = true
+exclude = ["compiled", "platform/shared/types-ts", ".venv"]
+
+[[tool.mypy.overrides]]
+module = ["markdown_it.*", "mdit_py_plugins.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra --strict-markers --strict-config"
+testpaths = ["scripts/tests", "platform/engine/tests"]

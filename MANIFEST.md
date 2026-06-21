@@ -1,4 +1,4 @@
-# Governova — Repository Manifest
+﻿# Governova â€” Repository Manifest
 
 > **This is the AI navigation spine. Read this file once to understand the complete repo
 > structure, every file's purpose, its cluster, and the exact reading order for any session
@@ -8,11 +8,11 @@
 
 ## How to Use This Manifest
 
-- **Quick session startup**: follow the [Session Reading Order](#session-reading-order) table top-to-bottom — stop at the row that matches your task
-- **Cluster navigation**: files that belong together are grouped in the [File Clusters](#file-clusters) section — read all files in a cluster before moving to the next
-- **Full repo scan**: use the [Complete File Index](#complete-file-index) — every file, one line
+- **Quick session startup**: follow the [Session Reading Order](#session-reading-order) table top-to-bottom â€” stop at the row that matches your task
+- **Cluster navigation**: files that belong together are grouped in the [File Clusters](#file-clusters) section â€” read all files in a cluster before moving to the next
+- **Full repo scan**: use the [Complete File Index](#complete-file-index) â€” every file, one line
 
-The repository follows the Governova four-layer architecture (Framework · Core · Implementation · Domains). Full vision: `GOVERNOVA-MASTER.md`.
+The repository follows the Governova four-layer architecture (Framework Â· Core Â· Implementation Â· Domains). Full vision: `GOVERNOVA-MASTER.md`.
 
 ---
 
@@ -35,11 +35,11 @@ The repository follows the Governova four-layer architecture (Framework · Core 
 
 ## File Clusters
 
-Clusters group every file that belongs together. Read the whole cluster before switching. A constitution and its stack binding are always read together — the constitution first, then the binding.
+Clusters group every file that belongs together. Read the whole cluster before switching. A constitution and its stack binding are always read together â€” the constitution first, then the binding.
 
 ---
 
-### Cluster 0 — Session Entry (Read Every Session)
+### Cluster 0 â€” Session Entry (Read Every Session)
 
 | File | Purpose |
 |------|---------|
@@ -49,20 +49,20 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 ---
 
-### Cluster 1 — Framework (Layer 1: Universal Primitives)
+### Cluster 1 â€” Framework (Layer 1: Universal Primitives)
 
 | File | Purpose |
 |------|---------|
 | `framework/format-specification.md` | S{C}.{N} / AP-S{C}.{N}{letter} format and document structure |
 | `framework/phase-model.md` | The four-phase read/dependency/failure order |
-| `framework/severity-model.md` | SEV0–SEV3 classification and score weighting |
-| `framework/permission-model.md` | L1–L4 permission levels; L4 permanently human-only |
+| `framework/severity-model.md` | SEV0â€“SEV3 classification and score weighting |
+| `framework/permission-model.md` | L1â€“L4 permission levels; L4 permanently human-only |
 | `framework/conflict-resolution.md` | Constitutional hierarchy + four-step protocol + Auth Override |
 | `framework/amendment-protocol.md` | How standards change, are audited, and versioned |
 
 ---
 
-### Cluster 2 — Governance Root
+### Cluster 2 â€” Governance Root
 
 | File | Purpose |
 |------|---------|
@@ -70,47 +70,47 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 ---
 
-### Cluster 3 — Phase 0: Foundation
+### Cluster 3 â€” Phase 0: Foundation
 
 | File | Purpose |
 |------|---------|
-| `constitution/core/phase-0-foundation/C01-engineering-standards.md` | 98 standards: feature lifecycle, Git discipline, PR process, code quality, TypeScript/Python quality, documentation |
+| `constitution/core/phase-0-foundation/C01-engineering-standards.md` | 102 standards: feature lifecycle, Git discipline, PR process, code quality, TypeScript/Python quality, documentation |
 | `protocols/modes/personal-mode.md` | Process adaptations when operating solo |
 | `protocols/modes/team-mode.md` | Additional process requirements in a team |
 
 ---
 
-### Cluster 4 — Phase 1: Core Architecture
+### Cluster 4 â€” Phase 1: Core Architecture
 
 | File | Purpose |
 |------|---------|
-| `constitution/core/phase-1-core-architecture/C02-backend-constitution.md` | 80 standards: service architecture, OpenAPI-first, performance, resilience, security middleware |
-| `constitution/core/phase-1-core-architecture/C03-auth-constitution.md` | 36 standards: auth strategy, JWT lifecycle, RBAC, split token storage, session management |
+| `constitution/core/phase-1-core-architecture/C02-backend-constitution.md` | 81 standards: service architecture, OpenAPI-first, performance, resilience, security middleware |
+| `constitution/core/phase-1-core-architecture/C03-auth-constitution.md` | 37 standards: auth strategy, JWT lifecycle, RBAC, split token storage, session management |
 | `constitution/core/phase-1-core-architecture/C04-frontend-constitution.md` | 83 standards: mobile-first, state management, group-build methodology, layer build order |
 | `constitution/core/phase-1-core-architecture/C05-database-constitution.md` | 65 standards: database assignment by data type, cross-database integrity, migration governance |
-| `constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md` | 44 standards: dual-stack topology, stack assignment framework, request flows, ADR process |
+| `constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md` | 45 standards: dual-stack topology, stack assignment framework, request flows, ADR process |
 
 ---
 
-### Cluster 5 — Phase 2: Quality & Reliability
+### Cluster 5 â€” Phase 2: Quality & Reliability
 
 | File | Purpose |
 |------|---------|
 | `constitution/core/phase-2-quality-reliability/C07-testing-constitution.md` | 43 standards: test strategy, toolchain, coverage gates, unit/integration/E2E, test DB |
-| `constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md` | 82 standards: CI/CD, environment governance, observability, alert thresholds, SEV framework, rollback |
+| `constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md` | 87 standards: CI/CD, environment governance, observability, alert thresholds, SEV framework, rollback |
 
 ---
 
-### Cluster 6 — Phase 3: Product & Intelligence
+### Cluster 6 â€” Phase 3: Product & Intelligence
 
 | File | Purpose |
 |------|---------|
 | `constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md` | 30 standards: product vision, 5-gate qualification, MVP definitions, roadmap governance |
-| `constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md` | 39 standards: AI roles, L1–L4 permissions, relay workflow, CONSTITUTION-INDEX, AI anti-patterns |
+| `constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md` | 40 standards: AI roles, L1â€“L4 permissions, relay workflow, CONSTITUTION-INDEX, AI anti-patterns |
 
 ---
 
-### Cluster 7 — Implementation Bindings (Layer 3)
+### Cluster 7 â€” Implementation Bindings (Layer 3)
 
 > Read the paired constitution first, then the binding for your stack.
 
@@ -123,7 +123,7 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 ---
 
-### Cluster 8 — Domain Extensions (Layer 4)
+### Cluster 8 â€” Domain Extensions (Layer 4)
 
 > Active domains seed from the reference systems. See `constitution/domains/README.md`.
 
@@ -133,28 +133,28 @@ Clusters group every file that belongs together. Read the whole cluster before s
 | `constitution/domains/govtech/` | Govtech | Active (Maphophe) |
 | `constitution/domains/edtech/` | Edtech | Active (FundsLink) |
 | `constitution/domains/saas/` | SaaS/B2B | Active (SyncUp) |
-| `constitution/domains/{healthtech,ecommerce,iot,ai-ml}/` | Planned | — |
+| `constitution/domains/{healthtech,ecommerce,iot,ai-ml}/` | Planned | â€” |
 
 ---
 
-### Cluster 9 — Fast Navigation Indexes
+### Cluster 9 â€” Fast Navigation Indexes
 
 > Read index entries first. Open full constitutions only when the index is insufficient.
 
 | File | Purpose |
 |------|---------|
 | `constitution/indexes/quick-reference.md` | Standards by concern: auth, database, deployment, testing, incidents |
-| `constitution/indexes/standards-index.md` | Every standard across C1–C10 with one-line description |
-| `constitution/indexes/anti-patterns-index.md` | Every anti-pattern — fast violation checking |
+| `constitution/indexes/standards-index.md` | Every standard across C1â€“C10 with one-line description |
+| `constitution/indexes/anti-patterns-index.md` | Every anti-pattern â€” fast violation checking |
 | `constitution/indexes/stack-assignment-matrix.md` | Stack assignment criteria and locked assignments |
 
 ---
 
-### Cluster 10 — Protocols
+### Cluster 10 â€” Protocols
 
 | File | Purpose |
 |------|---------|
-| `protocols/relay-protocol.md` | AI engineer relay: handoff protocol Parts A–D, repo verification, relay diagram |
+| `protocols/relay-protocol.md` | AI engineer relay: handoff protocol Parts Aâ€“D, repo verification, relay diagram |
 | `protocols/relay-clarification.md` | MINOR vs ARCHITECTURAL fast-path |
 | `protocols/relay-abort.md` | Procedure when a relay diverges mid-build |
 | `protocols/git-workflow.md` | Branch model, commit convention, PR process, golden rules |
@@ -164,7 +164,7 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 ---
 
-### Cluster 11 — Governance (Runbooks · Decisions · Changelog)
+### Cluster 11 â€” Governance (Runbooks Â· Decisions Â· Changelog)
 
 | File | Purpose | When |
 |------|---------|------|
@@ -176,13 +176,13 @@ Clusters group every file that belongs together. Read the whole cluster before s
 | `governance/runbooks/RB-06-railway-deployment.md` | Railway backend deployment | Deploying backend |
 | `governance/runbooks/RB-07-vercel-rollback.md` | Vercel frontend rollback | Rolling back frontend |
 | `governance/runbooks/RB-08-relay-abort.md` | Relay abort response | Relay divergence |
-| `governance/decisions/ADR-000…004` | Architecture decision records | — |
-| `governance/decisions/RESTRUCTURE-v2.0.md` | The v2.0 four-layer restructure instruction (executed record) | — |
-| `governance/changelog/amendments-log.md` | Append-only amendment audit trail | — |
+| `governance/decisions/ADR-000â€¦004` | Architecture decision records | â€” |
+| `governance/decisions/RESTRUCTURE-v2.0.md` | The v2.0 four-layer restructure instruction (executed record) | â€” |
+| `governance/changelog/amendments-log.md` | Append-only amendment audit trail | â€” |
 
 ---
 
-### Cluster 12 — Platform (The Product)
+### Cluster 12 â€” Platform (The Product)
 
 > Spec-phase. `SPEC.md` files define what gets built. The IDE extension is the wedge (built first).
 
@@ -194,7 +194,7 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 ---
 
-### Cluster 13 — Reference Systems
+### Cluster 13 â€” Reference Systems
 
 > One folder per flagship. Load the correct `context.md` at session startup.
 
@@ -207,7 +207,7 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 ---
 
-### Cluster 14 — Templates & Scripts
+### Cluster 14 â€” Templates & Scripts
 
 | File | Purpose |
 |------|---------|
@@ -222,29 +222,29 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 ---
 
-## Reading Clusters — Visual Map
+## Reading Clusters â€” Visual Map
 
 ```
-AI-INSTRUCTIONS.md  ←─── ALWAYS FIRST
-       │
-       ▼
-GOVERNOVA-MASTER.md  ←─── platform context
-       │
-       ▼
-reference-systems/{system}/context.md  ←─── BEFORE EVERY BUILD SESSION
-       │
-       ▼
-MANIFEST.md (this file)  ←─── orientation, then follow clusters
-       │
-       ├── CLUSTER 1: framework/  (Layer 1 primitives)
-       ├── CLUSTER 2: constitution/C00-constitutional-order.md
-       ├── CLUSTER 3: Phase 0 — C01  + protocols/modes/
-       ├── CLUSTER 4: Phase 1 — C02 C03 C04 C05 C06
-       │     paired bindings in constitution/implementation/{stack}/
-       ├── CLUSTER 5: Phase 2 — C07 C08
-       ├── CLUSTER 6: Phase 3 — C09 C10
-       ├── CLUSTER 9: constitution/indexes/  (use before full constitutions)
-       └── CLUSTERS 10–14: protocols/  governance/  platform/  reference-systems/  templates/  scripts/
+AI-INSTRUCTIONS.md  â†â”€â”€â”€ ALWAYS FIRST
+       â”‚
+       â–¼
+GOVERNOVA-MASTER.md  â†â”€â”€â”€ platform context
+       â”‚
+       â–¼
+reference-systems/{system}/context.md  â†â”€â”€â”€ BEFORE EVERY BUILD SESSION
+       â”‚
+       â–¼
+MANIFEST.md (this file)  â†â”€â”€â”€ orientation, then follow clusters
+       â”‚
+       â”œâ”€â”€ CLUSTER 1: framework/  (Layer 1 primitives)
+       â”œâ”€â”€ CLUSTER 2: constitution/C00-constitutional-order.md
+       â”œâ”€â”€ CLUSTER 3: Phase 0 â€” C01  + protocols/modes/
+       â”œâ”€â”€ CLUSTER 4: Phase 1 â€” C02 C03 C04 C05 C06
+       â”‚     paired bindings in constitution/implementation/{stack}/
+       â”œâ”€â”€ CLUSTER 5: Phase 2 â€” C07 C08
+       â”œâ”€â”€ CLUSTER 6: Phase 3 â€” C09 C10
+       â”œâ”€â”€ CLUSTER 9: constitution/indexes/  (use before full constitutions)
+       â””â”€â”€ CLUSTERS 10â€“14: protocols/  governance/  platform/  reference-systems/  templates/  scripts/
 ```
 
 ---

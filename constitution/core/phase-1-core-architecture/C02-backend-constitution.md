@@ -2192,6 +2192,30 @@ version is created. Otherwise, the new endpoint is added to the existing latest 
 
 ---
 
+### S2.81 — External Call Resilience (Timeout · Retry · Circuit Breaker · Fallback)
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S2.81 |
+| **Priority**    | Critical |
+| **Applies To**  | All Stacks · every call across a network boundary the system does not own |
+| **Phase**       | Phase 1 — Core Architecture |
+| **Depends On**  | `S2.x` (resilience), `C8` (reliability) |
+| **Enforced By** | `protocols/external-governance.md` §3 · service resilience review |
+
+**Standard:**
+Every call to an external service or API is made through a typed client and is wrapped with a **timeout**, **bounded retries with backoff**, a **circuit breaker**, and a **defined fallback** (cache, queue, or degraded mode). No external call may block unbounded, retry infinitely, or hard-fail the system when the third party is down. API versions are pinned; secrets are never in code (C3).
+
+**Rationale:**
+A system can be no more reliable than the third parties it calls unless those calls are isolated. Without timeouts and breakers, one slow or failing dependency cascades into total failure; with them, the system degrades gracefully and recovers on its own.
+
+**Anti-Patterns:**
+- `AP-S2.81a` — An external call with no timeout, unbounded retries, or no fallback — a single third-party outage takes the whole system down.
+
+**Cross-References:** `protocols/external-governance.md`, `C8` (reliability/SLA), `C3` (integration secrets).
+
+---
+
 ## Anti-Patterns Index
 
 | ID | Anti-Pattern | Standard | Priority |
@@ -2329,12 +2353,13 @@ version is created. Otherwise, the new endpoint is added to the existing latest 
 |---------|------|--------|--------|
 | v1.0 | 2026-05-08 | Initial lock | New constitution. Incorporates service layer architecture (Part 1), extension-first backend design extracted from Ubuntu Campus Clinic system design (Part 2), API contract standards (Part 3), standard response shape contract (Part 4), validation layer as architectural boundary (Part 5), database access including soft delete and idempotent financial writes (Part 6), performance (Part 7), resilience (Part 8), security including sensitive operation re-verification (Part 9), observability (Part 10), FastAPI-specific standards (Part 11), Next.js API route standards (Part 12), API versioning governance (Part 13). |
 | v1.1 | 2026-05-08 | Added S2.28e (Raw SQL in repository files only) and S2.28f (Four safety requirements for raw SQL). Added 6 new anti-patterns (AP-S2.28e through AP-S2.28fc). | Industry best practice: ORM-first with governed raw SQL escape hatch for complex aggregations, window functions, CTEs, full-text search, and reporting queries that exceed ORM capability. Pure ORM prohibition is too restrictive for production analytical queries in FundsLink Academy and KSDRILL Reserve Bank. |
+| v1.2 | 2026-06-21 | **Added S2.81 — External Call Resilience (Timeout · Retry · Circuit Breaker · Fallback).** Anti-pattern AP-S2.81a added. Count 80→81. (C0 §8 amendment; external/ecosystem governance; Founder L4 approval 2026-06-21.) | A system can be no more reliable than the third parties it calls unless those calls are isolated with timeouts, breakers, and fallbacks. Paired with `protocols/external-governance.md`. |
 
 ---
 
-> **LOCKED — v1.0 — 2026-05-08**
+> **LOCKED — v1.2 — 2026-06-21** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.
-> Amendments take effect only after commit to `system-design-template`
+> Amendments take effect only after commit to `governova`
 > with a version bump and amendment log entry.

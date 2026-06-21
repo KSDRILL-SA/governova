@@ -19,21 +19,23 @@
 | Date | Standard ID | Constitution | Change | Rationale | Approved by |
 |------|-------------|--------------|--------|-----------|-------------|
 | 2026-05-22 | — | All | Initial Governova restructure — no standards changed, only repo structure | Governova v2.0 architecture | Maluleke Kurhula Success |
+| 2026-06-21 | S1.99–S1.102, S2.81, S3.37, S6.45, S8.83–S8.87, S10.40 | C1, C2, C3, C6, C8, C10 | Ratified 13 standards: operating-practice governance (workflow + no-AI rule + merge authority), brownfield adoption (characterization tests, non-breaking conversion, reversibility, completeness), and external/ecosystem governance (external-call resilience, integration auth, supply-chain/CVE/license/SBOM, vendor register, temporal governance). Counts: C1 98→102, C2 80→81, C3 36→37, C6 44→45, C8 82→87, C10 39→40. Total 600→613. | Operating practices, brownfield adoption, and external governance made first-class constitutional law | Maluleke Kurhula Success |
 
-> Note: the six ratified C0 §8 amendments that pre-date this log's creation
+> Note: the six C0 §8 amendments that pre-date this log's creation
 > (S1.98, S4.83, S5.65, S10.37, S10.38, S10.39) are recorded in their respective
-> constitution amendment logs and in the git history. The current live count is
-> 600 standards against the 594 locked baseline.
+> constitution amendment logs and in the git history. After the 2026-06-21
+> ratification the live count is **613** standards against the 594 locked baseline.
 
 ---
 
-## Pending Proposals (awaiting C0 §8 ratification — L4)
+## Ratified 2026-06-21 (formerly pending — now in force)
 
-> Proposed standards are **not yet in force**. They are operational via their paired protocol
-> until the Founder ratifies them per the amendment protocol.
+> These 13 standards were ratified by Founder L4 approval on 2026-06-21 and are now
+> **in force** in their constitutions (see each constitution's amendment log). The table
+> below is retained as the proposal-to-ratification record.
 
-| Proposed ID | Constitution | Proposed standard | Evidence | Paired protocol |
-|-------------|--------------|-------------------|----------|-----------------|
+| Standard ID | Constitution | Standard | Evidence | Paired protocol |
+|-------------|--------------|----------|----------|-----------------|
 | `S1.99` | C1 | Branch → Issue → PR → Merge workflow order; mandatory full issue/PR metadata (type, milestone, project, labels, assignee) | Untracked, metadata-less PRs broke traceability during the v2.0 restructure | `protocols/github-workflow.md` |
 | `S1.100` | C1 | No-AI-references rule across the GitHub metadata surface (commits, PRs, branches, co-authors, filenames); human attribution only | AI co-author + AI tool names found in `main` history; credibility requirement for an AI-governance product | `protocols/github-workflow.md` §2 |
 | `S10.40` | C10 | Mode-based merge authority — solo auto-merge / team human-only review; AI never holds L4 merge authority on sensitive changes | Preserves the permanent human-only L4 boundary while enabling solo speed | `protocols/github-workflow.md` §6 |

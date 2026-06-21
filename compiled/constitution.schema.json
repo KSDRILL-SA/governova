@@ -1,0 +1,910 @@
+{
+  "$defs": {
+    "ADR": {
+      "additionalProperties": false,
+      "description": "An Architecture Decision Record.",
+      "properties": {
+        "id": {
+          "examples": [
+            "ADR-001",
+            "ADR-042"
+          ],
+          "pattern": "^ADR-\\d{3}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. 'ACCEPTED', 'PROPOSED'.",
+          "title": "Status"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "path"
+      ],
+      "title": "ADR",
+      "type": "object"
+    },
+    "AntiPattern": {
+      "additionalProperties": false,
+      "description": "A documented failure mode of a standard.",
+      "properties": {
+        "id": {
+          "examples": [
+            "AP-S1.1a",
+            "AP-S3.14b"
+          ],
+          "pattern": "^AP-S\\d+\\.\\d+[a-z]$",
+          "title": "Id",
+          "type": "string"
+        },
+        "description": {
+          "description": "What the failure looks like in practice.",
+          "title": "Description",
+          "type": "string"
+        },
+        "parent_standard_id": {
+          "description": "The standard this anti-pattern violates.",
+          "examples": [
+            "S1.1",
+            "S3.14"
+          ],
+          "pattern": "^S\\d+\\.\\d+$",
+          "title": "Parent Standard Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "parent_standard_id"
+      ],
+      "title": "AntiPattern",
+      "type": "object"
+    },
+    "Constitution": {
+      "additionalProperties": false,
+      "description": "A core constitution document (C00–C10) or a domain extension.",
+      "properties": {
+        "id": {
+          "examples": [
+            "C00",
+            "C01",
+            "C10"
+          ],
+          "pattern": "^C\\d{2}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "number": {
+          "description": "Numeric constitution number (0–99).",
+          "minimum": 0,
+          "title": "Number",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "phase": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Phase"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "None for C0; otherwise 0–3."
+        },
+        "header": {
+          "$ref": "#/$defs/DocumentHeader"
+        },
+        "path": {
+          "description": "Repo-relative path to the source markdown file.",
+          "title": "Path",
+          "type": "string"
+        },
+        "hierarchy_rank": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Position in C0 §7.1 conflict-resolution hierarchy. 1 = highest authority.",
+          "title": "Hierarchy Rank"
+        },
+        "binds_implementation": {
+          "default": false,
+          "description": "True if this constitution has paired stack bindings.",
+          "title": "Binds Implementation",
+          "type": "boolean"
+        },
+        "standards": {
+          "items": {
+            "$ref": "#/$defs/Standard"
+          },
+          "title": "Standards",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "number",
+        "name",
+        "header",
+        "path"
+      ],
+      "title": "Constitution",
+      "type": "object"
+    },
+    "DocumentHeader": {
+      "additionalProperties": false,
+      "description": "The identity block at the top of every constitution / implementation guide.",
+      "properties": {
+        "document": {
+          "description": "Full document title, e.g. 'C1 — Engineering Standards'.",
+          "title": "Document",
+          "type": "string"
+        },
+        "organisation": {
+          "default": "KSDRILL SA",
+          "title": "Organisation",
+          "type": "string"
+        },
+        "version": {
+          "default": "v1.0",
+          "title": "Version",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/DocumentStatus",
+          "default": "DRAFT"
+        },
+        "locked_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Locked Date"
+        },
+        "next_review": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Review"
+        },
+        "applies_to": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Applies To"
+        },
+        "paired_with": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Paired With"
+        }
+      },
+      "required": [
+        "document"
+      ],
+      "title": "DocumentHeader",
+      "type": "object"
+    },
+    "DocumentStatus": {
+      "description": "Lifecycle status of a constitutional document.",
+      "enum": [
+        "DRAFT",
+        "LOCKED",
+        "DEPRECATED"
+      ],
+      "title": "DocumentStatus",
+      "type": "string"
+    },
+    "FrameworkPrimitive": {
+      "additionalProperties": false,
+      "description": "A Layer 1 framework primitive — universal, stack-agnostic.",
+      "properties": {
+        "id": {
+          "description": "Slug, e.g. 'format-specification'.",
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "summary": {
+          "description": "One-line description.",
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "path",
+        "summary"
+      ],
+      "title": "FrameworkPrimitive",
+      "type": "object"
+    },
+    "Implementation": {
+      "additionalProperties": false,
+      "description": "A stack-specific implementation guide for one core constitution.\n\nCurrent guides express the implementation layer as Practices (`P{C}.{N}`).\nThe `bindings` field supports the `S{C}.{N}/{stack}` format from\n`framework/format-specification.md` for future spec-compliant guides.",
+      "properties": {
+        "stack": {
+          "title": "Stack",
+          "type": "string"
+        },
+        "binds_constitution": {
+          "examples": [
+            "C00",
+            "C01",
+            "C10"
+          ],
+          "pattern": "^C\\d{2}$",
+          "title": "Binds Constitution",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "header": {
+          "$ref": "#/$defs/DocumentHeader"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "practices": {
+          "items": {
+            "$ref": "#/$defs/Practice"
+          },
+          "title": "Practices",
+          "type": "array"
+        },
+        "bindings": {
+          "items": {
+            "$ref": "#/$defs/ImplementationBinding"
+          },
+          "title": "Bindings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "stack",
+        "binds_constitution",
+        "name",
+        "header",
+        "path"
+      ],
+      "title": "Implementation",
+      "type": "object"
+    },
+    "ImplementationBinding": {
+      "additionalProperties": false,
+      "description": "How a universal standard is satisfied in a specific stack.",
+      "properties": {
+        "id": {
+          "description": "e.g. 'S2.7/fastapi'.",
+          "examples": [
+            "S2.7/fastapi",
+            "S3.14/nextauth"
+          ],
+          "pattern": "^S\\d+\\.\\d+/[a-z][a-z0-9_-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "binds_standard": {
+          "examples": [
+            "S1.1",
+            "S3.14"
+          ],
+          "pattern": "^S\\d+\\.\\d+$",
+          "title": "Binds Standard",
+          "type": "string"
+        },
+        "stack": {
+          "description": "Stack identifier, e.g. 'fastapi', 'nextjs'.",
+          "title": "Stack",
+          "type": "string"
+        },
+        "satisfies_by": {
+          "description": "How the standard is met in this stack.",
+          "title": "Satisfies By",
+          "type": "string"
+        },
+        "anti_pattern": {
+          "anyOf": [
+            {
+              "examples": [
+                "AP-S1.1a",
+                "AP-S3.14b"
+              ],
+              "pattern": "^AP-S\\d+\\.\\d+[a-z]$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Anti Pattern"
+        }
+      },
+      "required": [
+        "id",
+        "binds_standard",
+        "stack",
+        "satisfies_by"
+      ],
+      "title": "ImplementationBinding",
+      "type": "object"
+    },
+    "IntegrityIssue": {
+      "additionalProperties": false,
+      "description": "A single integrity finding from the compile / validate pipeline.",
+      "properties": {
+        "severity": {
+          "$ref": "#/$defs/Severity"
+        },
+        "code": {
+          "description": "Short machine-readable code, e.g. 'orphan-reference'.",
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "source_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Path"
+        },
+        "source_line": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Line"
+        }
+      },
+      "required": [
+        "severity",
+        "code",
+        "message"
+      ],
+      "title": "IntegrityIssue",
+      "type": "object"
+    },
+    "IntegrityReport": {
+      "additionalProperties": false,
+      "description": "Aggregate integrity status for one compile run.",
+      "properties": {
+        "standards_extracted": {
+          "default": 0,
+          "title": "Standards Extracted",
+          "type": "integer"
+        },
+        "anti_patterns_extracted": {
+          "default": 0,
+          "title": "Anti Patterns Extracted",
+          "type": "integer"
+        },
+        "bindings_extracted": {
+          "default": 0,
+          "title": "Bindings Extracted",
+          "type": "integer"
+        },
+        "references_resolved": {
+          "default": 0,
+          "title": "References Resolved",
+          "type": "integer"
+        },
+        "references_unresolved": {
+          "default": 0,
+          "title": "References Unresolved",
+          "type": "integer"
+        },
+        "links_checked": {
+          "default": 0,
+          "title": "Links Checked",
+          "type": "integer"
+        },
+        "links_broken": {
+          "default": 0,
+          "title": "Links Broken",
+          "type": "integer"
+        },
+        "errors": {
+          "items": {
+            "$ref": "#/$defs/IntegrityIssue"
+          },
+          "title": "Errors",
+          "type": "array"
+        },
+        "warnings": {
+          "items": {
+            "$ref": "#/$defs/IntegrityIssue"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "IntegrityReport",
+      "type": "object"
+    },
+    "Phase": {
+      "description": "The four phases per C0 §6.",
+      "enum": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "title": "Phase",
+      "type": "string"
+    },
+    "Practice": {
+      "additionalProperties": false,
+      "description": "An operational how-to in an implementation guide. C0 §2.1.\n\nA practice references the standard(s) it satisfies via inline `S{C}.{N}`\ncitations in its section.",
+      "properties": {
+        "id": {
+          "examples": [
+            "P2.1",
+            "P3.14"
+          ],
+          "pattern": "^P\\d+\\.\\d+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "satisfies_standards": {
+          "description": "Standards this practice operationalises.",
+          "items": {
+            "examples": [
+              "S1.1",
+              "S3.14"
+            ],
+            "pattern": "^S\\d+\\.\\d+$",
+            "type": "string"
+          },
+          "title": "Satisfies Standards",
+          "type": "array"
+        },
+        "source_path": {
+          "title": "Source Path",
+          "type": "string"
+        },
+        "source_line": {
+          "title": "Source Line",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "source_path",
+        "source_line"
+      ],
+      "title": "Practice",
+      "type": "object"
+    },
+    "Priority": {
+      "description": "Standard priority — how important is the standard itself.\n\nMirrors C0 §2.3. Distinct from Severity (which classifies incidents).",
+      "enum": [
+        "Critical",
+        "High",
+        "Standard",
+        "Guidance"
+      ],
+      "title": "Priority",
+      "type": "string"
+    },
+    "Reference": {
+      "additionalProperties": false,
+      "description": "A reference to another standard, with optional inline description.\n\nUsed in `depends_on` and `cross_references` fields. The description is\ntypically the parenthetical hint shown in the source markdown.",
+      "properties": {
+        "standard_id": {
+          "examples": [
+            "S1.1",
+            "S3.14"
+          ],
+          "pattern": "^S\\d+\\.\\d+$",
+          "title": "Standard Id",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional inline description, e.g. the parenthetical in source markdown.",
+          "title": "Description"
+        }
+      },
+      "required": [
+        "standard_id"
+      ],
+      "title": "Reference",
+      "type": "object"
+    },
+    "Runbook": {
+      "additionalProperties": false,
+      "description": "An operational response procedure.",
+      "properties": {
+        "id": {
+          "examples": [
+            "RB-01",
+            "RB-08"
+          ],
+          "pattern": "^RB-\\d{2}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "trigger": {
+          "description": "When this runbook is activated.",
+          "title": "Trigger",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "trigger",
+        "path"
+      ],
+      "title": "Runbook",
+      "type": "object"
+    },
+    "Severity": {
+      "description": "Incident / violation severity — how severe is the failure.\n\nMirrors `framework/severity-model.md`. Distinct from Priority.",
+      "enum": [
+        "SEV0",
+        "SEV1",
+        "SEV2",
+        "SEV3"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "Standard": {
+      "additionalProperties": false,
+      "description": "A governing statement in a constitution.\n\nMirrors the canonical block defined in C0 §3.1.",
+      "properties": {
+        "id": {
+          "examples": [
+            "S1.1",
+            "S3.14"
+          ],
+          "pattern": "^S\\d+\\.\\d+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "constitution_id": {
+          "description": "The owning constitution, e.g. 'C01'.",
+          "examples": [
+            "C00",
+            "C01",
+            "C10"
+          ],
+          "pattern": "^C\\d{2}$",
+          "title": "Constitution Id",
+          "type": "string"
+        },
+        "priority": {
+          "$ref": "#/$defs/Priority"
+        },
+        "applies_to": {
+          "description": "Scope — free-form, e.g. 'Both Stacks', 'Next.js Only', 'All Systems'.",
+          "title": "Applies To",
+          "type": "string"
+        },
+        "phase": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Phase"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The phase the owning constitution belongs to. None for C0."
+        },
+        "phase_label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Original phase string from source, e.g. 'Phase 0 — Foundation'.",
+          "title": "Phase Label"
+        },
+        "depends_on": {
+          "description": "Standards this one cannot function without.",
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "title": "Depends On",
+          "type": "array"
+        },
+        "enforced_by": {
+          "description": "Enforcement mechanisms, e.g. ['CI', 'ESLint', 'Code Review'].",
+          "items": {
+            "type": "string"
+          },
+          "title": "Enforced By",
+          "type": "array"
+        },
+        "statement": {
+          "description": "The standard text — what must be true.",
+          "title": "Statement",
+          "type": "string"
+        },
+        "rationale": {
+          "default": "",
+          "description": "Why this standard exists — production consequence.",
+          "title": "Rationale",
+          "type": "string"
+        },
+        "anti_patterns": {
+          "items": {
+            "$ref": "#/$defs/AntiPattern"
+          },
+          "title": "Anti Patterns",
+          "type": "array"
+        },
+        "cross_references": {
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "title": "Cross References",
+          "type": "array"
+        },
+        "abbreviated": {
+          "default": false,
+          "description": "True if the standard was authored in blockquote shorthand (`> **S{C}.{N}** — ...`) and therefore lacks a full attribute table, rationale, and dedicated anti-pattern block.",
+          "title": "Abbreviated",
+          "type": "boolean"
+        },
+        "source_path": {
+          "description": "Repo-relative path to the source markdown file.",
+          "title": "Source Path",
+          "type": "string"
+        },
+        "source_line": {
+          "description": "1-indexed line number where the standard heading begins.",
+          "title": "Source Line",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "constitution_id",
+        "priority",
+        "applies_to",
+        "statement",
+        "source_path",
+        "source_line"
+      ],
+      "title": "Standard",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Machine-readable form of the Governova constitutional database, schema version 1.0.0. See https://governova.dev/docs/schema.",
+  "properties": {
+    "schema_version": {
+      "default": "1.0.0",
+      "description": "Semantic version of the schema.",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "compiled_at": {
+      "format": "date-time",
+      "title": "Compiled At",
+      "type": "string"
+    },
+    "source_commit_sha": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Git SHA of the source tree.",
+      "title": "Source Commit Sha"
+    },
+    "checksum": {
+      "description": "SHA-256 of the index body (everything except this field).",
+      "title": "Checksum",
+      "type": "string"
+    },
+    "framework": {
+      "items": {
+        "$ref": "#/$defs/FrameworkPrimitive"
+      },
+      "title": "Framework",
+      "type": "array"
+    },
+    "constitutions": {
+      "items": {
+        "$ref": "#/$defs/Constitution"
+      },
+      "title": "Constitutions",
+      "type": "array"
+    },
+    "implementations": {
+      "items": {
+        "$ref": "#/$defs/Implementation"
+      },
+      "title": "Implementations",
+      "type": "array"
+    },
+    "domains": {
+      "items": {
+        "$ref": "#/$defs/Constitution"
+      },
+      "title": "Domains",
+      "type": "array"
+    },
+    "runbooks": {
+      "items": {
+        "$ref": "#/$defs/Runbook"
+      },
+      "title": "Runbooks",
+      "type": "array"
+    },
+    "adrs": {
+      "items": {
+        "$ref": "#/$defs/ADR"
+      },
+      "title": "Adrs",
+      "type": "array"
+    },
+    "hierarchy": {
+      "description": "Conflict-resolution order from C0 §7.1 (highest authority first).",
+      "items": {
+        "examples": [
+          "C00",
+          "C01",
+          "C10"
+        ],
+        "pattern": "^C\\d{2}$",
+        "type": "string"
+      },
+      "title": "Hierarchy",
+      "type": "array"
+    },
+    "phases": {
+      "additionalProperties": {
+        "items": {
+          "examples": [
+            "C00",
+            "C01",
+            "C10"
+          ],
+          "pattern": "^C\\d{2}$",
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "description": "Mapping of phase → constitutions in that phase.",
+      "propertyNames": {
+        "$ref": "#/$defs/Phase"
+      },
+      "title": "Phases",
+      "type": "object"
+    },
+    "integrity": {
+      "$ref": "#/$defs/IntegrityReport"
+    }
+  },
+  "required": [
+    "compiled_at",
+    "checksum"
+  ],
+  "title": "Governova Compiled Constitutional Index",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://governova.dev/schema/v1.0.0/constitution.schema.json"
+}

@@ -30,15 +30,6 @@ EXPECTED_COUNTS = {
 }
 EXPECTED_TOTAL = 613
 
-# NOTE: The Phase A markdown parser currently recognises only the canonical
-# `### S{C}.{N}` + attribute-table standard format. Several constitutions also
-# define standards in table and blockquote (`> **S8.N**`) forms, so a full
-# compile under-counts against the values above. The three count/orphan tests
-# below are therefore xfail until the parser is extended to cover every format.
-# The authoritative integrity gate meanwhile remains scripts/validate-integrity.py
-# (613, all formats). Tracked as a follow-up.
-_PARSER_INCOMPLETE = "Phase A parser does not yet recognise table/blockquote standard formats; parser extension tracked as follow-up"
-
 
 @pytest.fixture(scope="module")
 def repo_root():
@@ -50,13 +41,11 @@ def index(repo_root):
     return compile_index(repo_root)
 
 
-@pytest.mark.xfail(reason=_PARSER_INCOMPLETE, strict=False)
 def test_total_standard_count_matches_register(index):
     total = sum(len(c.standards) for c in index.constitutions)
     assert total == EXPECTED_TOTAL
 
 
-@pytest.mark.xfail(reason=_PARSER_INCOMPLETE, strict=False)
 def test_per_constitution_counts_match_register(index):
     actual = {c.id: len(c.standards) for c in index.constitutions}
     assert actual == EXPECTED_COUNTS
@@ -66,7 +55,6 @@ def test_all_constitutions_present(index):
     assert {c.id for c in index.constitutions} == {e.id for e in CONSTITUTION_REGISTRY}
 
 
-@pytest.mark.xfail(reason=_PARSER_INCOMPLETE, strict=False)
 def test_no_orphan_references(index):
     issues = check_references(index)
     assert issues == [], f"orphan references found: {[i.message for i in issues]}"

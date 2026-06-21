@@ -24,8 +24,7 @@ Thumbs.db
 # Archive (keep structure but ignore old versions)
 archive/**/*.html
 !archive/.gitkeep
-# Governova engine (generated / local)
-compiled/
+# Governova engine (local caches; compiled/ IS committed as the index of record)
 __pycache__/
 *.pyc
 .pytest_cache/

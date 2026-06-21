@@ -37,6 +37,10 @@
 | `S1.99` | C1 | Branch → Issue → PR → Merge workflow order; mandatory full issue/PR metadata (type, milestone, project, labels, assignee) | Untracked, metadata-less PRs broke traceability during the v2.0 restructure | `protocols/github-workflow.md` |
 | `S1.100` | C1 | No-AI-references rule across the GitHub metadata surface (commits, PRs, branches, co-authors, filenames); human attribution only | AI co-author + AI tool names found in `main` history; credibility requirement for an AI-governance product | `protocols/github-workflow.md` §2 |
 | `S10.40` | C10 | Mode-based merge authority — solo auto-merge / team human-only review; AI never holds L4 merge authority on sensitive changes | Preserves the permanent human-only L4 boundary while enabling solo speed | `protocols/github-workflow.md` §6 |
+| `S1.101` | C1 | Characterization tests pin current behaviour before any brownfield refactor | Refactoring untested legacy code is the primary way adoption breaks a working system | `protocols/brownfield-adoption.md` §2 |
+| `S6.45` | C6 | Brownfield adoption is incremental and non-breaking — no big-bang rewrite; strangler-fig migration | Big-bang rewrites of running systems are the highest-risk failure mode in adoption | `protocols/brownfield-adoption.md` §2 |
+| `S8.83` | C8 | Every brownfield conversion step is individually reversible with a ready rollback path | Non-breaking guarantee requires per-step reversibility | `protocols/brownfield-adoption.md` §2 |
+| `S1.102` | C1 | Adoption is complete only when every applicable standard is satisfied or carries an approved exception | Prevents silent partial adoption that looks compliant but isn't | `protocols/brownfield-adoption.md` §1 |
 
 ---
 

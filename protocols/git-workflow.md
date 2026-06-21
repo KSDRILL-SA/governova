@@ -1,18 +1,18 @@
-# KSDRILL SA — Git & Branch Workflow
+﻿# KSDRILL SA â€” Git & Branch Workflow
 
 ---
 
 | Attribute        | Value                                                                 |
 |------------------|-----------------------------------------------------------------------|
-| **Document**     | Git & Branch Workflow — Studio Version Control Standard               |
+| **Document**     | Git & Branch Workflow â€” Studio Version Control Standard               |
 | **Organisation** | KSDRILL SA                                                            |
 | **Version**      | v1.0                                                                  |
 | **Status**       | LOCKED                                                                |
 | **Locked**       | 2026-05-20                                                            |
 | **Next Review**  | 2026-08-20                                                            |
-| **Applies To**   | All Systems · Both Stacks · All Projects                              |
-| **Governed By**  | C1 — Engineering Standards                                            |
-| **Paired With**  | `workflow/ksdrill-sa-ai-workflow.md` · `constitutions/C01-engineering-standards.md` |
+| **Applies To**   | All Systems Â· Both Stacks Â· All Projects                              |
+| **Governed By**  | C1 â€” Engineering Standards                                            |
+| **Paired With**  | `workflow/ksdrill-sa-ai-workflow.md` Â· `constitutions/C01-engineering-standards.md` |
 
 ---
 
@@ -20,7 +20,7 @@
 
 ---
 
-> **⚠️ Order & authority update.** The authoritative workflow order is **branch → issue → PR → merge**, the no-AI-references rule, full issue/PR metadata, and mode-based merge authority are defined in **`protocols/github-workflow.md`** — read it first. Where the step ordering below (issue-first) differs, `github-workflow.md` governs. This document remains authoritative for branch/commit *mechanics* (naming, conventional commits, protection rules).
+> **âš ï¸ Order & authority update.** The authoritative workflow order is **branch â†’ issue â†’ PR â†’ merge**, the no-AI-references rule, full issue/PR metadata, and mode-based merge authority are defined in **`protocols/github-workflow.md`** â€” read it first. Where the step ordering below (issue-first) differs, `github-workflow.md` governs. This document remains authoritative for branch/commit *mechanics* (naming, conventional commits, protection rules).
 
 ---
 
@@ -28,66 +28,66 @@
 
 | Section | Title |
 |---------|-------|
-| §1 | Repository Structure |
-| §2 | Branch Definitions |
-| §3 | Full Development Lifecycle |
-| §4 | Branch Protection Rules |
-| §5 | Naming Conventions |
-| §6 | Commit Convention |
-| §7 | Labels |
-| §8 | Repository Settings |
-| §9 | Daily Workflow Reference |
-| §10 | Golden Rules |
+| Â§1 | Repository Structure |
+| Â§2 | Branch Definitions |
+| Â§3 | Full Development Lifecycle |
+| Â§4 | Branch Protection Rules |
+| Â§5 | Naming Conventions |
+| Â§6 | Commit Convention |
+| Â§7 | Labels |
+| Â§8 | Repository Settings |
+| Â§9 | Daily Workflow Reference |
+| Â§10 | Golden Rules |
 
 ---
 
-## §1 — Repository Structure
+## Â§1 â€” Repository Structure
 
 Every KSDRILL SA repository follows this branch hierarchy:
 
 ```
 main
-└── dev
-    ├── feature/*
-    ├── fix/*
-    ├── refactor/*
-    ├── docs/*
-    └── hotfix/*
+â””â”€â”€ dev
+    â”œâ”€â”€ feature/*
+    â”œâ”€â”€ fix/*
+    â”œâ”€â”€ refactor/*
+    â”œâ”€â”€ docs/*
+    â””â”€â”€ hotfix/*
 ```
 
 This structure is non-negotiable across all four flagship systems and any future project under the studio.
 
 ---
 
-## §2 — Branch Definitions
+## Â§2 â€” Branch Definitions
 
-### `main` — Production Branch
+### `main` â€” Production Branch
 
 The single source of truth for deployed, production-ready code.
 
 | Rule | Detail |
 |------|--------|
 | Stability | Always stable. Never broken. |
-| Direct commits | ❌ Prohibited |
-| Receives from | `dev` only, via PR |
-| Protection | ✅ Protected branch |
+| Direct commits | âŒ Prohibited |
+| Receives from | `Dev` only, via PR |
+| Protection | âœ… Protected branch |
 
 ---
 
-### `dev` — Integration Branch
+### `Dev` â€” Integration Branch
 
 The staging layer between feature work and production.
 
 | Rule | Detail |
 |------|--------|
-| Purpose | Combine completed features · Integration testing |
-| Direct commits | ❌ Prohibited |
+| Purpose | Combine completed features Â· Integration testing |
+| Direct commits | âŒ Prohibited |
 | Base for | All feature branches |
-| Protection | ✅ Protected branch |
+| Protection | âœ… Protected branch |
 
 ---
 
-### Feature Branches — Isolated Development
+### Feature Branches â€” Isolated Development
 
 All active development happens in feature branches, isolated from each other.
 
@@ -101,14 +101,14 @@ feature/dashboard-ui
 Each feature branch:
 - Handles one task or feature only
 - Is linked to exactly one GitHub Issue
-- Is merged into `dev` through a PR
+- Is merged into `Dev` through a PR
 - Is deleted after merge
 
 ---
 
-## §3 — Full Development Lifecycle
+## Â§3 â€” Full Development Lifecycle
 
-### STEP 1 — Create Issues First
+### STEP 1 â€” Create Issues First
 
 Before writing a single line of code, the full system is planned in GitHub Issues.
 
@@ -131,9 +131,9 @@ Before writing a single line of code, the full system is planned in GitHub Issue
 
 ---
 
-### STEP 2 — Create Feature Branch From `dev`
+### STEP 2 â€” Create Feature Branch From `Dev`
 
-Always branch from the latest `dev`. Never from `main`.
+Always branch from the latest `Dev`. Never from `main`.
 
 ```bash
 git checkout dev
@@ -145,15 +145,15 @@ git push -u origin feature/auth-system
 
 ---
 
-### STEP 3 — Work Only In Your Feature Branch
+### STEP 3 â€” Work Only In Your Feature Branch
 
 | Rule | Enforcement |
 |------|-------------|
 | Never work in `main` | Hard rule |
-| Never work in `dev` | Hard rule |
+| Never work in `Dev` | Hard rule |
 | One branch = one responsibility | Hard rule |
 
-Commit regularly throughout development. Small, meaningful commits — not one large dump at the end.
+Commit regularly throughout development. Small, meaningful commits â€” not one large dump at the end.
 
 **Example commit sequence:**
 ```
@@ -164,7 +164,7 @@ fix: validate empty password field
 
 ---
 
-### STEP 4 — Link Work To Issues
+### STEP 4 â€” Link Work To Issues
 
 Every branch must map to an Issue. Every PR must close that Issue on merge.
 
@@ -179,11 +179,11 @@ This keeps the Issues board accurate without manual closing.
 
 ---
 
-### STEP 5 — Open Pull Request To `dev`
+### STEP 5 â€” Open Pull Request To `Dev`
 
 Flow:
 ```
-feature/auth-system → dev
+feature/auth-system â†’ dev
 ```
 
 **PR Checklist before opening:**
@@ -192,17 +192,17 @@ feature/auth-system → dev
 - [ ] Tests pass
 - [ ] No merge conflicts
 - [ ] Issue linked in PR body (`Closes #N`)
-- [ ] Branch is updated with latest `dev`
+- [ ] Branch is updated with latest `Dev`
 
 ---
 
-### STEP 6 — Review + Merge (Squash Strategy)
+### STEP 6 â€” Review + Merge (Squash Strategy)
 
 Preferred merge strategy across all repos: **Squash Merge**.
 
 | Benefit | Detail |
 |---------|--------|
-| Clean history | One PR = one commit in `dev` |
+| Clean history | One PR = one commit in `Dev` |
 | Easier rollback | Single commit to revert |
 | Readable log | `git log` tells the story, not noise |
 
@@ -215,50 +215,50 @@ Delete the feature branch after merge.
 
 ---
 
-### STEP 7 — Repeat For Every Task
+### STEP 7 â€” Repeat For Every Task
 
 ```
 Issue
-  ↓
+  â†“
 Feature Branch
-  ↓
+  â†“
 Commits
-  ↓
-PR → dev
-  ↓
+  â†“
+PR â†’ dev
+  â†“
 Review
-  ↓
+  â†“
 Squash Merge
-  ↓
+  â†“
 Delete Branch
-  ↓
+  â†“
 Repeat
 ```
 
 ---
 
-### STEP 8 — Integration Testing In `dev`
+### STEP 8 â€” Integration Testing In `Dev`
 
-Once features are merged into `dev`:
+Once features are merged into `Dev`:
 
-1. Test all features together — APIs, UI, database
+1. Test all features together â€” APIs, UI, database
 2. Identify and fix integration bugs
-3. Open fix branches off `dev` if needed:
+3. Open fix branches off `Dev` if needed:
 
 ```
-fix/integration-auth-error → dev
+fix/integration-auth-error â†’ dev
 ```
 
-Do not release to `main` until `dev` is stable and fully integrated.
+Do not release to `main` until `Dev` is stable and fully integrated.
 
 ---
 
-### STEP 9 — Release To `main`
+### STEP 9 â€” Release To `main`
 
-When a sprint or system phase is complete and `dev` is stable:
+When a sprint or system phase is complete and `Dev` is stable:
 
 ```
-dev → main
+dev â†’ main
 ```
 
 **Release Requirements:**
@@ -272,36 +272,36 @@ Merge into `main` = production is updated.
 
 ---
 
-## §4 — Branch Protection Rules
+## Â§4 â€” Branch Protection Rules
 
 ### Protecting `main`
 
-Navigate to: `Repo → Settings → Branches → Add rule for main`
+Navigate to: `Repo â†’ Settings â†’ Branches â†’ Add rule for main`
 
 | Rule | Enabled |
 |------|---------|
-| Require PR before merging | ✅ |
-| Require approvals | ✅ |
-| Require status checks to pass | ✅ |
-| Prevent force pushes | ✅ |
-| Prevent branch deletion | ✅ |
-| Restrict direct pushes | ✅ |
+| Require PR before merging | âœ… |
+| Require approvals | âœ… |
+| Require status checks to pass | âœ… |
+| Prevent force pushes | âœ… |
+| Prevent branch deletion | âœ… |
+| Restrict direct pushes | âœ… |
 
 ---
 
-### Protecting `dev`
+### Protecting `Dev`
 
-Navigate to: `Repo → Settings → Branches → Add rule for dev`
+Navigate to: `Repo â†’ Settings â†’ Branches â†’ Add rule for dev`
 
 | Rule | Enabled |
 |------|---------|
-| Require PR before merging | ✅ |
-| Restrict direct pushes | ✅ |
-| Prevent branch deletion | ✅ |
+| Require PR before merging | âœ… |
+| Restrict direct pushes | âœ… |
+| Prevent branch deletion | âœ… |
 
 ---
 
-## §5 — Naming Conventions
+## Â§5 â€” Naming Conventions
 
 | Type | Pattern | Example |
 |------|---------|---------|
@@ -314,12 +314,12 @@ Navigate to: `Repo → Settings → Branches → Add rule for dev`
 
 Rules:
 - All lowercase
-- Hyphens only — no underscores, no spaces
+- Hyphens only â€” no underscores, no spaces
 - Descriptive but concise
 
 ---
 
-## §6 — Commit Convention
+## Â§6 â€” Commit Convention
 
 Follows the [Conventional Commits](https://www.conventionalcommits.org) standard.
 
@@ -342,7 +342,7 @@ type: short imperative description (#issue-number)
 
 ---
 
-## §7 — Labels
+## Â§7 â€” Labels
 
 ### Technical Labels
 
@@ -360,10 +360,10 @@ type: short imperative description (#issue-number)
 
 | Label | Usage |
 |-------|-------|
-| `blocked` | Cannot proceed — dependency or decision needed |
+| `blocked` | Cannot proceed â€” dependency or decision needed |
 | `in-progress` | Actively being worked on |
 | `ready-for-review` | PR opened, awaiting review |
-| `urgent` | Time-sensitive — escalate |
+| `urgent` | Time-sensitive â€” escalate |
 
 ### Phase Labels
 
@@ -376,7 +376,7 @@ type: short imperative description (#issue-number)
 
 ---
 
-## §8 — Repository Settings
+## Â§8 â€” Repository Settings
 
 ### Enable
 
@@ -386,7 +386,7 @@ type: short imperative description (#issue-number)
 | Pull Requests | Code review and merge gate |
 | Branch Protection | Enforce workflow compliance |
 | Squash Merging | Clean commit history |
-| Discussions | Optional — async team communication |
+| Discussions | Optional â€” async team communication |
 
 ### Disable
 
@@ -397,7 +397,7 @@ type: short imperative description (#issue-number)
 
 ---
 
-## §9 — Daily Workflow Reference
+## Â§9 â€” Daily Workflow Reference
 
 ### Start of Session
 
@@ -432,39 +432,39 @@ git push
 ### Open PR
 
 ```
-feature/patient-module → dev
+feature/patient-module â†’ dev
 PR body: Closes #14
 ```
 
 ---
 
-## §10 — Golden Rules
+## Â§10 â€” Golden Rules
 
 ### Never
 
 | Rule |
 |------|
-| ❌ Commit directly to `main` |
-| ❌ Develop directly in `dev` |
-| ❌ Mix unrelated features in one branch |
-| ❌ Merge untested code |
-| ❌ Leave stale branches undeleted |
-| ❌ Open a PR without linking an Issue |
-| ❌ Force-push to protected branches |
+| âŒ Commit directly to `main` |
+| âŒ Develop directly in `Dev` |
+| âŒ Mix unrelated features in one branch |
+| âŒ Merge untested code |
+| âŒ Leave stale branches undeleted |
+| âŒ Open a PR without linking an Issue |
+| âŒ Force-push to protected branches |
 
 ### Always
 
 | Rule |
 |------|
-| ✅ Create Issues before branching |
-| ✅ Branch from latest `dev` |
-| ✅ Use PRs for all merges |
-| ✅ Link every PR to an Issue |
-| ✅ Squash merge into `dev` |
-| ✅ Delete branches after merge |
-| ✅ Write meaningful commit messages |
-| ✅ Test integration in `dev` before releasing to `main` |
-| ✅ Protect `main` and `dev` at repo creation |
+| âœ… Create Issues before branching |
+| âœ… Branch from latest `Dev` |
+| âœ… Use PRs for all merges |
+| âœ… Link every PR to an Issue |
+| âœ… Squash merge into `Dev` |
+| âœ… Delete branches after merge |
+| âœ… Write meaningful commit messages |
+| âœ… Test integration in `Dev` before releasing to `main` |
+| âœ… Protect `main` and `Dev` at repo creation |
 
 ---
 
@@ -472,30 +472,30 @@ PR body: Closes #14
 
 ```
 Issue
-  ↓
+  â†“
 Create feature branch from dev
-  ↓
+  â†“
 Commits (conventional format)
-  ↓
+  â†“
 Sync with latest dev
-  ↓
-PR → dev (Closes #N)
-  ↓
+  â†“
+PR â†’ dev (Closes #N)
+  â†“
 Review + Status checks
-  ↓
+  â†“
 Squash Merge
-  ↓
-Delete branch · Issue auto-closes
-  ↓
+  â†“
+Delete branch Â· Issue auto-closes
+  â†“
 Repeat for next Issue
-  ↓
+  â†“
 Integration testing in dev
-  ↓
-PR dev → main
-  ↓
+  â†“
+PR dev â†’ main
+  â†“
 Production Release
 ```
 
 ---
 
-*This document is a permanent standard under KSDRILL SA. All engineers — human and AI — follow this workflow on every project without exception.*
+*This document is a permanent standard under KSDRILL SA. All engineers â€” human and AI â€” follow this workflow on every project without exception.*

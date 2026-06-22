@@ -345,6 +345,25 @@ def report(
         console.print(f"[dim]written to {out_file}[/]")
 
 
+@app.command()
+def dashboard(
+    out_file: Annotated[
+        Path | None, typer.Option("--out", help="Write the dashboard HTML to a file.")
+    ] = None,
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Generate a self-contained governance dashboard (HTML).
+
+    One standalone page — Governova Score, enforcement coverage, and red/amber/green
+    per constitutional area. No server, no external assets.
+    """
+    from governova_dashboard import build_html
+
+    out = out_file or (_root(repo_root) / "dashboard.html")
+    out.write_text(build_html(_root(repo_root)), encoding="utf-8")
+    console.print(f"[green]dashboard written to {out}[/]")
+
+
 @app.command(name="semantic-review")
 def semantic_review(
     paths: Annotated[list[Path], typer.Argument(help="Source files to review.")],

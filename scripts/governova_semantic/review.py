@@ -17,7 +17,7 @@ from governova_compile.discovery import resolve_repo_root
 from governova_compile.schema import CompiledIndex
 from governova_compile.writer import load_index
 
-from governova_semantic.client import SemanticUnavailable, Transport, urllib_transport
+from governova_semantic.client import SemanticUnavailableError, Transport, urllib_transport
 from governova_semantic.config import SemanticConfig, from_env
 
 _WORD = re.compile(r"[a-z]{4,}")
@@ -113,7 +113,7 @@ def review(
     send = transport or urllib_transport
     try:
         content = send(cfg, messages)
-    except SemanticUnavailable:
+    except SemanticUnavailableError:
         return []  # degrade gracefully — the reliable tier is unaffected
     allowed = {s.id.upper() for s in grounded}
     return parse_findings(content, allowed)

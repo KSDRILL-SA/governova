@@ -85,8 +85,8 @@ def to_markdown(v: GuardianVerdict) -> str:
         "",
         headline,
         "",
-        f"| | |",
-        f"|--|--|",
+        "| | |",
+        "|--|--|",
         f"| **Governova Score** | {v.score.score}/100 ({v.score.grade}) |",
         f"| **This PR** | {len(v.blocking)} blocking · {len(v.advisory)} advisory · "
         f"{v.files_scanned} file(s) scanned |",

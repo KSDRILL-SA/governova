@@ -11,10 +11,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from governova_checks.rules import RULES, covered_anti_patterns
 from governova_compile.discovery import resolve_repo_root
 from governova_compile.schema import CompiledIndex
 from governova_compile.writer import load_index
+
+from governova_checks.rules import RULES, covered_anti_patterns
 
 
 def _load_index(index: CompiledIndex | None) -> CompiledIndex:

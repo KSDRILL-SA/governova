@@ -7,7 +7,7 @@ can read. Inactive without configuration; advisory and best-effort.
 
 from __future__ import annotations
 
-from governova_semantic.client import SemanticUnavailable, Transport, urllib_transport
+from governova_semantic.client import SemanticUnavailableError, Transport, urllib_transport
 from governova_semantic.config import SemanticConfig, from_env
 
 _MAX_CHARS = 6000  # keep prompts bounded; the head of a file is enough to summarise it
@@ -37,6 +37,6 @@ def describe_code(
     send = transport or urllib_transport
     try:
         content = send(cfg, messages)
-    except SemanticUnavailable:
+    except SemanticUnavailableError:
         return ""
     return " ".join(content.split()).strip()

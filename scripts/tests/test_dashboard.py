@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from governova_dashboard import build_html, to_html
-from governova_report.model import AreaStatus, BoardReport, GovernanceEvents, GREEN, RED
+from governova_report.model import GREEN, RED, AreaStatus, BoardReport, GovernanceEvents
 from governova_score.model import Factor, finalize
 
 

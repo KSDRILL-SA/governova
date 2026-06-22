@@ -13,10 +13,11 @@ Examples:
 
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 import subprocess
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import Annotated
 
@@ -36,12 +37,12 @@ app = typer.Typer(
     help="Governova — constitutional enforcement for CI/CD (the merge gate).",
 )
 
-class Mode(str, Enum):
+class Mode(StrEnum):
     block = "block"
     advisory = "advisory"
 
 
-class Fmt(str, Enum):
+class Fmt(StrEnum):
     github = "github"
     text = "text"
     json = "json"
@@ -123,10 +124,8 @@ def _emit(findings: list[Finding], fmt: Fmt, mode: Mode, root: Path) -> None:
             lines.append(
                 f"- {kind} `{f.file}:{f.line}` **{f.anti_pattern}** ({f.standard}) — {f.message}"
             )
-        try:
+        with contextlib.suppress(OSError):
             Path(summary_path).write_text("\n".join(lines) + "\n", encoding="utf-8")
-        except OSError:
-            pass
 
 
 def _run_semantic(scannable: list[Path], fmt: Fmt, root: Path) -> int:

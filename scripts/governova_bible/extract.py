@@ -45,9 +45,8 @@ def _extract_python(text: str) -> tuple[str, list[str], list[str]]:
     public: list[str] = []
     deps: set[str] = set()
     for node in tree.body:
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-            if not node.name.startswith("_"):
-                public.append(node.name)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and not node.name.startswith("_"):
+            public.append(node.name)
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for a in node.names:

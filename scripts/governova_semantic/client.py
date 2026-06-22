@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 import urllib.error
 import urllib.request
-from typing import Callable
+from collections.abc import Callable
 
 from governova_semantic.config import SemanticConfig
 
@@ -18,7 +18,7 @@ from governova_semantic.config import SemanticConfig
 Transport = Callable[[SemanticConfig, list[dict[str, str]]], str]
 
 
-class SemanticUnavailable(RuntimeError):
+class SemanticUnavailableError(RuntimeError):
     """Raised when the endpoint cannot be reached or returns an unusable response."""
 
 
@@ -45,8 +45,8 @@ def urllib_transport(config: SemanticConfig, messages: list[dict[str, str]]) -> 
         with urllib.request.urlopen(request, timeout=config.timeout) as resp:
             body = json.loads(resp.read().decode("utf-8"))
     except (urllib.error.URLError, OSError, ValueError) as exc:
-        raise SemanticUnavailable(f"semantic endpoint unreachable: {exc}") from exc
+        raise SemanticUnavailableError(f"semantic endpoint unreachable: {exc}") from exc
     try:
         return body["choices"][0]["message"]["content"]
     except (KeyError, IndexError, TypeError) as exc:
-        raise SemanticUnavailable("unexpected response shape from semantic endpoint") from exc
+        raise SemanticUnavailableError("unexpected response shape from semantic endpoint") from exc

@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import fnmatch
 import subprocess
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator
 
 from governova_checks.rules import TEXT_EXTENSIONS
 

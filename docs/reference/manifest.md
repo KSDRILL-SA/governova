@@ -12,7 +12,7 @@
 - **Cluster navigation**: files that belong together are grouped in the [File Clusters](#file-clusters) section — read all files in a cluster before moving to the next
 - **Full repo scan**: use the [Complete File Index](#complete-file-index) — every file, one line
 
-The repository follows the Governova four-layer architecture (Framework · Core · Implementation · Domains). Full vision: `GOVERNOVA-MASTER.md`.
+The repository follows the Governova four-layer architecture (Framework · Core · Implementation · Domains). Full vision: `docs/vision/master.md`.
 
 ---
 
@@ -20,8 +20,8 @@ The repository follows the Governova four-layer architecture (Framework · Core 
 
 | Step | File | When to Stop Here |
 |------|------|-------------------|
-| **1** | `AI-INSTRUCTIONS.md` | Every session. No exception. Read this first. |
-| **2** | `GOVERNOVA-MASTER.md` | First onboarding, or when platform context is needed |
+| **1** | `docs/guides/ai-instructions.md` | Every session. No exception. Read this first. |
+| **2** | `docs/vision/master.md` | First onboarding, or when platform context is needed |
 | **3** | `reference-systems/{system}/context.md` | Before any build session on a specific system |
 | **4** | `protocols/relay-protocol.md` | When confirming relay position or handoff protocol |
 | **5** | `constitution/indexes/quick-reference.md` | When navigating a specific concern (auth, database, deploy) |
@@ -43,9 +43,9 @@ Clusters group every file that belongs together. Read the whole cluster before s
 
 | File | Purpose |
 |------|---------|
-| `AI-INSTRUCTIONS.md` | AI roles, permission levels, session startup protocol, navigation, citation format |
-| `MANIFEST.md` | This file. Complete repo map. |
-| `GOVERNOVA-MASTER.md` | Platform vision and source of truth (companions: `GOVERNOVA-PRODUCT.md`, `GOVERNOVA-STRATEGY.md`) |
+| `docs/guides/ai-instructions.md` | AI roles, permission levels, session startup protocol, navigation, citation format |
+| `docs/reference/manifest.md` | This file. Complete repo map. |
+| `docs/vision/master.md` | Platform vision and source of truth (companions: `docs/vision/product.md`, `docs/vision/strategy.md`) |
 
 ---
 
@@ -225,16 +225,16 @@ Clusters group every file that belongs together. Read the whole cluster before s
 ## Reading Clusters — Visual Map
 
 ```
-AI-INSTRUCTIONS.md  ←─── ALWAYS FIRST
+docs/guides/ai-instructions.md  ←─── ALWAYS FIRST
        │
        â–¼
-GOVERNOVA-MASTER.md  ←─── platform context
+docs/vision/master.md  ←─── platform context
        │
        â–¼
 reference-systems/{system}/context.md  ←─── BEFORE EVERY BUILD SESSION
        │
        â–¼
-MANIFEST.md (this file)  ←─── orientation, then follow clusters
+docs/reference/manifest.md (this file)  ←─── orientation, then follow clusters
        │
        ├── CLUSTER 1: framework/  (Layer 1 primitives)
        ├── CLUSTER 2: constitution/C00-constitutional-order.md

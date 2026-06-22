@@ -718,8 +718,11 @@ Every standard change is logged in `governance/changelog/amendments-log.md` with
 
 ```
 governova/
-├── README.md · GOVERNOVA-MASTER.md · MANIFEST.md · CHANGELOG.md
-├── CONTRIBUTING.md · QUICKSTART.md · LICENSE
+├── README.md · CONTRIBUTING.md · CODE_OF_CONDUCT.md · SECURITY.md · LICENSE
+├── docs/                               # all documentation
+│   ├── vision/                         # master · product · strategy
+│   ├── guides/                         # quickstart · ai-instructions
+│   └── reference/                      # manifest (navigation map)
 │
 ├── framework/                          # LAYER 1 — universal primitives
 │   ├── format-specification.md · phase-model.md · severity-model.md

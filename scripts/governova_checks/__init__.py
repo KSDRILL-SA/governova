@@ -12,6 +12,12 @@ from governova_checks.coverage import (
     index_anti_patterns,
     validate_rules,
 )
+from governova_checks.gather import (
+    DEFAULT_IGNORES,
+    SKIP_DIRS,
+    is_ignored,
+    iter_source_files,
+)
 from governova_checks.rules import (
     RULES,
     TEXT_EXTENSIONS,
@@ -39,4 +45,8 @@ __all__ = [
     "enforcement_coverage",
     "index_anti_patterns",
     "validate_rules",
+    "DEFAULT_IGNORES",
+    "SKIP_DIRS",
+    "is_ignored",
+    "iter_source_files",
 ]

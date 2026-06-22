@@ -44,4 +44,5 @@ packages = [
     "governova_codegen",
     "governova_checks",
     "governova_enforce",
+    "governova_score",
 ]

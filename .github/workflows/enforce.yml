@@ -23,3 +23,9 @@ jobs:
         with:
           mode: block
           base: ${{ github.event.pull_request.base.sha }}
+
+      # Non-blocking report: the headline Governova Score, posted to the job summary.
+      - name: Governova Score (report)
+        if: always()
+        shell: bash
+        run: uv run governova govscore --format markdown

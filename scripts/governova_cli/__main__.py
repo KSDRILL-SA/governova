@@ -261,5 +261,53 @@ def coverage(
         console.print(f"[dim]covered: {', '.join(cov['covered'])}[/]")
 
 
+@app.command()
+def govscore(
+    output: Annotated[
+        str, typer.Option("--format", help="text | markdown | json | badge")
+    ] = "text",
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Compute the project Governova Score (0-100) — the headline governance metric.
+
+    The weighted model from master.md §18.1, scored over the factors assessable from
+    the repo (renormalised), with a transparent per-factor breakdown. In markdown
+    mode, also appended to the GitHub job summary when running in CI.
+    """
+    import os
+
+    from governova_score import compute_score, to_badge, to_json, to_markdown, to_text
+
+    gs = compute_score(_root(repo_root))
+    fmt = output.lower()
+    if fmt == "json":
+        console.print_json(to_json(gs))
+        return
+    if fmt == "badge":
+        console.print(to_badge(gs))
+        return
+    if fmt == "markdown":
+        md = to_markdown(gs)
+        console.print(md)
+        summary = os.environ.get("GITHUB_STEP_SUMMARY")
+        if summary:
+            try:
+                with open(summary, "a", encoding="utf-8") as fh:
+                    fh.write(md + "\n")
+            except OSError:
+                pass
+        return
+
+    colour = "green" if gs.score >= 85 else "yellow" if gs.score >= 70 else "red"
+    t = Table.grid(padding=(0, 2))
+    for f in gs.factors:
+        val = f"{f.score:.0f}/100" if f.assessed else "[dim]not assessed[/]"
+        t.add_row(f"{f.title} ({f.weight}%):", f"{val}  [dim]{f.detail}[/]")
+    console.print(t)
+    console.print(f"\n[bold {colour}]Governova Score: {gs.score}/100  [{gs.grade}][/]")
+    if gs.certified_eligible:
+        console.print("[bold green]✓ Governova Certified eligible (≥85)[/]")
+
+
 if __name__ == "__main__":
     app()

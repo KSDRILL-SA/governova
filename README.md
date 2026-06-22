@@ -3,6 +3,7 @@
 > *"AI can build anything. It is us who must tell it exactly what to build,
 > how to build it, what not to build, and who approves every decision."*
 
+[![Governova Score](https://img.shields.io/badge/Governova_Score-100%2F100_(A%2B)-brightgreen)](docs/vision/master.md)
 [![Status](https://img.shields.io/badge/Status-LOCKED-red)](docs/vision/master.md)
 [![Version](https://img.shields.io/badge/Version-v2.0-blue)](docs/vision/master.md)
 [![Constitutions](https://img.shields.io/badge/Constitutions-11-purple)](constitution/core/)

@@ -13,7 +13,6 @@ Examples:
 
 from __future__ import annotations
 
-import fnmatch
 import json
 import os
 import subprocess
@@ -22,7 +21,7 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
-from governova_checks import Finding, scan_paths
+from governova_checks import DEFAULT_IGNORES, Finding, is_ignored, scan_paths
 from governova_compile.discovery import resolve_repo_root
 from rich.console import Console
 
@@ -33,22 +32,6 @@ app = typer.Typer(
     add_completion=False,
     help="Governova — constitutional enforcement for CI/CD (the merge gate).",
 )
-
-# Never gate on test code, fixtures, vendored deps, or the rule set itself —
-# those legitimately *contain* violation patterns as examples.
-DEFAULT_IGNORES: tuple[str, ...] = (
-    "*/tests/*",
-    "tests/*",
-    "*/test_*",
-    "test_*",
-    "*_test.*",
-    "*/__pycache__/*",
-    "*/node_modules/*",
-    "*/dist/*",
-    "*/build/*",
-    "scripts/governova_checks/rules.py",
-)
-
 
 class Mode(str, Enum):
     block = "block"
@@ -84,10 +67,6 @@ def _changed_files(base: str, root: Path) -> list[Path]:
         err_console.print(f"[bold red]error:[/] could not compute changed files vs '{base}': {exc}")
         raise typer.Exit(code=2) from exc
     return [root / line.strip() for line in out.splitlines() if line.strip()]
-
-
-def _is_ignored(rel: str, ignores: tuple[str, ...]) -> bool:
-    return any(fnmatch.fnmatch(rel, pat) for pat in ignores)
 
 
 def _level(finding: Finding, mode: Mode) -> str:
@@ -202,7 +181,7 @@ def main(
             rel = c.resolve().relative_to(root.resolve()).as_posix()
         except ValueError:
             rel = c.as_posix()
-        if not _is_ignored(rel, ignores):
+        if not is_ignored(rel, ignores):
             scannable.append(c)
 
     findings = scan_paths(scannable)

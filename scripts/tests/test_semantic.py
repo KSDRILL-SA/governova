@@ -68,12 +68,12 @@ def test_review_with_mock_transport_keeps_only_grounded():
 
 
 def test_review_degrades_on_transport_error():
-    from governova_semantic.client import SemanticUnavailable
+    from governova_semantic.client import SemanticUnavailableError
 
     std = next(s for c in INDEX.constitutions for s in c.standards)
 
     def boom(cfg, messages):
-        raise SemanticUnavailable("down")
+        raise SemanticUnavailableError("down")
 
     assert review("code", standards=[std], index=INDEX, config=ACTIVE, transport=boom) == []
 

@@ -22,9 +22,9 @@ Exit codes:
   2 — Script error
 """
 
+import argparse
 import re
 import sys
-import argparse
 from pathlib import Path
 
 STD = re.compile(r'\bS(\d+)\.(\d+)\b')
@@ -63,7 +63,6 @@ def extract_defined() -> set:
 
 def extract_references() -> dict:
     refs = {}
-    known = set()  # constitutions that actually define standards
     for scan in SCAN_DIRS:
         base = Path(scan)
         if not base.exists():

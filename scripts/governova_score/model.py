@@ -92,10 +92,11 @@ def finalize(factors: list[Factor]) -> GovernovaScore:
     """Weighted average over assessed factors, with weights renormalised."""
     assessed = [f for f in factors if f.assessed]
     total_weight = sum(f.weight for f in assessed)
-    if total_weight == 0:
-        score = 0
-    else:
-        score = round(sum(f.contribution for f in assessed) / total_weight)
+    score = (
+        0
+        if total_weight == 0
+        else round(sum(f.contribution for f in assessed) / total_weight)
+    )
     return GovernovaScore(
         score=score,
         grade=grade_for(score),

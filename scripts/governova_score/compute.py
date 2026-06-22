@@ -54,7 +54,7 @@ def _amendment_discipline(root: Path) -> Factor:
         bits.append("amendments log ✓")
     else:
         bits.append("amendments log ✗")
-    adrs = [p for p in decisions.glob("ADR-*.md")] if decisions.is_dir() else []
+    adrs = list(decisions.glob("ADR-*.md")) if decisions.is_dir() else []
     if adrs:
         points += 50
         bits.append(f"{len(adrs)} ADR(s)")

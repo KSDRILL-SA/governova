@@ -24,6 +24,9 @@ jobs:
       - name: Sync workspace
         run: uv sync --all-packages --all-extras
 
+      - name: Lint (ruff)
+        run: uv run ruff check scripts/
+
       # The engine is the authoritative integrity gate — it parses all 613
       # standards into the compiled index and validates them structurally.
 

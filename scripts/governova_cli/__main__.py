@@ -167,7 +167,7 @@ def validate(
 
 
 @app.command()
-def compile(  # noqa: A001 — the CLI verb is intentionally "compile"
+def compile(
     check: Annotated[bool, typer.Option("--check", help="Fail if the committed index is stale.")] = False,
     repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
 ) -> None:
@@ -276,7 +276,7 @@ def govscore(
     """
     import os
 
-    from governova_score import compute_score, to_badge, to_json, to_markdown, to_text
+    from governova_score import compute_score, to_badge, to_json, to_markdown
 
     gs = compute_score(_root(repo_root))
     fmt = output.lower()

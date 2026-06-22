@@ -11,9 +11,9 @@ import json
 import os
 import urllib.error
 import urllib.request
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
 
 ENV_WEBHOOK_URL = "GOVERNOVA_WEBHOOK_URL"
 ENV_TIMEOUT = "GOVERNOVA_WEBHOOK_TIMEOUT"

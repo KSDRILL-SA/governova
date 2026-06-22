@@ -20,9 +20,10 @@ Two governance properties make this a rule *engine*, not a pile of regexes:
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Literal
+from typing import Any, Literal
 
 Confidence = Literal["high", "medium"]
 

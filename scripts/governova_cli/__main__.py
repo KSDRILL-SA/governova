@@ -367,6 +367,32 @@ def notify(
 
 
 @app.command()
+def handoff(
+    stage: Annotated[str, typer.Argument(help="Build stage: foundation|database|auth|backend|frontend|quality|product")],
+    out_file: Annotated[Path | None, typer.Option("--out", help="Write the handoff to a file.")] = None,
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Generate an engineer handoff brief for a build stage (protocols/build-lifecycle.md).
+
+    Grounded in the compiled index: what to build, why (governing standards), what it
+    depends on, and what not to touch. Editable; the engineer's single source of guidance.
+    """
+    from governova_handoff import build_handoff, to_markdown
+    from governova_handoff import stages as _stages
+
+    try:
+        h = build_handoff(stage, _root(repo_root))
+    except KeyError:
+        console.print(f"[bold red]error:[/] unknown stage '{stage}'. Known: {', '.join(_stages())}")
+        raise typer.Exit(code=1) from None
+    md = to_markdown(h)
+    console.print(md)
+    if out_file:
+        out_file.write_text(md + "\n", encoding="utf-8")
+        console.print(f"[dim]written to {out_file}[/]")
+
+
+@app.command()
 def guard(
     base: Annotated[str, typer.Option("--base", help="Git ref to diff against.")] = "origin/main",
     repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,

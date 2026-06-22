@@ -51,6 +51,7 @@ packages = [
     "governova_dashboard",
     "governova_guardian",
     "governova_notify",
+    "governova_handoff",
 ]
 
 [tool.mypy]
@@ -71,4 +72,5 @@ files = [
     "governova_validate",
     "governova_mcp",
     "governova_codegen",
+    "governova_handoff",
 ]

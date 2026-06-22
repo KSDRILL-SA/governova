@@ -8,7 +8,8 @@ from governova_enforce.__main__ import app
 
 runner = CliRunner()
 
-VIOLATION = "localStorage.setItem('access_token', t);\n"
+VIOLATION = "localStorage.setItem('access_token', t);\n"  # AP-S3.14a, high → blocks
+MEDIUM_ONLY = "db.query(`SELECT * FROM users WHERE id = ${userId}`)\n"  # AP-S2.28f, medium
 CLEAN = "const sum = a + b;\n"
 
 
@@ -58,3 +59,12 @@ def test_explicit_ignore_glob(tmp_path):
     f = _write(tmp_path, "bad.ts", VIOLATION)
     result = runner.invoke(app, [f, "--no-default-ignore", "--ignore", "*bad.ts"])
     assert result.exit_code == 0
+
+
+def test_medium_confidence_does_not_block(tmp_path):
+    # A medium-confidence finding is reported but never fails the build.
+    f = _write(tmp_path, "query.ts", MEDIUM_ONLY)
+    result = runner.invoke(app, [f, "--no-default-ignore", "--mode", "block"])
+    assert result.exit_code == 0
+    assert "AP-S2.28f" in result.stdout
+    assert "advisory" in result.stdout

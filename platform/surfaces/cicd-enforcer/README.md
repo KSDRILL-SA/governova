@@ -21,6 +21,17 @@ It reuses the engine's **reliable-tier** detection core (`governova_checks`) —
 exact same deterministic rules the MCP server exposes advisorily. One rule set,
 shown as advice at the IDE/MCP surfaces and **enforced** here. No duplicated logic.
 
+### A governed rule engine, not a pile of regexes
+
+- **Index-bound** — every rule references a real anti-pattern (`AP-S{C}.{N}{x}`)
+  that exists in the compiled constitution. A test guarantees the rule set cannot
+  drift from the law it enforces.
+- **Tiered confidence** — each rule is `high` or `medium`. **High-confidence rules
+  block** the build; **medium-confidence rules warn**, even in block mode. The gate
+  hard-fails only on near-certain violations, so it stays trustworthy.
+- **Measurable** — `governova coverage` reports Enforcement Coverage: how many of
+  the constitution's anti-patterns are mechanically enforceable, and how that grows.
+
 ## Use it (GitHub Actions)
 
 ```yaml

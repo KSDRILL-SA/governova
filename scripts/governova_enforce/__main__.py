@@ -90,8 +90,15 @@ def _is_ignored(rel: str, ignores: tuple[str, ...]) -> bool:
     return any(fnmatch.fnmatch(rel, pat) for pat in ignores)
 
 
+def _level(finding: Finding, mode: Mode) -> str:
+    """error => fails the build; warning => informational. High-confidence rules
+    fail only in block mode; medium-confidence rules always warn."""
+    if mode is Mode.block and finding.blocking:
+        return "error"
+    return "warning"
+
+
 def _emit(findings: list[Finding], fmt: Fmt, mode: Mode, root: Path) -> None:
-    level = "error" if mode is Mode.block else "warning"
     if fmt is Fmt.json:
         console.print_json(
             json.dumps(
@@ -104,6 +111,8 @@ def _emit(findings: list[Finding], fmt: Fmt, mode: Mode, root: Path) -> None:
                         "standard": f.standard,
                         "message": f.message,
                         "match": f.match,
+                        "confidence": f.confidence,
+                        "blocking": f.blocking and mode is Mode.block,
                     }
                     for f in findings
                 ]
@@ -113,24 +122,33 @@ def _emit(findings: list[Finding], fmt: Fmt, mode: Mode, root: Path) -> None:
 
     for f in findings:
         loc = f.file or "?"
+        level = _level(f, mode)
         if fmt is Fmt.github:
             # GitHub Actions annotation — renders inline on the PR diff.
             msg = f"{f.anti_pattern} ({f.standard}) — {f.message}"
             print(f"::{level} file={loc},line={f.line},col={f.col}::{msg}")
         else:
-            colour = "red" if mode is Mode.block else "yellow"
+            colour = "red" if level == "error" else "yellow"
+            tag = "block" if level == "error" else "warn"
             console.print(
-                f"  [{colour}]{f.anti_pattern}[/] [dim]({f.standard})[/] "
+                f"  [{colour}]{tag}[/] [bold]{f.anti_pattern}[/] [dim]({f.standard})[/] "
                 f"{loc}:{f.line}:{f.col} — {f.message}"
             )
 
     # A human summary also lands in the GitHub job summary, when present.
     summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary_path:
-        verb = "blocked" if mode is Mode.block else "flagged"
-        lines = [f"### Governova enforcement — {len(findings)} violation(s) {verb}", ""]
+        blocking = sum(1 for f in findings if _level(f, mode) == "error")
+        lines = [
+            f"### Governova enforcement — {blocking} blocking, "
+            f"{len(findings) - blocking} advisory",
+            "",
+        ]
         for f in findings:
-            lines.append(f"- `{f.file}:{f.line}` **{f.anti_pattern}** ({f.standard}) — {f.message}")
+            kind = "**BLOCK**" if _level(f, mode) == "error" else "warn"
+            lines.append(
+                f"- {kind} `{f.file}:{f.line}` **{f.anti_pattern}** ({f.standard}) — {f.message}"
+            )
         try:
             Path(summary_path).write_text("\n".join(lines) + "\n", encoding="utf-8")
         except OSError:
@@ -188,6 +206,7 @@ def main(
             scannable.append(c)
 
     findings = scan_paths(scannable)
+    blocking = [f for f in findings if mode is Mode.block and f.blocking]
 
     if not findings:
         if fmt is not Fmt.github:
@@ -198,14 +217,20 @@ def main(
         return
 
     if fmt is not Fmt.github:
-        verb = "block" if mode is Mode.block else "advisory"
-        console.print(f"[bold]{len(findings)} violation(s) found[/] [dim](mode: {verb})[/]")
+        console.print(
+            f"[bold]{len(findings)} finding(s)[/] "
+            f"[dim]({len(blocking)} blocking, {len(findings) - len(blocking)} advisory)[/]"
+        )
     _emit(findings, fmt, mode, root)
 
-    if mode is Mode.block:
+    # Block mode fails only on high-confidence (blocking) findings; medium-confidence
+    # findings are advisory and never fail the build.
+    if blocking:
         if fmt is not Fmt.github:
-            console.print("[bold red]constitutional enforcement FAILED[/]")
+            console.print(f"[bold red]constitutional enforcement FAILED[/] ({len(blocking)} blocking)")
         raise typer.Exit(code=1)
+    if fmt is not Fmt.github:
+        console.print("[bold green]✓[/] no blocking violations")
 
 
 if __name__ == "__main__":

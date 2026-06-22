@@ -1,15 +1,20 @@
 """Reliable-tier (deterministic) constitutional violation detection.
 
-This is the single source of truth for code-level checks. It is pure — it depends
-only on the standard library — so every surface can consume it without pulling in
-that surface's dependencies:
+The single source of truth for code-level checks. Pure — depends only on the
+standard library — so every surface consumes it without that surface's deps:
 
-- the MCP server exposes these findings *advisorily* (a "review this" signal),
+- the MCP server exposes these findings *advisorily*,
 - the CI/CD enforcer turns them into a *merge gate*.
 
-Reliable tier means deterministic and explainable: every finding names the exact
-anti-pattern and standard it violates. The semantic/LLM tier is a separate, later
-layer of the same enforcer surface — it never silently changes these results.
+Two governance properties make this a rule *engine*, not a pile of regexes:
+
+* **Index-bound** — every rule references a real anti-pattern (AP-S{C}.{N}{x}).
+  `governova_checks.coverage` validates this against the compiled index, so the
+  rule set cannot drift from the constitution.
+* **Tiered** — each rule has a confidence. HIGH-confidence rules *block* a build;
+  MEDIUM-confidence rules only *warn*, even in block mode. The gate hard-fails
+  only on near-certain violations, so it stays trustworthy. Confidence governs
+  blocking, never detection. The semantic/LLM tier is a separate, later layer.
 """
 
 from __future__ import annotations
@@ -17,17 +22,23 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Literal
+
+Confidence = Literal["high", "medium"]
 
 
 @dataclass(frozen=True)
 class Rule:
-    """One deterministic check: a regex that, when it matches a line, is a violation."""
+    """One deterministic check. A regex match on a line is a violation.
+
+    `confidence`: high rules block the build; medium rules warn even in block mode.
+    """
 
     anti_pattern: str
     standard: str
     pattern: re.Pattern[str]
     message: str
+    confidence: Confidence = "high"
 
 
 @dataclass(frozen=True)
@@ -40,16 +51,24 @@ class Finding:
     match: str
     line: int
     col: int
+    confidence: Confidence = "high"
     file: str | None = None
     tier: str = "reliable"
     advisory: bool = True
 
+    @property
+    def blocking(self) -> bool:
+        """Whether this finding fails a build in block mode (high confidence only)."""
+        return self.confidence == "high"
+
 
 # ── The rule set ─────────────────────────────────────────────────────────────
-# Language-agnostic line patterns. Kept deliberately conservative (low false
-# positive) because a blocking gate must be trustworthy.
+# Language-agnostic line patterns, each bound to a real anti-pattern in the
+# constitution. Kept conservative (low false positive) — a blocking gate must be
+# trustworthy, so anything FP-prone is tier "medium" (warns, never blocks).
 
 RULES: list[Rule] = [
+    # ── HIGH confidence — specific signatures, near-zero false positive ──
     Rule(
         "AP-S3.14a",
         "S3.14",
@@ -58,6 +77,7 @@ RULES: list[Rule] = [
             re.I,
         ),
         "Auth token stored in web storage. S3.14: access token in memory, refresh in an HttpOnly cookie.",
+        "high",
     ),
     Rule(
         "AP-S2.17a",
@@ -67,6 +87,14 @@ RULES: list[Rule] = [
             re.I,
         ),
         "Wildcard CORS origin. S2.17: explicit allowed origins per environment, never '*' in production.",
+        "high",
+    ),
+    Rule(
+        "AP-S3.29a",
+        "S3.29",
+        re.compile(r"allow_origins\s*=\s*\[\s*['\"]\*['\"]", re.I),
+        "Wildcard CORS in FastAPI/ASGI middleware. S3.29: never allow_origins=['*'] in production.",
+        "high",
     ),
     Rule(
         "AP-S2.34a",
@@ -76,6 +104,7 @@ RULES: list[Rule] = [
             re.I,
         ),
         "Monetary value as float/double. S2.34: money uses BigDecimal/Decimal.",
+        "high",
     ),
     Rule(
         "AP-S2.18a",
@@ -84,22 +113,86 @@ RULES: list[Rule] = [
             r"\b(?:res\.(?:send|json)|return)\b[^;\n]*\b(?:e|err|error|ex)\.(?:stack|message|getMessage\(\))",
         ),
         "Internal error detail returned to the client. S2.18: never expose stack traces or internal messages.",
+        "high",
+    ),
+    # ── MEDIUM confidence — strong signal, but context-dependent: warn only ──
+    Rule(
+        "AP-S2.28f",
+        "S2.28",
+        re.compile(
+            r"(?:`|f['\"])[^`'\"]*\b(?:SELECT|INSERT|UPDATE|DELETE)\b[^`'\"]*(?:\$\{|\{[a-z_])",
+            re.I,
+        ),
+        "SQL built by string interpolation (injection risk). S2.28: parameterise every query.",
+        "medium",
+    ),
+    Rule(
+        "AP-S2.10c",
+        "S2.10",
+        re.compile(
+            r"(?:api[_-]?key|secret|passwd|password|access[_-]?key|private[_-]?key)\s*[:=]\s*['\"][^'\"\s$]{12,}['\"]",
+            re.I,
+        ),
+        "Possible hardcoded secret. S2.10: secrets come from configuration, never committed to source.",
+        "medium",
+    ),
+    Rule(
+        "AP-S2.54b",
+        "S2.54",
+        re.compile(
+            r"(?:createHash\s*\(\s*['\"](?:md5|sha1|sha256)|MessageDigest\.getInstance\s*\(\s*['\"](?:MD5|SHA-?1|SHA-?256))",
+            re.I,
+        ),
+        "Weak hash (MD5/SHA). S2.54: passwords use a slow KDF (bcrypt/argon2), not a fast cryptographic hash.",
+        "medium",
+    ),
+    Rule(
+        "AP-S2.52a",
+        "S2.52",
+        re.compile(
+            r"console\.(?:log|info|debug|warn|error)\s*\([^)]*\b(?:req\.headers|request\.headers|authorization|password)\b",
+            re.I,
+        ),
+        "Logging request headers / credentials. S2.52: never log secrets or the Authorization header.",
+        "medium",
+    ),
+    Rule(
+        "AP-S2.16b",
+        "S2.16",
+        re.compile(
+            r"\b(?:res\.(?:send|json)|return)\b[^;\n]*\b(?:passwordHash|password_hash|refreshToken|refresh_token)\b",
+            re.I,
+        ),
+        "Secret field in an API response. S2.16: never serialise passwordHash/refreshToken to the client.",
+        "medium",
+    ),
+    Rule(
+        "AP-S4.19a",
+        "S4.19",
+        re.compile(r":focus\b[^{}]*\{[^}]*outline\s*:\s*(?:none|0)\b", re.I),
+        "Focus outline removed. S4.19: keep a visible keyboard focus indicator (accessibility).",
+        "medium",
     ),
 ]
 
 
 # ── Scanning ─────────────────────────────────────────────────────────────────
 
-# Source extensions worth scanning. Detection patterns are language-agnostic, but
-# limiting to source files avoids wasting effort on data/binaries.
+# Source extensions worth scanning. Patterns are language-agnostic, but limiting
+# to source files avoids wasting effort on data/binaries.
 TEXT_EXTENSIONS: frozenset[str] = frozenset(
     {
         ".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".vue", ".svelte", ".astro",
         ".java", ".kt", ".kts", ".scala", ".groovy",
         ".py", ".rb", ".php", ".go", ".rs", ".cs", ".swift", ".m", ".mm",
-        ".c", ".cc", ".cpp", ".h", ".hpp", ".dart", ".ex", ".exs",
+        ".c", ".cc", ".cpp", ".h", ".hpp", ".dart", ".ex", ".exs", ".css", ".scss",
     }
 )
+
+
+def covered_anti_patterns() -> set[str]:
+    """The set of anti-pattern ids the rule set can detect."""
+    return {r.anti_pattern for r in RULES}
 
 
 def scan_text(code: str, *, file: str | None = None) -> list[Finding]:
@@ -117,6 +210,7 @@ def scan_text(code: str, *, file: str | None = None) -> list[Finding]:
                         match=m.group(0)[:120],
                         line=lineno,
                         col=m.start() + 1,
+                        confidence=rule.confidence,
                         file=file,
                     )
                 )
@@ -157,6 +251,7 @@ def check_text(code: str) -> list[dict[str, Any]]:
             "standard": f.standard,
             "message": f.message,
             "match": f.match,
+            "confidence": f.confidence,
             "tier": f.tier,
             "advisory": f.advisory,
         }

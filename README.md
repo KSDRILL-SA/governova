@@ -90,7 +90,55 @@ governova/
 ├── reference-systems/           # Flagship implementations
 ├── templates/                   # Instantiation templates
 ├── compiled/                    # Compiled constitutional index (engine output)
-└── scripts/                     # Engine: compile · validate · codegen · cli · mcp
+└── scripts/                     # The engine (Python): compile · validate · codegen · cli
+                                 #   · mcp · checks · enforce · score · report · bible
+                                 #   · semantic · dashboard · guardian · notify
+```
+
+---
+
+## The platform
+
+The constitution is compiled into a typed index (`compiled/constitution.json`) that
+every surface reads — one source of truth, no surface re-parses markdown.
+
+### Detection — three tiers
+
+| Tier | What | Discipline |
+|------|------|------------|
+| **Reliable** | Deterministic rules, each bound to a real anti-pattern | Blocks in CI when high-confidence |
+| **Advisory** | Medium-confidence reliable rules | Warns, never blocks |
+| **Semantic** | LLM review grounded in the constitution | Advisory only; provider-agnostic; inactive without a key |
+
+### Surfaces
+
+| Surface | Status | What it does |
+|---------|--------|--------------|
+| MCP server | ✅ | Live constitutional governance for AI tools |
+| CLI (`governova`) | ✅ | The unified command surface |
+| IDE extension | ✅ | VS Code / Cursor diagnostics + hover |
+| CI/CD enforcer | ✅ | The merge gate — blocks violating PRs |
+| PR Guardian | ✅ | Consolidated per-PR governance verdict |
+| Web dashboard | ✅ | Self-contained HTML governance dashboard |
+| Chat notifier | ✅ | Slack/Teams verdicts via webhook |
+| JetBrains plugin | ◻︎ | Planned |
+
+### The four §18 outputs
+
+**Governova Score** (0–100) · **Governova Certified** (≥85) · **Board-Level Governance
+Report** · **System Bible** — all generated automatically from the engine.
+
+### Command surface
+
+```bash
+governova stats | standards | standard <id>      # explore the constitution
+governova validate | compile [--check]            # integrity + drift
+governova score | coverage | govscore             # health · enforcement coverage · project score
+governova report | bible | dashboard              # §18 outputs
+governova guard --base <ref>                      # PR governance verdict
+governova-enforce --changed --base <ref>          # the CI merge gate
+governova semantic-review <paths>                 # advisory LLM tier (env-gated)
+governova notify --base <ref>                     # chat webhook (env-gated)
 ```
 
 ---

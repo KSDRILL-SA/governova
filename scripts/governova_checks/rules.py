@@ -277,6 +277,41 @@ RULES: list[Rule] = [
         "Cypress detected. S7.17: Cypress is not an approved test stack for this organisation.",
         "medium",
     ),
+    Rule(
+        "AP-S1.49a",
+        "S1.49",
+        re.compile(r":\s*any\b"),
+        "Type annotated as `any` defeats type safety. S1.49: use `unknown` and validate.",
+        "medium",
+    ),
+    Rule(
+        "AP-S1.57b",
+        "S1.57",
+        re.compile(r"#\s*type:\s*ignore"),
+        "Type checking suppressed (# type: ignore). S1.57: fix the type, or reference a tracked issue.",
+        "medium",
+    ),
+    Rule(
+        "AP-S2.75a",
+        "S2.75",
+        re.compile(r"\bnew\s+PrismaClient\s*\("),
+        "Ad-hoc PrismaClient instance. S2.75: use a single shared client to avoid connection-pool exhaustion.",
+        "medium",
+    ),
+    Rule(
+        "AP-S1.56a",
+        "S1.56",
+        re.compile(r"""from\s+['"]\.\./\.\./\.\."""),
+        "Deep relative import (../../../). S1.56: import across modules via a stable path, not deep traversal.",
+        "medium",
+    ),
+    Rule(
+        "AP-S4.27a",
+        "S4.27",
+        re.compile(r"\bconsole\.error\s*\("),
+        "Error sent only to console.error. S4.27: surface errors to the user and the logger; don't swallow them.",
+        "medium",
+    ),
 ]
 
 

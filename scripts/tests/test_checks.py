@@ -109,6 +109,19 @@ def test_batch2_advisory_rules_fire():
         assert match is not None and match.confidence == "medium" and not match.blocking, ap
 
 
+def test_batch3_advisory_rules_fire():
+    cases = {
+        "AP-S1.49a": "let data: any = x;",
+        "AP-S1.57b": "value = something()  # type: ignore",
+        "AP-S2.75a": "const db = new PrismaClient();",
+        "AP-S1.56a": "import { x } from '../../../services/x';",
+        "AP-S4.27a": "console.error(error);",
+    }
+    for ap, code in cases.items():
+        match = next((f for f in scan_text(code) if f.anti_pattern == ap), None)
+        assert match is not None and match.confidence == "medium", ap
+
+
 def test_every_rule_binds_a_real_anti_pattern():
     # The governance guarantee: no rule may reference an anti-pattern that does
     # not exist in the compiled constitution.

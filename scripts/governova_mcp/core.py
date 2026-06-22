@@ -6,11 +6,10 @@ MCP client. Loads `compiled/constitution.json` (the index of record) once.
 
 from __future__ import annotations
 
-import re
 from functools import lru_cache
-from pathlib import Path
 from typing import Any
 
+from governova_checks import check_text  # noqa: F401 — re-exported as an MCP tool
 from governova_compile.discovery import resolve_repo_root
 from governova_compile.schema import CompiledIndex
 from governova_compile.writer import load_index
@@ -121,67 +120,8 @@ def get_binding(stack: str, standard_id: str) -> dict[str, Any] | None:
     return None
 
 
-# ── Reliable-tier (deterministic) violation checks ───────────────────────────
-# Same discipline as the IDE surface: deterministic, advisory. No semantic/LLM
-# checks here — those belong to the CI/PR surfaces.
-
-_RULES: list[tuple[str, str, re.Pattern[str], str]] = [
-    (
-        "AP-S3.14a",
-        "S3.14",
-        re.compile(
-            r"\b(?:local|session)Storage\.setItem\s*\(\s*['\"`][^'\"`]*(?:token|jwt|access|refresh|auth)",
-            re.I,
-        ),
-        "Auth token stored in web storage. S3.14: access token in memory, refresh in an HttpOnly cookie.",
-    ),
-    (
-        "AP-S2.17a",
-        "S2.17",
-        re.compile(
-            r"setAllowedOrigins\s*\(\s*[^)]*['\"`]\*['\"`]|Access-Control-Allow-Origin['\"`]?\s*[:,]\s*['\"`]\*['\"`]|origin\s*:\s*['\"`]\*['\"`]",
-            re.I,
-        ),
-        "Wildcard CORS origin. S2.17: explicit allowed origins per environment, never '*' in production.",
-    ),
-    (
-        "AP-S2.34a",
-        "S2.34",
-        re.compile(r"\b(?:double|float)\s+\w*(?:price|amount|balance|total|cost|fee|money|currency)\w*", re.I),
-        "Monetary value as float/double. S2.34: money uses BigDecimal/Decimal.",
-    ),
-    (
-        "AP-S2.18a",
-        "S2.18",
-        re.compile(r"\b(?:res\.(?:send|json)|return)\b[^;\n]*\b(?:e|err|error|ex)\.(?:stack|message|getMessage\(\))"),
-        "Internal error detail returned to the client. S2.18: never expose stack traces or internal messages.",
-    ),
-]
-
-
-def check_text(code: str) -> list[dict[str, Any]]:
-    """Run reliable-tier (deterministic, advisory) checks over a code snippet.
-
-    Returns a list of findings: {line, anti_pattern, standard, message, match}.
-    Advisory only — never a hard gate (GOVERNOVA-STRATEGY §11.2).
-    """
-    findings: list[dict[str, Any]] = []
-    for lineno, line in enumerate(code.splitlines(), start=1):
-        for ap_id, std, pat, msg in _RULES:
-            m = pat.search(line)
-            if m:
-                findings.append(
-                    {
-                        "line": lineno,
-                        "anti_pattern": ap_id,
-                        "standard": std,
-                        "message": msg,
-                        "match": m.group(0)[:120],
-                        "tier": "reliable",
-                        "advisory": True,
-                    }
-                )
-    return findings
+# Reliable-tier violation checks (check_text) are re-exported from governova_checks
+# above — one rule set, shown advisorily here and enforced by the CI/CD surface.
 
 
 def constitution_health() -> dict[str, Any]:

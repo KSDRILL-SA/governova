@@ -233,13 +233,20 @@ FRAMEWORK_REGISTRY: tuple[FrameworkEntry, ...] = (
 
 
 def resolve_repo_root(start: Path | None = None) -> Path:
-    """Walk upward from `start` (or cwd) to find the repo root (has GOVERNOVA-MASTER.md)."""
+    """Walk upward from `start` (or cwd) to find the repo root.
+
+    The root is identified structurally: the directory that holds both the
+    `constitution/` corpus and the workspace `pyproject.toml`. This is stable
+    regardless of where strategic docs live (they were relocated under docs/),
+    and it ignores the nested `scripts/pyproject.toml` because that directory
+    has no `constitution/` sibling.
+    """
     current = (start or Path.cwd()).resolve()
     for candidate in (current, *current.parents):
-        if (candidate / "GOVERNOVA-MASTER.md").is_file():
+        if (candidate / "constitution").is_dir() and (candidate / "pyproject.toml").is_file():
             return candidate
     raise FileNotFoundError(
-        "Could not locate repo root (no GOVERNOVA-MASTER.md found in parent directories)."
+        "Could not locate repo root (no directory with constitution/ and pyproject.toml found)."
     )
 
 

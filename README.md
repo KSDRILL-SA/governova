@@ -3,21 +3,23 @@
 > *"AI can build anything. It is us who must tell it exactly what to build,
 > how to build it, what not to build, and who approves every decision."*
 
-[![Status](https://img.shields.io/badge/Status-LOCKED-red)](GOVERNOVA-MASTER.md)
-[![Version](https://img.shields.io/badge/Version-v2.0-blue)](GOVERNOVA-MASTER.md)
+[![Status](https://img.shields.io/badge/Status-LOCKED-red)](docs/vision/master.md)
+[![Version](https://img.shields.io/badge/Version-v2.0-blue)](docs/vision/master.md)
 [![Constitutions](https://img.shields.io/badge/Constitutions-11-purple)](constitution/core/)
 [![Standards](https://img.shields.io/badge/Standards-613-green)](constitution/indexes/standards-index.md)
 [![Phases](https://img.shields.io/badge/Phases-4-teal)](framework/phase-model.md)
-[![Locked](https://img.shields.io/badge/Locked-2026--05--22-orange)](GOVERNOVA-MASTER.md)
+[![Locked](https://img.shields.io/badge/Locked-2026--05--22-orange)](docs/vision/master.md)
 
 ---
 
-**Governova** is the world's first AI development governance platform.
-The constitutional layer between AI capability and enterprise trust.
+**Governova** is the world's first AI development governance platform —
+the constitutional layer between AI capability and enterprise trust.
 
-[→ Read the full vision: GOVERNOVA-MASTER.md](GOVERNOVA-MASTER.md) ·
-[Product](GOVERNOVA-PRODUCT.md) ·
-[Strategy](GOVERNOVA-STRATEGY.md)
+[**→ Vision**](docs/vision/master.md) ·
+[Product](docs/vision/product.md) ·
+[Strategy](docs/vision/strategy.md) ·
+[Quickstart](docs/guides/quickstart.md) ·
+[Docs index](docs/README.md)
 
 ---
 
@@ -46,26 +48,29 @@ documentation for every file ever built.
 git clone https://github.com/KSDRILL-SA/governova.git
 
 # First — read the master document
-cat GOVERNOVA-MASTER.md
+cat docs/vision/master.md
 
 # Start a new governed project
-cat QUICKSTART.md
+cat docs/guides/quickstart.md
 
 # Validate constitutional integrity at any time
 python scripts/validate-integrity.py
 ```
 
+New here? Start with the [documentation index](docs/README.md).
+
 ## Repository structure
 
 ```
 governova/
-├── GOVERNOVA-MASTER.md          # Source of truth — read this first
-├── GOVERNOVA-PRODUCT.md         # Product + go-to-market
-├── GOVERNOVA-STRATEGY.md        # Thesis + adversarial risk analysis
-├── QUICKSTART.md                # 10-step new project setup
+├── README.md                    # You are here
 ├── CONTRIBUTING.md              # Domain/stack contribution process
-├── AI-INSTRUCTIONS.md           # Read first, every AI session
-├── MANIFEST.md                  # Complete navigation map
+├── CODE_OF_CONDUCT.md           # Community standards
+├── SECURITY.md                  # Vulnerability disclosure policy
+├── docs/                        # All documentation
+│   ├── vision/                  # master · product · strategy
+│   ├── guides/                  # quickstart · ai-instructions
+│   └── reference/               # manifest (navigation map)
 ├── framework/                   # Layer 1: universal primitives
 ├── constitution/                # Layers 2–4: the standards database
 │   ├── C00-constitutional-order.md
@@ -80,10 +85,11 @@ governova/
 │   ├── runbooks/                # RB-01 – RB-08
 │   ├── decisions/               # ADRs + restructure records
 │   └── changelog/               # Amendment audit trail
-├── platform/                    # The product (engine + 8 surfaces)
-├── reference-systems/           # 4 flagship implementations
+├── platform/                    # The product (engine + surfaces)
+├── reference-systems/           # Flagship implementations
 ├── templates/                   # Instantiation templates
-└── scripts/                     # validate-integrity.py
+├── compiled/                    # Compiled constitutional index (engine output)
+└── scripts/                     # Engine: compile · validate · codegen · cli · mcp
 ```
 
 ---

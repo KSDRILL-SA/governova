@@ -13,11 +13,11 @@ from governova_validate.checks import (
 )
 from governova_validate.links import check_links
 
-# The live per-constitution standard counts after the 2026-06-21 ratification
-# (594 locked baseline + 6 prior amendments + 13 ratified = 613).
+# The live per-constitution standard counts after the 2026-06-22 ratification
+# (613 + Part 19 Architectural Discipline S1.103–S1.107 = 618).
 EXPECTED_COUNTS = {
     "C00": 0,
-    "C01": 102,
+    "C01": 107,
     "C02": 81,
     "C03": 37,
     "C04": 83,
@@ -28,7 +28,7 @@ EXPECTED_COUNTS = {
     "C09": 30,
     "C10": 40,
 }
-EXPECTED_TOTAL = 613
+EXPECTED_TOTAL = 618
 
 
 @pytest.fixture(scope="module")

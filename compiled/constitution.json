@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
-  "compiled_at": "2026-06-22T13:23:39.291809Z",
-  "source_commit_sha": "79111ab",
-  "checksum": "sha256:eff8e5353851a95dc4cf2c2cd7378ae55d7adf5a80547dd51f2a83e283c6030b",
+  "compiled_at": "2026-06-22T13:46:39.664752Z",
+  "source_commit_sha": "4c394a2",
+  "checksum": "sha256:1b64e8a73ac17178c5bae86426656e651c0893e5790e494b60b15455f8eed13b",
   "framework": [
     {
       "id": "format-specification",
@@ -3887,6 +3887,181 @@
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
           "source_line": 2612
+        },
+        {
+          "id": "S1.103",
+          "title": "Logic Lives in Its Layer",
+          "constitution_id": "C01",
+          "priority": "High",
+          "applies_to": "All Stacks · all systems",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S1.2",
+              "description": "logic placement"
+            },
+            {
+              "standard_id": "S1.3",
+              "description": "single concern"
+            }
+          ],
+          "enforced_by": [
+            "review",
+            "semantic tier",
+            "`protocols/build-lifecycle.md`"
+          ],
+          "statement": "Business logic lives only in the service/domain layer. Presentation (UI, components, views), transport (routes, controllers, handlers), and data-access layers contain no business rules — they delegate to services. Each layer has one responsibility and does not reach across boundaries.",
+          "rationale": "Logic in the wrong layer cannot be tested, reused, or replaced independently — it couples a business rule to a screen or an endpoint. A button that contains a calculation cannot be reused, and a route that decides policy cannot be governed.",
+          "anti_patterns": [
+            {
+              "id": "AP-S1.103a",
+              "description": "A business rule (calculation, authorization decision, workflow) implemented inside a UI component, route handler, or data-access call instead of a service.",
+              "parent_standard_id": "S1.103"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
+          "source_line": 2644
+        },
+        {
+          "id": "S1.104",
+          "title": "Data Access Through Repositories",
+          "constitution_id": "C01",
+          "priority": "High",
+          "applies_to": "All Stacks · all systems with persistence",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S1.103",
+              "description": null
+            },
+            {
+              "standard_id": "S2.28",
+              "description": "query discipline"
+            }
+          ],
+          "enforced_by": [
+            "review",
+            "semantic tier",
+            "reliable-tier rules (raw-SQL detection)"
+          ],
+          "statement": "Persistence is reached only through a repository / data-access layer. No raw database client, ORM call, or query is issued directly from UI, routes, or service logic — they call repository methods that own the data contract.",
+          "rationale": "Scattered direct data access makes the data contract un-auditable and un-changeable; one schema change then ripples through the whole codebase. A repository boundary makes persistence swappable and testable, and is the single place data rules are enforced.",
+          "anti_patterns": [
+            {
+              "id": "AP-S1.104a",
+              "description": "A database/ORM call (raw SQL, `prisma.*`, `psycopg2`, `$queryRaw`) issued outside a repository — from a route, a service, or the UI.",
+              "parent_standard_id": "S1.104"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
+          "source_line": 2666
+        },
+        {
+          "id": "S1.105",
+          "title": "No Hardcoded Configuration or Magic Values",
+          "constitution_id": "C01",
+          "priority": "High",
+          "applies_to": "All Stacks · all systems",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S2.10",
+              "description": "config & secrets"
+            },
+            {
+              "standard_id": "S1.103",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "review",
+            "semantic tier",
+            "reliable-tier rules (secret/DSN detection)"
+          ],
+          "statement": "Values that vary by environment, or that carry meaning, are named and sourced from configuration or named constants — never inlined as literals in code. Secrets are configuration, never literals.",
+          "rationale": "A hardcoded value is a deployment-time decision frozen into source: changing it requires a code change and redeploy, and a magic number with no name cannot be understood or audited.",
+          "anti_patterns": [
+            {
+              "id": "AP-S1.105a",
+              "description": "An environment-specific value, credential, URL, threshold, or magic number inlined as a literal instead of named configuration.",
+              "parent_standard_id": "S1.105"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
+          "source_line": 2688
+        },
+        {
+          "id": "S1.106",
+          "title": "Don't Repeat Yourself; Shared Code Is Shared",
+          "constitution_id": "C01",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S1.3",
+              "description": "single concern"
+            }
+          ],
+          "enforced_by": [
+            "review",
+            "semantic tier"
+          ],
+          "statement": "Logic, types, and constants used in more than one place live once in a shared module/library and are imported. Necessary duplication is justified in a comment; unnecessary duplication is forbidden.",
+          "rationale": "Copy-pasted logic drifts — a fix applied to one copy and missed in another is a class of bug that does not exist when there is a single source. Shared definitions keep meaning consistent across the system.",
+          "anti_patterns": [
+            {
+              "id": "AP-S1.106a",
+              "description": "The same logic, type, or constant copy-pasted across modules instead of extracted into a shared library.",
+              "parent_standard_id": "S1.106"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
+          "source_line": 2710
+        },
+        {
+          "id": "S1.107",
+          "title": "The Simplest Correct Solution",
+          "constitution_id": "C01",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S1.5",
+              "description": "controlled imperfection"
+            }
+          ],
+          "enforced_by": [
+            "review",
+            "semantic tier"
+          ],
+          "statement": "Among solutions that satisfy the requirement and the standards, the simplest and lightest one is the required one. Abstraction, indirection, or generality that no current requirement or standard demands is not added. *Build smart, not hard; make it exist first, then make it beautiful later.*",
+          "rationale": "Unrequired complexity is permanent cost — it must be read, tested, and maintained forever to serve a need that may never arrive. The best solution solves the problem and nothing more.",
+          "anti_patterns": [
+            {
+              "id": "AP-S1.107a",
+              "description": "Speculative abstraction, premature optimization, or polish added before the foundation exists and passes its lifecycle loop.",
+              "parent_standard_id": "S1.107"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
+          "source_line": 2732
         }
       ]
     },
@@ -20469,8 +20644,8 @@
     ]
   },
   "integrity": {
-    "standards_extracted": 613,
-    "anti_patterns_extracted": 441,
+    "standards_extracted": 618,
+    "anti_patterns_extracted": 446,
     "bindings_extracted": 72,
     "references_resolved": 0,
     "references_unresolved": 0,

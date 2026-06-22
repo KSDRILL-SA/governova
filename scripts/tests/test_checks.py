@@ -128,6 +128,12 @@ def test_every_rule_binds_a_real_anti_pattern():
     assert validate_rules() == []
 
 
+def test_rule_coverage_floor():
+    # Guard against silent rule-set regression: coverage must not drop below where we are.
+    assert len(RULES) >= 30
+    assert enforcement_coverage()["coverage_pct"] >= 6.0
+
+
 def test_enforcement_coverage_metric():
     cov = enforcement_coverage()
     assert cov["rules"] == len(RULES)

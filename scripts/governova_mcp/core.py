@@ -9,10 +9,23 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Any
 
-from governova_checks import check_text  # noqa: F401 — re-exported as an MCP tool
+from governova_checks import check_text
 from governova_compile.discovery import resolve_repo_root
 from governova_compile.schema import CompiledIndex
 from governova_compile.writer import load_index
+
+# check_text is re-exported here so the MCP surface exposes the same reliable-tier
+# checks the enforcer uses — one rule set, shown advisorily.
+__all__ = [
+    "check_text",
+    "constitution_health",
+    "get_anti_pattern",
+    "get_binding",
+    "get_standard",
+    "list_constitutions",
+    "reload_index",
+    "search_standards",
+]
 
 
 @lru_cache(maxsize=1)
@@ -26,7 +39,7 @@ def reload_index() -> None:
     _index.cache_clear()
 
 
-def _standards() -> list:
+def _standards() -> list[Any]:
     return [s for c in _index().constitutions for s in c.standards]
 
 

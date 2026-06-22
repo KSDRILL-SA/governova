@@ -24,7 +24,7 @@ def _score_colour(score: int) -> str:
     return "#dc2626"
 
 
-def _esc(text: str) -> str:
+def _esc(text: object) -> str:
     return html.escape(str(text))
 
 

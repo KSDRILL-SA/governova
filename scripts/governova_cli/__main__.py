@@ -12,7 +12,7 @@ Examples:
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Any
 
 import typer
 from governova_compile.compiler import compile_index
@@ -52,7 +52,7 @@ def _load(root: Path) -> CompiledIndex:
     return load_index(index_file)
 
 
-def _all_standards(index: CompiledIndex) -> list:
+def _all_standards(index: CompiledIndex) -> list[Any]:
     return [s for c in index.constitutions for s in c.standards]
 
 

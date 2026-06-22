@@ -52,3 +52,23 @@ packages = [
     "governova_guardian",
     "governova_notify",
 ]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+files = [
+    "governova_checks",
+    "governova_score",
+    "governova_report",
+    "governova_bible",
+    "governova_guardian",
+    "governova_notify",
+    "governova_dashboard",
+    "governova_semantic",
+    "governova_enforce",
+    "governova_cli",
+    "governova_compile",
+    "governova_validate",
+    "governova_mcp",
+    "governova_codegen",
+]

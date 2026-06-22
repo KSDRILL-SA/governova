@@ -27,6 +27,10 @@ jobs:
       - name: Lint (ruff)
         run: uv run ruff check scripts/
 
+      - name: Type-check (mypy)
+        working-directory: scripts
+        run: uv run mypy
+
       # The engine is the authoritative integrity gate — it parses all 613
       # standards into the compiled index and validates them structurally.
 

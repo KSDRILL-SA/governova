@@ -115,6 +115,16 @@ RULES: list[Rule] = [
         "Internal error detail returned to the client. S2.18: never expose stack traces or internal messages.",
         "high",
     ),
+    Rule(
+        "AP-S2.10b",
+        "S2.10",
+        re.compile(
+            r"\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|amqp)://[^\s'\"`]*:[^\s'\"`@/]+@",
+            re.I,
+        ),
+        "Hardcoded connection string with embedded credentials. S2.10: connection strings come from configuration.",
+        "high",
+    ),
     # ── MEDIUM confidence — strong signal, but context-dependent: warn only ──
     Rule(
         "AP-S2.28f",
@@ -174,6 +184,48 @@ RULES: list[Rule] = [
         "S4.19",
         re.compile(r":focus\b[^{}]*\{[^}]*outline\s*:\s*(?:none|0)\b", re.I),
         "Focus outline removed. S4.19: keep a visible keyboard focus indicator (accessibility).",
+        "medium",
+    ),
+    Rule(
+        "AP-S1.48b",
+        "S1.48",
+        re.compile(r"@ts-(?:ignore|expect-error)"),
+        "Type checking suppressed (@ts-ignore/@ts-expect-error). S1.48: suppress only with a tracked issue reference.",
+        "medium",
+    ),
+    Rule(
+        "AP-S1.49b",
+        "S1.49",
+        re.compile(r"\bas\s+any\b"),
+        "Cast to `any` defeats type safety. S1.49: use `unknown` and validate.",
+        "medium",
+    ),
+    Rule(
+        "AP-S3.3a",
+        "S3.3",
+        re.compile(r"bcrypt\.hash\s*\([^,)]+,\s*\d+"),
+        "Hardcoded bcrypt cost factor. S3.3: the work factor must be configurable, not a literal.",
+        "medium",
+    ),
+    Rule(
+        "AP-S2.14a",
+        "S2.14",
+        re.compile(r"\.findMany\(\s*\)"),
+        "Unbounded query: findMany() with no pagination. S2.14: bound results with take/skip.",
+        "medium",
+    ),
+    Rule(
+        "AP-S5.23a",
+        "S5.23",
+        re.compile(r"\$queryRaw\s*<\s*any", re.I),
+        "Raw query typed as any defeats type safety. S5.23: type raw query results explicitly.",
+        "medium",
+    ),
+    Rule(
+        "AP-S2.35a",
+        "S2.35",
+        re.compile(r"\.delete\(\s*\{\s*where\b"),
+        "Hard delete on a possibly-auditable entity. S2.35: prefer soft-delete for auditable records.",
         "medium",
     ),
 ]

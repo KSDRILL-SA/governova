@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
-  "compiled_at": "2026-06-22T03:17:11.799136Z",
-  "source_commit_sha": "6cbcd54",
-  "checksum": "sha256:69c435b00a9e5470f2b5365566a96e3c7a2c298986d59aeabba77f3c11931170",
+  "compiled_at": "2026-06-22T13:23:39.291809Z",
+  "source_commit_sha": "79111ab",
+  "checksum": "sha256:eff8e5353851a95dc4cf2c2cd7378ae55d7adf5a80547dd51f2a83e283c6030b",
   "framework": [
     {
       "id": "format-specification",
@@ -20427,6 +20427,12 @@
       "name": "SyncUp Creator Platform: Next.js Stack Assignment",
       "status": "ACCEPTED",
       "path": "governance/decisions/ADR-004-syncup-stack.md"
+    },
+    {
+      "id": "ADR-005",
+      "name": "Governova Platform Architecture (3-plane model)",
+      "status": "ACCEPTED",
+      "path": "governance/decisions/ADR-005-platform-architecture.md"
     }
   ],
   "hierarchy": [

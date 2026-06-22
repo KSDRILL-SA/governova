@@ -346,6 +346,32 @@ def report(
 
 
 @app.command()
+def guard(
+    base: Annotated[str, typer.Option("--base", help="Git ref to diff against.")] = "origin/main",
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """PR Guardian — a consolidated governance verdict for the changes vs --base.
+
+    Combines the Governova Score, this PR's enforcement result, and coverage into one
+    panel (also appended to the GitHub job summary). Advisory: reporting only, never blocks.
+    """
+    import os
+
+    from governova_guardian import build_verdict, to_markdown
+
+    verdict = build_verdict(base, _root(repo_root))
+    md = to_markdown(verdict)
+    console.print(md)
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        try:
+            with open(summary, "a", encoding="utf-8") as fh:
+                fh.write(md + "\n")
+        except OSError:
+            pass
+
+
+@app.command()
 def dashboard(
     out_file: Annotated[
         Path | None, typer.Option("--out", help="Write the dashboard HTML to a file.")

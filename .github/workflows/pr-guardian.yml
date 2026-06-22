@@ -1,0 +1,31 @@
+name: PR Guardian
+
+# A consolidated governance verdict for every pull request, rendered in the job summary
+# (no bot comments): overall Governova Score, this PR's enforcement result, and coverage.
+# Advisory — reporting only; the Constitutional Enforcement workflow remains the gate.
+
+on:
+  pull_request:
+    branches: [main, Dev]
+
+jobs:
+  guardian:
+    name: Governova Guardian
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync the Governova engine
+        shell: bash
+        run: uv sync --all-packages
+
+      - name: Governova Guardian verdict
+        shell: bash
+        run: uv run governova guard --base "${{ github.event.pull_request.base.sha }}"

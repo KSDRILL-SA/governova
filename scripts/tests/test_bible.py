@@ -67,6 +67,14 @@ def test_build_bible_on_repo():
     assert "scripts" in sb.by_area()
 
 
+def test_semantic_enrichment_inactive_is_noop(tmp_path, monkeypatch):
+    for v in ("GOVERNOVA_LLM_MODEL", "GOVERNOVA_LLM_BASE_URL", "GOVERNOVA_LLM_API_KEY"):
+        monkeypatch.delenv(v, raising=False)
+    (tmp_path / "mod.py").write_text(PY, encoding="utf-8")
+    sb = build_bible(tmp_path, semantic=True)  # no key -> clean no-op
+    assert all(e.semantic_summary == "" for e in sb.entries)
+
+
 def test_renderers(tmp_path):
     p = tmp_path / "mod.py"
     p.write_text(PY, encoding="utf-8")

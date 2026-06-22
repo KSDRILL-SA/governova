@@ -6,7 +6,14 @@ import json
 
 from governova_compile.discovery import resolve_repo_root
 from governova_compile.writer import load_index
-from governova_semantic import SemanticConfig, build_messages, parse_findings, relevant_standards, review
+from governova_semantic import (
+    SemanticConfig,
+    build_messages,
+    describe_code,
+    parse_findings,
+    relevant_standards,
+    review,
+)
 from governova_semantic.config import from_env
 
 INDEX = load_index(resolve_repo_root() / "compiled" / "constitution.json")
@@ -69,6 +76,12 @@ def test_review_degrades_on_transport_error():
         raise SemanticUnavailable("down")
 
     assert review("code", standards=[std], index=INDEX, config=ACTIVE, transport=boom) == []
+
+
+def test_describe_code_with_mock_and_inactive():
+    out = describe_code("def f():\n    pass\n", config=ACTIVE, transport=lambda c, m: "  Defines f.  ")
+    assert out == "Defines f."
+    assert describe_code("code", config=from_env({})) == ""  # inactive
 
 
 def test_relevant_standards_and_messages():

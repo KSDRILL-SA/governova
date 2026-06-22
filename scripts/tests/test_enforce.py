@@ -61,6 +61,15 @@ def test_explicit_ignore_glob(tmp_path):
     assert result.exit_code == 0
 
 
+def test_semantic_flag_inactive_is_noop(tmp_path, monkeypatch):
+    for v in ("GOVERNOVA_LLM_MODEL", "GOVERNOVA_LLM_BASE_URL", "GOVERNOVA_LLM_API_KEY"):
+        monkeypatch.delenv(v, raising=False)
+    f = _write(tmp_path, "good.ts", CLEAN)
+    result = runner.invoke(app, [f, "--no-default-ignore", "--semantic"])
+    assert result.exit_code == 0
+    assert "semantic tier inactive" in result.stdout
+
+
 def test_medium_confidence_does_not_block(tmp_path):
     # A medium-confidence finding is reported but never fails the build.
     f = _write(tmp_path, "query.ts", MEDIUM_ONLY)

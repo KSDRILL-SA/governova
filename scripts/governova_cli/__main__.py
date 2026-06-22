@@ -388,16 +388,24 @@ def bible(
     out_file: Annotated[
         Path | None, typer.Option("--out", help="Write the System Bible to a file.")
     ] = None,
+    semantic: Annotated[
+        bool,
+        typer.Option(
+            "--semantic",
+            help="Enrich each file with a behavioural summary (requires an LLM endpoint).",
+        ),
+    ] = False,
     repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
 ) -> None:
     """Generate the System Bible (master.md §18.4) — per-file documentation of the codebase.
 
     Documents every source file: its purpose, public surface, and dependencies —
     turning the codebase from a black box into something a maintainer can navigate.
+    With --semantic and an LLM endpoint configured, each file also gets a summary.
     """
     from governova_bible import build_bible, to_json, to_markdown
 
-    sb = build_bible(_root(repo_root))
+    sb = build_bible(_root(repo_root), semantic=semantic)
     rendered = to_json(sb) if output.lower() == "json" else to_markdown(sb)
     if output.lower() == "json":
         console.print_json(rendered)

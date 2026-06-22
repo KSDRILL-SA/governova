@@ -27,6 +27,9 @@ def to_markdown(bible: SystemBible) -> str:
             lines.append("")
             lines.append(e.purpose if e.purpose else "_No stated purpose._")
             lines.append("")
+            if e.semantic_summary:
+                lines.append(f"> **Summary:** {e.semantic_summary}")
+                lines.append("")
             if e.public:
                 lines.append(f"- **Exposes:** {', '.join(f'`{p}`' for p in e.public)}")
             if e.dependencies:
@@ -54,6 +57,7 @@ def to_json(bible: SystemBible) -> str:
                     "language": e.language,
                     "loc": e.loc,
                     "purpose": e.purpose,
+                    "semantic_summary": e.semantic_summary,
                     "public": e.public,
                     "dependencies": e.dependencies,
                 }

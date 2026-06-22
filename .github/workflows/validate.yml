@@ -22,9 +22,8 @@ jobs:
         run: uv python install 3.12
 
       - name: Sync workspace
-        run: uv sync --all-packages
+        run: uv sync --all-packages --all-extras
 
-      # Authoritative integrity gate — covers all 613 standards across every
       # The engine is the authoritative integrity gate — it parses all 613
       # standards into the compiled index and validates them structurally.
 

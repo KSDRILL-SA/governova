@@ -32,6 +32,10 @@ jobs:
         shell: bash
         run: uv run governova bible --out system-bible.md
 
+      - name: Generate the governance dashboard (HTML)
+        shell: bash
+        run: uv run governova dashboard --out dashboard.html
+
       - name: Upload the governance outputs
         uses: actions/upload-artifact@v4
         with:
@@ -39,3 +43,4 @@ jobs:
           path: |
             governance-report.md
             system-bible.md
+            dashboard.html

@@ -30,3 +30,8 @@ __pycache__/
 .pytest_cache/
 .venv/
 *.egg-info/
+
+# Generated governance artifacts
+dashboard.html
+governance-report.md
+system-bible.md

@@ -28,7 +28,9 @@ STANDARD_ID = re.compile(r"\bS\d+\.\d+\b")
 
 
 def _read(path: Path) -> str:
-    return path.read_text(encoding="utf-8")
+    # Normalise line endings so parsed content is identical across platforms
+    # (Windows CRLF vs Linux LF); keeps the compiled checksum reproducible.
+    return path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
 
 
 def _title_from_heading(text: str, fallback: str) -> str:
@@ -52,7 +54,7 @@ def parse_runbook(path: Path, repo_root: Path) -> Runbook | None:
         id=f"RB-{m.group(1)}",
         name=name,
         trigger=trigger.strip(),
-        path=str(path.relative_to(repo_root)),
+        path=path.relative_to(repo_root).as_posix(),
     )
 
 
@@ -76,7 +78,7 @@ def parse_adr(path: Path, repo_root: Path) -> ADR | None:
         id=f"ADR-{m.group(1)}",
         name=name,
         status=status.strip().upper() if status else None,
-        path=str(path.relative_to(repo_root)),
+        path=path.relative_to(repo_root).as_posix(),
     )
 
 
@@ -115,7 +117,7 @@ def parse_implementation(
                 id=pid,
                 title=pm.group("title").strip(),
                 satisfies_standards=satisfied,
-                source_path=str(path.relative_to(repo_root)),
+                source_path=path.relative_to(repo_root).as_posix(),
                 source_line=section.line_start + 1,
             )
         )
@@ -148,7 +150,7 @@ def parse_implementation(
         binds_constitution=binds_constitution,
         name=name,
         header=header,
-        path=str(path.relative_to(repo_root)),
+        path=path.relative_to(repo_root).as_posix(),
         practices=practices,
         bindings=bindings,
     )

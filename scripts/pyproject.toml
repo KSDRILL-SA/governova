@@ -12,10 +12,12 @@ dependencies = [
     "mdit-py-plugins>=0.4",
     "typer>=0.12",
     "rich>=13.7",
+    "mcp>=1.2",
 ]
 
 [project.scripts]
 governova = "governova_cli.__main__:app"
+governova-mcp = "governova_mcp.__main__:main"
 governova-compile = "governova_compile.__main__:app"
 governova-validate = "governova_validate.__main__:app"
 governova-codegen = "governova_codegen.__main__:app"
@@ -35,6 +37,7 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = [
     "governova_cli",
+    "governova_mcp",
     "governova_compile",
     "governova_validate",
     "governova_codegen",

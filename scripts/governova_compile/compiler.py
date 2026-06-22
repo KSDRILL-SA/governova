@@ -46,7 +46,11 @@ def _git_sha(repo_root: Path) -> str | None:
 
 
 def _read(path: Path) -> str:
-    return path.read_text(encoding="utf-8")
+    # Normalise line endings so the compiled index is byte-identical regardless
+    # of the checkout platform (Windows CRLF vs Linux LF). Without this, a
+    # CRLF working tree bakes \r into the parsed content and the content
+    # checksum diverges from a CI compile on LF. See writer._index_body_for_checksum.
+    return path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
 
 
 def compile_index(repo_root: Path | None = None) -> CompiledIndex:
@@ -103,7 +107,7 @@ def compile_index(repo_root: Path | None = None) -> CompiledIndex:
                 number=99,
                 name=dpath.stem,
                 phase=None,
-                path=str(dpath.relative_to(root)),
+                path=dpath.relative_to(root).as_posix(),
                 hierarchy_rank=None,
                 binds_implementation=False,
             )

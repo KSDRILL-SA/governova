@@ -346,6 +346,27 @@ def report(
 
 
 @app.command()
+def notify(
+    base: Annotated[str, typer.Option("--base", help="Git ref to diff against.")] = "origin/main",
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Post the Governova Guardian verdict to a chat webhook (Slack/Teams-compatible).
+
+    Inactive unless GOVERNOVA_WEBHOOK_URL is set; then posts the consolidated verdict.
+    """
+    from governova_notify import from_env
+    from governova_notify import notify as do_notify
+
+    if not from_env().is_configured:
+        console.print(
+            "[yellow]notifier inactive[/] — set GOVERNOVA_WEBHOOK_URL to enable chat notifications."
+        )
+        return
+    ok = do_notify(base, _root(repo_root))
+    console.print("[green]verdict posted[/]" if ok else "[red]failed to post verdict[/]")
+
+
+@app.command()
 def guard(
     base: Annotated[str, typer.Option("--base", help="Git ref to diff against.")] = "origin/main",
     repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,

@@ -50,4 +50,5 @@ packages = [
     "governova_semantic",
     "governova_dashboard",
     "governova_guardian",
+    "governova_notify",
 ]

@@ -125,6 +125,13 @@ RULES: list[Rule] = [
         "Hardcoded connection string with embedded credentials. S2.10: connection strings come from configuration.",
         "high",
     ),
+    Rule(
+        "AP-S5.21a",
+        "S5.21",
+        re.compile(r"\$queryRawUnsafe\s*\(", re.I),
+        "Unsafe raw SQL ($queryRawUnsafe) — injection risk. S5.21: use parameterised queries only.",
+        "high",
+    ),
     # ── MEDIUM confidence — strong signal, but context-dependent: warn only ──
     Rule(
         "AP-S2.28f",
@@ -226,6 +233,48 @@ RULES: list[Rule] = [
         "S2.35",
         re.compile(r"\.delete\(\s*\{\s*where\b"),
         "Hard delete on a possibly-auditable entity. S2.35: prefer soft-delete for auditable records.",
+        "medium",
+    ),
+    Rule(
+        "AP-S8.31a",
+        "S8.31",
+        re.compile(r"\bconsole\.log\s*\("),
+        "Unstructured logging via console.log. S8.31: use the structured logger with correlation fields.",
+        "medium",
+    ),
+    Rule(
+        "AP-S1.67b",
+        "S1.67",
+        re.compile(r"setTimeout\s*\([^,]+,\s*\d{4,}\b"),
+        "Magic timeout literal. S1.67: name the duration (e.g. SESSION_TIMEOUT_MS), don't inline a number.",
+        "medium",
+    ),
+    Rule(
+        "AP-S3.9a",
+        "S3.9",
+        re.compile(r"\bmaxAge\s*:\s*\d{4,}\b"),
+        "Hardcoded session lifetime (maxAge). S3.9: session duration is a deployment-time configuration value.",
+        "medium",
+    ),
+    Rule(
+        "AP-S3.21a",
+        "S3.21",
+        re.compile(r"\.role\s*===?\s*['\"][A-Za-z]"),
+        "Role compared to a string literal. S3.21: compare against a defined enum/constant, not a raw string.",
+        "medium",
+    ),
+    Rule(
+        "AP-S7.16a",
+        "S7.16",
+        re.compile(r"\.toMatchSnapshot\s*\("),
+        "Snapshot test. S7.16: assert on behaviour, not a brittle rendered-output snapshot.",
+        "medium",
+    ),
+    Rule(
+        "AP-S7.17a",
+        "S7.17",
+        re.compile(r"""(?:from\s+['"]cypress['"]|require\(\s*['"]cypress['"]|\bcy\.(?:visit|get|intercept|contains)\s*\()"""),
+        "Cypress detected. S7.17: Cypress is not an approved test stack for this organisation.",
         "medium",
     ),
 ]

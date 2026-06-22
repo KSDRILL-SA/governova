@@ -89,6 +89,26 @@ def test_new_advisory_rules_fire():
         assert match.confidence == "medium" and not match.blocking, ap
 
 
+def test_batch2_blocking_unsafe_raw_sql():
+    findings = scan_text("await prisma.$queryRawUnsafe(`SELECT * FROM u WHERE id='${id}'`)")
+    f = next(f for f in findings if f.anti_pattern == "AP-S5.21a")
+    assert f.confidence == "high" and f.blocking
+
+
+def test_batch2_advisory_rules_fire():
+    cases = {
+        "AP-S8.31a": "console.log('User logged in', userId)",
+        "AP-S1.67b": "setTimeout(refresh, 900000)",
+        "AP-S3.9a": "const cfg = { maxAge: 2592000 }",
+        "AP-S3.21a": 'if (user.role === "admin") allow()',
+        "AP-S7.16a": "expect(wrapper.html()).toMatchSnapshot()",
+        "AP-S7.17a": "import { defineConfig } from 'cypress'",
+    }
+    for ap, code in cases.items():
+        match = next((f for f in scan_text(code) if f.anti_pattern == ap), None)
+        assert match is not None and match.confidence == "medium" and not match.blocking, ap
+
+
 def test_every_rule_binds_a_real_anti_pattern():
     # The governance guarantee: no rule may reference an anti-pattern that does
     # not exist in the compiled constitution.

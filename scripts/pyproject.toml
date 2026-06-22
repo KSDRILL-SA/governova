@@ -21,6 +21,7 @@ governova-mcp = "governova_mcp.__main__:main"
 governova-compile = "governova_compile.__main__:app"
 governova-validate = "governova_validate.__main__:app"
 governova-codegen = "governova_codegen.__main__:app"
+governova-enforce = "governova_enforce.__main__:app"
 
 [project.optional-dependencies]
 dev = [
@@ -41,4 +42,6 @@ packages = [
     "governova_compile",
     "governova_validate",
     "governova_codegen",
+    "governova_checks",
+    "governova_enforce",
 ]

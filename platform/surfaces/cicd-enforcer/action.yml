@@ -1,0 +1,37 @@
+name: "Governova Constitutional Enforcer"
+description: "Block a pull request that introduces a constitutional violation."
+author: "KSDRILL SA"
+branding:
+  icon: "shield"
+  color: "purple"
+
+inputs:
+  mode:
+    description: "block (fail the build on a violation) or advisory (report only)."
+    required: false
+    default: "block"
+  base:
+    description: "Git ref to diff against — the pull request base."
+    required: false
+    default: "origin/main"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
+
+    - name: Sync the Governova engine
+      shell: bash
+      run: uv sync --all-packages
+
+    - name: Enforce the constitution on changed files
+      shell: bash
+      run: >
+        uv run governova-enforce
+        --changed
+        --base "${{ inputs.base }}"
+        --mode "${{ inputs.mode }}"
+        --format github

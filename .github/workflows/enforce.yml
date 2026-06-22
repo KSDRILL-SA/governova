@@ -1,0 +1,25 @@
+name: Constitutional Enforcement
+
+# The enforcement wedge, dogfooded: Governova governs Governova. Every pull request
+# is scanned for constitutional violations in its changed files, and a violation
+# blocks the merge.
+
+on:
+  pull_request:
+    branches: [main, Dev]
+
+jobs:
+  enforce:
+    name: Enforce the constitution
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history for the diff)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Governova Constitutional Enforcer
+        uses: ./platform/surfaces/cicd-enforcer
+        with:
+          mode: block
+          base: ${{ github.event.pull_request.base.sha }}

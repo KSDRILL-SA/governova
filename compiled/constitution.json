@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
-  "compiled_at": "2026-06-21T23:31:05.814297Z",
-  "source_commit_sha": "d6554cc",
-  "checksum": "sha256:841a8ee11de8ae3481ac5dacadd750e001a3f5d4f6a99f99c742ca88affa6ad5",
+  "compiled_at": "2026-06-22T03:17:11.799136Z",
+  "source_commit_sha": "6cbcd54",
+  "checksum": "sha256:69c435b00a9e5470f2b5365566a96e3c7a2c298986d59aeabba77f3c11931170",
   "framework": [
     {
       "id": "format-specification",
@@ -19488,7 +19488,7 @@
         "applies_to": "Both Stacks",
         "paired_with": "C2 — Backend Constitution"
       },
-      "path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+      "path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
       "practices": [
         {
           "id": "P2.1",
@@ -19509,7 +19509,7 @@
             "S2.67",
             "S2.68"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 62
         },
         {
@@ -19525,7 +19525,7 @@
             "S2.19",
             "S2.73"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 127
         },
         {
@@ -19534,7 +19534,7 @@
           "satisfies_standards": [
             "S2.7"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 207
         },
         {
@@ -19547,7 +19547,7 @@
             "S2.22",
             "S2.24"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 251
         },
         {
@@ -19562,7 +19562,7 @@
             "S2.44",
             "S2.69"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 317
         },
         {
@@ -19574,7 +19574,7 @@
             "S2.25",
             "S2.51"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 417
         },
         {
@@ -19590,7 +19590,7 @@
             "S2.14",
             "S2.20"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 504
         },
         {
@@ -19601,7 +19601,7 @@
             "S2.57",
             "S2.61"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 627
         },
         {
@@ -19612,7 +19612,7 @@
             "S2.47",
             "S2.48"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 655
         },
         {
@@ -19623,7 +19623,7 @@
             "S2.53",
             "S2.55"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 730
         },
         {
@@ -19633,7 +19633,7 @@
             "S2.56",
             "S2.57"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 790
         },
         {
@@ -19652,7 +19652,7 @@
             "S2.23",
             "S2.35"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 836
         },
         {
@@ -19662,7 +19662,7 @@
             "S2.70",
             "S2.75"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 951
         },
         {
@@ -19673,7 +19673,7 @@
             "S2.79",
             "S2.78"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 993
         },
         {
@@ -19696,7 +19696,7 @@
             "S2.32",
             "S2.50"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 1025
         },
         {
@@ -19707,7 +19707,7 @@
             "S2.2",
             "S2.36"
           ],
-          "source_path": "constitution\\implementation\\fastapi\\C02-backend-fastapi.md",
+          "source_path": "constitution/implementation/fastapi/C02-backend-fastapi.md",
           "source_line": 1125
         }
       ],
@@ -19727,7 +19727,7 @@
         "applies_to": null,
         "paired_with": null
       },
-      "path": "constitution\\implementation\\spring-boot\\C02-backend-spring-boot.md",
+      "path": "constitution/implementation/spring-boot/C02-backend-spring-boot.md",
       "practices": [],
       "bindings": [
         {
@@ -19865,7 +19865,7 @@
         "applies_to": "Both Stacks",
         "paired_with": "C3 — Auth Constitution"
       },
-      "path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+      "path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
       "practices": [
         {
           "id": "P3.1",
@@ -19877,7 +19877,7 @@
             "S3.26",
             "S3.27"
           ],
-          "source_path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+          "source_path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
           "source_line": 48
         },
         {
@@ -19895,7 +19895,7 @@
             "S3.21",
             "S3.23"
           ],
-          "source_path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+          "source_path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
           "source_line": 196
         },
         {
@@ -19904,7 +19904,7 @@
           "satisfies_standards": [
             "S3.12"
           ],
-          "source_path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+          "source_path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
           "source_line": 354
         },
         {
@@ -19915,7 +19915,7 @@
             "S3.30",
             "S3.35"
           ],
-          "source_path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+          "source_path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
           "source_line": 417
         },
         {
@@ -19930,7 +19930,7 @@
             "S3.14",
             "S3.16"
           ],
-          "source_path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+          "source_path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
           "source_line": 494
         },
         {
@@ -19940,7 +19940,7 @@
             "S3.14",
             "S3.18"
           ],
-          "source_path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+          "source_path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
           "source_line": 691
         },
         {
@@ -19950,7 +19950,7 @@
             "S3.15",
             "S2.60"
           ],
-          "source_path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+          "source_path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
           "source_line": 758
         },
         {
@@ -19961,7 +19961,7 @@
             "S3.29",
             "S3.3"
           ],
-          "source_path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+          "source_path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
           "source_line": 836
         },
         {
@@ -19970,7 +19970,7 @@
           "satisfies_standards": [
             "S3.33"
           ],
-          "source_path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+          "source_path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
           "source_line": 918
         },
         {
@@ -19979,14 +19979,14 @@
           "satisfies_standards": [
             "S3.4"
           ],
-          "source_path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+          "source_path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
           "source_line": 980
         },
         {
           "id": "P3.11",
           "title": "Tools & Commands Reference",
           "satisfies_standards": [],
-          "source_path": "constitution\\implementation\\nextauth\\C03-auth-nextauth.md",
+          "source_path": "constitution/implementation/nextauth/C03-auth-nextauth.md",
           "source_line": 1015
         }
       ],
@@ -20006,7 +20006,7 @@
         "applies_to": "Both Stacks",
         "paired_with": "C4 — Frontend Constitution"
       },
-      "path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+      "path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
       "practices": [
         {
           "id": "P4.1",
@@ -20019,7 +20019,7 @@
             "S7.17",
             "S7.25"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 52
         },
         {
@@ -20030,7 +20030,7 @@
             "S4.16",
             "S4.22"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 143
         },
         {
@@ -20049,7 +20049,7 @@
             "S4.18",
             "S4.51"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 300
         },
         {
@@ -20060,7 +20060,7 @@
             "S4.53",
             "S4.55"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 522
         },
         {
@@ -20070,7 +20070,7 @@
             "S4.55",
             "S4.30"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 639
         },
         {
@@ -20080,7 +20080,7 @@
             "S4.52",
             "S4.53"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 700
         },
         {
@@ -20092,7 +20092,7 @@
             "S5.28",
             "S4.25"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 755
         },
         {
@@ -20102,7 +20102,7 @@
             "S4.31",
             "S4.45"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 836
         },
         {
@@ -20113,7 +20113,7 @@
             "S4.20",
             "S4.18"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 871
         },
         {
@@ -20125,7 +20125,7 @@
             "S4.24",
             "S7.3"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 961
         },
         {
@@ -20136,7 +20136,7 @@
             "S4.6",
             "S4.9"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 1072
         },
         {
@@ -20146,7 +20146,7 @@
             "S4.21",
             "S7.20"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 1165
         },
         {
@@ -20157,7 +20157,7 @@
             "S4.66",
             "S4.18"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 1201
         },
         {
@@ -20170,14 +20170,14 @@
             "S4.73",
             "S4.77"
           ],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 1298
         },
         {
           "id": "P4.15",
           "title": "Tools & Commands Reference",
           "satisfies_standards": [],
-          "source_path": "constitution\\implementation\\nextjs\\C04-frontend-nextjs.md",
+          "source_path": "constitution/implementation/nextjs/C04-frontend-nextjs.md",
           "source_line": 1333
         }
       ],
@@ -20197,7 +20197,7 @@
         "applies_to": "Both Stacks",
         "paired_with": "C5 — Database Constitution"
       },
-      "path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+      "path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
       "practices": [
         {
           "id": "P5.1",
@@ -20205,7 +20205,7 @@
           "satisfies_standards": [
             "S5.16"
           ],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 50
         },
         {
@@ -20218,7 +20218,7 @@
             "S3.33",
             "S5.27"
           ],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 78
         },
         {
@@ -20227,7 +20227,7 @@
           "satisfies_standards": [
             "S5.12"
           ],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 461
         },
         {
@@ -20238,7 +20238,7 @@
             "S5.12",
             "S5.14"
           ],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 500
         },
         {
@@ -20247,7 +20247,7 @@
           "satisfies_standards": [
             "S5.12"
           ],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 532
         },
         {
@@ -20257,7 +20257,7 @@
             "S5.15",
             "S5.3"
           ],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 594
         },
         {
@@ -20270,7 +20270,7 @@
             "S5.22",
             "S5.28"
           ],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 644
         },
         {
@@ -20285,7 +20285,7 @@
             "S5.37",
             "S5.35"
           ],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 796
         },
         {
@@ -20299,7 +20299,7 @@
             "S5.48",
             "S5.52"
           ],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 919
         },
         {
@@ -20315,7 +20315,7 @@
             "S5.45",
             "S5.57"
           ],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 1019
         },
         {
@@ -20325,21 +20325,21 @@
             "S5.59",
             "S5.61"
           ],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 1104
         },
         {
           "id": "P5.12",
           "title": "Prisma Schema Linter CI Configuration (S5.10, S5.13)",
           "satisfies_standards": [],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 1166
         },
         {
           "id": "P5.13",
           "title": "Tools & Commands Reference",
           "satisfies_standards": [],
-          "source_path": "constitution\\implementation\\prisma-postgresql\\C05-database-prisma.md",
+          "source_path": "constitution/implementation/prisma-postgresql/C05-database-prisma.md",
           "source_line": 1213
         }
       ],
@@ -20352,49 +20352,49 @@
       "id": "RB-01",
       "name": "SEV0 Response Runbook",
       "trigger": "—",
-      "path": "governance\\runbooks\\RB-01-sev0-response.md"
+      "path": "governance/runbooks/RB-01-sev0-response.md"
     },
     {
       "id": "RB-02",
       "name": "SEV1 Response Runbook",
       "trigger": "—",
-      "path": "governance\\runbooks\\RB-02-sev1-response.md"
+      "path": "governance/runbooks/RB-02-sev1-response.md"
     },
     {
       "id": "RB-03",
       "name": "Financial Freeze Runbook",
       "trigger": "** Any incident involving incorrect balances, failed deposits, interest miscalculation, or transaction duplication",
-      "path": "governance\\runbooks\\RB-03-financial-freeze.md"
+      "path": "governance/runbooks/RB-03-financial-freeze.md"
     },
     {
       "id": "RB-04",
       "name": "Database Migration Runbook",
       "trigger": "—",
-      "path": "governance\\runbooks\\RB-04-database-migration.md"
+      "path": "governance/runbooks/RB-04-database-migration.md"
     },
     {
       "id": "RB-05",
       "name": "AI Degradation Runbook",
       "trigger": "—",
-      "path": "governance\\runbooks\\RB-05-ai-degradation.md"
+      "path": "governance/runbooks/RB-05-ai-degradation.md"
     },
     {
       "id": "RB-06",
       "name": "Railway Deployment Runbook",
       "trigger": "—",
-      "path": "governance\\runbooks\\RB-06-railway-deployment.md"
+      "path": "governance/runbooks/RB-06-railway-deployment.md"
     },
     {
       "id": "RB-07",
       "name": "Vercel Rollback Runbook",
       "trigger": "—",
-      "path": "governance\\runbooks\\RB-07-vercel-rollback.md"
+      "path": "governance/runbooks/RB-07-vercel-rollback.md"
     },
     {
       "id": "RB-08",
       "name": "Relay Abort Runbook",
       "trigger": "AI output diverges significantly from approved design",
-      "path": "governance\\runbooks\\RB-08-relay-abort.md"
+      "path": "governance/runbooks/RB-08-relay-abort.md"
     }
   ],
   "adrs": [
@@ -20402,31 +20402,31 @@
       "id": "ADR-000",
       "name": "ADR-{NNN} — {Short Title}",
       "status": "PROPOSED / ACCEPTED / SUPERSEDED / DEPRECATED",
-      "path": "governance\\decisions\\ADR-000-template.md"
+      "path": "governance/decisions/ADR-000-template.md"
     },
     {
       "id": "ADR-001",
       "name": "FundsLink Academy: Angular + FastAPI Stack Assignment",
       "status": "ACCEPTED",
-      "path": "governance\\decisions\\ADR-001-fundslink-stack.md"
+      "path": "governance/decisions/ADR-001-fundslink-stack.md"
     },
     {
       "id": "ADR-002",
       "name": "Maphophe Community System: Next.js Stack Assignment",
       "status": "ACCEPTED",
-      "path": "governance\\decisions\\ADR-002-maphophe-stack.md"
+      "path": "governance/decisions/ADR-002-maphophe-stack.md"
     },
     {
       "id": "ADR-003",
       "name": "KSDRILL Reserve Bank: Angular + FastAPI Stack Assignment",
       "status": "ACCEPTED",
-      "path": "governance\\decisions\\ADR-003-reserve-bank-stack.md"
+      "path": "governance/decisions/ADR-003-reserve-bank-stack.md"
     },
     {
       "id": "ADR-004",
       "name": "SyncUp Creator Platform: Next.js Stack Assignment",
       "status": "ACCEPTED",
-      "path": "governance\\decisions\\ADR-004-syncup-stack.md"
+      "path": "governance/decisions/ADR-004-syncup-stack.md"
     }
   ],
   "hierarchy": [

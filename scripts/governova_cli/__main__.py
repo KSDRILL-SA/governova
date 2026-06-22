@@ -309,5 +309,41 @@ def govscore(
         console.print("[bold green]✓ Governova Certified eligible (≥85)[/]")
 
 
+@app.command()
+def report(
+    output: Annotated[str, typer.Option("--format", help="markdown | json")] = "markdown",
+    out_file: Annotated[
+        Path | None, typer.Option("--out", help="Write the report to a file as well.")
+    ] = None,
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Generate the Board-Level Governance Report (master.md §18.3).
+
+    A one-page, plain-English governance report for non-technical stakeholders:
+    overall score, certification status, red/amber/green per constitutional area,
+    and governance events. In markdown mode, also appended to the GitHub job summary.
+    """
+    import os
+
+    from governova_report import build_report, to_json, to_markdown
+
+    br = build_report(_root(repo_root))
+    rendered = to_json(br) if output.lower() == "json" else to_markdown(br)
+    if output.lower() == "json":
+        console.print_json(rendered)
+    else:
+        console.print(rendered)
+        summary = os.environ.get("GITHUB_STEP_SUMMARY")
+        if summary:
+            try:
+                with open(summary, "a", encoding="utf-8") as fh:
+                    fh.write(rendered + "\n")
+            except OSError:
+                pass
+    if out_file:
+        out_file.write_text(rendered + "\n", encoding="utf-8")
+        console.print(f"[dim]written to {out_file}[/]")
+
+
 if __name__ == "__main__":
     app()

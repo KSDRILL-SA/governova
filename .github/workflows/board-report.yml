@@ -1,0 +1,35 @@
+name: Board Governance Report
+
+# The §18.3 artifact, auto-generated: a one-page, plain-English governance report
+# for the board, the regulator, and the data room — monthly, and on demand.
+
+on:
+  schedule:
+    - cron: "0 9 1 * *" # 09:00 UTC on the 1st of every month
+  workflow_dispatch:
+
+jobs:
+  report:
+    name: Generate the board report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync the Governova engine
+        shell: bash
+        run: uv sync --all-packages
+
+      - name: Generate the Board-Level Governance Report
+        shell: bash
+        run: uv run governova report --out governance-report.md
+
+      - name: Upload the report
+        uses: actions/upload-artifact@v4
+        with:
+          name: board-governance-report
+          path: governance-report.md

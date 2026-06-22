@@ -29,3 +29,20 @@ jobs:
       - name: Governova Guardian verdict
         shell: bash
         run: uv run governova guard --base "${{ github.event.pull_request.base.sha }}"
+
+      # Advisory semantic review — active only when the LLM secrets are configured;
+      # otherwise a clean no-op (the reliable tiers above are unaffected). Never blocks.
+      - name: Advisory semantic review (optional)
+        if: always()
+        shell: bash
+        env:
+          GOVERNOVA_LLM_MODEL: ${{ secrets.GOVERNOVA_LLM_MODEL }}
+          GOVERNOVA_LLM_BASE_URL: ${{ secrets.GOVERNOVA_LLM_BASE_URL }}
+          GOVERNOVA_LLM_API_KEY: ${{ secrets.GOVERNOVA_LLM_API_KEY }}
+        run: >
+          uv run governova-enforce
+          --changed
+          --base "${{ github.event.pull_request.base.sha }}"
+          --mode advisory
+          --semantic
+          --format github

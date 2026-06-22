@@ -345,6 +345,43 @@ def report(
         console.print(f"[dim]written to {out_file}[/]")
 
 
+@app.command(name="semantic-review")
+def semantic_review(
+    paths: Annotated[list[Path], typer.Argument(help="Source files to review.")],
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Advisory semantic review (LLM tier) of the given files.
+
+    Inactive unless an endpoint is configured via the environment
+    (GOVERNOVA_LLM_MODEL / GOVERNOVA_LLM_BASE_URL / GOVERNOVA_LLM_API_KEY). Findings
+    are advisory and never block. Provider-agnostic; the reliable rules are unaffected.
+    """
+    from governova_semantic import from_env, review
+
+    if not from_env().is_configured:
+        console.print(
+            "[yellow]semantic tier inactive[/] — set GOVERNOVA_LLM_MODEL / "
+            "GOVERNOVA_LLM_BASE_URL / GOVERNOVA_LLM_API_KEY to enable it. "
+            "The reliable rules and the gate are unaffected."
+        )
+        return
+    index = _load(_root(repo_root))
+    total = 0
+    for p in paths:
+        if not p.is_file():
+            continue
+        findings = review(p.read_text(encoding="utf-8", errors="replace"), index=index)
+        for f in findings:
+            loc = f"{p}:{f.line}" if f.line else str(p)
+            console.print(f"  [magenta]semantic[/] [bold]{f.standard}[/] {loc} — {f.message}")
+            total += 1
+    console.print(
+        f"[dim]{total} advisory semantic finding(s)[/]"
+        if total
+        else "[green]no semantic findings[/]"
+    )
+
+
 @app.command()
 def bible(
     output: Annotated[str, typer.Option("--format", help="markdown | json")] = "markdown",

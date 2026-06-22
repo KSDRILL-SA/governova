@@ -47,4 +47,5 @@ packages = [
     "governova_score",
     "governova_report",
     "governova_bible",
+    "governova_semantic",
 ]

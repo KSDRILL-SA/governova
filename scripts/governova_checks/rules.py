@@ -130,7 +130,10 @@ RULES: list[Rule] = [
         "AP-S2.10c",
         "S2.10",
         re.compile(
-            r"(?:api[_-]?key|secret|passwd|password|access[_-]?key|private[_-]?key)\s*[:=]\s*['\"][^'\"\s$]{12,}['\"]",
+            # The quoted value must not be an identifier/ENV-name reference
+            # (e.g. "GOVERNOVA_LLM_API_KEY") — only literal-looking secrets.
+            r"(?:api[_-]?key|secret|passwd|password|access[_-]?key|private[_-]?key)\s*[:=]\s*"
+            r"['\"](?![A-Za-z0-9]+(?:_[A-Za-z0-9]+)+['\"])[^'\"\s$]{12,}['\"]",
             re.I,
         ),
         "Possible hardcoded secret. S2.10: secrets come from configuration, never committed to source.",

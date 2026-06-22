@@ -38,6 +38,13 @@ def test_scan_text_clean_code_has_no_findings():
     assert scan_text("const sum = a + b;") == []
 
 
+def test_secret_rule_ignores_env_var_name_constants():
+    # An env-var NAME reference is not a hardcoded secret (precision, not noise).
+    assert not any(f.anti_pattern == "AP-S2.10c" for f in scan_text('API_KEY = "GOVERNOVA_LLM_API_KEY"'))
+    # A literal-looking secret is still flagged.
+    assert any(f.anti_pattern == "AP-S2.10c" for f in scan_text('api_key = "sk9s8d7f0a1b2c3d"'))
+
+
 def test_check_text_keeps_mcp_dict_shape():
     out = check_text("localStorage.setItem('jwt', x);")
     assert out and {"line", "anti_pattern", "standard", "message", "match", "tier", "advisory"} <= set(out[0])

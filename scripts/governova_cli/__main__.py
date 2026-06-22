@@ -232,5 +232,34 @@ def score(
     console.print(f"\n[bold {colour}]Constitution Health Score: {total}/100[/]")
 
 
+@app.command()
+def coverage(
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Enforcement coverage: how much of the constitution is mechanically enforceable.
+
+    Distinct from the Constitution Health Score (which measures the database's own
+    completeness). This measures how many anti-patterns the CI/CD enforcer can detect.
+    """
+    from governova_checks import enforcement_coverage
+
+    index = _load(_root(repo_root))
+    cov = enforcement_coverage(index)
+    t = Table.grid(padding=(0, 2))
+    t.add_row("Rules:", str(cov["rules"]))
+    t.add_row("  blocking (high):", str(cov["blocking_rules"]))
+    t.add_row("  advisory (medium):", str(cov["advisory_rules"]))
+    t.add_row(
+        "Enforceable anti-patterns:",
+        f"{cov['enforceable_anti_patterns']} / {cov['total_anti_patterns']}",
+    )
+    console.print(t)
+    pct = cov["coverage_pct"]
+    colour = "green" if pct >= 50 else "yellow" if pct >= 15 else "cyan"
+    console.print(f"\n[bold {colour}]Enforcement Coverage: {pct}%[/]")
+    if cov["covered"]:
+        console.print(f"[dim]covered: {', '.join(cov['covered'])}[/]")
+
+
 if __name__ == "__main__":
     app()

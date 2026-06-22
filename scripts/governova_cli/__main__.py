@@ -345,5 +345,36 @@ def report(
         console.print(f"[dim]written to {out_file}[/]")
 
 
+@app.command()
+def bible(
+    output: Annotated[str, typer.Option("--format", help="markdown | json")] = "markdown",
+    out_file: Annotated[
+        Path | None, typer.Option("--out", help="Write the System Bible to a file.")
+    ] = None,
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Generate the System Bible (master.md §18.4) — per-file documentation of the codebase.
+
+    Documents every source file: its purpose, public surface, and dependencies —
+    turning the codebase from a black box into something a maintainer can navigate.
+    """
+    from governova_bible import build_bible, to_json, to_markdown
+
+    sb = build_bible(_root(repo_root))
+    rendered = to_json(sb) if output.lower() == "json" else to_markdown(sb)
+    if output.lower() == "json":
+        console.print_json(rendered)
+    elif out_file:
+        console.print(
+            f"[green]System Bible: {sb.total_files} files, {sb.total_loc} LOC, "
+            f"{sb.documented_pct}% documented[/]"
+        )
+    else:
+        console.print(rendered)
+    if out_file:
+        out_file.write_text(rendered + "\n", encoding="utf-8")
+        console.print(f"[dim]written to {out_file}[/]")
+
+
 if __name__ == "__main__":
     app()

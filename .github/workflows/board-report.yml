@@ -24,12 +24,18 @@ jobs:
         shell: bash
         run: uv sync --all-packages
 
-      - name: Generate the Board-Level Governance Report
+      - name: Generate the Board-Level Governance Report (§18.3)
         shell: bash
         run: uv run governova report --out governance-report.md
 
-      - name: Upload the report
+      - name: Generate the System Bible (§18.4)
+        shell: bash
+        run: uv run governova bible --out system-bible.md
+
+      - name: Upload the governance outputs
         uses: actions/upload-artifact@v4
         with:
-          name: board-governance-report
-          path: governance-report.md
+          name: governance-outputs
+          path: |
+            governance-report.md
+            system-bible.md

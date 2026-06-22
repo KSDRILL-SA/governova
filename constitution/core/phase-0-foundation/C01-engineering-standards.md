@@ -2633,6 +2633,124 @@ Silent partial adoption produces a system that looks governed but isn't — the 
 
 ---
 
+## Part 19 — Architectural Discipline (`S1.103`–`S1.107`)
+
+Universal architectural discipline — applicable to any stack, any sector. These standards
+make separation of concerns, data-access boundaries, configuration hygiene, reuse, and
+simplicity first-class constitutional law rather than convention.
+
+---
+
+### S1.103 — Logic Lives in Its Layer
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S1.103 |
+| **Priority**    | High |
+| **Applies To**  | All Stacks · all systems |
+| **Phase**       | Phase 0 — Foundation |
+| **Depends On**  | `S1.2` (logic placement) · `S1.3` (single concern) |
+| **Enforced By** | review · semantic tier · `protocols/build-lifecycle.md` |
+
+**Standard:**
+Business logic lives only in the service/domain layer. Presentation (UI, components, views), transport (routes, controllers, handlers), and data-access layers contain no business rules — they delegate to services. Each layer has one responsibility and does not reach across boundaries.
+
+**Rationale:**
+Logic in the wrong layer cannot be tested, reused, or replaced independently — it couples a business rule to a screen or an endpoint. A button that contains a calculation cannot be reused, and a route that decides policy cannot be governed.
+
+**Anti-Patterns:**
+- `AP-S1.103a` — A business rule (calculation, authorization decision, workflow) implemented inside a UI component, route handler, or data-access call instead of a service.
+
+---
+
+### S1.104 — Data Access Through Repositories
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S1.104 |
+| **Priority**    | High |
+| **Applies To**  | All Stacks · all systems with persistence |
+| **Phase**       | Phase 0 — Foundation |
+| **Depends On**  | `S1.103` · `S2.28` (query discipline) |
+| **Enforced By** | review · semantic tier · reliable-tier rules (raw-SQL detection) |
+
+**Standard:**
+Persistence is reached only through a repository / data-access layer. No raw database client, ORM call, or query is issued directly from UI, routes, or service logic — they call repository methods that own the data contract.
+
+**Rationale:**
+Scattered direct data access makes the data contract un-auditable and un-changeable; one schema change then ripples through the whole codebase. A repository boundary makes persistence swappable and testable, and is the single place data rules are enforced.
+
+**Anti-Patterns:**
+- `AP-S1.104a` — A database/ORM call (raw SQL, `prisma.*`, `psycopg2`, `$queryRaw`) issued outside a repository — from a route, a service, or the UI.
+
+---
+
+### S1.105 — No Hardcoded Configuration or Magic Values
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S1.105 |
+| **Priority**    | High |
+| **Applies To**  | All Stacks · all systems |
+| **Phase**       | Phase 0 — Foundation |
+| **Depends On**  | `S2.10` (config & secrets) · `S1.103` |
+| **Enforced By** | review · semantic tier · reliable-tier rules (secret/DSN detection) |
+
+**Standard:**
+Values that vary by environment, or that carry meaning, are named and sourced from configuration or named constants — never inlined as literals in code. Secrets are configuration, never literals.
+
+**Rationale:**
+A hardcoded value is a deployment-time decision frozen into source: changing it requires a code change and redeploy, and a magic number with no name cannot be understood or audited.
+
+**Anti-Patterns:**
+- `AP-S1.105a` — An environment-specific value, credential, URL, threshold, or magic number inlined as a literal instead of named configuration.
+
+---
+
+### S1.106 — Don't Repeat Yourself; Shared Code Is Shared
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S1.106 |
+| **Priority**    | Standard |
+| **Applies To**  | All Stacks · all systems |
+| **Phase**       | Phase 0 — Foundation |
+| **Depends On**  | `S1.3` (single concern) |
+| **Enforced By** | review · semantic tier |
+
+**Standard:**
+Logic, types, and constants used in more than one place live once in a shared module/library and are imported. Necessary duplication is justified in a comment; unnecessary duplication is forbidden.
+
+**Rationale:**
+Copy-pasted logic drifts — a fix applied to one copy and missed in another is a class of bug that does not exist when there is a single source. Shared definitions keep meaning consistent across the system.
+
+**Anti-Patterns:**
+- `AP-S1.106a` — The same logic, type, or constant copy-pasted across modules instead of extracted into a shared library.
+
+---
+
+### S1.107 — The Simplest Correct Solution
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S1.107 |
+| **Priority**    | Standard |
+| **Applies To**  | All Stacks · all systems |
+| **Phase**       | Phase 0 — Foundation |
+| **Depends On**  | `S1.5` (controlled imperfection) · `protocols/build-lifecycle.md` |
+| **Enforced By** | review · semantic tier |
+
+**Standard:**
+Among solutions that satisfy the requirement and the standards, the simplest and lightest one is the required one. Abstraction, indirection, or generality that no current requirement or standard demands is not added. *Build smart, not hard; make it exist first, then make it beautiful later.*
+
+**Rationale:**
+Unrequired complexity is permanent cost — it must be read, tested, and maintained forever to serve a need that may never arrive. The best solution solves the problem and nothing more.
+
+**Anti-Patterns:**
+- `AP-S1.107a` — Speculative abstraction, premature optimization, or polish added before the foundation exists and passes its lifecycle loop.
+
+---
+
 ## Anti-Patterns Index
 
 All anti-patterns from C1 in one scannable table for fast reference during code review
@@ -2796,10 +2914,11 @@ and constitutional auditing.
 | v1.1 | 2026-06-20 | **Added Part 17 — Dependency & Build Reproducibility (S1.98 — Reproducible Dependency Installs):** a committed lockfile pins the full transitive tree and CI installs frozen (`uv sync --frozen` / `npm ci` / equivalent), failing on lock↔manifest drift; editable/unpinned installs are never the CI path. Anti-pattern AP-S1.98a added. Count 97→98. (C0 §8 amendment A-4; FundsLink Stage-00 hardening evidence generalised — an editable `pip install -e` let a transitive bump red a previously-green main; migrated to `uv` + `--frozen`; Founder L4 approval 2026-06-20.) | An unpinned install resolves at build time, so a transitive upgrade can red a previously-green main with nothing in the diff. A lockfile + frozen CI install makes the dependency tree a reviewed, versioned artifact. |
 
 | v1.2 | 2026-06-21 | **Added Part 18 — Operating-Practice & Adoption Governance (S1.99–S1.102):** S1.99 branch→issue→PR→merge with full issue/PR metadata; S1.100 no-AI-references rule on the GitHub metadata surface; S1.101 characterization tests before any brownfield refactor; S1.102 adoption complete only when satisfied or excepted. Anti-patterns AP-S1.99a–AP-S1.102a added. Count 98→102. (C0 §8 amendment; evidence: metadata-less PRs and an AI co-author found during the v2.0 restructure; brownfield safety; Founder L4 approval 2026-06-21.) | Operating practices are part of the product: an ungoverned workflow and AI-tainted history undermine an AI-governance platform, and unsafe brownfield conversion breaks working systems. |
+| v1.3 | 2026-06-22 | **Added Part 19 — Architectural Discipline (S1.103–S1.107):** S1.103 logic lives in its layer (no business logic in UI/transport/data-access); S1.104 data access through repositories (no raw DB/ORM calls outside a repository); S1.105 no hardcoded configuration or magic values; S1.106 DRY — shared code is shared; S1.107 the simplest correct solution ("build smart, not hard"). Anti-patterns AP-S1.103a–AP-S1.107a added. Count 102→107. (C0 §8 amendment per ADR-005 workstream A; layer/context detection reserved for the semantic tier; Founder L4 approval 2026-06-22.) | The existing corpus encoded process and sector specifics but not the universal architectural discipline every system needs; these make separation of concerns, data-access boundaries, configuration hygiene, reuse, and simplicity first-class law. |
 
 ---
 
-> **LOCKED — v1.2 — 2026-06-21** (amended; originally locked v1.0 2026-05-08)
+> **LOCKED — v1.3 — 2026-06-22** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.

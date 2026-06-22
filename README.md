@@ -7,7 +7,7 @@
 [![Status](https://img.shields.io/badge/Status-LOCKED-red)](docs/vision/master.md)
 [![Version](https://img.shields.io/badge/Version-v2.0-blue)](docs/vision/master.md)
 [![Constitutions](https://img.shields.io/badge/Constitutions-11-purple)](constitution/core/)
-[![Standards](https://img.shields.io/badge/Standards-613-green)](constitution/indexes/standards-index.md)
+[![Standards](https://img.shields.io/badge/Standards-618-green)](constitution/indexes/standards-index.md)
 [![Phases](https://img.shields.io/badge/Phases-4-teal)](framework/phase-model.md)
 [![Locked](https://img.shields.io/badge/Locked-2026--05--22-orange)](docs/vision/master.md)
 
@@ -40,7 +40,7 @@ documentation for every file ever built.
 | 3 — Implementation | `constitution/implementation/` | Stack-specific bindings of core standards |
 | 4 — Domains | `constitution/domains/` | Industry-specific extensions |
 
-**613 live standards** across 11 constitutions (594 locked baseline + 6 ratified C0 §8 amendments).
+**618 live standards** across 11 constitutions (594 locked baseline + ratified C0 §8 amendments).
 
 ## Quick start
 

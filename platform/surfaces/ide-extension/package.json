@@ -1,0 +1,86 @@
+{
+  "name": "governova",
+  "displayName": "Governova",
+  "description": "Constitutional governance for AI-assisted development — standards, inline violation surfacing, and the System Bible, in your editor.",
+  "version": "0.1.0",
+  "publisher": "ksdrill",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Linters", "Programming Languages", "Other"],
+  "main": "./out/extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "governova",
+          "title": "Governova",
+          "icon": "media/governova.svg"
+        }
+      ]
+    },
+    "views": {
+      "governova": [
+        {
+          "id": "governovaStandards",
+          "name": "Standards"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "governova.showStandard",
+        "title": "Governova: Find Standard…"
+      },
+      {
+        "command": "governova.openStandard",
+        "title": "Governova: Open Standard"
+      },
+      {
+        "command": "governova.generateCursorrules",
+        "title": "Governova: Generate .cursorrules"
+      },
+      {
+        "command": "governova.refresh",
+        "title": "Governova: Refresh Index",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "governova.refresh",
+          "when": "view == governovaStandards",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Governova",
+      "properties": {
+        "governova.indexPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to compiled/constitution.json. If empty, Governova searches the workspace, .ksdrill/, and _governance/."
+        },
+        "governova.diagnostics.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Surface reliable-tier constitutional violations as diagnostics."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "typecheck": "tsc --noEmit -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.0"
+  }
+}

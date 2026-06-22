@@ -23,6 +23,9 @@ from typing import Annotated
 import typer
 from governova_checks import DEFAULT_IGNORES, Finding, is_ignored, scan_paths
 from governova_compile.discovery import resolve_repo_root
+from governova_compile.writer import load_index
+from governova_semantic import from_env as semantic_from_env
+from governova_semantic import review as semantic_review
 from rich.console import Console
 
 console = Console()
@@ -134,6 +137,53 @@ def _emit(findings: list[Finding], fmt: Fmt, mode: Mode, root: Path) -> None:
             pass
 
 
+def _run_semantic(scannable: list[Path], fmt: Fmt, root: Path) -> int:
+    """Advisory semantic pass. A no-op (returns 0) when no endpoint is configured.
+
+    Findings are emitted as warnings and never affect the exit code — the reliable
+    tier alone gates the build.
+    """
+    cfg = semantic_from_env()
+    if not cfg.is_configured:
+        if fmt is not Fmt.github:
+            console.print(
+                "[dim]semantic tier inactive — set GOVERNOVA_LLM_* to enable the advisory pass[/]"
+            )
+        return 0
+    if fmt is Fmt.json:
+        return 0  # json output is the reliable-tier machine contract
+    index = load_index(root / "compiled" / "constitution.json")
+    count = 0
+    for p in scannable:
+        try:
+            code = p.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            continue
+        try:
+            rel = p.resolve().relative_to(root.resolve()).as_posix()
+        except ValueError:
+            rel = p.as_posix()
+        for f in semantic_review(code, index=index):
+            if fmt is Fmt.github:
+                print(
+                    f"::warning file={rel},line={f.line or 1}::"
+                    f"{f.standard} (semantic) — {f.message}"
+                )
+            else:
+                loc = f"{rel}:{f.line}" if f.line else rel
+                console.print(
+                    f"  [magenta]semantic[/] [bold]{f.standard}[/] {loc} — {f.message}"
+                )
+            count += 1
+    if fmt is not Fmt.github:
+        console.print(
+            f"[dim]{count} advisory semantic finding(s)[/]"
+            if count
+            else "[dim]semantic tier: no findings[/]"
+        )
+    return count
+
+
 @app.command()
 def main(
     paths: Annotated[
@@ -155,6 +205,13 @@ def main(
     ] = None,
     no_default_ignore: Annotated[
         bool, typer.Option("--no-default-ignore", help="Disable the built-in tests/fixtures ignores.")
+    ] = False,
+    semantic: Annotated[
+        bool,
+        typer.Option(
+            "--semantic",
+            help="Also run the advisory semantic tier (requires an LLM endpoint; never blocks).",
+        ),
     ] = False,
 ) -> None:
     """Scan changed (or given) source files and gate on constitutional violations."""
@@ -193,6 +250,8 @@ def main(
                 f"[bold green]✓[/] constitutional enforcement passed "
                 f"[dim]({len(scannable)} file(s) scanned)[/]"
             )
+        if semantic:
+            _run_semantic(scannable, fmt, root)
         return
 
     if fmt is not Fmt.github:
@@ -201,6 +260,9 @@ def main(
             f"[dim]({len(blocking)} blocking, {len(findings) - len(blocking)} advisory)[/]"
         )
     _emit(findings, fmt, mode, root)
+
+    if semantic:
+        _run_semantic(scannable, fmt, root)
 
     # Block mode fails only on high-confidence (blocking) findings; medium-confidence
     # findings are advisory and never fail the build.

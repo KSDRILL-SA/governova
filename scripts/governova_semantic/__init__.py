@@ -8,6 +8,7 @@ available. It augments the deterministic rules; it never blocks and never change
 from __future__ import annotations
 
 from governova_semantic.config import SemanticConfig, from_env
+from governova_semantic.describe import describe_code
 from governova_semantic.review import (
     SemanticFinding,
     build_messages,
@@ -20,6 +21,7 @@ __all__ = [
     "SemanticConfig",
     "SemanticFinding",
     "build_messages",
+    "describe_code",
     "from_env",
     "parse_findings",
     "relevant_standards",

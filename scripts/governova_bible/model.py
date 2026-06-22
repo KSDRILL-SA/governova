@@ -20,6 +20,7 @@ class FileEntry:
     purpose: str  # "" when none could be extracted
     public: list[str] = field(default_factory=list)
     dependencies: list[str] = field(default_factory=list)
+    semantic_summary: str = ""  # filled by the semantic tier when enabled
 
     @property
     def area(self) -> str:

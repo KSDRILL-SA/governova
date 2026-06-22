@@ -15,6 +15,7 @@ from governova_checks.coverage import (
 from governova_checks.gather import (
     DEFAULT_IGNORES,
     SKIP_DIRS,
+    changed_files,
     is_ignored,
     iter_source_files,
 )
@@ -47,6 +48,7 @@ __all__ = [
     "validate_rules",
     "DEFAULT_IGNORES",
     "SKIP_DIRS",
+    "changed_files",
     "is_ignored",
     "iter_source_files",
 ]

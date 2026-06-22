@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
-from governova_checks import DEFAULT_IGNORES, Finding, is_ignored, scan_paths
+from governova_checks import DEFAULT_IGNORES, Finding, changed_files, is_ignored, scan_paths
 from governova_compile.discovery import resolve_repo_root
 from governova_compile.writer import load_index
 from governova_semantic import from_env as semantic_from_env
@@ -56,20 +56,12 @@ def _root() -> Path:
 
 
 def _changed_files(base: str, root: Path) -> list[Path]:
-    """Files added/copied/modified/renamed vs `base` (three-dot = since merge-base)."""
+    """Files changed vs `base`; exits cleanly if git cannot compute the diff."""
     try:
-        out = subprocess.run(
-            ["git", "diff", "--name-only", "--diff-filter=ACMR", f"{base}...HEAD"],
-            cwd=root,
-            capture_output=True,
-            text=True,
-            check=True,
-            timeout=30,
-        ).stdout
+        return changed_files(base, root)
     except (subprocess.SubprocessError, OSError) as exc:
         err_console.print(f"[bold red]error:[/] could not compute changed files vs '{base}': {exc}")
         raise typer.Exit(code=2) from exc
-    return [root / line.strip() for line in out.splitlines() if line.strip()]
 
 
 def _level(finding: Finding, mode: Mode) -> str:

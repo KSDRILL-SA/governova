@@ -49,4 +49,5 @@ packages = [
     "governova_bible",
     "governova_semantic",
     "governova_dashboard",
+    "governova_guardian",
 ]

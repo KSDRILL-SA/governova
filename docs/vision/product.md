@@ -12,7 +12,7 @@
 | **Date** | 2026-05-22 |
 | **Supersedes** | v1.0 (sharpened with strategy insights: wedge sequencing, honest detection tiers, configurable relay, concrete traceability) |
 | **Author** | Maluleke Kurhula Success, Founder |
-| **Companion to** | `GOVERNOVA-MASTER.md` (architecture) · `GOVERNOVA-STRATEGY.md` (thesis + risks) · `CLAUDE-CODE-INSTRUCTIONS.md` (build) |
+| **Companion to** | `docs/vision/master.md` (architecture) · `docs/vision/strategy.md` (thesis + risks) · `governance/decisions/RESTRUCTURE-v2.0.md` (build history) |
 
 ---
 
@@ -28,7 +28,7 @@ governance problem, and how it expands from one tool into a platform used everyw
 deliberately honest about what is buildable today versus what is the destination — because a
 product document that confuses ambition with reality is the kind that gets a team building
 the wrong thing. Where something is aspirational, it says so. The full risk analysis lives in
-`GOVERNOVA-STRATEGY.md`; this document stays focused on the product itself.
+`docs/vision/strategy.md`; this document stays focused on the product itself.
 
 ---
 
@@ -547,8 +547,8 @@ provable — then let every organisation on earth pull you into the rest.*
 
 ---
 
-*This is a living product document, paired with `GOVERNOVA-MASTER.md` (architecture),
-`GOVERNOVA-STRATEGY.md` (thesis and risks), and `CLAUDE-CODE-INSTRUCTIONS.md` (build). Product
+*This is a living product document, paired with `docs/vision/master.md` (architecture),
+`docs/vision/strategy.md` (thesis and risks), and `governance/decisions/RESTRUCTURE-v2.0.md` (build history). Product
 decisions must reconcile with what is written here.*
 
 *v2.0 — 2026-05-22 — Maluleke Kurhula Success, Founder, KSDRILL SA*

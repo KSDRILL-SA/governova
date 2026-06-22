@@ -12,7 +12,7 @@
 | **Date** | 2026-05-22 |
 | **Author** | Maluleke Kurhula Success, Founder |
 | **Reads** | Investors · Enterprise buyers · Co-founders · The founder himself |
-| **Companion to** | `GOVERNOVA-MASTER.md` (architecture) · `GOVERNOVA-PRODUCT.md` (product) · `CLAUDE-CODE-INSTRUCTIONS.md` (build) |
+| **Companion to** | `docs/vision/master.md` (architecture) · `docs/vision/product.md` (product) · `governance/decisions/RESTRUCTURE-v2.0.md` (build history) |
 
 ---
 
@@ -113,7 +113,7 @@ the deepest version first.
 
 ## §4 — The Wedge: Win Narrow Before Going Wide
 
-The nine-surface, eight-domain, all-sizes vision in `GOVERNOVA-PRODUCT.md` is correct as a
+The nine-surface, eight-domain, all-sizes vision in `docs/vision/product.md` is correct as a
 *destination.* It is wrong as a *starting point.* Every platform that won started as a
 sharp tool for one user with one painful problem, then expanded. Slack was internal chat.
 Stripe was seven lines of payment code. Notion was notes.

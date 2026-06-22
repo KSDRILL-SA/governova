@@ -19,4 +19,4 @@ Restructure / migration records use a descriptive `RESTRUCTURE-{version}.md` nam
 
 ## Migration
 All ADRs migrated from original `adrs/` folder.
-`CLAUDE-CODE-INSTRUCTIONS.md` archived here as `RESTRUCTURE-v2.0.md`.
+The v2.0 restructure specification is archived here as `RESTRUCTURE-v2.0.md`.

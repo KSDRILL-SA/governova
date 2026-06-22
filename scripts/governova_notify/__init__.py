@@ -14,12 +14,13 @@ import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 ENV_WEBHOOK_URL = "GOVERNOVA_WEBHOOK_URL"
 ENV_TIMEOUT = "GOVERNOVA_WEBHOOK_TIMEOUT"
 
 # A transport takes (url, payload, timeout) and returns True on success.
-Transport = Callable[[str, dict, float], bool]
+Transport = Callable[[str, dict[str, Any], float], bool]
 
 
 @dataclass(frozen=True)
@@ -41,14 +42,14 @@ def from_env(env: dict[str, str] | None = None) -> NotifyConfig:
     return NotifyConfig(webhook_url=e.get(ENV_WEBHOOK_URL) or None, timeout=timeout)
 
 
-def urllib_transport(url: str, payload: dict, timeout: float) -> bool:
+def urllib_transport(url: str, payload: dict[str, Any], timeout: float) -> bool:
     data = json.dumps(payload).encode("utf-8")
     request = urllib.request.Request(
         url, data=data, headers={"Content-Type": "application/json"}, method="POST"
     )
     try:
         with urllib.request.urlopen(request, timeout=timeout) as resp:
-            return 200 <= resp.status < 300
+            return bool(200 <= resp.status < 300)
     except (urllib.error.URLError, OSError):
         return False
 
@@ -62,7 +63,7 @@ def notify(
 ) -> bool:
     """Post the Guardian verdict to the webhook. Returns False when inactive or on error."""
     cfg = config or from_env()
-    if not cfg.is_configured:
+    if not cfg.is_configured or cfg.webhook_url is None:
         return False
     from governova_guardian import build_verdict, to_markdown
 

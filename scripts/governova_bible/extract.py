@@ -47,12 +47,12 @@ def _extract_python(text: str) -> tuple[str, list[str], list[str]]:
     for node in tree.body:
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and not node.name.startswith("_"):
             public.append(node.name)
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            for a in node.names:
+    for sub in ast.walk(tree):
+        if isinstance(sub, ast.Import):
+            for a in sub.names:
                 deps.add(a.name.split(".", 1)[0])
-        elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
-            deps.add(node.module.split(".", 1)[0])
+        elif isinstance(sub, ast.ImportFrom) and sub.module and sub.level == 0:
+            deps.add(sub.module.split(".", 1)[0])
     return purpose, public, sorted(deps)
 
 

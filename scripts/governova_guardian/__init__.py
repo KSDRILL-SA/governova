@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from governova_checks import (
     DEFAULT_IGNORES,
@@ -30,7 +31,7 @@ class GuardianVerdict:
     files_scanned: int
     findings: list[Finding]
     score: GovernovaScore
-    coverage: dict
+    coverage: dict[str, Any]
     generated_on: str = ""
 
     @property

@@ -47,6 +47,6 @@ def urllib_transport(config: SemanticConfig, messages: list[dict[str, str]]) -> 
     except (urllib.error.URLError, OSError, ValueError) as exc:
         raise SemanticUnavailableError(f"semantic endpoint unreachable: {exc}") from exc
     try:
-        return body["choices"][0]["message"]["content"]
+        return str(body["choices"][0]["message"]["content"])
     except (KeyError, IndexError, TypeError) as exc:
         raise SemanticUnavailableError("unexpected response shape from semantic endpoint") from exc

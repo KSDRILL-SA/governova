@@ -14,7 +14,7 @@ import re
 from dataclasses import dataclass
 
 from governova_compile.discovery import resolve_repo_root
-from governova_compile.schema import CompiledIndex
+from governova_compile.schema import CompiledIndex, Standard
 from governova_compile.writer import load_index
 
 from governova_semantic.client import SemanticUnavailableError, Transport, urllib_transport
@@ -33,17 +33,17 @@ class SemanticFinding:
     advisory: bool = True
 
 
-def _all_standards(index: CompiledIndex) -> list:
+def _all_standards(index: CompiledIndex) -> list[Standard]:
     return [s for c in index.constitutions for s in c.standards]
 
 
-def relevant_standards(index: CompiledIndex, code: str, limit: int = 12) -> list:
+def relevant_standards(index: CompiledIndex, code: str, limit: int = 12) -> list[Standard]:
     """Pick the standards most likely relevant to `code` by title-word overlap.
 
     A cheap, deterministic pre-filter that keeps the prompt grounded and bounded.
     """
     tokens = set(_WORD.findall(code.lower()))
-    scored: list[tuple[int, object]] = []
+    scored: list[tuple[int, Standard]] = []
     for s in _all_standards(index):
         title_words = set(_WORD.findall(s.title.lower()))
         overlap = len(title_words & tokens)
@@ -53,7 +53,7 @@ def relevant_standards(index: CompiledIndex, code: str, limit: int = 12) -> list
     return [s for _, s in scored[:limit]]
 
 
-def build_messages(code: str, standards: list) -> list[dict[str, str]]:
+def build_messages(code: str, standards: list[Standard]) -> list[dict[str, str]]:
     catalogue = "\n".join(f"- {s.id}: {s.title} — {s.statement}" for s in standards)
     system = (
         "You are a constitutional code reviewer. You are given a set of governance "
@@ -95,7 +95,7 @@ def parse_findings(content: str, allowed_ids: set[str]) -> list[SemanticFinding]
 
 def review(
     code: str,
-    standards: list | None = None,
+    standards: list[Standard] | None = None,
     *,
     index: CompiledIndex | None = None,
     config: SemanticConfig | None = None,

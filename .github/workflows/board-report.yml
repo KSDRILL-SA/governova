@@ -44,3 +44,10 @@ jobs:
             governance-report.md
             system-bible.md
             dashboard.html
+
+      # No-op unless the GOVERNOVA_WEBHOOK_URL secret is set.
+      - name: Notify chat (optional)
+        shell: bash
+        env:
+          GOVERNOVA_WEBHOOK_URL: ${{ secrets.GOVERNOVA_WEBHOOK_URL }}
+        run: uv run governova notify --base "HEAD~1"

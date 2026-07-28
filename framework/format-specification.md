@@ -33,6 +33,39 @@ Standard IDs are **permanent**. Once assigned, an ID is never reused.
 A deprecated standard is marked `DEPRECATED` in its rule field and retained
 with its deprecation record. It is never deleted. It is never reassigned.
 
+## Domain standard ID format (Layer 4)
+
+A domain extension adds industry-specific standards **on top of** the universal core.
+Domain standards carry their own namespace so that a domain can never consume a core
+constitution number, and so a community-contributed domain is distinguishable from
+ratified core law at a glance:
+
+```
+D-{DOMAIN}.{N} — {title}
+Extends:      S{C}.{N} — the core standard(s) this builds on (mandatory)
+Applies To:   [all systems in domain | specific stack]
+Rule:         [the additional requirement the industry imposes]
+Rationale:    [why the core alone is insufficient here]
+Anti-pattern: AP-D-{DOMAIN}.{N}{letter} — [what failure looks like]
+```
+
+Where `{DOMAIN}` is the upper-case domain identifier from the registry in
+`constitution/domains/README.md` (e.g. `FINTECH`, `GOVTECH`).
+
+Domain standards use the **same block shape** as core standards — attribute table plus
+`**Standard:**` / `**Rationale:**` / `**Anti-Patterns:**` labelled blocks — so one format
+governs Layer 2 and Layer 4. Two rules are specific to Layer 4:
+
+1. **Every domain standard declares `**Extends:**`** — at least one core standard it
+   builds on. A domain standard with no anchor cannot be conflict-checked against the
+   core, and is a sign the standard belongs in Layer 2 instead.
+2. **A domain may raise a floor the core sets, never lower one.** Every document ends
+   with a conflict-analysis table naming each core standard it interacts with and the
+   resolution.
+
+Domains have no phase and no hierarchy rank: a domain extends the whole core rather
+than sitting at one point within it.
+
 ## Implementation binding format
 
 When a universal standard is bound to a specific stack:

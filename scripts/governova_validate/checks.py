@@ -178,6 +178,67 @@ def check_standard_completeness(index: CompiledIndex) -> list[IntegrityIssue]:
     return issues
 
 
+def check_domain_extensions(index: CompiledIndex) -> list[IntegrityIssue]:
+    """Layer 4 discipline: a domain standard must extend the core, not float free.
+
+    A domain extension exists to add what an industry requires *on top of* the
+    universal core (master.md §9). A domain standard that declares no core
+    standard it extends has no anchor — it cannot be conflict-checked against the
+    core, and it is indistinguishable from a standard that belongs in Layer 2.
+    Each one must also carry its own namespace, rationale, and anti-pattern.
+    """
+    core_ids = {std.id for c in index.constitutions for std in c.standards}
+    issues: list[IntegrityIssue] = []
+
+    for domain in index.domains:
+        for std in domain.standards:
+            if not std.id.startswith(f"{domain.id}."):
+                issues.append(
+                    IntegrityIssue(
+                        severity=Severity.SEV1,
+                        code="domain-namespace-mismatch",
+                        message=f"{std.id} is declared in {domain.id} but uses another namespace.",
+                        source_path=std.source_path,
+                        source_line=std.source_line,
+                    )
+                )
+            extended = [r.standard_id for r in std.depends_on if r.standard_id in core_ids]
+            if not extended:
+                issues.append(
+                    IntegrityIssue(
+                        severity=Severity.SEV2,
+                        code="domain-extends-nothing",
+                        message=(
+                            f"{std.id} declares no core standard it extends "
+                            f"(master.md §9 — a domain adds to the universal core)."
+                        ),
+                        source_path=std.source_path,
+                        source_line=std.source_line,
+                    )
+                )
+            if not std.rationale:
+                issues.append(
+                    IntegrityIssue(
+                        severity=Severity.SEV3,
+                        code="missing-rationale",
+                        message=f"{std.id} has no rationale (C0 §3.2 SR-2).",
+                        source_path=std.source_path,
+                        source_line=std.source_line,
+                    )
+                )
+            if not std.anti_patterns:
+                issues.append(
+                    IntegrityIssue(
+                        severity=Severity.SEV3,
+                        code="missing-anti-pattern",
+                        message=f"{std.id} has no anti-pattern (C0 §3.2 SR-3).",
+                        source_path=std.source_path,
+                        source_line=std.source_line,
+                    )
+                )
+    return issues
+
+
 ALL_CHECKS = (
     check_references,
     check_anti_patterns,
@@ -185,4 +246,5 @@ ALL_CHECKS = (
     check_hierarchy,
     check_phases,
     check_standard_completeness,
+    check_domain_extensions,
 )

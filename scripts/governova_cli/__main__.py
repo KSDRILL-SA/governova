@@ -70,9 +70,32 @@ def stats(
     t.add_row("Standards:", str(len(standards)))
     t.add_row("Anti-patterns:", str(aps))
     t.add_row("Implementation bindings:", str(bindings))
+    domain_standards = [s for d in index.domains for s in d.standards]
+    t.add_row("Domains (Layer 4):", str(len(index.domains)))
+    t.add_row("Domain standards:", str(len(domain_standards)))
     t.add_row("Runbooks:", str(len(index.runbooks)))
     t.add_row("ADRs:", str(len(index.adrs)))
     t.add_row("Source commit:", index.source_commit_sha or "—")
+    console.print(t)
+
+
+@app.command()
+def domains(
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """List the Layer 4 domain extensions and the standards each adds to the core."""
+    index = _load(_root(repo_root))
+    if not index.domains:
+        console.print("[yellow]No domain extensions compiled.[/yellow]")
+        return
+    t = Table("Domain", "Name", "Standards", "Regulatory basis", box=None, pad_edge=False)
+    for domain in index.domains:
+        t.add_row(
+            domain.id,
+            domain.name,
+            str(len(domain.standards)),
+            " · ".join(domain.regulatory_basis) or "—",
+        )
     console.print(t)
 
 

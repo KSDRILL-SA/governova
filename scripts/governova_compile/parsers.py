@@ -28,6 +28,13 @@ from governova_compile.schema import (
 # ─── Regexes ─────────────────────────────────────────────────────────────────
 
 STANDARD_HEADING = re.compile(r"^S(?P<c>\d+)\.(?P<n>\d+)\s*[-—–]\s*(?P<title>.+)$")
+# Layer 4 domain standard heading: `### D-FINTECH.1 — Monetary values are exact`.
+DOMAIN_STANDARD_HEADING = re.compile(
+    r"^(?P<id>D-[A-Z][A-Z0-9-]*\.\d+)\s*[-—–]\s*(?P<title>.+)$"
+)
+DOMAIN_ANTI_PATTERN_LINE = re.compile(
+    r"`?(?P<id>AP-D-[A-Z][A-Z0-9-]*\.\d+[a-z])`?\s*[-—–]\s*(?P<desc>.+)$"
+)
 # A range/group heading like `S8.4–S8.8 — Additional Platform Standards`. These
 # are section headers for grouped standards; the individuals live in blockquotes.
 RANGE_HEADING = re.compile(r"^S\d+\.\d+\s*[-—–]\s*S\d+\.\d+")
@@ -186,6 +193,111 @@ def parse_standard(section: Section, constitution_id: ConstitutionId) -> Standar
         cross_references=cross_references,
         source_path="",  # filled by caller
         source_line=section.line_start + 1,  # 1-indexed
+    )
+
+
+def parse_domain_anti_patterns(raw_block: str, parent_id: str) -> list[AntiPattern]:
+    """Parse a domain standard's `**Anti-Patterns:**` block (`AP-D-{DOMAIN}.{N}{x}`)."""
+    results: list[AntiPattern] = []
+    for line in raw_block.splitlines():
+        stripped = line.strip().lstrip("-* ").strip()
+        m = DOMAIN_ANTI_PATTERN_LINE.search(stripped)
+        if m:
+            results.append(
+                AntiPattern(
+                    id=m.group("id"),
+                    description=m.group("desc").strip(),
+                    parent_standard_id=parent_id,
+                )
+            )
+    return results
+
+
+def parse_domain_standard(section: Section, domain_id: str) -> Standard | None:
+    """Parse one `### D-{DOMAIN}.{N} — Title` section into a Standard.
+
+    Domain standards use the same block shape as core standards (attribute table
+    plus `**Standard:**` / `**Rationale:**` / `**Anti-Patterns:**` labelled blocks)
+    so one format specification covers Layer 2 and Layer 4. The domain-specific
+    part is `**Extends:**` — the core standards this domain standard builds on,
+    captured as `depends_on` so the reference graph spans both layers.
+    """
+    m = DOMAIN_STANDARD_HEADING.match(section.heading.text)
+    if not m:
+        return None
+
+    sid = m.group("id")
+    if not sid.startswith(f"{domain_id}."):
+        return None  # a heading from another domain's namespace — not ours to claim
+
+    attrs = parse_attribute_table(section.body_lines)
+    blocks = parse_labeled_blocks(section.body_lines)
+
+    statement = blocks.get("standard", "").strip() or _fallback_statement(section.body_lines)
+    extends = parse_references(
+        blocks.get("extends", "") or attrs.get("extends", "") or attrs.get("depends_on", "")
+    )
+
+    return Standard(
+        id=sid,
+        title=m.group("title").strip(),
+        constitution_id=domain_id,
+        priority=parse_priority(attrs.get("priority", "")) or Priority.STANDARD,
+        applies_to=attrs.get("applies_to", "").strip() or "All systems in domain",
+        phase=None,  # a domain extends the whole core, not one phase of it
+        phase_label=None,
+        depends_on=extends,
+        enforced_by=parse_enforced_by(attrs.get("enforced_by", "")),
+        statement=statement,
+        rationale=blocks.get("rationale", "").strip(),
+        anti_patterns=parse_domain_anti_patterns(
+            blocks.get("anti-patterns", "") or blocks.get("anti_patterns", ""), sid
+        ),
+        cross_references=parse_references(
+            blocks.get("cross-references", "") or blocks.get("cross_references", "")
+        ),
+        source_path="",  # filled by caller
+        source_line=section.line_start + 1,
+    )
+
+
+def parse_domain_constitution(
+    text: str,
+    *,
+    entry_id: str,
+    name: str,
+    slug: str,
+    regulatory_basis: list[str],
+    reference_systems: list[str],
+    path: str,
+) -> Constitution:
+    """Parse a Layer 4 domain extension document into a Constitution."""
+    standards: list[Standard] = []
+    seen: set[str] = set()
+
+    for section in slice_sections(text, level=3):
+        std = parse_domain_standard(section, entry_id)
+        if std is None or std.id in seen:
+            continue
+        std.source_path = path
+        standards.append(std)
+        seen.add(std.id)
+
+    standards.sort(key=lambda s: int(s.id.rsplit(".", 1)[1]))
+
+    return Constitution(
+        id=entry_id,
+        number=99,
+        name=name,
+        phase=None,
+        slug=slug,
+        regulatory_basis=regulatory_basis,
+        reference_systems=reference_systems,
+        header=parse_header(text),
+        path=path,
+        hierarchy_rank=None,
+        binds_implementation=False,
+        standards=standards,
     )
 
 

@@ -17,7 +17,7 @@ from governova_compile.discovery import (
     resolve_repo_root,
 )
 from governova_compile.metadata import parse_adr, parse_implementation, parse_runbook
-from governova_compile.parsers import parse_constitution
+from governova_compile.parsers import parse_constitution, parse_domain_constitution
 from governova_compile.schema import (
     ADR,
     CompiledIndex,
@@ -97,19 +97,16 @@ def compile_index(repo_root: Path | None = None) -> CompiledIndex:
         )
 
     domains: list[Constitution] = []
-    for dpath in find_domain_constitutions(root):
-        # Domain constitutions use the D-{DOMAIN} format; we parse standards
-        # generically. Phase/rank are unknown for domains, left None.
+    for domain_entry, dpath in find_domain_constitutions(root):
         domains.append(
-            parse_constitution(
+            parse_domain_constitution(
                 _read(dpath),
-                constitution_id="C99",  # placeholder; domains are not numbered C0-10
-                number=99,
-                name=dpath.stem,
-                phase=None,
+                entry_id=domain_entry.id,
+                name=domain_entry.name,
+                slug=domain_entry.slug,
+                regulatory_basis=list(domain_entry.regulatory_basis),
+                reference_systems=list(domain_entry.reference_systems),
                 path=dpath.relative_to(root).as_posix(),
-                hierarchy_rank=None,
-                binds_implementation=False,
             )
         )
 
@@ -136,6 +133,10 @@ def compile_index(repo_root: Path | None = None) -> CompiledIndex:
             len(s.anti_patterns) for c in constitutions for s in c.standards
         ),
         bindings_extracted=sum(len(i.practices) + len(i.bindings) for i in implementations),
+        domain_standards_extracted=sum(len(d.standards) for d in domains),
+        domain_anti_patterns_extracted=sum(
+            len(s.anti_patterns) for d in domains for s in d.standards
+        ),
     )
 
     index = CompiledIndex(

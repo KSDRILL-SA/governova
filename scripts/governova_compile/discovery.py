@@ -185,6 +185,49 @@ IMPLEMENTATION_REGISTRY: tuple[ImplementationEntry, ...] = (
 
 
 @dataclass(frozen=True)
+class DomainEntry:
+    """Static metadata for one Layer 4 domain extension, from master.md §9.1.
+
+    `slug` is the folder under `constitution/domains/`; `id` is the constitutional
+    identity (`D-{DOMAIN}`) that prefixes every standard the domain declares.
+    """
+
+    slug: str
+    id: str
+    name: str
+    regulatory_basis: tuple[str, ...]
+    reference_systems: tuple[str, ...]
+
+
+# master.md §9.1 (domain registry). A domain is compiled only when its folder
+# contains a constitution document; the registry entry supplies its identity.
+DOMAIN_REGISTRY: tuple[DomainEntry, ...] = (
+    DomainEntry(
+        "fintech",
+        "D-FINTECH",
+        "Financial Technology",
+        ("PCI-DSS", "FICA", "FATF"),
+        ("FundsLink Academy", "KSDRILL Reserve Bank"),
+    ),
+    DomainEntry(
+        "govtech",
+        "D-GOVTECH",
+        "Government Technology",
+        ("POPIA", "GDPR-adjacent"),
+        ("Maphophe",),
+    ),
+    DomainEntry("edtech", "D-EDTECH", "Education Technology", ("FERPA", "COPPA"), ("FundsLink Academy",)),
+    DomainEntry("saas", "D-SAAS", "SaaS / B2B", (), ("SyncUp",)),
+    DomainEntry("healthtech", "D-HEALTHTECH", "Health Technology", ("HIPAA-equivalent", "NHI Act"), ()),
+    DomainEntry("ecommerce", "D-ECOMMERCE", "E-Commerce", ("PCI-DSS", "Consumer protection"), ()),
+    DomainEntry("iot", "D-IOT", "IoT / Embedded", ("IEC 62443", "ETSI EN 303 645"), ()),
+    DomainEntry("ai-ml", "D-AIML", "AI / ML Systems", ("EU AI Act", "NIST AI RMF"), ()),
+)
+
+DOMAIN_BY_SLUG: dict[str, DomainEntry] = {d.slug: d for d in DOMAIN_REGISTRY}
+
+
+@dataclass(frozen=True)
 class FrameworkEntry:
     id: str
     title: str
@@ -264,12 +307,24 @@ def find_adrs(repo_root: Path) -> list[Path]:
     return sorted(p for p in adr_dir.glob("ADR-*.md") if p.is_file())
 
 
-def find_domain_constitutions(repo_root: Path) -> list[Path]:
-    """Find any domain constitution documents (Layer 4). May be empty."""
+def find_domain_constitutions(repo_root: Path) -> list[tuple[DomainEntry, Path]]:
+    """Find Layer 4 domain constitution documents, paired with their registry identity.
+
+    A domain folder holding only its README is a declared-but-unwritten domain and
+    is skipped. A document in a folder with no registry entry is skipped too — a
+    domain gets its constitutional identity from `DOMAIN_REGISTRY`, never from its
+    filename, so identities cannot be minted by dropping in a file.
+    """
     domain_dir = repo_root / "constitution" / "domains"
     if not domain_dir.is_dir():
         return []
-    # Domain constitutions follow the D-{DOMAIN}.md naming or *-constitution.md.
-    return sorted(
-        p for p in domain_dir.rglob("*.md") if p.is_file() and p.name.lower() != "readme.md"
-    )
+
+    found: list[tuple[DomainEntry, Path]] = []
+    for path in sorted(domain_dir.rglob("*.md")):
+        if not path.is_file() or path.name.lower() == "readme.md":
+            continue
+        slug = path.parent.name
+        entry = DOMAIN_BY_SLUG.get(slug)
+        if entry is not None:
+            found.append((entry, path))
+    return found

@@ -50,9 +50,9 @@
         "id": {
           "examples": [
             "AP-S1.1a",
-            "AP-S3.14b"
+            "AP-D-FINTECH.1a"
           ],
-          "pattern": "^AP-S\\d+\\.\\d+[a-z]$",
+          "pattern": "^AP-(?:S\\d+\\.\\d+|D-[A-Z][A-Z0-9-]*\\.\\d+)[a-z]$",
           "title": "Id",
           "type": "string"
         },
@@ -65,9 +65,9 @@
           "description": "The standard this anti-pattern violates.",
           "examples": [
             "S1.1",
-            "S3.14"
+            "D-FINTECH.1"
           ],
-          "pattern": "^S\\d+\\.\\d+$",
+          "pattern": "^(?:S\\d+\\.\\d+|D-[A-Z][A-Z0-9-]*\\.\\d+)$",
           "title": "Parent Standard Id",
           "type": "string"
         }
@@ -82,20 +82,19 @@
     },
     "Constitution": {
       "additionalProperties": false,
-      "description": "A core constitution document (C00–C10) or a domain extension.",
+      "description": "A core constitution document (C00–C10) or a Layer 4 domain extension.\n\nDomains reuse this model so downstream consumers iterate core and domain\ndocuments uniformly. A domain is identified by `id` matching `D-{DOMAIN}`,\ncarries `slug`, `regulatory_basis`, and `reference_systems`, and has no\nphase or hierarchy rank — it extends the whole core rather than sitting\nat one point in it.",
       "properties": {
         "id": {
           "examples": [
-            "C00",
             "C01",
-            "C10"
+            "D-FINTECH"
           ],
-          "pattern": "^C\\d{2}$",
+          "pattern": "^(?:C\\d{2}|D-[A-Z][A-Z0-9-]*)$",
           "title": "Id",
           "type": "string"
         },
         "number": {
-          "description": "Numeric constitution number (0–99).",
+          "description": "Numeric constitution number (0–99). 99 for domains.",
           "minimum": 0,
           "title": "Number",
           "type": "integer"
@@ -114,7 +113,36 @@
             }
           ],
           "default": null,
-          "description": "None for C0; otherwise 0–3."
+          "description": "None for C0 and domains; else 0–3."
+        },
+        "slug": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Domain folder slug, e.g. 'fintech'. None for core constitutions.",
+          "title": "Slug"
+        },
+        "regulatory_basis": {
+          "description": "Regulations the domain encodes, e.g. ['PCI-DSS', 'FICA']. Domains only.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Regulatory Basis",
+          "type": "array"
+        },
+        "reference_systems": {
+          "description": "Reference systems that seeded the domain. Domains only.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Reference Systems",
+          "type": "array"
         },
         "header": {
           "$ref": "#/$defs/DocumentHeader"
@@ -466,6 +494,16 @@
           "title": "Bindings Extracted",
           "type": "integer"
         },
+        "domain_standards_extracted": {
+          "default": 0,
+          "title": "Domain Standards Extracted",
+          "type": "integer"
+        },
+        "domain_anti_patterns_extracted": {
+          "default": 0,
+          "title": "Domain Anti Patterns Extracted",
+          "type": "integer"
+        },
         "references_resolved": {
           "default": 0,
           "title": "References Resolved",
@@ -581,9 +619,9 @@
         "standard_id": {
           "examples": [
             "S1.1",
-            "S3.14"
+            "D-FINTECH.1"
           ],
-          "pattern": "^S\\d+\\.\\d+$",
+          "pattern": "^(?:S\\d+\\.\\d+|D-[A-Z][A-Z0-9-]*\\.\\d+)$",
           "title": "Standard Id",
           "type": "string"
         },
@@ -661,9 +699,9 @@
         "id": {
           "examples": [
             "S1.1",
-            "S3.14"
+            "D-FINTECH.1"
           ],
-          "pattern": "^S\\d+\\.\\d+$",
+          "pattern": "^(?:S\\d+\\.\\d+|D-[A-Z][A-Z0-9-]*\\.\\d+)$",
           "title": "Id",
           "type": "string"
         },
@@ -672,13 +710,12 @@
           "type": "string"
         },
         "constitution_id": {
-          "description": "The owning constitution, e.g. 'C01'.",
+          "description": "The owning document — a core constitution ('C01') or a domain ('D-FINTECH').",
           "examples": [
-            "C00",
             "C01",
-            "C10"
+            "D-FINTECH"
           ],
-          "pattern": "^C\\d{2}$",
+          "pattern": "^(?:C\\d{2}|D-[A-Z][A-Z0-9-]*)$",
           "title": "Constitution Id",
           "type": "string"
         },
@@ -788,10 +825,10 @@
     }
   },
   "additionalProperties": false,
-  "description": "Machine-readable form of the Governova constitutional database, schema version 1.0.0. See https://governova.dev/docs/schema.",
+  "description": "Machine-readable form of the Governova constitutional database, schema version 1.1.0. See https://governova.dev/docs/schema.",
   "properties": {
     "schema_version": {
-      "default": "1.0.0",
+      "default": "1.1.0",
       "description": "Semantic version of the schema.",
       "title": "Schema Version",
       "type": "string"
@@ -906,5 +943,5 @@
   "title": "Governova Compiled Constitutional Index",
   "type": "object",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://governova.dev/schema/v1.0.0/constitution.schema.json"
+  "$id": "https://governova.dev/schema/v1.1.0/constitution.schema.json"
 }

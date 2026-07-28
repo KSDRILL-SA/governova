@@ -16,7 +16,10 @@ the standard branch → issue → PR → merge workflow.
   Governance Report, System Bible — all generated automatically.
 - **Quality gates** (CI): ruff, mypy, drift check, structural integrity, 96 unit tests,
   reference cross-check, constitutional enforcement, PR guardian.
-- **Self-score**: 100/100 (A+), 11/11 constitutional areas green, enforcement coverage 6.8%.
+- **Self-score**: 100/100 (A+), 11/11 constitutional areas green, core enforcement
+  coverage 7.4% (33/446) plus 4/38 Layer 4 domain anti-patterns.
+- **Layer 4**: 4 ratified domains (`D-FINTECH`, `D-GOVTECH`, `D-EDTECH`, `D-SAAS`),
+  19 domain standards, 38 domain anti-patterns — counted separately from the core.
 
 ## Recommendations (highest leverage first)
 
@@ -41,9 +44,19 @@ remaining popular stacks (react, django, express, go-gin, flutter, …) is low-r
 high-coverage content work that directly widens real-world applicability.
 
 ### 4. Grow rule coverage + lean on the semantic tier
-The reliable tier is at 6.8% (30 of 441 anti-patterns) and will plateau — most standards
-are architectural/process, not regex-detectable. Keep adding clean, low-false-positive
-rules where signatures exist, and route the rest to the semantic tier (see #1).
+The reliable tier is at 7.4% (33 of 446 core anti-patterns, plus 4 of 38 domain).
+**Path-scoped rules** raised the ceiling this estimate assumed: a rule can now be
+bound to an architectural region, so "no data access outside a repository" and
+"no business logic in the presentation layer" are deterministically detectable —
+the same line is a violation in a component and correct in a repository. That
+unlocked `S1.103`/`S1.104`, which were previously reserved for the semantic tier.
+
+Coverage will still plateau, because most remaining standards are genuinely
+process-level. Two Part 19 standards are deliberately left to the semantic tier:
+`S1.106` (DRY) and `S1.107` (simplest correct solution) have no deterministic
+signature, and a lossy regex for them would trade the gate's trustworthiness for
+a coverage number. Keep adding clean, low-false-positive rules where real
+signatures exist — including path-scoped ones — and route the rest to #1.
 
 ### 5. Distribution
 - Publish the **enforcer composite action** to the GitHub Marketplace.

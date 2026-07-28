@@ -272,9 +272,14 @@ def coverage(
     t.add_row("Rules:", str(cov["rules"]))
     t.add_row("  blocking (high):", str(cov["blocking_rules"]))
     t.add_row("  advisory (medium):", str(cov["advisory_rules"]))
+    t.add_row("  path-scoped:", str(cov["path_scoped_rules"]))
     t.add_row(
-        "Enforceable anti-patterns:",
+        "Core anti-patterns:",
         f"{cov['enforceable_anti_patterns']} / {cov['total_anti_patterns']}",
+    )
+    t.add_row(
+        "Domain anti-patterns:",
+        f"{cov['domain_enforceable_anti_patterns']} / {cov['domain_total_anti_patterns']}",
     )
     console.print(t)
     pct = cov["coverage_pct"]

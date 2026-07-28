@@ -8,6 +8,7 @@ is pure stdlib; `coverage` governs the rule set against the compiled constitutio
 from __future__ import annotations
 
 from governova_checks.coverage import (
+    domain_anti_patterns,
     enforcement_coverage,
     index_anti_patterns,
     validate_rules,
@@ -43,6 +44,7 @@ __all__ = [
     "changed_files",
     "check_text",
     "covered_anti_patterns",
+    "domain_anti_patterns",
     "enforcement_coverage",
     "index_anti_patterns",
     "is_ignored",

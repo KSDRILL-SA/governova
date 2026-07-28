@@ -130,16 +130,31 @@ def test_every_rule_binds_a_real_anti_pattern():
 
 def test_rule_coverage_floor():
     # Guard against silent rule-set regression: coverage must not drop below where we are.
-    assert len(RULES) >= 30
-    assert enforcement_coverage()["coverage_pct"] >= 6.0
+    assert len(RULES) >= 37
+    assert enforcement_coverage()["coverage_pct"] >= 7.0
 
 
 def test_enforcement_coverage_metric():
     cov = enforcement_coverage()
     assert cov["rules"] == len(RULES)
-    assert cov["enforceable_anti_patterns"] == len(RULES)  # all bind real, distinct APs
+    # Every rule binds a real, distinct anti-pattern — but a rule may bind either
+    # a core (C00–C10) or a Layer 4 domain anti-pattern, and the headline metric
+    # counts only the core so that adding a domain cannot move it.
+    assert cov["enforceable_anti_patterns"] + cov["domain_enforceable_anti_patterns"] == len(
+        RULES
+    )
     assert cov["blocking_rules"] + cov["advisory_rules"] == len(RULES)
     assert 0 < cov["coverage_pct"] < 100
+    assert 0 < cov["domain_coverage_pct"] < 100
+
+
+def test_domain_coverage_is_reported_separately_from_core():
+    """Layer 4 must never inflate the headline coverage metric."""
+    cov = enforcement_coverage()
+    assert cov["total_anti_patterns"] == 446, "core denominator changed unexpectedly"
+    assert cov["domain_total_anti_patterns"] > 0
+    assert all(ap.startswith("AP-D-") for ap in cov["domain_covered"])
+    assert not any(ap.startswith("AP-D-") for ap in cov["covered"])
 
 
 def test_scan_file_sets_file_and_reports_line(tmp_path):

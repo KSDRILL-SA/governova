@@ -1,7 +1,7 @@
 """Generate the standalone `governova_types` Python package from schema.py.
 
 The published `governova-types` package must not depend on the build tooling
-(`governova-scripts`). So we vendor the schema models into it: read schema.py,
+(`governova`, the engine distribution). So we vendor the schema models into it: read schema.py,
 prepend a generated-file banner, and write it as `governova_types/models.py`.
 The schema remains the single source of truth — codegen propagates it.
 """

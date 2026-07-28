@@ -64,16 +64,39 @@ def _amendment_discipline(root: Path) -> Factor:
 
 
 def _audit_trail(root: Path) -> Factor:
-    """Assessable only when an audit trail exists (a runtime artifact)."""
-    audit_dir = root / "governance" / "audit"
-    audit_files = list(audit_dir.glob("*")) if audit_dir.is_dir() else []
-    if not audit_files:
+    """Measure the trail's integrity, not its existence.
+
+    The previous implementation scored 100 for any file in `governance/audit/`,
+    which meant `touch governance/audit/x` earned full marks on the one factor
+    whose purpose is proving records were not fabricated. What matters is whether
+    the chain verifies: a broken chain is worse than no trail, because it is a
+    trail that has been altered, so it scores zero rather than partial credit.
+    """
+    from governova_audit import audit_path, completeness, verify
+
+    if not audit_path(root).is_file():
         return _factor("audit_trail", None, "no audit trail (requires runtime instrumentation)")
-    return _factor("audit_trail", 100.0, f"{len(audit_files)} audit record(s)")
+
+    chain = verify(root)
+    if chain.records == 0:
+        return _factor("audit_trail", None, "audit trail present but empty")
+    if not chain.valid:
+        return _factor("audit_trail", 0.0, f"TAMPERED — {chain.issues[0]}")
+
+    pct = completeness(root)
+    return _factor(
+        "audit_trail",
+        pct,
+        f"chain intact, {chain.records} record(s), {pct}% fully attributed",
+    )
 
 
 def _relay_compliance(root: Path) -> Factor:
-    return _factor("relay_compliance", None, "requires runtime relay instrumentation")
+    """Measured from recorded relay history (see `governova_relay.compliance`)."""
+    from governova_relay import compliance
+
+    score, detail = compliance(root)
+    return _factor("relay_compliance", score, detail)
 
 
 def _constitutional_coverage(root: Path) -> Factor:

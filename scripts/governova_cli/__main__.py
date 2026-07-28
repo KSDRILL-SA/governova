@@ -541,5 +541,190 @@ def bible(
         console.print(f"[dim]written to {out_file}[/]")
 
 
+audit_app = typer.Typer(no_args_is_help=True, help="The tamper-evident audit trail.")
+relay_app = typer.Typer(no_args_is_help=True, help="The relay state machine.")
+app.add_typer(audit_app, name="audit")
+app.add_typer(relay_app, name="relay")
+
+
+@audit_app.command("verify")
+def audit_verify(
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Walk the audit chain and report any tampering. Exits non-zero if broken."""
+    from governova_audit import verify
+
+    result = verify(_root(repo_root))
+    if result.valid:
+        console.print(f"[green]✓ {result.summary}[/]")
+        return
+    console.print(f"[red]✗ {result.summary}[/]")
+    for issue in result.issues:
+        console.print(f"  [red]•[/] {issue}")
+    raise typer.Exit(code=1)
+
+
+@audit_app.command("log")
+def audit_log(
+    limit: Annotated[int, typer.Option("--limit", "-n", help="Most recent N records.")] = 20,
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Show the most recent audit records."""
+    from governova_audit import read_records
+
+    records = read_records(_root(repo_root))
+    if not records:
+        console.print("[yellow]No audit records.[/]")
+        return
+    t = Table("Seq", "When", "Actor", "Lvl", "Action", "Outcome", box=None, pad_edge=False)
+    for r in records[-limit:]:
+        style = "red" if r.outcome == "REFUSED" else ""
+        t.add_row(
+            str(r.seq),
+            r.timestamp,
+            f"{r.actor} ({r.actor_kind})",
+            r.permission_level,
+            r.action,
+            f"[{style}]{r.outcome}[/{style}]" if style else r.outcome,
+        )
+    console.print(t)
+
+
+@audit_app.command("record")
+def audit_record(
+    actor: Annotated[str, typer.Option("--actor", help="Who performed the action.")],
+    action: Annotated[str, typer.Option("--action", help="What was done.")],
+    subject: Annotated[str, typer.Option("--subject", help="What it was done to.")],
+    kind: Annotated[str, typer.Option("--kind", help="human | ai | system")] = "human",
+    level: Annotated[str, typer.Option("--level", help="L1 | L2 | L3 | L4")] = "L3",
+    outcome: Annotated[str, typer.Option("--outcome")] = "recorded",
+    detail: Annotated[str, typer.Option("--detail")] = "",
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Append one record to the audit trail."""
+    from governova_audit import append
+
+    rec = append(
+        _root(repo_root),
+        actor=actor,
+        actor_kind=kind,
+        permission_level=level,
+        action=action,
+        subject=subject,
+        outcome=outcome,
+        detail=detail,
+    )
+    console.print(f"[green]recorded seq {rec.seq}[/] · hash {rec.record_hash[:16]}…")
+
+
+@relay_app.command("status")
+def relay_status(
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Show the current relay position and compliance."""
+    from governova_relay import compliance, load
+
+    root = _root(repo_root)
+    relay = load(root)
+    score, detail = compliance(root)
+    t = Table.grid(padding=(0, 2))
+    t.add_row("State:", relay.state)
+    t.add_row("Task:", relay.task or "—")
+    t.add_row("Engineer:", relay.engineer or "—")
+    t.add_row("Permission:", relay.permission_level or "—")
+    t.add_row("Handoffs:", str(relay.handoffs))
+    t.add_row("Approvals:", str(relay.approvals))
+    t.add_row("Compliance:", f"{score}/100" if score is not None else "not assessed")
+    t.add_row("", detail)
+    console.print(t)
+    for v in relay.violations:
+        console.print(f"[red]  • {v}[/]")
+
+
+def _relay_action(fn: Any, **kwargs: Any) -> None:
+    """Run a relay transition, rendering a refusal as the governance event it is."""
+    from governova_relay import RelayViolationError
+
+    try:
+        fn(**kwargs)
+    except RelayViolationError as exc:
+        console.print(f"[red]REFUSED [{exc.severity}] ({exc.standard})[/] {exc}")
+        raise typer.Exit(code=1) from exc
+
+
+@relay_app.command("open")
+def relay_open(
+    task: Annotated[str, typer.Option("--task", help="What the task is.")],
+    by: Annotated[str, typer.Option("--by", help="Who opened it (L4, human).")],
+    kind: Annotated[str, typer.Option("--kind", help="human | ai | system")] = "human",
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Open a task. L4 only — human only."""
+    from governova_relay import open_task
+
+    _relay_action(open_task, root=_root(repo_root), task=task, opened_by=by, actor_kind=kind)
+    console.print(f"[green]task opened:[/] {task}")
+
+
+@relay_app.command("assign")
+def relay_assign(
+    engineer: Annotated[str, typer.Option("--engineer")],
+    level: Annotated[str, typer.Option("--level", help="L1 | L2 | L3")] = "L3",
+    kind: Annotated[str, typer.Option("--kind", help="human | ai | system")] = "ai",
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Hand the task to an engineer. Refused if another already holds it."""
+    from governova_relay import assign
+
+    _relay_action(
+        assign,
+        root=_root(repo_root),
+        engineer=engineer,
+        permission_level=level,
+        actor_kind=kind,
+    )
+    console.print(f"[green]assigned to[/] {engineer} at {level}")
+
+
+@relay_app.command("submit")
+def relay_submit(
+    engineer: Annotated[str, typer.Option("--engineer")],
+    detail: Annotated[str, typer.Option("--detail")] = "",
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Submit the held work for L4 review."""
+    from governova_relay import submit
+
+    _relay_action(submit, root=_root(repo_root), engineer=engineer, detail=detail)
+    console.print("[green]submitted — awaiting L4 approval[/]")
+
+
+@relay_app.command("approve")
+def relay_approve(
+    by: Annotated[str, typer.Option("--by", help="Who approves (L4, human).")],
+    kind: Annotated[str, typer.Option("--kind", help="human | ai | system")] = "human",
+    detail: Annotated[str, typer.Option("--detail")] = "",
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Approve the submitted handoff. Human only, permanently."""
+    from governova_relay import approve
+
+    _relay_action(approve, root=_root(repo_root), approver=by, actor_kind=kind, detail=detail)
+    console.print("[green]approved[/]")
+
+
+@relay_app.command("close")
+def relay_close(
+    by: Annotated[str, typer.Option("--by", help="Who closes it (L4, human).")],
+    kind: Annotated[str, typer.Option("--kind", help="human | ai | system")] = "human",
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Close the task. L4 only — human only."""
+    from governova_relay import close_task
+
+    _relay_action(close_task, root=_root(repo_root), closed_by=by, actor_kind=kind)
+    console.print("[green]task closed[/]")
+
+
 if __name__ == "__main__":
     app()

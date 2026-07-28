@@ -1,8 +1,8 @@
 {
   "schema_version": "1.1.0",
-  "compiled_at": "2026-07-28T00:33:27.884413Z",
-  "source_commit_sha": "2ae11ca",
-  "checksum": "sha256:c375e6f8c9c184d6ce919bb96b72b251ab0637870003ac663cd5ae3cda1f8fd4",
+  "compiled_at": "2026-07-28T03:27:36.662736Z",
+  "source_commit_sha": "13971e4",
+  "checksum": "sha256:ec0710756e9ccdcdc4b86a4506f5f6859a0f5a6f51f48a4812adde98615b8918",
   "framework": [
     {
       "id": "format-specification",
@@ -21599,6 +21599,12 @@
       "name": "Governova Platform Architecture (3-plane model)",
       "status": "ACCEPTED",
       "path": "governance/decisions/ADR-005-platform-architecture.md"
+    },
+    {
+      "id": "ADR-006",
+      "name": "Engine Security Posture",
+      "status": "ACCEPTED",
+      "path": "governance/decisions/ADR-006-engine-security-posture.md"
     }
   ],
   "hierarchy": [

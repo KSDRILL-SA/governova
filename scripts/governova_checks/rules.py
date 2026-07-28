@@ -450,11 +450,21 @@ RULES: list[Rule] = [
         "D-FINTECH.3",
         re.compile(
             # `account.balance = account.balance + x`, `balance += x`, and the
-            # SQL form. The optional `[\w.]*\.` prefixes let the backreference
-            # survive an object path on either side of the assignment.
-            r"(?:[\w.]*\.)?(\w*balance\w*)\s*=\s*(?:[\w.]*\.)?\1\s*[+-]|"
-            r"\b[\w.]*\bbalance\w*\s*[+-]=|"
-            r"\bSET\s+\w*balance\w*\s*=\s*\w*balance\w*\s*[+-]",
+            # SQL form.
+            #
+            # Every quantifier here is bounded. The original placed unbounded
+            # `[\w.]*` immediately before `\w*balance\w*` — overlapping classes,
+            # so on a long run of word characters containing no `balance` the
+            # engine retried every split point and degraded super-quadratically:
+            # 8.7 seconds on one 20k-character line, which is an entirely
+            # ordinary minified bundle. This rule runs inside other people's CI
+            # as a blocking gate, so that was a denial of service, not a slow
+            # test. The backreference is gone as well — `balance = otherBalance
+            # + x` is equally a balance mutation, and backrefs defeat the
+            # engine's optimisations.
+            r"\b[\w.]{0,64}balance\w{0,32}\s*[+-]=|"
+            r"\b[\w.]{0,64}balance\w{0,32}\s*=\s*[\w.]{0,64}balance\w{0,32}\s*[+-]|"
+            r"\bSET\s+\w{0,32}balance\w{0,32}\s*=\s*\w{0,32}balance\w{0,32}\s*[+-]",
             re.I,
         ),
         "Balance mutated in place. D-FINTECH.3: balances are derived from immutable double-entry ledger entries.",
@@ -511,11 +521,27 @@ def covered_anti_patterns() -> set[str]:
     return {r.anti_pattern for r in RULES}
 
 
+# Lines longer than this are not scanned.
+#
+# Defence in depth against pathological regex backtracking. Individual rules use
+# bounded quantifiers, but this engine runs inside other people's CI as a
+# blocking gate, and a single hostile or merely minified line must never be able
+# to stall their pipeline — the cost of a regex is a function of line length, so
+# the length is capped rather than trusted.
+#
+# 4000 characters is far beyond any human-authored source line; what exceeds it
+# is minified bundles, embedded data URIs, and generated blobs, none of which are
+# reviewable and none of which the standards meaningfully govern.
+MAX_LINE_LENGTH = 4000
+
+
 def scan_text(code: str, *, file: str | None = None) -> list[Finding]:
     """Run every rule over `code`, line by line. Returns located findings."""
     findings: list[Finding] = []
     applicable = [r for r in RULES if r.applies_to(file)]
     for lineno, line in enumerate(code.splitlines(), start=1):
+        if len(line) > MAX_LINE_LENGTH:
+            continue
         for rule in applicable:
             m = rule.pattern.search(line)
             if m:

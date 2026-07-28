@@ -12,6 +12,8 @@ import urllib.error
 import urllib.request
 from collections.abc import Callable
 
+from governova_checks.net import require_http_url
+
 from governova_semantic.config import SemanticConfig
 
 # A transport takes (config, messages) and returns the assistant's text content.
@@ -32,8 +34,9 @@ def urllib_transport(config: SemanticConfig, messages: list[dict[str, str]]) -> 
             "max_tokens": config.max_tokens,
         }
     ).encode("utf-8")
+    endpoint = require_http_url(config.endpoint, what="semantic endpoint")
     request = urllib.request.Request(
-        config.endpoint,
+        endpoint,
         data=payload,
         headers={
             "Authorization": f"Bearer {config.api_key}",
@@ -45,7 +48,13 @@ def urllib_transport(config: SemanticConfig, messages: list[dict[str, str]]) -> 
         with urllib.request.urlopen(request, timeout=config.timeout) as resp:
             body = json.loads(resp.read().decode("utf-8"))
     except (urllib.error.URLError, OSError, ValueError) as exc:
-        raise SemanticUnavailableError(f"semantic endpoint unreachable: {exc}") from exc
+        # The exception text is deliberately not interpolated. urllib echoes the
+        # request URL, and an endpoint configured with inline credentials
+        # (`https://user:key@host`) would put them in a CI log that many people
+        # can read. The exception type is enough to diagnose reachability.
+        raise SemanticUnavailableError(
+            f"semantic endpoint unreachable ({type(exc).__name__})"
+        ) from exc
     try:
         return str(body["choices"][0]["message"]["content"])
     except (KeyError, IndexError, TypeError) as exc:

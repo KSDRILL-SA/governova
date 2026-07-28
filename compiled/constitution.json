@@ -1,8 +1,8 @@
 {
-  "schema_version": "1.0.0",
-  "compiled_at": "2026-06-22T13:46:39.664752Z",
-  "source_commit_sha": "4c394a2",
-  "checksum": "sha256:1b64e8a73ac17178c5bae86426656e651c0893e5790e494b60b15455f8eed13b",
+  "schema_version": "1.1.0",
+  "compiled_at": "2026-07-28T00:20:31.486678Z",
+  "source_commit_sha": "cd33784",
+  "checksum": "sha256:0b36ba3cb106405d9fae257891997508a4b5262c3253d7c46604496c80658f06",
   "framework": [
     {
       "id": "format-specification",
@@ -47,6 +47,9 @@
       "number": 0,
       "name": "Constitutional Order",
       "phase": null,
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
       "header": {
         "document": "C0 — Constitutional Order",
         "organisation": "KSDRILL SA",
@@ -67,6 +70,9 @@
       "number": 1,
       "name": "Engineering Standards",
       "phase": "0",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
       "header": {
         "document": "C1 — Engineering Standards Constitution",
         "organisation": "KSDRILL SA",
@@ -4070,6 +4076,9 @@
       "number": 2,
       "name": "Backend Constitution",
       "phase": "1",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
       "header": {
         "document": "C2 — Backend Constitution",
         "organisation": "KSDRILL SA",
@@ -6969,6 +6978,9 @@
       "number": 3,
       "name": "Auth Constitution",
       "phase": "1",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
       "header": {
         "document": "C3 — Auth Constitution",
         "organisation": "KSDRILL SA",
@@ -8627,6 +8639,9 @@
       "number": 4,
       "name": "Frontend Constitution",
       "phase": "1",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
       "header": {
         "document": "C4 — Frontend Constitution",
         "organisation": "KSDRILL SA",
@@ -11259,6 +11274,9 @@
       "number": 5,
       "name": "Database Constitution",
       "phase": "1",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
       "header": {
         "document": "C5 — Database Constitution",
         "organisation": "KSDRILL SA",
@@ -13205,6 +13223,9 @@
       "number": 6,
       "name": "Full-Stack Architecture",
       "phase": "1",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
       "header": {
         "document": "C6 — Full-Stack Architecture Constitution",
         "organisation": "KSDRILL SA",
@@ -14439,6 +14460,9 @@
       "number": 7,
       "name": "Testing Constitution",
       "phase": "2",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
       "header": {
         "document": "C7 — Testing Constitution",
         "organisation": "KSDRILL SA",
@@ -15789,6 +15813,9 @@
       "number": 8,
       "name": "Platform Reliability",
       "phase": "2",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
       "header": {
         "document": "C8 — Platform Reliability Constitution",
         "organisation": "KSDRILL SA",
@@ -17670,6 +17697,9 @@
       "number": 9,
       "name": "Product & Feature",
       "phase": "3",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
       "header": {
         "document": "C9 — Product & Feature Constitution",
         "organisation": "KSDRILL SA",
@@ -18489,6 +18519,9 @@
       "number": 10,
       "name": "AI Collaboration",
       "phase": "3",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
       "header": {
         "document": "C10 — AI Collaboration Constitution",
         "organisation": "KSDRILL SA",
@@ -20521,7 +20554,294 @@
       "bindings": []
     }
   ],
-  "domains": [],
+  "domains": [
+    {
+      "id": "D-FINTECH",
+      "number": 99,
+      "name": "Financial Technology",
+      "phase": null,
+      "slug": "fintech",
+      "regulatory_basis": [
+        "PCI-DSS",
+        "FICA",
+        "FATF"
+      ],
+      "reference_systems": [
+        "FundsLink Academy",
+        "KSDRILL Reserve Bank"
+      ],
+      "header": {
+        "document": "Fintech Domain Constitution",
+        "organisation": "KSDRILL SA",
+        "version": "v1.0",
+        "status": "DRAFT",
+        "locked_date": null,
+        "next_review": null,
+        "applies_to": "All Stacks · every system holding monetary values",
+        "paired_with": "`governance/runbooks/RB-03-financial-freeze.md`"
+      },
+      "path": "constitution/domains/fintech/D-FINTECH-domain-constitution.md",
+      "hierarchy_rank": null,
+      "binds_implementation": false,
+      "standards": [
+        {
+          "id": "D-FINTECH.1",
+          "title": "Monetary Amounts Are Exact and Carry Their Currency",
+          "constitution_id": "D-FINTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every system holding monetary values",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S5.28",
+              "description": "Decimal columns for monetary values"
+            },
+            {
+              "standard_id": "S1.67",
+              "description": "constants are named and centralised"
+            }
+          ],
+          "enforced_by": [
+            "schema review",
+            "reliable-tier rules",
+            "code review"
+          ],
+          "statement": "Every monetary amount is stored and computed as an exact decimal type — `NUMERIC`/`DECIMAL` in the database, `Decimal`/`BigDecimal` in application code — never a binary floating-point type. Every stored amount is accompanied by an explicit ISO 4217 currency code; a bare number is not an amount. Amounts are never converted to floating point at any point in their lifecycle, including serialisation, and are transported as strings rather than JSON numbers. Rounding is applied only at explicit, documented boundaries using a declared rounding mode, never implicitly.",
+          "rationale": "Binary floating point cannot represent most decimal fractions exactly, so `0.1 + 0.2` is not `0.3`. In a ledger, that discrepancy accumulates silently across millions of rows until a reconciliation fails and no one can say which transaction was wrong. A currency-less amount is worse: it reconciles perfectly and is still fraudulent, because 100 of one currency was treated as 100 of another. JSON serialisation is the most common leak — a `Decimal` correct in the database becomes a float the moment it crosses an API boundary as a JSON number.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-FINTECH.1a",
+              "description": "A monetary value stored or computed as `float`, `double`, or `REAL`, or serialised as a JSON number.",
+              "parent_standard_id": "D-FINTECH.1"
+            },
+            {
+              "id": "AP-D-FINTECH.1b",
+              "description": "An amount persisted without an accompanying currency code, or a calculation that adds two amounts without asserting their currencies match.",
+              "parent_standard_id": "D-FINTECH.1"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/fintech/D-FINTECH-domain-constitution.md",
+          "source_line": 44
+        },
+        {
+          "id": "D-FINTECH.2",
+          "title": "Value Movement Is Idempotent",
+          "constitution_id": "D-FINTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every endpoint or job that moves money",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S5.15",
+              "description": "transactions for multi-step writes"
+            },
+            {
+              "standard_id": "S2.81",
+              "description": "external-call resilience"
+            }
+          ],
+          "enforced_by": [
+            "architecture review",
+            "semantic tier",
+            "integration tests"
+          ],
+          "statement": "Every operation that moves value accepts a caller-supplied idempotency key, persists that key with the result of the operation in the same transaction as the movement itself, and returns the original result on any repeat of the same key. A retry — whether from a client, a network timeout, a queue redelivery, or an operator — never produces a second movement of value. Idempotency keys are retained at least as long as any upstream party may retry, and never less than 24 hours.",
+          "rationale": "Every layer between a user and a ledger retries: browsers, mobile clients, load balancers, HTTP clients, message queues, and payment providers. A payment endpoint without idempotency is not a payment endpoint that occasionally double-charges — it is one that will double-charge, because a timeout on a *successful* write is indistinguishable from a failure at the caller. Storing the key outside the movement's transaction reintroduces the same race it was meant to close.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-FINTECH.2a",
+              "description": "A money-moving endpoint or job with no idempotency key, or one that derives the key from a server-side value (timestamp, UUID generated per request) rather than the caller.",
+              "parent_standard_id": "D-FINTECH.2"
+            },
+            {
+              "id": "AP-D-FINTECH.2b",
+              "description": "An idempotency record written in a separate transaction from the value movement it guards.",
+              "parent_standard_id": "D-FINTECH.2"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/fintech/D-FINTECH-domain-constitution.md",
+          "source_line": 68
+        },
+        {
+          "id": "D-FINTECH.3",
+          "title": "Every Movement Is Double-Entry and Reconciled",
+          "constitution_id": "D-FINTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every system maintaining balances",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S5.65",
+              "description": "ledger tables are immutable"
+            },
+            {
+              "standard_id": "S5.15",
+              "description": "transactions for multi-step writes"
+            }
+          ],
+          "enforced_by": [
+            "schema review",
+            "scheduled reconciliation job",
+            "SEV0 alert"
+          ],
+          "statement": "Value movement is recorded as balanced double-entry: every transaction writes matching debit and credit entries that sum to zero, within one database transaction. Account balances are derived from ledger entries, never stored as an independently mutable field; where a cached balance exists for performance it is reconciled against the derived balance on a defined schedule. A reconciliation discrepancy of any magnitude is a SEV0 incident and triggers the financial freeze runbook.",
+          "rationale": "A single-entry system cannot detect its own corruption — a lost write produces a wrong balance that looks exactly like a right one. Double-entry makes corruption arithmetically visible: the books stop balancing. A separately stored mutable balance is the most common way this guarantee is lost, because it can drift from the entries that justify it, and once drifted there is no record of which figure was ever correct. Treating a small discrepancy as a minor bug is how a reconciliation gap becomes a regulatory finding.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-FINTECH.3a",
+              "description": "A balance column updated directly (`balance = balance + amount`) rather than derived from immutable ledger entries.",
+              "parent_standard_id": "D-FINTECH.3"
+            },
+            {
+              "id": "AP-D-FINTECH.3b",
+              "description": "Debit and credit entries written in separate transactions, or a movement recorded as a single entry.",
+              "parent_standard_id": "D-FINTECH.3"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/fintech/D-FINTECH-domain-constitution.md",
+          "source_line": 92
+        },
+        {
+          "id": "D-FINTECH.4",
+          "title": "Financial Actions Carry an Immutable, Attributable Audit Record",
+          "constitution_id": "D-FINTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every financial system",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S8.31",
+              "description": "structured JSON logging"
+            },
+            {
+              "standard_id": "S5.65",
+              "description": "ledger tables are immutable"
+            },
+            {
+              "standard_id": "S5.8",
+              "description": "soft delete, never hard delete"
+            }
+          ],
+          "enforced_by": [
+            "audit-log review",
+            "retention policy",
+            "code review"
+          ],
+          "statement": "Every financial action — movement, authorisation, rate or fee change, manual adjustment, account state change, and every read of another party's financial data — is written to an append-only audit record carrying: actor identity, authorisation basis, timestamp with timezone, before and after values, and the correlation ID of the originating request. Audit records are retained for the longer of the applicable regulatory period or seven years, are written to storage that denies update and delete to the application's own credentials, and are never anonymised or purged by a data-deletion request without a recorded legal basis.",
+          "rationale": "In a financial dispute, the record is the defence. A log that the application can rewrite proves nothing, because the party accused of the error is the party that controls the evidence — which is why write-once storage and credential separation matter more than log volume. Reads are included because unauthorised *access* to financial data is itself a reportable event, and a system that logs only writes cannot answer the question a regulator actually asks: who saw this account.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-FINTECH.4a",
+              "description": "An audit table the application can `UPDATE` or `DELETE`, or audit records held only in application logs subject to rotation.",
+              "parent_standard_id": "D-FINTECH.4"
+            },
+            {
+              "id": "AP-D-FINTECH.4b",
+              "description": "A financial action recorded without actor identity, or with a service account as the actor where a human initiated it.",
+              "parent_standard_id": "D-FINTECH.4"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/fintech/D-FINTECH-domain-constitution.md",
+          "source_line": 116
+        },
+        {
+          "id": "D-FINTECH.5",
+          "title": "Initiation and Approval Are Separated",
+          "constitution_id": "D-FINTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · privileged financial operations",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S3.4",
+              "description": "rate limiting on auth endpoints"
+            },
+            {
+              "standard_id": "S1.103",
+              "description": "logic lives in its layer"
+            }
+          ],
+          "enforced_by": [
+            "authorisation review",
+            "access-control tests",
+            "semantic tier"
+          ],
+          "statement": "No single identity may both initiate and approve a privileged financial operation. Privileged operations — outbound payments above a documented threshold, manual ledger adjustments, fee and rate changes, and counterparty detail changes — require approval by a distinct authenticated identity with a distinct role, recorded per `D-FINTECH.4`. The threshold, the roles, and the escalation path are declared in the system's CONSTITUTION-INDEX, and the separation is enforced server-side; a UI that merely hides the approve action does not satisfy this standard.",
+          "rationale": "The dominant fraud pattern in financial systems is not an external breach but an internal actor with sufficient privilege to complete a movement alone. Separation of duties is the control that makes single-actor fraud impossible rather than merely detectable after the fact. Enforcing it in the interface only is the classic failure: the endpoint remains reachable, and the control evaporates for anyone who can issue an HTTP request. Changing a counterparty's bank details is included deliberately — it is the highest-yield fraud in practice, and it is often left unguarded because it moves no money by itself.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-FINTECH.5a",
+              "description": "A privileged financial operation completable by one identity, or an approval step enforced only in the client.",
+              "parent_standard_id": "D-FINTECH.5"
+            },
+            {
+              "id": "AP-D-FINTECH.5b",
+              "description": "An approval role that the initiating identity can grant to itself.",
+              "parent_standard_id": "D-FINTECH.5"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/fintech/D-FINTECH-domain-constitution.md",
+          "source_line": 140
+        },
+        {
+          "id": "D-FINTECH.6",
+          "title": "Financial Calculation Code Is Exhaustively Tested",
+          "constitution_id": "D-FINTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · interest, fees, tax, rounding, currency conversion, settlement",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S7.25",
+              "description": "coverage gates — locked thresholds by stack"
+            },
+            {
+              "standard_id": "S7.18",
+              "description": "E2E covers every critical path"
+            }
+          ],
+          "enforced_by": [
+            "CI coverage gate",
+            "code review"
+          ],
+          "statement": "Code that computes monetary results carries 100% branch coverage, enforced as a CI gate that blocks merge. Its tests assert exact decimal values — never approximate or tolerance-based comparison — and explicitly cover the boundary cases: zero, negative amounts, the maximum representable amount, rounding at the half, currency-precision limits, and the reversal path for every operation. Test fixtures express amounts as decimals or strings, never as floating-point literals.",
+          "rationale": "Financial defects are not caught in production by users, because a user cannot tell that interest was computed with the wrong rounding mode — they can only tell years later, across a whole book, when an auditor can. Branch coverage matters more here than elsewhere because financial logic is dense with conditionals (tiers, thresholds, proration) and an untested branch is an untested money path. A tolerance-based assertion (`assertAlmostEqual`) defeats the purpose entirely: it is precisely the small discrepancy the domain exists to prevent.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-FINTECH.6a",
+              "description": "Financial calculation code below 100% branch coverage, or a coverage exclusion applied to it.",
+              "parent_standard_id": "D-FINTECH.6"
+            },
+            {
+              "id": "AP-D-FINTECH.6b",
+              "description": "A monetary assertion using approximate comparison or a floating-point literal in a test fixture.",
+              "parent_standard_id": "D-FINTECH.6"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/fintech/D-FINTECH-domain-constitution.md",
+          "source_line": 164
+        }
+      ]
+    }
+  ],
   "runbooks": [
     {
       "id": "RB-01",
@@ -20647,6 +20967,8 @@
     "standards_extracted": 618,
     "anti_patterns_extracted": 446,
     "bindings_extracted": 72,
+    "domain_standards_extracted": 6,
+    "domain_anti_patterns_extracted": 12,
     "references_resolved": 0,
     "references_unresolved": 0,
     "links_checked": 0,

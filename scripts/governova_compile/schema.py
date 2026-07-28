@@ -22,7 +22,7 @@ from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
 """Semantic version of the compiled-index schema. See module docstring."""
 
 
@@ -73,12 +73,46 @@ class DocumentStatus(StrEnum):
 # ─── Identifier types (string aliases with documentation) ────────────────────
 
 StandardId = Annotated[str, Field(pattern=r"^S\d+\.\d+$", examples=["S1.1", "S3.14"])]
-"""A standard ID in `S{C}.{N}` format. C0 §2.2."""
+"""A core standard ID in `S{C}.{N}` format. C0 §2.2."""
 
 AntiPatternId = Annotated[
     str, Field(pattern=r"^AP-S\d+\.\d+[a-z]$", examples=["AP-S1.1a", "AP-S3.14b"])
 ]
-"""An anti-pattern ID in `AP-S{C}.{N}{letter}` format. C0 §2.2."""
+"""A core anti-pattern ID in `AP-S{C}.{N}{letter}` format. C0 §2.2."""
+
+DomainStandardId = Annotated[
+    str, Field(pattern=r"^D-[A-Z][A-Z0-9-]*\.\d+$", examples=["D-FINTECH.1", "D-GOVTECH.12"])
+]
+"""A Layer 4 domain standard ID in `D-{DOMAIN}.{N}` format. master.md Appendix A."""
+
+DomainAntiPatternId = Annotated[
+    str,
+    Field(pattern=r"^AP-D-[A-Z][A-Z0-9-]*\.\d+[a-z]$", examples=["AP-D-FINTECH.1a"]),
+]
+"""A Layer 4 domain anti-pattern ID in `AP-D-{DOMAIN}.{N}{letter}` format."""
+
+# Layer 2 (core) and Layer 4 (domain) standards share one `Standard` model so that
+# every downstream consumer — validator, score, bible, dashboard, MCP — iterates
+# `(*index.constitutions, *index.domains)` uniformly without branching on type.
+# The namespaces stay separate at parse time: a core document only ever yields
+# `S{C}.{N}` and a domain document only ever yields `D-{DOMAIN}.{N}`.
+AnyStandardId = Annotated[
+    str,
+    Field(
+        pattern=r"^(?:S\d+\.\d+|D-[A-Z][A-Z0-9-]*\.\d+)$",
+        examples=["S1.1", "D-FINTECH.1"],
+    ),
+]
+"""Either a core standard ID or a domain standard ID."""
+
+AnyAntiPatternId = Annotated[
+    str,
+    Field(
+        pattern=r"^AP-(?:S\d+\.\d+|D-[A-Z][A-Z0-9-]*\.\d+)[a-z]$",
+        examples=["AP-S1.1a", "AP-D-FINTECH.1a"],
+    ),
+]
+"""Either a core anti-pattern ID or a domain anti-pattern ID."""
 
 ImplementationBindingId = Annotated[
     str,
@@ -90,7 +124,18 @@ PracticeId = Annotated[str, Field(pattern=r"^P\d+\.\d+$", examples=["P2.1", "P3.
 """A practice ID in `P{C}.{N}` format. C0 §2.1 — lives in implementation guides only."""
 
 ConstitutionId = Annotated[str, Field(pattern=r"^C\d{2}$", examples=["C00", "C01", "C10"])]
-"""A zero-padded constitution ID. C00, C01, … C10."""
+"""A zero-padded core constitution ID. C00, C01, … C10."""
+
+DomainId = Annotated[
+    str, Field(pattern=r"^D-[A-Z][A-Z0-9-]*$", examples=["D-FINTECH", "D-GOVTECH"])
+]
+"""A Layer 4 domain document ID, e.g. `D-FINTECH`."""
+
+AnyConstitutionId = Annotated[
+    str,
+    Field(pattern=r"^(?:C\d{2}|D-[A-Z][A-Z0-9-]*)$", examples=["C01", "D-FINTECH"]),
+]
+"""Either a core constitution ID or a domain document ID."""
 
 RunbookId = Annotated[str, Field(pattern=r"^RB-\d{2}$", examples=["RB-01", "RB-08"])]
 
@@ -109,7 +154,7 @@ class Reference(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    standard_id: StandardId
+    standard_id: AnyStandardId
     description: str | None = Field(
         default=None,
         description="Optional inline description, e.g. the parenthetical in source markdown.",
@@ -121,9 +166,11 @@ class AntiPattern(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    id: AntiPatternId
+    id: AnyAntiPatternId
     description: str = Field(description="What the failure looks like in practice.")
-    parent_standard_id: StandardId = Field(description="The standard this anti-pattern violates.")
+    parent_standard_id: AnyStandardId = Field(
+        description="The standard this anti-pattern violates."
+    )
 
 
 class Standard(BaseModel):
@@ -134,9 +181,11 @@ class Standard(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    id: StandardId
+    id: AnyStandardId
     title: str
-    constitution_id: ConstitutionId = Field(description="The owning constitution, e.g. 'C01'.")
+    constitution_id: AnyConstitutionId = Field(
+        description="The owning document — a core constitution ('C01') or a domain ('D-FINTECH')."
+    )
     priority: Priority
     applies_to: str = Field(
         description="Scope — free-form, e.g. 'Both Stacks', 'Next.js Only', 'All Systems'."
@@ -192,14 +241,33 @@ class DocumentHeader(BaseModel):
 
 
 class Constitution(BaseModel):
-    """A core constitution document (C00–C10) or a domain extension."""
+    """A core constitution document (C00–C10) or a Layer 4 domain extension.
+
+    Domains reuse this model so downstream consumers iterate core and domain
+    documents uniformly. A domain is identified by `id` matching `D-{DOMAIN}`,
+    carries `slug`, `regulatory_basis`, and `reference_systems`, and has no
+    phase or hierarchy rank — it extends the whole core rather than sitting
+    at one point in it.
+    """
 
     model_config = ConfigDict(extra="forbid")
 
-    id: ConstitutionId
-    number: int = Field(ge=0, description="Numeric constitution number (0–99).")
+    id: AnyConstitutionId
+    number: int = Field(ge=0, description="Numeric constitution number (0–99). 99 for domains.")
     name: str
-    phase: Phase | None = Field(default=None, description="None for C0; otherwise 0–3.")
+    phase: Phase | None = Field(default=None, description="None for C0 and domains; else 0–3.")
+    slug: str | None = Field(
+        default=None,
+        description="Domain folder slug, e.g. 'fintech'. None for core constitutions.",
+    )
+    regulatory_basis: list[str] = Field(
+        default_factory=list,
+        description="Regulations the domain encodes, e.g. ['PCI-DSS', 'FICA']. Domains only.",
+    )
+    reference_systems: list[str] = Field(
+        default_factory=list,
+        description="Reference systems that seeded the domain. Domains only.",
+    )
     header: DocumentHeader
     path: str = Field(description="Repo-relative path to the source markdown file.")
     hierarchy_rank: int | None = Field(
@@ -318,6 +386,8 @@ class IntegrityReport(BaseModel):
     standards_extracted: int = 0
     anti_patterns_extracted: int = 0
     bindings_extracted: int = 0
+    domain_standards_extracted: int = 0
+    domain_anti_patterns_extracted: int = 0
     references_resolved: int = 0
     references_unresolved: int = 0
     links_checked: int = 0

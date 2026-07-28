@@ -13,9 +13,8 @@ import json
 import re
 from dataclasses import dataclass
 
-from governova_compile.discovery import resolve_repo_root
 from governova_compile.schema import CompiledIndex, Standard
-from governova_compile.writer import load_index
+from governova_compile.writer import load_active_index
 
 from governova_semantic.client import SemanticUnavailableError, Transport, urllib_transport
 from governova_semantic.config import SemanticConfig, from_env
@@ -105,7 +104,7 @@ def review(
     cfg = config or from_env()
     if not cfg.is_configured:
         return []  # inactive — nothing is configured
-    idx = index or load_index(resolve_repo_root() / "compiled" / "constitution.json")
+    idx = index or load_active_index()
     grounded = standards if standards is not None else relevant_standards(idx, code)
     if not grounded:
         return []

@@ -276,13 +276,18 @@ FRAMEWORK_REGISTRY: tuple[FrameworkEntry, ...] = (
 
 
 def resolve_repo_root(start: Path | None = None) -> Path:
-    """Walk upward from `start` (or cwd) to find the repo root.
+    """Locate the **Governova source tree** — the markdown corpus itself.
 
-    The root is identified structurally: the directory that holds both the
-    `constitution/` corpus and the workspace `pyproject.toml`. This is stable
-    regardless of where strategic docs live (they were relocated under docs/),
-    and it ignores the nested `scripts/pyproject.toml` because that directory
-    has no `constitution/` sibling.
+    Identified structurally: the directory holding both the `constitution/`
+    corpus and the workspace `pyproject.toml`. It ignores the nested
+    `scripts/pyproject.toml` because that directory has no `constitution/`
+    sibling.
+
+    This is the *authoring* root. Only maintainer operations need it —
+    `compile`, `validate`, and `codegen` read the source markdown — and those
+    correctly run nowhere else. Everything that *consumes* the constitution to
+    govern a repository must use `resolve_target_root` plus `load_active_index`
+    instead; conflating the two is what confined the engine to its own repo.
     """
     current = (start or Path.cwd()).resolve()
     for candidate in (current, *current.parents):
@@ -291,6 +296,22 @@ def resolve_repo_root(start: Path | None = None) -> Path:
     raise FileNotFoundError(
         "Could not locate repo root (no directory with constitution/ and pyproject.toml found)."
     )
+
+
+def resolve_target_root(start: Path | None = None) -> Path:
+    """Locate the **repository being governed**.
+
+    Prefers the git working-tree root so paths in findings are stable wherever
+    the command was invoked from; falls back to the working directory. Never
+    raises — a directory that is not a git repository is still a thing Governova
+    can scan, and refusing to run there was the defect that made the tool
+    unusable outside its own source tree.
+    """
+    current = (start or Path.cwd()).resolve()
+    for candidate in (current, *current.parents):
+        if (candidate / ".git").exists():
+            return candidate
+    return current
 
 
 def find_runbooks(repo_root: Path) -> list[Path]:

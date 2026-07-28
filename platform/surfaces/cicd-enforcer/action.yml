@@ -14,23 +14,44 @@ inputs:
     description: "Git ref to diff against — the pull request base."
     required: false
     default: "origin/main"
+  version:
+    description: "PEP 440 specifier for the governova package (e.g. '==0.1.0'), or 'source' to use the engine in the checkout."
+    required: false
+    default: ""
+  constitution:
+    description: "Path to a compiled constitution.json. Defaults to the repository's own compiled/constitution.json if present, else the one bundled with the package."
+    required: false
+    default: ""
 
 runs:
   using: "composite"
   steps:
-    - name: Install uv
-      uses: astral-sh/setup-uv@v5
-      with:
-        enable-cache: true
-
-    - name: Sync the Governova engine
+    # The engine is installed as a package, not synced from a workspace.
+    # `uv sync --all-packages` resolved the *consuming* repository's workspace —
+    # which is not this action's job, and fails outright in a repo that has no
+    # Python workspace at all. That defect confined the enforcer to Governova's
+    # own repository.
+    - name: Install the Governova engine
       shell: bash
-      run: uv sync --all-packages
+      env:
+        GOVERNOVA_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        if [ "${GOVERNOVA_VERSION}" = "source" ]; then
+          # Governova governing itself: install the engine from the checkout, so a
+          # pull request is judged by the constitution it proposes rather than by
+          # whichever version happens to be published.
+          python -m pip install --quiet "${GITHUB_ACTION_PATH}/../../../scripts"
+        else
+          python -m pip install --quiet "governova${GOVERNOVA_VERSION}"
+        fi
 
     - name: Enforce the constitution on changed files
       shell: bash
+      env:
+        GOVERNOVA_CONSTITUTION: ${{ inputs.constitution }}
       run: >
-        uv run governova-enforce
+        governova-enforce
         --changed
         --base "${{ inputs.base }}"
         --mode "${{ inputs.mode }}"

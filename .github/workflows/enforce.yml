@@ -23,6 +23,10 @@ jobs:
         with:
           mode: block
           base: ${{ github.event.pull_request.base.sha }}
+          # Governova governs itself with the engine and constitution in the
+          # branch under review, never with a published build — a PR that
+          # amends the constitution must be judged by the amendment it proposes.
+          version: source
 
       # Non-blocking report: the headline Governova Score, posted to the job summary.
       - name: Governova Score (report)

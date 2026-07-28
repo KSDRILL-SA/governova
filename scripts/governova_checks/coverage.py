@@ -11,9 +11,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from governova_compile.discovery import resolve_repo_root
 from governova_compile.schema import CompiledIndex
-from governova_compile.writer import load_index
+from governova_compile.writer import load_active_index
 
 from governova_checks.rules import RULES, covered_anti_patterns
 
@@ -21,7 +20,7 @@ from governova_checks.rules import RULES, covered_anti_patterns
 def _load_index(index: CompiledIndex | None) -> CompiledIndex:
     if index is not None:
         return index
-    return load_index(resolve_repo_root() / "compiled" / "constitution.json")
+    return load_active_index()
 
 
 def index_anti_patterns(index: CompiledIndex | None = None) -> set[str]:

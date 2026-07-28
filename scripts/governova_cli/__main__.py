@@ -16,9 +16,14 @@ from typing import Annotated, Any
 
 import typer
 from governova_compile.compiler import compile_index
-from governova_compile.discovery import resolve_repo_root
+from governova_compile.discovery import resolve_repo_root, resolve_target_root
 from governova_compile.schema import CompiledIndex, IntegrityIssue, Severity
-from governova_compile.writer import load_index, verify_checksum, write_index
+from governova_compile.writer import (
+    load_active_index,
+    load_index,
+    verify_checksum,
+    write_index,
+)
 from governova_validate.checks import ALL_CHECKS
 from governova_validate.links import check_links
 from rich.console import Console
@@ -35,21 +40,28 @@ _ERROR_SEVERITIES = {Severity.SEV0, Severity.SEV1, Severity.SEV2}
 
 
 def _root(repo_root: Path | None) -> Path:
+    """The repository under governance.
+
+    Prefers the Governova source tree when the command is run inside one — so
+    maintainer commands keep working — and otherwise resolves the consumer's
+    repository. Falling back rather than failing is what lets every read-only
+    surface run against somebody else's code.
+    """
+    if repo_root is not None:
+        return repo_root
     try:
-        return repo_root or resolve_repo_root()
-    except FileNotFoundError as exc:
-        console.print(f"[bold red]error:[/] {exc}")
-        raise typer.Exit(code=2) from exc
+        return resolve_repo_root()
+    except FileNotFoundError:
+        return resolve_target_root()
 
 
 def _load(root: Path) -> CompiledIndex:
-    index_file = root / "compiled" / "constitution.json"
-    if not index_file.is_file():
-        console.print(
-            "[bold red]error:[/] compiled index not found. Run [cyan]governova compile[/] first."
-        )
-        raise typer.Exit(code=2)
-    return load_index(index_file)
+    """The constitution to govern with — working-tree copy first, else bundled."""
+    try:
+        return load_active_index(start=root)
+    except FileNotFoundError as exc:
+        console.print(f"[bold red]error:[/] {exc}")
+        raise typer.Exit(code=2) from exc
 
 
 def _all_standards(index: CompiledIndex) -> list[Any]:

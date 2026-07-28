@@ -29,7 +29,11 @@ jobs:
           version: source
 
       # Non-blocking report: the headline Governova Score, posted to the job summary.
+      # Runs the `governova` the action installed. It previously used `uv run`,
+      # which worked only because the action happened to install uv as a side
+      # effect — a dependency on another step's internals that broke the moment
+      # the action stopped syncing a workspace it had no business syncing.
       - name: Governova Score (report)
         if: always()
         shell: bash
-        run: uv run governova govscore --format markdown
+        run: governova govscore --format markdown

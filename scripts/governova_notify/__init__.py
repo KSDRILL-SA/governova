@@ -16,6 +16,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from governova_checks.net import require_http_url
+
 ENV_WEBHOOK_URL = "GOVERNOVA_WEBHOOK_URL"
 ENV_TIMEOUT = "GOVERNOVA_WEBHOOK_TIMEOUT"
 
@@ -44,8 +46,9 @@ def from_env(env: dict[str, str] | None = None) -> NotifyConfig:
 
 def urllib_transport(url: str, payload: dict[str, Any], timeout: float) -> bool:
     data = json.dumps(payload).encode("utf-8")
+    safe_url = require_http_url(url, what="notify webhook")
     request = urllib.request.Request(
-        url, data=data, headers={"Content-Type": "application/json"}, method="POST"
+        safe_url, data=data, headers={"Content-Type": "application/json"}, method="POST"
     )
     try:
         with urllib.request.urlopen(request, timeout=timeout) as resp:

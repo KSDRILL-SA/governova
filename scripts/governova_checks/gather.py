@@ -8,6 +8,7 @@ rule set itself are skipped — they legitimately contain violation patterns.
 from __future__ import annotations
 
 import fnmatch
+import re
 import subprocess
 from collections.abc import Iterator
 from pathlib import Path
@@ -38,13 +39,44 @@ def is_ignored(rel: str, ignores: tuple[str, ...]) -> bool:
     return any(fnmatch.fnmatch(rel, pat) for pat in ignores)
 
 
+# A git revision: SHA, branch, tag, or `origin/main`-style remote ref. Deliberately
+# strict — see `changed_files` for why anything looser is dangerous.
+_SAFE_REV = re.compile(r"\A[A-Za-z0-9][A-Za-z0-9._/@^~-]{0,254}\Z")
+
+
+def _validate_rev(base: str) -> str:
+    """Reject a revision that git could read as an option.
+
+    `git diff … "{base}...HEAD"` interpolates caller input into an argument
+    vector. There is no shell, so there is no shell injection — but git parses
+    leading-dash arguments as options, and `--output=<path>` writes a file. A
+    `base` of `--output=/path/to/anything` therefore writes an attacker-chosen
+    file, which is a real capability inside CI.
+
+    The value reaches us from a workflow input; a consumer wiring it from a
+    branch name or a `pull_request_target` payload hands that capability to
+    whoever opens a pull request. So it is validated here, at the boundary,
+    rather than trusted because the default happens to be safe.
+    """
+    if not _SAFE_REV.match(base):
+        raise ValueError(
+            f"refusing to use {base!r} as a git revision — expected a SHA, branch, "
+            f"tag, or remote ref, and a value that git could parse as an option is "
+            f"never one of those."
+        )
+    return base
+
+
 def changed_files(base: str, root: Path) -> list[Path]:
     """Files added/copied/modified/renamed vs `base` (three-dot = since merge-base).
 
-    Raises subprocess.SubprocessError / OSError if git cannot compute the diff.
+    Raises ValueError for a revision git could misread as an option, and
+    subprocess.SubprocessError / OSError if git cannot compute the diff.
     """
+    rev = _validate_rev(base)
     out = subprocess.run(
-        ["git", "diff", "--name-only", "--diff-filter=ACMR", f"{base}...HEAD"],
+        # `--` terminates option parsing; nothing after it is read as a flag.
+        ["git", "diff", "--name-only", "--diff-filter=ACMR", f"{rev}...HEAD", "--"],
         cwd=root,
         capture_output=True,
         text=True,

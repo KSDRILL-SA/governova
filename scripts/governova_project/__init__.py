@@ -162,10 +162,26 @@ def applicable_standards(index: CompiledIndex, profile: Profile) -> list[Standar
 
 
 def _evidence_resolves(root: Path, evidence: str) -> bool:
-    """A cited path must actually exist. An unresolvable citation is not evidence."""
+    """A cited path must exist **inside the repository**.
+
+    Two conditions, not one. Existence alone would accept an absolute path to
+    anything on the machine — `/etc/hostname` is a file that exists, and it
+    evidences nothing. Evidence only means something if a third party reading
+    the repository can check it, so a citation that escapes the repository (by
+    being absolute, or by traversing out of it) is not evidence and is reported
+    as an unresolved claim.
+    """
     if not evidence:
         return False
-    return (root / evidence).exists()
+    candidate = Path(evidence)
+    if candidate.is_absolute() or candidate.drive:
+        return False
+    try:
+        resolved = (root / candidate).resolve()
+        resolved.relative_to(root.resolve())
+    except (ValueError, OSError):
+        return False
+    return resolved.exists()
 
 
 def _adr_exists(root: Path, adr: str) -> bool:

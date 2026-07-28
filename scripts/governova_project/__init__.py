@@ -239,15 +239,23 @@ def compute_coverage(
 
 
 def enforced_clean_standards(root: Path) -> set[str]:
-    """Standards the reliable tier covers and found clean across the source tree.
+    """Standards mechanically verified as satisfied — the strongest evidence.
 
-    A rule that fires is evidence *against* the standard, so a standard with any
-    finding is excluded from the mechanically-satisfied set.
+    Two independent sources, neither requiring a declaration:
+
+    * **Reliable tier** — a rule covers the standard and found nothing. A rule
+      that fires is evidence *against*, so any standard with a finding is
+      excluded rather than merely unproven.
+    * **Structural probes** — repository-level facts (`governova_evidence`) that
+      no line-scan can reach. A probe that cannot determine the answer returns
+      UNKNOWN and contributes nothing.
     """
     from governova_checks import RULES, iter_source_files, scan_paths
+    from governova_evidence import satisfied_standards
 
     violated = {f.standard for f in scan_paths(list(iter_source_files(root)))}
-    return {r.standard for r in RULES} - violated
+    from_rules = {r.standard for r in RULES} - violated
+    return from_rules | satisfied_standards(root)
 
 
 def coverage_factor(root: Path, index: CompiledIndex) -> tuple[float | None, str]:

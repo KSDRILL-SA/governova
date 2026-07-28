@@ -1,0 +1,13 @@
+{
+  "approvals": 1,
+  "engineer": null,
+  "handoffs": 1,
+  "opened_at": "2026-07-28T01:00:04+00:00",
+  "opened_by": "Maluleke Kurhula Success",
+  "permission_level": null,
+  "state": "closed",
+  "task": "Build the governance runtime (#105)",
+  "violations": [
+    "SEV1: ai actor 'engineer-02' attempted L4 approval"
+  ]
+}

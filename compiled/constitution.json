@@ -1,8 +1,8 @@
 {
   "schema_version": "1.1.0",
-  "compiled_at": "2026-07-28T00:20:31.486678Z",
-  "source_commit_sha": "cd33784",
-  "checksum": "sha256:0b36ba3cb106405d9fae257891997508a4b5262c3253d7c46604496c80658f06",
+  "compiled_at": "2026-07-28T00:33:27.884413Z",
+  "source_commit_sha": "2ae11ca",
+  "checksum": "sha256:c375e6f8c9c184d6ce919bb96b72b251ab0637870003ac663cd5ae3cda1f8fd4",
   "framework": [
     {
       "id": "format-specification",
@@ -20556,6 +20556,215 @@
   ],
   "domains": [
     {
+      "id": "D-EDTECH",
+      "number": 99,
+      "name": "Education Technology",
+      "phase": null,
+      "slug": "edtech",
+      "regulatory_basis": [
+        "FERPA",
+        "COPPA"
+      ],
+      "reference_systems": [
+        "FundsLink Academy"
+      ],
+      "header": {
+        "document": "Edtech Domain Constitution",
+        "organisation": "KSDRILL SA",
+        "version": "v1.0",
+        "status": "DRAFT",
+        "locked_date": null,
+        "next_review": null,
+        "applies_to": "All Stacks · every system that may serve users under the age of majority",
+        "paired_with": null
+      },
+      "path": "constitution/domains/edtech/D-EDTECH-domain-constitution.md",
+      "hierarchy_rank": null,
+      "binds_implementation": false,
+      "standards": [
+        {
+          "id": "D-EDTECH.1",
+          "title": "Age Is Determined Before Processing, and Consent Follows From It",
+          "constitution_id": "D-EDTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every system that may serve users under the age of majority",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S3.24",
+              "description": "least privilege default — minimum role on account creation"
+            },
+            {
+              "standard_id": "S2.25",
+              "description": "validation applied at every boundary"
+            }
+          ],
+          "enforced_by": [
+            "registration-flow review",
+            "E2E test",
+            "code review"
+          ],
+          "statement": "A system that may serve minors determines the user's age category before any personal data beyond that determination is processed, and records the basis of the determination. Where the user is below the applicable age of consent, processing proceeds only on verifiable guardian consent, which is recorded with its scope, the identity that granted it, and the date. Consent is revocable, and revocation is honoured across every downstream processor. A date-of-birth field collected after the account already holds personal data does not satisfy this standard.",
+          "rationale": "Consent obtained from someone who cannot legally give it is not consent, so every processing activity that follows it is unlawful regardless of how carefully it is performed. Ordering matters more than intent: a registration flow that collects a name, an email, and a school before asking for a birth date has already processed a minor's data without a lawful basis, and no later correction can undo that. Recording the scope of guardian consent is what makes revocation actionable — a consent record that says only \"yes\" cannot tell the system what to stop doing.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-EDTECH.1a",
+              "description": "Personal data collected before the user's age category is determined, or an age check performed only in the client.",
+              "parent_standard_id": "D-EDTECH.1"
+            },
+            {
+              "id": "AP-D-EDTECH.1b",
+              "description": "Guardian consent recorded as a boolean with no scope, granting identity, or date — or revocation that does not propagate to downstream processors.",
+              "parent_standard_id": "D-EDTECH.1"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/edtech/D-EDTECH-domain-constitution.md",
+          "source_line": 46
+        },
+        {
+          "id": "D-EDTECH.2",
+          "title": "Education Records Have a Declared Disclosure Boundary",
+          "constitution_id": "D-EDTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every system holding learner records",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S3.24",
+              "description": "least privilege default"
+            },
+            {
+              "standard_id": "S3.21",
+              "description": "roles as database enums"
+            },
+            {
+              "standard_id": "S8.31",
+              "description": "structured JSON logging"
+            }
+          ],
+          "enforced_by": [
+            "authorisation review",
+            "access-control tests",
+            "audit-log review"
+          ],
+          "statement": "Every category of learner record declares who may see it — the learner, a consented guardian, named institutional roles, and no one else — and that boundary is enforced server-side on every read path, including exports, reports, aggregate views, and support tooling. Every disclosure to a party other than the learner is logged with the recipient, the legal or consented basis, and the fields disclosed. Aggregate and anonymised outputs are checked for re-identification against small cohorts before release; a class of four is not anonymous.",
+          "rationale": "Educational records follow a person for life and are routinely requested by parties with no right to them — employers, relatives, other institutions, and internal staff acting outside their role. The dominant failure is not a breach but ordinary over-disclosure through paths nobody classified as disclosure: a support tool that shows everything, a CSV export with unfiltered columns, or a dashboard that reveals an individual because the cohort was too small to hide them. Logging the basis for each disclosure is what makes an improper one findable, since the disclosure itself will otherwise look identical to a legitimate read.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-EDTECH.2a",
+              "description": "A learner record reachable through an export, report, or support tool that bypasses the declared disclosure boundary.",
+              "parent_standard_id": "D-EDTECH.2"
+            },
+            {
+              "id": "AP-D-EDTECH.2b",
+              "description": "An aggregate or \"anonymised\" output released without a small-cohort re-identification check.",
+              "parent_standard_id": "D-EDTECH.2"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/edtech/D-EDTECH-domain-constitution.md",
+          "source_line": 70
+        },
+        {
+          "id": "D-EDTECH.3",
+          "title": "Learner Data Is Not Monetised or Used to Optimise Engagement",
+          "constitution_id": "D-EDTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every system serving learners",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S9.1",
+              "description": "every platform solves a real problem felt by real people"
+            },
+            {
+              "standard_id": "S9.7",
+              "description": "five gate questions every feature must pass"
+            },
+            {
+              "standard_id": "S8.86",
+              "description": "vendor register + exit plan"
+            }
+          ],
+          "enforced_by": [
+            "design review",
+            "vendor register review",
+            "semantic tier"
+          ],
+          "statement": "Learner personal data is not sold, shared for advertising, or used to train models outside the educational purpose it was collected for. No feature optimises for engagement, session length, streak maintenance, or notification response as a goal in itself; features are justified by learning or access outcomes, and the justification is recorded at the gate. Every third party receiving learner data appears in the vendor register with its purpose and its data-handling terms, and behavioural advertising or profiling identifiers are absent from learner-facing surfaces.",
+          "rationale": "Engagement optimisation and education diverge: the most engaging product keeps a learner returning, while the best educational product gets them to competence and lets them leave. When the user is a minor, that divergence stops being a product-strategy question — techniques that are merely persuasive for an adult are exploitative against a developing capacity for self-regulation, and the platform holds the record that makes the targeting effective. Third-party analytics is the usual route by which this happens without a decision ever being made, which is why the vendor register is the enforcement point rather than a policy statement.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-EDTECH.3a",
+              "description": "Learner data shared with an advertising, profiling, or model-training recipient outside the declared educational purpose.",
+              "parent_standard_id": "D-EDTECH.3"
+            },
+            {
+              "id": "AP-D-EDTECH.3b",
+              "description": "A feature whose recorded justification is engagement, streaks, or session length rather than a learning or access outcome.",
+              "parent_standard_id": "D-EDTECH.3"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/edtech/D-EDTECH-domain-constitution.md",
+          "source_line": 94
+        },
+        {
+          "id": "D-EDTECH.4",
+          "title": "A Learner's Record Outlives the Platform and Travels With Them",
+          "constitution_id": "D-EDTECH",
+          "priority": "High",
+          "applies_to": "All Stacks · every system holding learner records",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S5.8",
+              "description": "soft delete, never hard delete"
+            },
+            {
+              "standard_id": "S8.86",
+              "description": "vendor register + exit plan"
+            },
+            {
+              "standard_id": "S8.87",
+              "description": "continuous temporal governance of the external surface"
+            }
+          ],
+          "enforced_by": [
+            "export contract review",
+            "retention policy",
+            "restore drill"
+          ],
+          "statement": "A learner can export their complete record — enrolments, submissions, results, awards, and applications — in a documented, machine-readable format that remains intelligible without the platform that produced it. Retention periods are declared per record category and enforced by an automated process, distinguishing records with a statutory retention obligation from those a learner may have deleted. Deletion of a learner account never silently destroys a record the institution is legally required to retain, and never retains one it is required to delete.",
+          "rationale": "A learner's record is the evidence of what they achieved, and it must survive the institution's choice of supplier, since the learner had no part in that choice. Export formats that are technically machine-readable but semantically opaque — a database dump, an undocumented JSON blob — satisfy the letter of portability while defeating it entirely, because no receiving institution can interpret them. The two-sided retention requirement is deliberate: over-retention and premature deletion are both failures, and a system that only implements one of them will reliably commit the other.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-EDTECH.4a",
+              "description": "Learner export available only as an undocumented dump, a rendered document, or a proprietary format.",
+              "parent_standard_id": "D-EDTECH.4"
+            },
+            {
+              "id": "AP-D-EDTECH.4b",
+              "description": "Retention applied uniformly across record categories, so statutory records are destroyed or deleted records are retained.",
+              "parent_standard_id": "D-EDTECH.4"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/edtech/D-EDTECH-domain-constitution.md",
+          "source_line": 118
+        }
+      ]
+    },
+    {
       "id": "D-FINTECH",
       "number": 99,
       "name": "Financial Technology",
@@ -20840,6 +21049,468 @@
           "source_line": 164
         }
       ]
+    },
+    {
+      "id": "D-GOVTECH",
+      "number": 99,
+      "name": "Government Technology",
+      "phase": null,
+      "slug": "govtech",
+      "regulatory_basis": [
+        "POPIA",
+        "GDPR-adjacent"
+      ],
+      "reference_systems": [
+        "Maphophe"
+      ],
+      "header": {
+        "document": "Govtech Domain Constitution",
+        "organisation": "KSDRILL SA",
+        "version": "v1.0",
+        "status": "DRAFT",
+        "locked_date": null,
+        "next_review": null,
+        "applies_to": "All Stacks · every system holding citizen records",
+        "paired_with": null
+      },
+      "path": "constitution/domains/govtech/D-GOVTECH-domain-constitution.md",
+      "hierarchy_rank": null,
+      "binds_implementation": false,
+      "standards": [
+        {
+          "id": "D-GOVTECH.1",
+          "title": "Citizen Data Residency Is Declared and Enforced",
+          "constitution_id": "D-GOVTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every system holding citizen records",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S8.27",
+              "description": "production secrets are stored in the platform, never in code"
+            },
+            {
+              "standard_id": "S5.1",
+              "description": "database assignment is declared"
+            }
+          ],
+          "enforced_by": [
+            "architecture review",
+            "deployment configuration review",
+            "ADR"
+          ],
+          "statement": "The jurisdiction in which citizen personal data is stored, processed, and backed up is declared in an ADR before deployment, and enforced in the deployment configuration by explicit region pinning on every store that holds it — primary database, replicas, backups, object storage, caches, queues, and logs. Any transfer of citizen data across a jurisdictional boundary, including to a third-party processor or an AI provider, requires a recorded legal basis and appears in the system's vendor register. A default region chosen by a hosting provider is not a declaration.",
+          "rationale": "Data-protection law binds the state to where a citizen's record physically lives, and the obligation follows the data into every copy of it. The failure is almost never the primary database — it is the backup bucket, the log aggregator, or the AI provider that quietly relocated the data outside the jurisdiction while the application remained compliant on paper. Region defaults are the mechanism: a provider's default is chosen for the provider's convenience, and inheriting it is a decision the system made without recording that it made one.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-GOVTECH.1a",
+              "description": "Citizen data in a store whose region was inherited from a provider default rather than pinned explicitly.",
+              "parent_standard_id": "D-GOVTECH.1"
+            },
+            {
+              "id": "AP-D-GOVTECH.1b",
+              "description": "Backups, logs, or a third-party processor holding citizen data outside the declared jurisdiction with no recorded legal basis.",
+              "parent_standard_id": "D-GOVTECH.1"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/govtech/D-GOVTECH-domain-constitution.md",
+          "source_line": 47
+        },
+        {
+          "id": "D-GOVTECH.2",
+          "title": "A Public Service Works on the Device and Connection Citizens Have",
+          "constitution_id": "D-GOVTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every citizen-facing interface",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S9.5",
+              "description": "African context is a design constraint"
+            },
+            {
+              "standard_id": "S4.69",
+              "description": "Lighthouse performance budget"
+            },
+            {
+              "standard_id": "S4.21",
+              "description": "WCAG 2.1 AA colour contrast"
+            },
+            {
+              "standard_id": "S4.19",
+              "description": "full keyboard accessibility"
+            }
+          ],
+          "enforced_by": [
+            "CI performance budget",
+            "accessibility audit",
+            "design review"
+          ],
+          "statement": "Every citizen-facing interface meets WCAG 2.1 AA and functions at the smallest viewport the service's population actually uses, on an intermittent connection. The service's minimum target device, viewport, and connection profile are declared in the system's CONSTITUTION-INDEX and enforced as a CI budget on page weight and interaction latency, not merely measured. Any function a citizen needs to complete a service request degrades to a working state without JavaScript, without a persistent connection, or without a modern browser — and a citizen who cannot use the digital channel has a declared non-digital route to the same service.",
+          "rationale": "A public service excludes by omission. When the interface assumes a current handset, an unmetered connection, and full sight and dexterity, the citizens filtered out are precisely those with the greatest need of the service and the least ability to complain about it — so the exclusion never appears in the metrics. Declaring the minimum profile turns exclusion into a testable property; enforcing it as a budget stops it regressing quietly with the next dependency. The non-digital route matters because no accessibility target reaches everyone, and a service that is only digital is a service that has decided some citizens do not count.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-GOVTECH.2a",
+              "description": "A service request that cannot be completed without JavaScript, on a 320px viewport, or on an intermittent connection.",
+              "parent_standard_id": "D-GOVTECH.2"
+            },
+            {
+              "id": "AP-D-GOVTECH.2b",
+              "description": "A performance or accessibility target recorded as an aspiration rather than enforced as a CI gate, or a system with no declared non-digital route.",
+              "parent_standard_id": "D-GOVTECH.2"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/govtech/D-GOVTECH-domain-constitution.md",
+          "source_line": 71
+        },
+        {
+          "id": "D-GOVTECH.3",
+          "title": "Citizens Can See, Correct, and Export the Record Held About Them",
+          "constitution_id": "D-GOVTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every system holding citizen records",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S3.25",
+              "description": "role change audit trail — immutable history"
+            },
+            {
+              "standard_id": "S5.8",
+              "description": "soft delete, never hard delete"
+            }
+          ],
+          "enforced_by": [
+            "API contract review",
+            "E2E test",
+            "code review"
+          ],
+          "statement": "Every system holding citizen records exposes, to the citizen the record concerns: access to the record in a portable machine-readable format, the ability to request correction, and a visible record of what was corrected, when, and by whom. Correction never rewrites history — the prior value is retained per `S5.8` and the change is auditable. Requests are answered within the statutory period, and the system records the date each request was received and satisfied so that compliance is demonstrable rather than asserted.",
+          "rationale": "An inaccurate state record is not an inconvenience; it decides whether a person receives a grant, a service, or a right. Access and correction are the only mechanisms by which an error in a public record can be found at all, because the state has no other incentive to look. Allowing correction to overwrite silently destroys the evidence a citizen needs in a dispute — the record would then show only the corrected value, with nothing to prove what the state acted on at the time. Recording the request dates is what converts the obligation from a policy statement into something an auditor can verify.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-GOVTECH.3a",
+              "description": "A citizen record with no citizen-accessible read or export path, or export available only in a proprietary format.",
+              "parent_standard_id": "D-GOVTECH.3"
+            },
+            {
+              "id": "AP-D-GOVTECH.3b",
+              "description": "A correction that overwrites the prior value with no retained history of what changed and who changed it.",
+              "parent_standard_id": "D-GOVTECH.3"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/govtech/D-GOVTECH-domain-constitution.md",
+          "source_line": 95
+        },
+        {
+          "id": "D-GOVTECH.4",
+          "title": "Public Systems Remain Operable Without Their Vendor",
+          "constitution_id": "D-GOVTECH",
+          "priority": "High",
+          "applies_to": "All Stacks · every publicly funded system",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S8.86",
+              "description": "vendor register + exit plan for every critical vendor"
+            },
+            {
+              "standard_id": "S8.85",
+              "description": "dependency license allowlist; SBOM generated for releases"
+            }
+          ],
+          "enforced_by": [
+            "vendor register review",
+            "procurement gate",
+            "restore drill"
+          ],
+          "statement": "Every publicly funded system maintains, as a condition of delivery: a complete SBOM, a vendor register naming every critical dependency with a documented exit path, source and data in repositories the commissioning authority controls, and a restore drill performed at least annually and recorded. No component whose licence prevents the authority from continuing to operate, audit, or hand over the system may be introduced. Where a proprietary or hosted component is unavoidable, its exit path is documented and rehearsed before it enters production.",
+          "rationale": "Public systems outlive the contracts that build them, and the authority that must keep a service running is frequently not the party that wrote it. Lock-in is therefore a public-interest failure rather than a commercial inconvenience: a ward cannot procure a replacement for a system whose data it cannot extract, and a service outage caused by a lapsed vendor relationship falls on citizens who had no part in the procurement. A restore drill is included deliberately — an untested backup is an assumption, and the moment it is needed is the worst moment to discover it.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-GOVTECH.4a",
+              "description": "A critical dependency with no documented exit path, or a component under a licence that prevents the authority operating or handing over the system.",
+              "parent_standard_id": "D-GOVTECH.4"
+            },
+            {
+              "id": "AP-D-GOVTECH.4b",
+              "description": "Source, data, or infrastructure control held solely by the vendor, or a backup that has never been restore-tested.",
+              "parent_standard_id": "D-GOVTECH.4"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/govtech/D-GOVTECH-domain-constitution.md",
+          "source_line": 119
+        },
+        {
+          "id": "D-GOVTECH.5",
+          "title": "Decisions Affecting a Citizen Are Attributable and Explainable",
+          "constitution_id": "D-GOVTECH",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every system deciding eligibility, allocation, or status",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S8.31",
+              "description": "structured JSON logging"
+            },
+            {
+              "standard_id": "S3.21",
+              "description": "roles as database enums"
+            },
+            {
+              "standard_id": "S1.103",
+              "description": "logic lives in its layer"
+            }
+          ],
+          "enforced_by": [
+            "audit-log review",
+            "semantic tier",
+            "code review"
+          ],
+          "statement": "Every decision that grants, denies, prioritises, or changes a citizen's status records: the deciding identity — human or automated — the rule version applied, the inputs it was applied to, the outcome, and a plain-language reason the citizen can be given. Where a decision is automated, that fact is disclosed to the citizen, and a route to human review exists and is reachable. Decision rules live in the service layer where they can be versioned and tested, never embedded in an interface or a query.",
+          "rationale": "Administrative decisions are challengeable by law, and a challenge is answerable only if the state can reconstruct why the decision was made — which requires knowing the rule as it stood at the time, not as it stands now. Undisclosed automation is the modern form of an unaccountable decision: a citizen cannot contest a refusal whose existence they cannot attribute. Requiring a plain-language reason at the point of decision, rather than reconstructing one later, is what prevents post-hoc rationalisation of an outcome nobody can now explain.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-GOVTECH.5a",
+              "description": "A citizen-affecting decision recorded as an outcome only, without the rule version, inputs, or deciding identity.",
+              "parent_standard_id": "D-GOVTECH.5"
+            },
+            {
+              "id": "AP-D-GOVTECH.5b",
+              "description": "Automated decision-making not disclosed to the affected citizen, or with no reachable route to human review.",
+              "parent_standard_id": "D-GOVTECH.5"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/govtech/D-GOVTECH-domain-constitution.md",
+          "source_line": 143
+        }
+      ]
+    },
+    {
+      "id": "D-SAAS",
+      "number": 99,
+      "name": "SaaS / B2B",
+      "phase": null,
+      "slug": "saas",
+      "regulatory_basis": [],
+      "reference_systems": [
+        "SyncUp"
+      ],
+      "header": {
+        "document": "SaaS / B2B Domain Constitution",
+        "organisation": "KSDRILL SA",
+        "version": "v1.0",
+        "status": "DRAFT",
+        "locked_date": null,
+        "next_review": null,
+        "applies_to": "All Stacks · every multi-tenant system",
+        "paired_with": null
+      },
+      "path": "constitution/domains/saas/D-SAAS-domain-constitution.md",
+      "hierarchy_rank": null,
+      "binds_implementation": false,
+      "standards": [
+        {
+          "id": "D-SAAS.1",
+          "title": "Tenant Isolation Is Enforced by the Data Layer, Not by Query Discipline",
+          "constitution_id": "D-SAAS",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every multi-tenant system",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S1.104",
+              "description": "data access through repositories"
+            },
+            {
+              "standard_id": "S2.28",
+              "description": "query discipline — the ORM is the source of truth for relational access"
+            },
+            {
+              "standard_id": "S3.24",
+              "description": "least privilege default"
+            }
+          ],
+          "enforced_by": [
+            "schema review",
+            "reliable-tier rules",
+            "integration tests",
+            "semantic tier"
+          ],
+          "statement": "Every tenant-scoped row carries a non-nullable tenant identifier, and the tenant filter is applied by a mechanism that cannot be omitted — row-level security, a repository layer that injects it, or an ORM-level global filter — never by each query remembering to include it. The tenant context is derived server-side from the authenticated session and never from a client-supplied parameter, header, or body field. Cross-tenant access, where the product requires it, is an explicit, named, audited operation rather than the absence of a filter. Every tenant-scoped table has an automated test asserting that a query executed in one tenant's context cannot return another tenant's rows.",
+          "rationale": "Isolation enforced by convention fails the first time an engineer writes a query without the filter, and that query will look correct in review because a missing `WHERE` clause is invisible — the code reads as though it selects everything because it does. Deriving tenancy from a request parameter turns the boundary into an input, which makes cross-tenant access a matter of editing a value. The per-table test exists because isolation is not a property of the system in general but of each table individually, and the table added last is the one nobody thought about.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-SAAS.1a",
+              "description": "A tenant-scoped query whose tenant filter is supplied per call site rather than by the data layer, or a nullable tenant identifier.",
+              "parent_standard_id": "D-SAAS.1"
+            },
+            {
+              "id": "AP-D-SAAS.1b",
+              "description": "Tenant context taken from a client-supplied parameter, header, or token claim the client can set.",
+              "parent_standard_id": "D-SAAS.1"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/saas/D-SAAS-domain-constitution.md",
+          "source_line": 43
+        },
+        {
+          "id": "D-SAAS.2",
+          "title": "One Tenant Cannot Consume Another's Capacity",
+          "constitution_id": "D-SAAS",
+          "priority": "High",
+          "applies_to": "All Stacks · every multi-tenant system",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S2.41",
+              "description": "rate limiting on all public endpoints"
+            },
+            {
+              "standard_id": "S2.14",
+              "description": "list endpoints support pagination"
+            },
+            {
+              "standard_id": "S2.81",
+              "description": "external-call resilience"
+            }
+          ],
+          "enforced_by": [
+            "load test",
+            "rate-limit configuration review",
+            "monitoring"
+          ],
+          "statement": "Rate limits, concurrency limits, and resource quotas are applied per tenant, not only globally or per IP. Any operation whose cost scales with a tenant's data — exports, reports, bulk writes, search, webhook fan-out — is bounded, paginated, or executed asynchronously on a queue with per-tenant fairness, so that no single tenant's workload can starve another. Background jobs carry tenant context and are scheduled so that one tenant's backlog cannot indefinitely delay another's. Per-tenant saturation is monitored and alerts before it becomes a shared outage.",
+          "rationale": "A global rate limit protects the platform from the internet but not tenants from each other: the largest customer, behaving entirely legitimately, becomes a denial-of-service against the smallest. Cost-scaling operations are where this concentrates, because a report that is instant for a new customer takes minutes for the largest one and holds a connection or a worker the whole time. A shared queue without fairness has the same shape — one tenant's bulk import occupies every worker, and every other tenant's jobs simply stop, which reaches the on-call engineer as an unexplained platform-wide stall.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-SAAS.2a",
+              "description": "Rate or concurrency limits applied only globally or per IP, with no per-tenant dimension.",
+              "parent_standard_id": "D-SAAS.2"
+            },
+            {
+              "id": "AP-D-SAAS.2b",
+              "description": "An unbounded, synchronous operation whose cost scales with tenant data size, or a shared job queue with no per-tenant fairness.",
+              "parent_standard_id": "D-SAAS.2"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/saas/D-SAAS-domain-constitution.md",
+          "source_line": 67
+        },
+        {
+          "id": "D-SAAS.3",
+          "title": "Entitlement Is Derived From an Authoritative Billing Record",
+          "constitution_id": "D-SAAS",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every system with paid plans or usage limits",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S3.24",
+              "description": "least privilege default"
+            },
+            {
+              "standard_id": "S2.81",
+              "description": "external-call resilience"
+            },
+            {
+              "standard_id": "S1.105",
+              "description": "no hardcoded configuration or magic values"
+            }
+          ],
+          "enforced_by": [
+            "authorisation review",
+            "integration tests",
+            "reconciliation job"
+          ],
+          "statement": "What a tenant may do is derived from a subscription record that is the single source of truth for plan, status, and limits, and is enforced server-side on every gated path. Plan definitions and limits are configuration, never conditionals scattered through the code. Where billing is handled by an external provider, provider events are verified, processed idempotently, and reconciled against local state on a schedule; a divergence is an incident. Entitlement fails closed on an expired or unknown subscription, and every entitlement change is audited with its cause.",
+          "rationale": "Entitlement drifts from billing whenever it is stored as a mutable flag that several code paths may set, and the drift is silently asymmetric — customers notice immediately when they lose access they paid for, and never report access they did not. Provider webhooks make this worse: they arrive out of order, duplicate, and are occasionally lost, so a system that treats them as commands rather than as events to reconcile will eventually hold a state the provider disagrees with. Plan logic expressed as scattered conditionals guarantees that adding a tier requires finding every one of them, and one will be missed.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-SAAS.3a",
+              "description": "Entitlement stored as a mutable flag set from multiple code paths, or plan limits hardcoded as conditionals rather than configuration.",
+              "parent_standard_id": "D-SAAS.3"
+            },
+            {
+              "id": "AP-D-SAAS.3b",
+              "description": "Billing provider events processed without verification, idempotency, or scheduled reconciliation against local state.",
+              "parent_standard_id": "D-SAAS.3"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/saas/D-SAAS-domain-constitution.md",
+          "source_line": 91
+        },
+        {
+          "id": "D-SAAS.4",
+          "title": "A Tenant Can Leave With Their Data",
+          "constitution_id": "D-SAAS",
+          "priority": "High",
+          "applies_to": "All Stacks · every multi-tenant system",
+          "phase": null,
+          "phase_label": null,
+          "depends_on": [
+            {
+              "standard_id": "S8.86",
+              "description": "vendor register + exit plan"
+            },
+            {
+              "standard_id": "S5.8",
+              "description": "soft delete, never hard delete"
+            },
+            {
+              "standard_id": "S8.84",
+              "description": "committed lockfile + CI vulnerability gate"
+            }
+          ],
+          "enforced_by": [
+            "export contract review",
+            "deletion test",
+            "DPA review"
+          ],
+          "statement": "Every tenant can export their complete data in a documented, machine-readable format without contacting support, and can request deletion. Deletion is executed within a declared period across every store that holds tenant data — primary database, replicas, backups, object storage, caches, search indexes, and analytics — and completion is recorded and demonstrable. Sub-processors holding tenant data are listed publicly and bound by the same obligation. Export completeness is verified by test, not by assertion: a fixture tenant is exported and the export is checked against the schema for missing entities.",
+          "rationale": "Export and deletion are contractual obligations in every enterprise agreement, and they are the two features that are never exercised during development, so they are the two most likely to be quietly broken. Deletion is the harder half: the primary database is straightforward and the derived stores — search indexes, caches, analytics warehouses, backups — are where tenant data survives a deletion that was reported as complete. Verifying export against the schema catches the ordinary failure, which is not a broken export but an incomplete one, silently missing the entity added last quarter.",
+          "anti_patterns": [
+            {
+              "id": "AP-D-SAAS.4a",
+              "description": "Export available only by support request, in an undocumented format, or unverified against the schema for completeness.",
+              "parent_standard_id": "D-SAAS.4"
+            },
+            {
+              "id": "AP-D-SAAS.4b",
+              "description": "Deletion that covers the primary database but leaves tenant data in search indexes, caches, analytics, or object storage.",
+              "parent_standard_id": "D-SAAS.4"
+            }
+          ],
+          "cross_references": [],
+          "abbreviated": false,
+          "source_path": "constitution/domains/saas/D-SAAS-domain-constitution.md",
+          "source_line": 115
+        }
+      ]
     }
   ],
   "runbooks": [
@@ -20967,8 +21638,8 @@
     "standards_extracted": 618,
     "anti_patterns_extracted": 446,
     "bindings_extracted": 72,
-    "domain_standards_extracted": 6,
-    "domain_anti_patterns_extracted": 12,
+    "domain_standards_extracted": 19,
+    "domain_anti_patterns_extracted": 38,
     "references_resolved": 0,
     "references_unresolved": 0,
     "links_checked": 0,

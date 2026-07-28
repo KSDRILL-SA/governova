@@ -8,8 +8,9 @@ the standard branch → issue → PR → merge workflow.
 
 - **Engine** (Python, `scripts/`): compile · validate · codegen · cli · mcp · checks ·
   enforce · score · report · bible · semantic · dashboard · guardian · notify.
-- **Detection**: three tiers — reliable (deterministic, blocking), advisory
-  (medium-confidence, warns), semantic (LLM, advisory, env-gated, inactive without a key).
+- **Detection**: four tiers — reliable (deterministic, blocking), structural probes
+  (repository facts), advisory (medium-confidence, warns), semantic (LLM, advisory,
+  env-gated, inactive without a key).
 - **Surfaces**: MCP, CLI, IDE extension, CI/CD enforcer, PR Guardian, web dashboard,
   chat notifier shipped (7/8); JetBrains plugin planned.
 - **§18 outputs**: Governova Score, Governova Certified eligibility, Board-Level
@@ -19,7 +20,12 @@ the standard branch → issue → PR → merge workflow.
 - **Self-score**: 78/100 (C) across **all five factors at full weight**. It read
   100 while three factors were unassessed; instrumenting them lowered it, which is
   the point. Core enforcement coverage 7.4% (33/446) plus 4/38 Layer 4 domain
-  anti-patterns; constitutional coverage 6.6% (36/544 evidenced).
+  anti-patterns; constitutional coverage 7.7% (42/544 evidenced).
+- **Detection**: now four tiers — reliable (regex, blocking), **structural probes**
+  (repository facts: lockfile, frozen CI install, gitignored `.env`, conventional
+  commits — deterministic, and unreachable by any line-scan), advisory, and
+  semantic. A probe that cannot determine an answer returns `unknown`, never
+  `satisfied`.
 - **Runtime**: `governova_audit` (hash-chained trail), `governova_relay` (§4 state
   machine, L4 human-only at the API boundary), `governova_project` (applicability).
 - **Layer 4**: 4 ratified domains (`D-FINTECH`, `D-GOVTECH`, `D-EDTECH`, `D-SAAS`),

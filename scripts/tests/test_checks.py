@@ -84,7 +84,9 @@ def test_new_advisory_rules_fire():
         "AP-S2.35a": "await prisma.user.delete({ where: { id } });",
     }
     for ap, code in cases.items():
-        findings = scan_text(code)
+        # `as any` is scoped to the TypeScript family — it is a type annotation
+        # that exists nowhere else. Unscoped rules ignore the file.
+        findings = scan_text(code, file="src/sample.ts")
         match = next(f for f in findings if f.anti_pattern == ap)
         assert match.confidence == "medium" and not match.blocking, ap
 
@@ -104,8 +106,11 @@ def test_batch2_advisory_rules_fire():
         "AP-S7.16a": "expect(wrapper.html()).toMatchSnapshot()",
         "AP-S7.17a": "import { defineConfig } from 'cypress'",
     }
+    # A TypeScript path: the `: any` / `as any` rules are scoped to the TS family,
+    # because those are type annotations that exist nowhere else. Unscoped rules
+    # ignore the file, so one path serves every case here.
     for ap, code in cases.items():
-        match = next((f for f in scan_text(code) if f.anti_pattern == ap), None)
+        match = next((f for f in scan_text(code, file="src/sample.ts") if f.anti_pattern == ap), None)
         assert match is not None and match.confidence == "medium" and not match.blocking, ap
 
 
@@ -117,8 +122,11 @@ def test_batch3_advisory_rules_fire():
         "AP-S1.56a": "import { x } from '../../../services/x';",
         "AP-S4.27a": "console.error(error);",
     }
+    # A TypeScript path: the `: any` / `as any` rules are scoped to the TS family,
+    # because those are type annotations that exist nowhere else. Unscoped rules
+    # ignore the file, so one path serves every case here.
     for ap, code in cases.items():
-        match = next((f for f in scan_text(code) if f.anti_pattern == ap), None)
+        match = next((f for f in scan_text(code, file="src/sample.ts") if f.anti_pattern == ap), None)
         assert match is not None and match.confidence == "medium", ap
 
 

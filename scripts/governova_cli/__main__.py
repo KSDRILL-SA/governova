@@ -771,5 +771,32 @@ def project(
         raise typer.Exit(code=1)
 
 
+@app.command()
+def evidence(
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Run the structural probes — repository facts no line-scan can reach."""
+    from governova_evidence import PROBES, Verdict, run_probes
+
+    results = run_probes(_root(repo_root))
+    titles = {p.standard: p.title for p in PROBES}
+    marks = {Verdict.SATISFIED: "[green]✓[/]", Verdict.VIOLATED: "[red]✗[/]", Verdict.UNKNOWN: "[yellow]?[/]"}
+
+    t = Table("", "Standard", "Check", "Evidence", box=None, pad_edge=False)
+    for r in results:
+        t.add_row(marks[r.verdict], r.standard, titles.get(r.standard, ""), r.evidence)
+    console.print(t)
+
+    satisfied = sum(1 for r in results if r.verdict is Verdict.SATISFIED)
+    violated = sum(1 for r in results if r.verdict is Verdict.VIOLATED)
+    unknown = len(results) - satisfied - violated
+    console.print(
+        f"\n[dim]{satisfied} satisfied · {violated} violated · {unknown} undetermined "
+        f"(undetermined never counts as satisfied)[/]"
+    )
+    if violated:
+        raise typer.Exit(code=1)
+
+
 if __name__ == "__main__":
     app()

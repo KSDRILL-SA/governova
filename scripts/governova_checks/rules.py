@@ -112,6 +112,13 @@ DATA_LAYER = re.compile(
     r"[._-](?:test|spec)\.[a-z]+$|(?:^|/)test_[^/]*\.py$|(?:^|/)conftest\.py$"
 )
 
+# TypeScript-family files. `: any` and `as any` are type annotations that exist
+# only here — matching them everywhere flags Python's builtin `any(...)` call and
+# any language with a similar shape, which is a false positive on a blocking
+# surface. Plain .js/.jsx are excluded: without a type system there is nothing to
+# annotate.
+TS_FAMILY = re.compile(r"\.(?:ts|tsx|mts|cts|vue|svelte|astro)$")
+
 # Test files — several rules must not fire here (fixtures legitimately hold
 # literal URLs, floats, and hand-built tenant contexts).
 TEST_PATHS = re.compile(
@@ -283,6 +290,7 @@ RULES: list[Rule] = [
         re.compile(r"\bas\s+any\b"),
         "Cast to `any` defeats type safety. S1.49: use `unknown` and validate.",
         "medium",
+        path_include=TS_FAMILY,
     ),
     Rule(
         "AP-S3.3a",
@@ -360,6 +368,7 @@ RULES: list[Rule] = [
         re.compile(r":\s*any\b"),
         "Type annotated as `any` defeats type safety. S1.49: use `unknown` and validate.",
         "medium",
+        path_include=TS_FAMILY,
     ),
     Rule(
         "AP-S1.57b",

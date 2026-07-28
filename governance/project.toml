@@ -1,0 +1,88 @@
+# Governova — project profile
+#
+# Declares what this project *is*, so Governova can derive which standards apply
+# to it. Applicability is computed from this profile plus each standard's scope
+# and phase in the compiled index — nothing here hand-lists standards, because a
+# hand-maintained list goes stale and a stale list is worse than none.
+#
+# Two rules govern this file:
+#
+#   1. Every `evidence` path must resolve on disk, and every exception must cite
+#      a real ADR. An unresolvable claim is reported and counts for nothing.
+#   2. Standards already covered by a passing reliable-tier rule need no entry —
+#      mechanical verification is stronger evidence than a declaration, and
+#      restating it here would only create something else to keep in sync.
+#
+# Read by `governova project` and by the Governova Score's coverage factor.
+
+[project]
+name = "Governova"
+# Governova is a Python engine. It is neither of the two stack-exclusive scopes
+# in the corpus (Angular, Next.js), so those standards are correctly out of scope
+# for this repository while remaining in force for the systems it governs.
+stacks = ["python", "fastapi"]
+# Layer 4: Governova is developer tooling distributed to organisations.
+domains = ["D-SAAS"]
+# Phase 3 reached — product and AI-collaboration governance are both in force.
+phase = 3
+
+# ── Declared satisfactions ───────────────────────────────────────────────────
+# Each cites evidence that must exist. Ordered by constitution.
+
+[[satisfied]]
+standard = "S1.99"
+evidence = "protocols/github-workflow.md"
+note = "Branch → issue → PR → merge with full metadata; every PR in this repo follows it."
+
+[[satisfied]]
+standard = "S1.100"
+evidence = "protocols/github-workflow.md"
+note = "No-AI-references rule across the GitHub metadata surface; human attribution only."
+
+[[satisfied]]
+standard = "S1.102"
+evidence = "governance/project.toml"
+note = "This profile is the completeness record — every applicable standard is satisfied or carries an exception."
+
+[[satisfied]]
+standard = "S1.103"
+evidence = "scripts/governova_checks/rules.py"
+note = "Enforced by AP-S1.103a — data access in the presentation layer is a blocking finding."
+
+[[satisfied]]
+standard = "S1.104"
+evidence = "scripts/governova_checks/rules.py"
+note = "Enforced by AP-S1.104a — raw data access outside the repository layer warns."
+
+[[satisfied]]
+standard = "S1.105"
+evidence = "scripts/governova_checks/rules.py"
+note = "Enforced by AP-S1.105a — environment URLs inlined as literals are flagged."
+
+[[satisfied]]
+standard = "S8.84"
+evidence = "uv.lock"
+note = "Lockfile committed; CI resolves against it on every run."
+
+[[satisfied]]
+standard = "S8.87"
+evidence = "planning/strengthening-roadmap.md"
+note = "The external surface is reviewed as a maintained plan rather than a one-time check."
+
+[[satisfied]]
+standard = "S10.8"
+evidence = "scripts/governova_relay/__init__.py"
+note = "L4 is refused at the API boundary for any non-human actor, and the attempt is recorded SEV1."
+
+[[satisfied]]
+standard = "S10.40"
+evidence = "protocols/github-workflow.md"
+note = "Solo-mode merge authority; sensitive changes merged deliberately by the founder."
+
+# ── Approved exceptions ──────────────────────────────────────────────────────
+# Each must cite an ADR that exists in governance/decisions/.
+
+[[exception]]
+standard = "S5.3"
+adr = "ADR-005"
+reason = "Governova's local engine holds no financial data and no database at all — the constitutional store is a committed JSON index. The standard is in force for every system Governova governs; it has no subject here."

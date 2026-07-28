@@ -1,5 +1,9 @@
 [project]
-name = "governova"
+# The workspace root is not published (`package = false` below) — it exists only
+# to hold the uv workspace and the shared tool configuration. The name
+# `governova` belongs to the distributable engine in `scripts/`, so this one
+# yields it: two workspace members cannot share a name.
+name = "governova-workspace"
 version = "0.1.0"
 description = "Governova — AI Development Governance Platform (monorepo root)"
 readme = "README.md"

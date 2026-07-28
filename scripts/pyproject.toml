@@ -1,11 +1,28 @@
 [project]
-name = "governova-scripts"
+name = "governova"
 version = "0.1.0"
-description = "Compile, validate, and codegen for the Governova constitutional database"
+description = "Constitutional governance for AI-assisted development — enforce engineering standards as a merge gate"
 readme = "README.md"
 requires-python = ">=3.12"
 authors = [{ name = "Maluleke Kurhula Success" }]
 license = { text = "MIT" }
+keywords = [
+    "governance", "code-quality", "static-analysis", "ci", "ai",
+    "engineering-standards", "compliance", "linting", "architecture",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Typing :: Typed",
+]
+
 dependencies = [
     "pydantic>=2.9",
     "markdown-it-py>=3.0",
@@ -14,6 +31,11 @@ dependencies = [
     "rich>=13.7",
     "mcp>=1.2",
 ]
+
+[project.urls]
+Homepage = "https://github.com/KSDRILL-SA/governova"
+Repository = "https://github.com/KSDRILL-SA/governova"
+Issues = "https://github.com/KSDRILL-SA/governova/issues"
 
 [project.scripts]
 governova = "governova_cli.__main__:app"
@@ -34,6 +56,13 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+# The compiled constitution ships inside the wheel, so an installed `governova`
+# carries its own corpus and governs any repository without the source tree on
+# disk. It is included at build time from the single committed copy rather than
+# duplicated into the package directory — one constitution, one file, no drift.
+[tool.hatch.build.targets.wheel.force-include]
+"../compiled/constitution.json" = "governova_compile/data/constitution.json"
 
 [tool.hatch.build.targets.wheel]
 packages = [

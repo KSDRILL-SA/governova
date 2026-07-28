@@ -10,9 +10,8 @@ from functools import lru_cache
 from typing import Any
 
 from governova_checks import check_text
-from governova_compile.discovery import resolve_repo_root
 from governova_compile.schema import CompiledIndex
-from governova_compile.writer import load_index
+from governova_compile.writer import load_active_index
 
 # check_text is re-exported here so the MCP surface exposes the same reliable-tier
 # checks the enforcer uses — one rule set, shown advisorily.
@@ -30,8 +29,7 @@ __all__ = [
 
 @lru_cache(maxsize=1)
 def _index() -> CompiledIndex:
-    root = resolve_repo_root()
-    return load_index(root / "compiled" / "constitution.json")
+    return load_active_index()
 
 
 def reload_index() -> None:

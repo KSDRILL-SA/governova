@@ -23,8 +23,8 @@ from typing import Annotated
 
 import typer
 from governova_checks import DEFAULT_IGNORES, Finding, changed_files, is_ignored, scan_paths
-from governova_compile.discovery import resolve_repo_root
-from governova_compile.writer import load_index
+from governova_compile.discovery import resolve_target_root
+from governova_compile.writer import load_active_index
 from governova_semantic import from_env as semantic_from_env
 from governova_semantic import review as semantic_review
 from rich.console import Console
@@ -49,11 +49,13 @@ class Fmt(StrEnum):
 
 
 def _root() -> Path:
-    try:
-        return resolve_repo_root()
-    except FileNotFoundError as exc:
-        err_console.print(f"[bold red]error:[/] {exc}")
-        raise typer.Exit(code=2) from exc
+    """The repository under governance — never the Governova source tree.
+
+    The enforcer runs inside somebody else's CI, so it must resolve the repo it
+    is scanning, not the corpus it scans with. Those are separate: the
+    constitution arrives via `load_active_index`.
+    """
+    return resolve_target_root()
 
 
 def _changed_files(base: str, root: Path) -> list[Path]:
@@ -143,7 +145,7 @@ def _run_semantic(scannable: list[Path], fmt: Fmt, root: Path) -> int:
         return 0
     if fmt is Fmt.json:
         return 0  # json output is the reliable-tier machine contract
-    index = load_index(root / "compiled" / "constitution.json")
+    index = load_active_index(start=root)
     count = 0
     for p in scannable:
         try:

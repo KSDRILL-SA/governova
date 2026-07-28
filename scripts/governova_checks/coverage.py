@@ -25,39 +25,62 @@ def _load_index(index: CompiledIndex | None) -> CompiledIndex:
 
 
 def index_anti_patterns(index: CompiledIndex | None = None) -> set[str]:
-    """Every anti-pattern id defined in the compiled constitution."""
+    """Anti-pattern ids defined by the **core** constitutions (C00–C10).
+
+    This is the denominator of the headline coverage metric, and it deliberately
+    excludes Layer 4 so that adding a domain cannot move a number that is meant
+    to track progress against the core.
+    """
     idx = _load_index(index)
-    return {
-        ap.id
-        for c in idx.constitutions
-        for s in c.standards
-        for ap in s.anti_patterns
-    }
+    return {ap.id for c in idx.constitutions for s in c.standards for ap in s.anti_patterns}
+
+
+def domain_anti_patterns(index: CompiledIndex | None = None) -> set[str]:
+    """Anti-pattern ids defined by Layer 4 domain extensions."""
+    idx = _load_index(index)
+    return {ap.id for d in idx.domains for s in d.standards for ap in s.anti_patterns}
 
 
 def validate_rules(index: CompiledIndex | None = None) -> list[str]:
-    """Anti-pattern ids referenced by rules that do NOT exist in the constitution.
+    """Anti-pattern ids referenced by rules that exist in no layer of the constitution.
 
-    An empty list means the rule set is fully grounded in the constitution.
+    An empty list means the rule set is fully grounded. Core and domain
+    anti-patterns are both legitimate bindings — a rule may enforce either.
     """
-    defined = index_anti_patterns(index)
+    defined = index_anti_patterns(index) | domain_anti_patterns(index)
     return sorted(r.anti_pattern for r in RULES if r.anti_pattern not in defined)
 
 
 def enforcement_coverage(index: CompiledIndex | None = None) -> dict[str, Any]:
-    """How much of the constitution's anti-pattern surface is enforceable."""
-    defined = index_anti_patterns(index)
-    covered = covered_anti_patterns() & defined
-    total = len(defined)
+    """How much of the constitution's anti-pattern surface is enforceable.
+
+    The top-level keys describe **core** coverage and keep the meaning they have
+    always had, so the metric stays comparable across time. Layer 4 coverage is
+    reported alongside under `domain_*` rather than folded into the headline.
+    """
+    core = index_anti_patterns(index)
+    domain = domain_anti_patterns(index)
+    detected = covered_anti_patterns()
+
+    covered = detected & core
+    covered_domain = detected & domain
+    total = len(core)
     pct = round(100 * len(covered) / total, 1) if total else 0.0
+    domain_pct = round(100 * len(covered_domain) / len(domain), 1) if domain else 0.0
+
     high = sum(1 for r in RULES if r.confidence == "high")
     medium = sum(1 for r in RULES if r.confidence == "medium")
     return {
         "rules": len(RULES),
         "blocking_rules": high,
         "advisory_rules": medium,
+        "path_scoped_rules": sum(1 for r in RULES if r.path_scoped),
         "enforceable_anti_patterns": len(covered),
         "total_anti_patterns": total,
         "coverage_pct": pct,
         "covered": sorted(covered),
+        "domain_enforceable_anti_patterns": len(covered_domain),
+        "domain_total_anti_patterns": len(domain),
+        "domain_coverage_pct": domain_pct,
+        "domain_covered": sorted(covered_domain),
     }

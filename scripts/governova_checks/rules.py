@@ -33,6 +33,14 @@ class Rule:
     """One deterministic check. A regex match on a line is a violation.
 
     `confidence`: high rules block the build; medium rules warn even in block mode.
+
+    `path_include` / `path_exclude` scope a rule to an architectural region. They
+    exist because architectural standards are not properties of a line — the same
+    database call is correct inside a repository and a violation inside a UI
+    component. Without file context such a standard is undetectable by
+    construction, which is why the reliable tier could not reach S1.103/S1.104
+    before. A rule carrying either predicate is skipped entirely when no file is
+    known, so snippet surfaces stay conservative rather than guessing.
     """
 
     anti_pattern: str
@@ -40,6 +48,27 @@ class Rule:
     pattern: re.Pattern[str]
     message: str
     confidence: Confidence = "high"
+    path_include: re.Pattern[str] | None = None
+    path_exclude: re.Pattern[str] | None = None
+
+    @property
+    def path_scoped(self) -> bool:
+        return self.path_include is not None or self.path_exclude is not None
+
+    def applies_to(self, file: str | None) -> bool:
+        """Whether this rule may fire against `file`.
+
+        A path-scoped rule needs context it does not have when `file` is None,
+        so it declines rather than assuming the file sits in the region.
+        """
+        if not self.path_scoped:
+            return True
+        if file is None:
+            return False
+        path = file.replace("\\", "/").lower()
+        if self.path_include is not None and not self.path_include.search(path):
+            return False
+        return not (self.path_exclude is not None and self.path_exclude.search(path))
 
 
 @dataclass(frozen=True)
@@ -61,6 +90,53 @@ class Finding:
     def blocking(self) -> bool:
         """Whether this finding fails a build in block mode (high confidence only)."""
         return self.confidence == "high"
+
+
+# ── Architectural regions ────────────────────────────────────────────────────
+# Where a file sits decides whether some lines are correct or violations. These
+# name the regions the constitution already reasons about (C1 Part 19), matched
+# against a lower-cased, forward-slashed path.
+
+# Presentation layer: components, pages, views, and single-file component formats.
+UI_LAYER = re.compile(
+    r"(?:^|/)(?:components?|pages?|views?|screens?|widgets?|app)/|\.(?:vue|svelte|jsx|tsx)$"
+)
+
+# The only place raw data access is permitted (S1.104), plus the places where a
+# raw statement is legitimately expected: migrations, seeds, and tests.
+DATA_LAYER = re.compile(
+    r"(?:^|/)(?:repositor(?:y|ies)|dao|daos|data[-_]?access|persistence|"
+    r"migrations?|seeds?|fixtures?|prisma|alembic)/|"
+    r"(?:^|/)[^/]*(?:repository|repositories|dao)[^/]*\.[a-z]+$|"
+    r"(?:^|/)(?:tests?|__tests__|spec|e2e)/|"
+    r"[._-](?:test|spec)\.[a-z]+$|(?:^|/)test_[^/]*\.py$|(?:^|/)conftest\.py$"
+)
+
+# Test files — several rules must not fire here (fixtures legitimately hold
+# literal URLs, floats, and hand-built tenant contexts).
+TEST_PATHS = re.compile(
+    r"(?:^|/)(?:tests?|__tests__|spec|e2e|cypress|playwright|fixtures?|mocks?)/|"
+    r"[._-](?:test|spec)\.[a-z]+$|(?:^|/)test_[^/]*\.py$|(?:^|/)conftest\.py$"
+)
+
+# Raw database / ORM access — the signature S1.104 governs.
+_RAW_DATA_ACCESS = (
+    r"\b(?:"
+    r"prisma\.\$(?:queryRaw|executeRaw)\w*|"
+    r"(?:db|conn|connection|cursor|session)\.(?:execute|executemany|raw)\s*\(|"
+    r"session\.query\s*\(|"
+    r"createQueryBuilder\s*\(|"
+    r"knex\.raw\s*\(|"
+    r"psycopg2\.connect\s*\(|"
+    r"sqlalchemy\.(?:create_engine|text)\s*\(|"
+    r"mongoose\.connect\s*\(|"
+    r"getConnection\s*\(\s*\)\s*\.\s*query"
+    r")"
+)
+
+# Identifiers whose value is money. Used by the fintech rules — deliberately
+# narrow so that ordinary numeric code is never implicated.
+_MONEY = r"(?:price|amount|balance|total|subtotal|cost|fee|salary|payment|refund|money|currency)"
 
 
 # ── The rule set ─────────────────────────────────────────────────────────────
@@ -313,6 +389,97 @@ RULES: list[Rule] = [
         "Error sent only to console.error. S4.27: surface errors to the user and the logger; don't swallow them.",
         "medium",
     ),
+    # ── Part 19 — Architectural Discipline (path-scoped) ──────────────────
+    # These are the rules S1.103/S1.104 declare in their `Enforced By` fields.
+    # Each is a violation only because of where the file sits, which is why they
+    # need path scoping rather than a cleverer regex.
+    Rule(
+        "AP-S1.103a",
+        "S1.103",
+        re.compile(_RAW_DATA_ACCESS, re.I),
+        "Database access inside a UI component. S1.103: presentation delegates to a service; it holds no data access or business rules.",
+        "high",
+        path_include=UI_LAYER,
+        path_exclude=TEST_PATHS,
+    ),
+    Rule(
+        "AP-S1.104a",
+        "S1.104",
+        re.compile(_RAW_DATA_ACCESS, re.I),
+        "Raw database/ORM access outside the repository layer. S1.104: persistence is reached through a repository.",
+        "medium",
+        path_exclude=DATA_LAYER,
+    ),
+    Rule(
+        "AP-S1.105a",
+        "S1.105",
+        re.compile(
+            r"\b\w*(?:base_?url|api_?url|endpoint|webhook_?url|host_?name|service_?url)\w*\s*[:=]\s*"
+            r"['\"]https?://(?!localhost|127\.0\.0\.1|0\.0\.0\.0|example\.|schemas?\.|www\.w3\.org)",
+            re.I,
+        ),
+        "Environment-specific URL inlined as a literal. S1.105: environment values are named configuration, not source constants.",
+        "medium",
+        path_exclude=TEST_PATHS,
+    ),
+    # ── Layer 4 — domain anti-patterns ────────────────────────────────────
+    Rule(
+        "AP-D-FINTECH.1a",
+        "D-FINTECH.1",
+        re.compile(
+            rf"(?:\b(?:parse)?[Ff]loat\s*\(\s*\w*{_MONEY}|"
+            rf"\b\w*{_MONEY}\w*\s*:\s*(?:float|number)\b|"
+            rf"\bNumber\s*\(\s*\w*{_MONEY})",
+            re.I,
+        ),
+        "Monetary value coerced through a floating-point type. D-FINTECH.1: money is an exact decimal, never a float.",
+        "high",
+        path_exclude=TEST_PATHS,
+    ),
+    Rule(
+        "AP-D-FINTECH.3a",
+        "D-FINTECH.3",
+        re.compile(
+            # `account.balance = account.balance + x`, `balance += x`, and the
+            # SQL form. The optional `[\w.]*\.` prefixes let the backreference
+            # survive an object path on either side of the assignment.
+            r"(?:[\w.]*\.)?(\w*balance\w*)\s*=\s*(?:[\w.]*\.)?\1\s*[+-]|"
+            r"\b[\w.]*\bbalance\w*\s*[+-]=|"
+            r"\bSET\s+\w*balance\w*\s*=\s*\w*balance\w*\s*[+-]",
+            re.I,
+        ),
+        "Balance mutated in place. D-FINTECH.3: balances are derived from immutable double-entry ledger entries.",
+        "high",
+        path_exclude=TEST_PATHS,
+    ),
+    Rule(
+        "AP-D-FINTECH.6b",
+        "D-FINTECH.6",
+        re.compile(
+            # The money term may sit either side of the assertion —
+            # `assertAlmostEqual(invoice.total, x)` or `expect(o.amount).toBeCloseTo(x)` —
+            # so require both on the line rather than a fixed order.
+            rf"^(?=.*{_MONEY}).*\b(?:assertAlmostEqual|toBeCloseTo|pytest\.approx|approx)\s*\(",
+            re.I,
+        ),
+        "Approximate comparison asserted against a monetary value. D-FINTECH.6: assert exact decimals — tolerance hides the discrepancy the standard exists to prevent.",
+        "high",
+    ),
+    Rule(
+        "AP-D-SAAS.1b",
+        "D-SAAS.1",
+        re.compile(
+            # Dot access (`req.query.tenantId`) or subscript, including header
+            # names that carry a vendor prefix (`req.headers["x-tenant-id"]`).
+            r"\b(?:req|request|ctx)\.(?:query|body|params|headers)\s*"
+            r"(?:\.\s*|\[\s*['\"][\w-]*?)"
+            r"(?:tenant|org(?:anisation|anization)?|account|workspace|company)[_-]?id\b",
+            re.I,
+        ),
+        "Tenant identity taken from client-controlled request input. D-SAAS.1: tenant context is derived server-side from the authenticated session.",
+        "high",
+        path_exclude=TEST_PATHS,
+    ),
 ]
 
 
@@ -338,8 +505,9 @@ def covered_anti_patterns() -> set[str]:
 def scan_text(code: str, *, file: str | None = None) -> list[Finding]:
     """Run every rule over `code`, line by line. Returns located findings."""
     findings: list[Finding] = []
+    applicable = [r for r in RULES if r.applies_to(file)]
     for lineno, line in enumerate(code.splitlines(), start=1):
-        for rule in RULES:
+        for rule in applicable:
             m = rule.pattern.search(line)
             if m:
                 findings.append(

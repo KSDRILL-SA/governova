@@ -15,9 +15,9 @@ filename — a domain cannot mint an identity by dropping a file into a folder.
 | Folder | ID | Domain | Standards | Status | Regulatory basis | Seeded from |
 |--------|----|--------|-----------|--------|------------------|-------------|
 | `fintech/` | `D-FINTECH` | Financial technology | 6 | **Ratified** | PCI-DSS · FICA · FATF | FundsLink Academy, Reserve Bank |
-| `govtech/` | `D-GOVTECH` | Government technology | — | Registered — unwritten | POPIA · GDPR-adjacent | Maphophe |
-| `edtech/` | `D-EDTECH` | Education technology | — | Registered — unwritten | FERPA · COPPA | FundsLink Academy |
-| `saas/` | `D-SAAS` | SaaS / B2B | — | Registered — unwritten | — | SyncUp |
+| `govtech/` | `D-GOVTECH` | Government technology | 5 | **Ratified** | POPIA · GDPR-adjacent | Maphophe |
+| `edtech/` | `D-EDTECH` | Education technology | 4 | **Ratified** | FERPA · COPPA | FundsLink Academy |
+| `saas/` | `D-SAAS` | SaaS / B2B | 4 | **Ratified** | — | SyncUp |
 | `healthtech/` | `D-HEALTHTECH` | Health technology | — | Registered — unwritten | HIPAA-equivalent · NHI Act | — |
 | `ecommerce/` | `D-ECOMMERCE` | E-commerce | — | Registered — unwritten | PCI-DSS · Consumer protection | — |
 | `iot/` | `D-IOT` | IoT / Embedded | — | Registered — unwritten | IEC 62443 · ETSI EN 303 645 | — |
@@ -26,6 +26,14 @@ filename — a domain cannot mint an identity by dropping a file into a folder.
 *Registered — unwritten* means the identity is reserved and the folder compiles to
 nothing. A domain folder holding only its README is skipped by the compiler, so an
 unwritten domain never inflates a count or a score.
+
+The four unwritten domains have no reference system to seed from. They stay reserved
+rather than invented: a domain extension written without grounding in a real system
+cannot meet the quality bar this layer is meant to grow by.
+
+**Layer 4 today: 4 ratified domains · 19 domain standards · 38 domain anti-patterns.**
+Domain standards are counted separately from the core throughout the engine, so Layer 4
+can never inflate a core metric or a Governova Score.
 
 Run `governova domains` to list what is actually compiled.
 

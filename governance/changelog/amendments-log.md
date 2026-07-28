@@ -21,11 +21,19 @@
 | 2026-05-22 | — | All | Initial Governova restructure — no standards changed, only repo structure | Governova v2.0 architecture | Maluleke Kurhula Success |
 | 2026-06-21 | S1.99–S1.102, S2.81, S3.37, S6.45, S8.83–S8.87, S10.40 | C1, C2, C3, C6, C8, C10 | Ratified 13 standards: operating-practice governance (workflow + no-AI rule + merge authority), brownfield adoption (characterization tests, non-breaking conversion, reversibility, completeness), and external/ecosystem governance (external-call resilience, integration auth, supply-chain/CVE/license/SBOM, vendor register, temporal governance). Counts: C1 98→102, C2 80→81, C3 36→37, C6 44→45, C8 82→87, C10 39→40. Total 600→613. | Operating practices, brownfield adoption, and external governance made first-class constitutional law | Maluleke Kurhula Success |
 | 2026-06-22 | S1.103–S1.107 | C1 | Ratified Part 19 — Architectural Discipline (per ADR-005 workstream A): S1.103 logic lives in its layer, S1.104 data access through repositories, S1.105 no hardcoded configuration/magic values, S1.106 DRY/shared code, S1.107 the simplest correct solution. Count: C1 102→107. Total 613→618. | Universal architectural discipline made first-class law — applicable to any stack and any sector | Maluleke Kurhula Success |
+| 2026-07-28 | D-FINTECH.1–.6 | D-FINTECH (Layer 4) | Established Layer 4 as first-class in the engine and ratified the first domain extension: exact monetary values, idempotent value movement, double-entry reconciliation, immutable audit records, separation of initiation from approval, exhaustive testing of financial calculation code. Core count unchanged at 618. Layer 4: 0→6 domain standards. | ADR-005 workstream A — the domain layer existed in the architecture but not in the engine | Maluleke Kurhula Success |
+| 2026-07-28 | D-GOVTECH.1–.5, D-EDTECH.1–.4, D-SAAS.1–.4 | D-GOVTECH, D-EDTECH, D-SAAS (Layer 4) | Ratified the three remaining active domain extensions, seeded from Maphophe, FundsLink Academy, and SyncUp respectively. Core count unchanged at 618. Layer 4: 6→19 domain standards across 4 domains, 38 domain anti-patterns. | ADR-005 workstream A complete — every domain with a reference system to ground it is now written | Maluleke Kurhula Success |
 
 > Note: the six C0 §8 amendments that pre-date this log's creation
 > (S1.98, S4.83, S5.65, S10.37, S10.38, S10.39) are recorded in their respective
 > constitution amendment logs and in the git history. After the 2026-06-22
-> ratification the live count is **618** standards against the 594 locked baseline.
+> ratification the live count is **618** core standards against the 594 locked baseline.
+>
+> Layer 4 domain standards (`D-{DOMAIN}.{N}`) are tracked separately from the core and
+> are **not** included in the 618. As of 2026-07-28 the live Layer 4 count is **19
+> domain standards across 4 ratified domains**. A domain may raise a floor the core
+> sets; it may never lower, narrow, or override one — every domain document carries a
+> completed conflict-analysis table evidencing this.
 
 ---
 

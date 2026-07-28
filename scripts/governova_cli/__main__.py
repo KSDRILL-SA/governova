@@ -726,5 +726,50 @@ def relay_close(
     console.print("[green]task closed[/]")
 
 
+@app.command()
+def project(
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Show which standards apply to this project and how many are satisfied."""
+    from governova_project import (
+        compute_coverage,
+        enforced_clean_standards,
+        load_profile,
+        profile_path,
+    )
+
+    root = _root(repo_root)
+    profile = load_profile(root)
+    if profile is None:
+        console.print(
+            f"[yellow]No project profile at {profile_path(root).relative_to(root)}.[/]\n"
+            f"[dim]Applicability is undeclared, so constitutional coverage is "
+            f"unassessed — not assumed compliant.[/]"
+        )
+        raise typer.Exit(code=1)
+
+    index = _load(root)
+    result = compute_coverage(root, index, profile, enforced=enforced_clean_standards(root))
+    t = Table.grid(padding=(0, 2))
+    t.add_row("Project:", profile.name or "—")
+    t.add_row("Stacks:", " · ".join(profile.stacks) or "—")
+    t.add_row("Domains:", " · ".join(profile.domains) or "—")
+    t.add_row("Phase reached:", str(profile.phase) if profile.phase is not None else "—")
+    t.add_row("", "")
+    t.add_row("Applicable standards:", str(result.applicable))
+    t.add_row("  mechanically verified:", str(result.mechanical))
+    t.add_row("  declared with evidence:", str(result.declared))
+    t.add_row("  approved exceptions:", str(result.excepted))
+    t.add_row("  unaddressed:", str(result.unaddressed))
+    t.add_row("Coverage:", f"{result.pct}%")
+    console.print(t)
+
+    if result.broken_claims:
+        console.print("\n[red]Unresolved claims — not counted as satisfied:[/]")
+        for c in result.broken_claims:
+            console.print(f"  [red]•[/] {c.standard} ({c.kind}): '{c.evidence}' does not resolve")
+        raise typer.Exit(code=1)
+
+
 if __name__ == "__main__":
     app()

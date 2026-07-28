@@ -16,8 +16,12 @@ the standard branch → issue → PR → merge workflow.
   Governance Report, System Bible — all generated automatically.
 - **Quality gates** (CI): ruff, mypy, drift check, structural integrity, 96 unit tests,
   reference cross-check, constitutional enforcement, PR guardian.
-- **Self-score**: 100/100 (A+), 11/11 constitutional areas green, core enforcement
-  coverage 7.4% (33/446) plus 4/38 Layer 4 domain anti-patterns.
+- **Self-score**: 78/100 (C) across **all five factors at full weight**. It read
+  100 while three factors were unassessed; instrumenting them lowered it, which is
+  the point. Core enforcement coverage 7.4% (33/446) plus 4/38 Layer 4 domain
+  anti-patterns; constitutional coverage 6.6% (36/544 evidenced).
+- **Runtime**: `governova_audit` (hash-chained trail), `governova_relay` (§4 state
+  machine, L4 human-only at the API boundary), `governova_project` (applicability).
 - **Layer 4**: 4 ratified domains (`D-FINTECH`, `D-GOVTECH`, `D-EDTECH`, `D-SAAS`),
   19 domain standards, 38 domain anti-patterns — counted separately from the core.
 
@@ -30,12 +34,19 @@ only when an `GOVERNOVA_LLM_*` secret is present (a no-op otherwise, so forks st
 This turns the architectural/process standards — the 93% the regex tier cannot reach —
 into live PR feedback. **Highest leverage: it unlocks the bulk of the constitution.**
 
-### 2. Build the runtime components (relay + audit trail)
-Three Governova Score factors (relay compliance 25%, audit trail 10%, and score trend)
-are reported as "not yet instrumented" because they need a runtime, not a code scan. The
-`platform/engine/` specs (`relay-state-machine`, `audit-trail`) are the home for this.
-Building even a minimal audit log + relay state file lights up those factors and gives
-the Board Report a real trend line.
+### 2. ~~Build the runtime components (relay + audit trail)~~ — **DONE**
+`governova_audit` (hash-chained, tamper-evident) and `governova_relay` (the §4 state
+machine, L4 refused at the API boundary) shipped, and `governova_project` closed the
+constitutional-coverage factor. **All five score factors are now assessed — 100% of
+the weight**, up from 45%.
+
+The remaining work here is **raising** the score honestly, not instrumenting it:
+constitutional coverage sits at 6.6% because only 36 of 544 applicable standards are
+evidenced. Evidencing a standard means citing a file that resolves, so this is real
+work — and it is the highest-value backlog the project has, because every standard
+evidenced is one an adopting organisation can see demonstrated rather than claimed.
+
+Score-history persistence (for the Board Report trend line) is still open — see §7.
 
 ### 3. Expand stack bindings (5/37 → broader)
 Only 5 of 37 implementation-stack folders are wired into the compiler registry

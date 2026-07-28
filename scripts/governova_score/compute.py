@@ -100,9 +100,20 @@ def _relay_compliance(root: Path) -> Factor:
 
 
 def _constitutional_coverage(root: Path) -> Factor:
-    return _factor(
-        "constitutional_coverage", None, "requires per-project applicability data (runtime)"
-    )
+    """Share of the standards that apply to this project which are satisfied.
+
+    Applicability is derived from the project profile (`governova_project`); it is
+    never hand-listed. A project that has declared no profile is unassessed — an
+    undeclared project is never assumed compliant.
+    """
+    from governova_compile.writer import load_index
+    from governova_project import coverage_factor
+
+    index_file = root / "compiled" / "constitution.json"
+    if not index_file.is_file():
+        return _factor("constitutional_coverage", None, "no compiled index")
+    score, detail = coverage_factor(root, load_index(index_file))
+    return _factor("constitutional_coverage", score, detail)
 
 
 def compute_score(root: Path | None = None) -> GovernovaScore:

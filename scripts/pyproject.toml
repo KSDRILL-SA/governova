@@ -54,6 +54,7 @@ packages = [
     "governova_handoff",
     "governova_audit",
     "governova_relay",
+    "governova_project",
 ]
 
 [tool.mypy]
@@ -77,4 +78,5 @@ files = [
     "governova_handoff",
     "governova_audit",
     "governova_relay",
+    "governova_project",
 ]

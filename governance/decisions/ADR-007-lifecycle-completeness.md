@@ -153,9 +153,9 @@ weaker product than onboarding against one that can.
   its enforcement decided. That is slower per standard, deliberately.
 - The schema analyser needs a parser per ecosystem (Prisma, SQL DDL, SQLAlchemy,
   Django, TypeORM). Each is a tax. Relational-first keeps the first one tractable.
-- Requirements linting only works if requirements exist as files in a known format.
-  C11 must therefore specify *where requirements live and how they are written* — a
-  stronger claim on an adopting team than anything Governova currently makes.
+- The requirements linter needs requirements it can read. Resolved below — Governova
+  defines an interchange format rather than demanding migration — but it remains the
+  largest adoption surface in this phase.
 
 ### Constitutional alignment
 
@@ -165,10 +165,84 @@ bibliographies), and `S9.7` (feature gate questions — hence the enforcement-pa
 constraint). Extends `C05` without amending it: C05 governs how data is *accessed*,
 C14 governs how it is *structured*.
 
-### Open questions deferred to later ADRs
+---
+
+## Addendum — Governova does not own your requirements
+
+*Resolves the "how do requirement IDs reconcile with an existing tracker" question
+raised below. Decided at authoring time because Stage 1 cannot be built without it.*
+
+### The problem
+
+A requirements linter needs requirements it can read. The obvious design — demand
+`requirements/*.md` — is the largest claim Governova would make on an adopting team,
+and it is the wrong one. Real requirements live in Jira, Azure DevOps, Linear,
+Confluence, Notion, a spreadsheet, or a stakeholder's head. **A governance tool that
+requires migrating your requirements before it will say anything is a governance tool
+nobody adopts.** It would also be self-defeating: the teams with the worst
+requirements discipline — the ones this is for — are exactly the ones least able to
+perform that migration.
+
+Pulling from tracker APIs is the other obvious answer and is worse. It needs
+credentials and network access, which breaks the promise in ADR-005 that the Open
+Engine stays **free and offline forever**, and it couples the corpus to vendor APIs
+that change.
+
+### The decision
+
+**Governova defines an interchange format and reads that. It never becomes the source
+of truth for requirements.**
+
+This is the pattern that already works elsewhere in this repository: we do not own
+your dependency graph, we read **CycloneDX**. We do not own your coverage data, tools
+emit **LCOV**. The interchange format is the contract; the source of truth stays
+wherever the team already keeps it.
+
+Prior art is acknowledged rather than reinvented: **ReqIF** (OMG) is the established
+requirements interchange standard in automotive and aerospace. It is XML, heavyweight,
+and shaped for a different industry, so Governova defines a **lightweight JSON/YAML
+profile** carrying the same concepts, and may import ReqIF later. We are not inventing
+a format because none exists; we are defining a small one because the existing one is
+too heavy for the teams we serve.
+
+### Graduated adoption — three tiers, and honest degradation
+
+The linter's power scales with what a team is willing to expose. Crucially, **the
+bottom tier is `unknown`, never `violated`** — the standing rule from
+`governova_evidence` applies exactly. Governova must never punish a team for a
+requirement it simply cannot see.
+
+| Tier | What the team provides | What Governova can do |
+|------|------------------------|------------------------|
+| **3 — Native** | Requirements authored as files in the Governova format | **Full**: grammar, vague terms, testability, IDs, plus complete bidirectional traceability |
+| **2 — Exported** | A manifest generated from their tracker by their own CI | **Full lint on whatever the export carries**, plus traceability |
+| **1 — Referenced** | Nothing exported; code, tests, and commits cite `REQ-1234` | **Linkage only** — every cited requirement has a test, every test cites a real requirement, scope creep is visible. The text cannot be linted because we never see it. |
+| **0 — Invisible** | No requirements reachable | **`unknown`.** Not a violation. Reported as unassessed, exactly as the score treats an uninstrumented relay. |
+
+Tier 1 is the one that matters most for adoption, and it costs a team **nothing**:
+they keep Jira, they keep their process, and they write `REQ-1234` in a test name or
+a commit trailer. From that alone Governova detects **a requirement with no test** and
+**code with no requirement** — the two findings teams most need and least have. Full
+grammar linting becomes an *upgrade path*, not an entry toll.
+
+### Consequences of this addendum
+
+- **Adoption cost drops to near zero** at tier 1, which is where most teams will
+  start. The strongest claim in the phase becomes optional rather than mandatory.
+- **The engine stays offline and credential-free.** Exporters run in the team's CI,
+  where their tracker credentials already live; Governova reads a file.
+- **Exporters are a community and ecosystem surface.** A Jira exporter, an ADO
+  exporter, a Linear exporter — none of which Governova must own, all of which make
+  it more valuable. This is how the format wins rather than the tool.
+- **A new obligation:** the interchange format is a published contract and must be
+  versioned like the compiled index, with the same drift discipline.
+
+---
+
+## Open questions deferred to later ADRs
 
 - Whether `governova-types` and the Mapping Engine ship as separate products.
-- How requirement IDs reconcile with an organisation's existing tracker (Jira, Azure
-  DevOps) rather than replacing it.
+- Whether to import **ReqIF** directly for regulated industries that already produce
+  it, or to leave that to a community exporter.
 - Whether non-relational schema soundness is decidable enough to enforce, or belongs
   permanently in the semantic tier.

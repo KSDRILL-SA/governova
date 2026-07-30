@@ -1,7 +1,7 @@
 {
   "schema_version": "1.1.0",
-  "compiled_at": "2026-07-30T15:18:48.775616Z",
-  "source_commit_sha": "494bd51",
+  "compiled_at": "2026-07-30T15:28:56.391893Z",
+  "source_commit_sha": "b295513",
   "checksum": "sha256:043acf024bcc836efa9cb2fb05cc7d7f8c97747485b8fd3cdbf7224320507cbc",
   "framework": [
     {

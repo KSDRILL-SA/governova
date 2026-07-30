@@ -37,6 +37,12 @@ jobs:
       - name: Engine — verify committed index is current (drift check)
         run: uv run governova-compile --check
 
+      # The generated `governova-types` package is committed so consumers can read
+      # it without running the generator — which only holds if CI proves the
+      # committed copy still matches `schema.py`.
+      - name: Engine — verify generated types are current (drift check)
+        run: uv run governova-codegen --check
+
       - name: Engine — structural integrity
         run: uv run governova-validate
 

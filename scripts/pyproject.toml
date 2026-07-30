@@ -29,7 +29,16 @@ dependencies = [
     "mdit-py-plugins>=0.4",
     "typer>=0.12",
     "rich>=13.7",
-    "mcp>=1.2",
+    # Floor raised from >=1.2 by the CVE gate's first run: 1.28.0 carries
+    # PYSEC-2026-3483, fixed in 1.28.1. A lower bound that permits a known-
+    # vulnerable release is a lower bound that will eventually resolve to one.
+    #
+    # Capped below 2.0 because that major removes `mcp.server.fastmcp`, which the
+    # MCP surface is built on — an unbounded floor resolved straight to 2.0.0 and
+    # broke the server. Taking the security patch and the API migration in one
+    # step would have coupled an urgent fix to a discretionary rewrite. The 2.x
+    # migration is tracked separately.
+    "mcp>=1.28.1,<2",
 ]
 
 [project.urls]

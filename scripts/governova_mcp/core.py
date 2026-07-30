@@ -54,6 +54,9 @@ def _std_dict(s: Any) -> dict[str, Any]:
         "anti_patterns": [
             {"id": ap.id, "description": ap.description} for ap in s.anti_patterns
         ],
+        # Provenance travels with the standard: an assistant citing S1.104 can say
+        # where the practice is established rather than asserting house style.
+        "grounded_in": list(s.grounded_in),
     }
 
 

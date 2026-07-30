@@ -122,6 +122,28 @@ def parse_anti_patterns(raw_block: str, parent_id: str) -> list[AntiPattern]:
     return results
 
 
+def parse_grounded_in(raw_block: str) -> list[str]:
+    """Parse the `**Grounded In:**` block into a list of citations.
+
+    One citation per line, whether the line is a list item or bare prose. Order
+    is preserved and duplicates are dropped, so the compiled index is stable
+    under re-ordering of nothing and under accidental repetition of a source.
+
+    Length is *not* enforced here. A parser that silently discarded an
+    over-long entry would hide exactly the thing the bound exists to catch — an
+    excerpt pasted where a citation belongs. `check_grounded_in` reports it.
+    """
+    citations: list[str] = []
+    seen: set[str] = set()
+    for line in raw_block.splitlines():
+        entry = line.strip().lstrip("-*").strip()
+        if not entry or entry in seen:
+            continue
+        seen.add(entry)
+        citations.append(entry)
+    return citations
+
+
 def _fallback_statement(body_lines: list[str]) -> str:
     """Capture section content when there is no `**Standard:**` labeled block.
 
@@ -176,6 +198,9 @@ def parse_standard(section: Section, constitution_id: ConstitutionId) -> Standar
     cross_references = parse_references(
         blocks.get("cross-references", "") or blocks.get("cross_references", "")
     )
+    grounded_in = parse_grounded_in(
+        blocks.get("grounded_in", "") or blocks.get("grounded-in", "")
+    )
 
     return Standard(
         id=sid,
@@ -191,6 +216,7 @@ def parse_standard(section: Section, constitution_id: ConstitutionId) -> Standar
         rationale=rationale,
         anti_patterns=anti_patterns,
         cross_references=cross_references,
+        grounded_in=grounded_in,
         source_path="",  # filled by caller
         source_line=section.line_start + 1,  # 1-indexed
     )
@@ -255,6 +281,9 @@ def parse_domain_standard(section: Section, domain_id: str) -> Standard | None:
         ),
         cross_references=parse_references(
             blocks.get("cross-references", "") or blocks.get("cross_references", "")
+        ),
+        grounded_in=parse_grounded_in(
+            blocks.get("grounded_in", "") or blocks.get("grounded-in", "")
         ),
         source_path="",  # filled by caller
         source_line=section.line_start + 1,

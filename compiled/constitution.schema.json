@@ -793,6 +793,14 @@
           "title": "Cross References",
           "type": "array"
         },
+        "grounded_in": {
+          "description": "Provenance — where this requirement is established in the engineering canon. Each entry is a citation (author, work, edition, chapter), never an excerpt; entries over 120 characters are rejected by `governova validate`. Empty means unsourced, not unfounded.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Grounded In",
+          "type": "array"
+        },
         "abbreviated": {
           "default": false,
           "description": "True if the standard was authored in blockquote shorthand (`> **S{C}.{N}** — ...`) and therefore lacks a full attribute table, rationale, and dedicated anti-pattern block.",
@@ -825,10 +833,10 @@
     }
   },
   "additionalProperties": false,
-  "description": "Machine-readable form of the Governova constitutional database, schema version 1.1.0. See https://governova.dev/docs/schema.",
+  "description": "Machine-readable form of the Governova constitutional database, schema version 1.2.0. See https://governova.dev/docs/schema.",
   "properties": {
     "schema_version": {
-      "default": "1.1.0",
+      "default": "1.2.0",
       "description": "Semantic version of the schema.",
       "title": "Schema Version",
       "type": "string"
@@ -943,5 +951,5 @@
   "title": "Governova Compiled Constitutional Index",
   "type": "object",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://governova.dev/schema/v1.1.0/constitution.schema.json"
+  "$id": "https://governova.dev/schema/v1.2.0/constitution.schema.json"
 }

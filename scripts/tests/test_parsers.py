@@ -10,6 +10,7 @@ from governova_compile.markdown import (
 from governova_compile.parsers import (
     parse_blockquote_standards,
     parse_constitution,
+    parse_grounded_in,
     parse_references,
     parse_standard,
 )
@@ -55,6 +56,33 @@ Because otherwise it breaks.
 > **S9.3** — The third standard.
 
 > **S9.4** — The fourth standard.
+
+---
+"""
+
+# A standard carrying provenance. `Grounded In` is the only optional element of the
+# block (C0 §3.1), so the parser is exercised against a standard that has it and
+# against FULL_STANDARD above, which does not.
+GROUNDED_STANDARD = """\
+### S9.9 — Standard With Provenance
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S9.9 |
+| **Priority**    | High |
+
+**Standard:**
+The system must do the grounded thing.
+
+**Rationale:**
+Because the canon says so and production agrees.
+
+**Anti-Patterns:**
+- `AP-S9.9a` — Not doing the grounded thing.
+
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 4
+- Coronel & Rob, *Database Systems* — ch. 3
 
 ---
 """
@@ -133,6 +161,54 @@ def test_blockquote_standards_extracted():
     assert s2.abbreviated
     # Inline S9.1 reference becomes a cross-reference.
     assert any(r.standard_id == "S9.1" for r in s2.cross_references)
+
+
+def test_parse_grounded_in_reads_one_citation_per_line():
+    block = "- Sommerville, *Software Engineering* 10e — ch. 4\n- Coronel & Rob — ch. 3"
+    assert parse_grounded_in(block) == [
+        "Sommerville, *Software Engineering* 10e — ch. 4",
+        "Coronel & Rob — ch. 3",
+    ]
+
+
+def test_parse_grounded_in_drops_blanks_and_duplicates():
+    block = "- A source\n\n- A source\n*  Another source  \n"
+    assert parse_grounded_in(block) == ["A source", "Another source"]
+
+
+def test_parse_grounded_in_empty_block_is_empty_list():
+    assert parse_grounded_in("") == []
+    assert parse_grounded_in("\n\n  \n") == []
+
+
+def test_parse_grounded_in_does_not_enforce_length():
+    # The parser records what was written; `check_grounded_in` is what rejects an
+    # excerpt. A parser that silently dropped an over-long entry would hide the
+    # exact thing the bound exists to catch.
+    long_entry = "x" * 400
+    assert parse_grounded_in(f"- {long_entry}") == [long_entry]
+
+
+def test_parse_standard_captures_grounded_in():
+    section = slice_sections(GROUNDED_STANDARD, level=3)[0]
+    std = parse_standard(section, "C09")
+    assert std is not None
+    assert std.grounded_in == [
+        "Sommerville, *Software Engineering* 10e — ch. 4",
+        "Coronel & Rob, *Database Systems* — ch. 3",
+    ]
+    # Provenance must not be mistaken for the statement or the rationale.
+    assert "Sommerville" not in std.statement
+    assert "Sommerville" not in std.rationale
+
+
+def test_parse_standard_without_grounded_in_is_empty_not_absent():
+    # The negative case: the overwhelming majority of the 618 standards carry no
+    # provenance, and an unsourced standard is not a malformed one.
+    section = slice_sections(FULL_STANDARD, level=3)[0]
+    std = parse_standard(section, "C09")
+    assert std is not None
+    assert std.grounded_in == []
 
 
 def test_full_constitution_dedupes_and_counts():

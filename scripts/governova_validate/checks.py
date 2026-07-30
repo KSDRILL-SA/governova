@@ -6,7 +6,12 @@ warnings fail only under --strict.
 
 from __future__ import annotations
 
-from governova_compile.schema import CompiledIndex, IntegrityIssue, Severity
+from governova_compile.schema import (
+    MAX_GROUNDED_IN_CHARS,
+    CompiledIndex,
+    IntegrityIssue,
+    Severity,
+)
 
 
 def _all_standard_ids(index: CompiledIndex) -> set[str]:
@@ -239,6 +244,40 @@ def check_domain_extensions(index: CompiledIndex) -> list[IntegrityIssue]:
     return issues
 
 
+def check_grounded_in(index: CompiledIndex) -> list[IntegrityIssue]:
+    """`Grounded In` carries a citation, never an excerpt (ADR-007 constraint 3).
+
+    Ideas, methods, and practices are not copyrightable; expression is. The
+    provenance field exists to say *where* a requirement is established in the
+    engineering canon — author, work, edition, chapter. A reference line fits in
+    `MAX_GROUNDED_IN_CHARS` with room to spare; a paragraph of somebody else's
+    prose does not, and reproducing one in a document this repository publishes,
+    compiles, and ships inside a PyPI wheel would be a licensing defect in every
+    consumer's dependency tree rather than a stylistic one here.
+
+    This is an error, not a warning. A warning would ship.
+    """
+    issues: list[IntegrityIssue] = []
+    for constitution in (*index.constitutions, *index.domains):
+        for std in constitution.standards:
+            for entry in std.grounded_in:
+                if len(entry) > MAX_GROUNDED_IN_CHARS:
+                    issues.append(
+                        IntegrityIssue(
+                            severity=Severity.SEV2,
+                            code="grounded-in-excerpt",
+                            message=(
+                                f"{std.id} has a Grounded In entry of {len(entry)} "
+                                f"characters (limit {MAX_GROUNDED_IN_CHARS}). "
+                                f"Cite the source, do not quote it."
+                            ),
+                            source_path=std.source_path,
+                            source_line=std.source_line,
+                        )
+                    )
+    return issues
+
+
 ALL_CHECKS = (
     check_references,
     check_anti_patterns,
@@ -247,4 +286,5 @@ ALL_CHECKS = (
     check_phases,
     check_standard_completeness,
     check_domain_extensions,
+    check_grounded_in,
 )

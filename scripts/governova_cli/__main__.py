@@ -159,6 +159,10 @@ def standard(
         console.print("\n[bold]Anti-patterns[/]")
         for ap in match.anti_patterns:
             console.print(f"  [yellow]{ap.id}[/] — {ap.description}")
+    if match.grounded_in:
+        console.print("\n[bold]Grounded in[/]")
+        for citation in match.grounded_in:
+            console.print(f"  [dim]{citation}[/]")
 
 
 @app.command()

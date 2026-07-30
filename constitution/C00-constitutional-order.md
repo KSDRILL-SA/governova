@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C0 — Constitutional Order                                          |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.0                                                               |
+| **Version**        | v1.1                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -208,7 +208,16 @@ not abstract principle. References real system behaviour where possible.
 - `AP-S{C}.{N}b` — Second violation pattern, if applicable
 
 **Cross-References:** `S{C}.{N}` (reason), `S{C}.{N}` (reason)
+
+**Grounded In:**
+- {Author}, *{Work}* {edition} — {chapter or section}
+- {Second source, if the requirement is established in more than one}
 ````
+
+`**Grounded In:**` is the only optional block. Every other element is mandatory.
+It records where a requirement is already established in the engineering canon,
+so a standard can be defended by citation rather than by assertion. Its absence
+means the standard is unsourced — it does not mean the standard is unfounded.
 
 ---
 
@@ -241,6 +250,14 @@ both stacks without exception.
 The word "how" belongs in implementation guides. Constitutions answer "what" and "why."
 If a standard block contains a code snippet, a file path, or a command, that content
 belongs in the paired implementation guide, not the constitution.
+
+**SR-7 — Grounded In is a citation, never an excerpt.**
+Each entry names a source — author, work, edition, chapter — and nothing more. It never
+reproduces the source's words. Ideas, methods, and practices are not copyrightable;
+expression is, and these documents are compiled, published, and shipped inside a
+distributed package. A reference line fits in 120 characters with room to spare; a
+paragraph of somebody else's prose does not, and `governova validate` rejects any entry
+that exceeds that bound. Cite what the source is, never what it says.
 
 ---
 
@@ -859,10 +876,11 @@ new failure pattern produces a new entry. The register grows — it is never pru
 | Version | Date | Change | Reason |
 |---------|------|--------|--------|
 | v1.0 | 2026-05-08 | Initial lock — full rebuild of the KSDRILL SA constitutional system. HTML → Markdown. New terminology system (Standards, Anti-Patterns, Practices). Constitution-scoped standard ID format (`S{C}.{N}`). Solo/team split moved to overlays only. C1 formed by merging Team & Process + Code Quality + MentorConnect workflow. C6 formed by merging Full System Design + Full-Stack Integration. C8 formed by merging Infrastructure + Incident Response. C10 AI Collaboration added as new Phase 3 constitution with five-engineer relay model (Claude, Claude Code, ChatGPT, DeepSeek, Kimi). Implementation guides for C2, C3, C4, C5 at full depth. Auth localStorage regression (CF-01) fixed in C3 S3.14. API versioning gap addressed in C2 S2.76–S2.80. Observability consolidated into C8. Tailwind+Custom CSS dual-tool philosophy formalised in C4. ORM+Raw SQL dual-tool philosophy formalised in C5. ADRs for all four flagship systems locked. CONSTITUTION-INDEX.md template added. AI Engineer Workflow constitutionalized in workflow/. §5 standard counts populated: 594 total unique standards across C1–C10. | Full system rebuild — version reset. |
+| v1.1 | 2026-07-31 | §3.1 — added `**Grounded In:**` to the standard block as the one optional element, carrying provenance for a requirement as a citation. §3.2 — added SR-7 governing it: a citation, never an excerpt, bounded at 120 characters and rejected by `governova validate` above that. No standard added, removed, or changed in scope; the count stays 618. | A standard defended by citation is defensible to an architecture board or a regulator; a standard defended by assertion is house style. Governova's Part 19 standards were a rediscovery of established practice and said so nowhere, which understated them. ADR-007 constraint 3 requires that the provenance carry a reference and never the source's expression, because these documents are compiled, published, and shipped inside a PyPI wheel — an excerpt here is a licensing defect in every consumer's dependency tree. |
 
 ---
 
-> **LOCKED — v1.0 — 2026-05-08**
+> **LOCKED — v1.1 — 2026-07-31**
 >
 > This document is locked. No section, standard, format specification, protocol, or register
 > entry may be added, removed, or modified without following the Amendment Protocol defined

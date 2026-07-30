@@ -810,5 +810,39 @@ def evidence(
         raise typer.Exit(code=1)
 
 
+@app.command()
+def licences(
+    sbom_out: Annotated[
+        Path | None, typer.Option("--sbom", help="Also write a CycloneDX SBOM here.")
+    ] = None,
+    allow: Annotated[
+        list[str] | None,
+        typer.Option("--allow", help="Package with a recorded L4 exception (repeatable)."),
+    ] = None,
+) -> None:
+    """Check dependency licences against the allowlist (S8.85). Exits non-zero on a gap."""
+    from governova_supply import installed_packages, sbom_json
+
+    report = installed_packages(exceptions=set(allow or ()))
+    if sbom_out is not None:
+        sbom_out.write_text(sbom_json(report), encoding="utf-8")
+        console.print(f"[dim]SBOM written to {sbom_out}[/]")
+
+    if report.ok:
+        console.print(f"[green]✓ {report.summary}[/]")
+        return
+
+    console.print(f"[red]✗ {report.summary}[/]")
+    t = Table("Package", "Version", "Licence", box=None, pad_edge=False)
+    for p in report.disallowed:
+        t.add_row(p.name, p.version, p.licence)
+    console.print(t)
+    console.print(
+        "\n[dim]S8.85: an unknown or copyleft licence requires a recorded L4 exception. "
+        "Re-run with --allow <package> once the exception is on record.[/]"
+    )
+    raise typer.Exit(code=1)
+
+
 if __name__ == "__main__":
     app()

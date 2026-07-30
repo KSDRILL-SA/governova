@@ -71,10 +71,22 @@ def _read(path: Path) -> str | None:
         return None
 
 
-# A workflow step's command. Both YAML forms are valid and both are common:
-#   - name: Lint          |    - run: ruff check .
-#     run: ruff check .   |
-_RUN_STEP = r"^\s*(?:-\s*)?run:.*"
+# A workflow step's command. Matching only the `run:` line misses the block form,
+# which is at least as common:
+#
+#     - run: ruff check .          - name: Lint
+#                                    run: |
+#                                      set -euo pipefail
+#                                      ruff check .
+#
+# In the block form the command sits on a continuation line, so a probe anchored
+# to `run:` reports a compliant repository as violating — a false negative that
+# accuses the innocent, which is the worse direction for a governance tool to err.
+# `_workflow_commands` therefore returns command-bearing text with comments and
+# human-readable labels removed, and probes search that.
+# Lines that are prose rather than commands. A step named "Run pip-audit" must not
+# satisfy a probe looking for pip-audit.
+_LABEL_LINE = re.compile(r"^\s*(?:-\s*)?(?:name|description|id|if|uses|with|env):", re.I)
 
 
 def _workflow_text(root: Path) -> str | None:
@@ -86,21 +98,51 @@ def _workflow_text(root: Path) -> str | None:
     return "\n".join(parts) if parts else None
 
 
+def _workflow_commands(root: Path) -> str | None:
+    """Workflow text reduced to the lines that can actually execute something.
+
+    Comments and label keys (`name:`, `uses:`, `if:` …) are dropped, so a step
+    *named* after a tool cannot satisfy a probe looking for that tool, while a
+    command inside a `run: |` block still can.
+    """
+    text = _workflow_text(root)
+    if text is None:
+        return None
+    return "\n".join(
+        line
+        for line in text.splitlines()
+        if line.strip() and not line.strip().startswith("#") and not _LABEL_LINE.match(line)
+    )
+
+
+def _find_command(root: Path, tools: str) -> re.Match[str] | None:
+    """Find an invocation of any tool in the `tools` alternation."""
+    commands = _workflow_commands(root)
+    if commands is None:
+        return None
+    return re.search(rf"^.*\b(?:{tools})\b.*$", commands, re.I | re.M)
+
+
 # ── Probes ───────────────────────────────────────────────────────────────────
 
 _LOCKFILES = ("uv.lock", "poetry.lock", "package-lock.json", "pnpm-lock.yaml", "yarn.lock", "Cargo.lock", "go.sum", "Gemfile.lock", "composer.lock")
 
 # Frozen-install invocations across ecosystems, per S1.98.
-_FROZEN_INSTALL = re.compile(
-    r"uv\s+sync[^\n]*--frozen|uv\s+sync\b|npm\s+ci\b|pnpm\s+install[^\n]*--frozen-lockfile|"
-    r"yarn\s+install[^\n]*--immutable|poetry\s+install\b|bundle\s+install[^\n]*--deployment|"
-    r"cargo\s+build[^\n]*--locked|go\s+mod\s+download\b",
-    re.I,
+_FROZEN_TOOLS = (
+    r"uv\s+sync|npm\s+ci|pnpm\s+install[^\n]*--frozen-lockfile|"
+    r"yarn\s+install[^\n]*--immutable|poetry\s+install|bundle\s+install[^\n]*--deployment|"
+    r"cargo\s+build[^\n]*--locked|go\s+mod\s+download"
 )
 
+# Exactly the types S1.19 lists — no more.
+#
+# This previously also accepted `build`, `revert`, `govern`, and `decision`,
+# which the standard does not. A probe that grades against a rubric wider than
+# the standard it cites reports compliance that was never achieved; it is the
+# same defect as an audit check that scores any file as evidence. The types the
+# repository actually needs are a question for the standard, not for the probe.
 _CONVENTIONAL = re.compile(
-    r"^(?:feat|fix|chore|docs|refactor|test|style|perf|ci|build|revert|govern|decision)"
-    r"(?:\([^)]+\))?!?:\s+\S"
+    r"^(?:feat|fix|chore|docs|refactor|test|style|perf|ci)(?:\([^)]+\))?!?:\s+\S"
 )
 
 
@@ -134,12 +176,9 @@ def _probe_conventional_commits(root: Path) -> ProbeResult:
 def _probe_lint_in_ci(root: Path) -> ProbeResult:
     """S1.70 — lint is configured and enforced in CI."""
     sid = "S1.70"
-    text = _workflow_text(root)
-    if text is None:
+    if _workflow_text(root) is None:
         return _unknown(sid, "no CI workflows found")
-    m = re.search(
-        rf"{_RUN_STEP}\b(?:ruff\s+check|eslint|flake8|golangci-lint|clippy)\b.*$", text, re.I | re.M
-    )
+    m = _find_command(root, r"ruff\s+check|eslint|flake8|golangci-lint|clippy")
     if m:
         return _ok(sid, f"CI runs lint: '{m.group(0).strip()[:70]}'")
     return _bad(sid, "no lint step found in any CI workflow")
@@ -196,7 +235,7 @@ def _probe_frozen_install(root: Path) -> ProbeResult:
     text = _workflow_text(root)
     if text is None:
         return _unknown(sid, f"lockfile {locks[0]} committed, but no CI workflows to inspect")
-    m = _FROZEN_INSTALL.search(text)
+    m = _find_command(root, _FROZEN_TOOLS)
     if not m:
         return _bad(sid, f"lockfile {locks[0]} committed, but CI has no frozen install step")
     return _ok(sid, f"{locks[0]} committed; CI installs frozen via '{m.group(0).strip()}'")
@@ -212,11 +251,7 @@ def _probe_tests_in_ci(root: Path) -> ProbeResult:
     # a pull request cannot be judged against it — that is a different question.
     if "pull_request" not in text:
         return _unknown(sid, "CI workflows present but none trigger on pull_request")
-    m = re.search(
-        rf"{_RUN_STEP}\b(?:pytest|jest|vitest|go\s+test|cargo\s+test|mvn\s+test|npm\s+test)\b.*$",
-        text,
-        re.I | re.M,
-    )
+    m = _find_command(root, r"pytest|jest|vitest|go\s+test|cargo\s+test|mvn\s+test|npm\s+test")
     if m:
         return _ok(sid, f"CI runs tests on PRs: '{m.group(0).strip()[:70]}'")
     return _bad(sid, "no test step found in any CI workflow")
@@ -239,6 +274,43 @@ def _probe_env_hygiene(root: Path) -> ProbeResult:
     return _bad(sid, ".env is not gitignored")
 
 
+def _probe_cve_gate(root: Path) -> ProbeResult:
+    """S8.84 — a committed lockfile behind a CI vulnerability (SCA) gate."""
+    sid = "S8.84"
+    locks = [name for name in _LOCKFILES if (root / name).is_file()]
+    if not locks:
+        return _bad(sid, "no committed lockfile found")
+    text = _workflow_text(root)
+    if text is None:
+        return _unknown(sid, f"{locks[0]} committed, but no CI workflows to inspect")
+    m = _find_command(
+        root,
+        r"pip-audit|safety\s+check|npm\s+audit|pnpm\s+audit|yarn\s+audit|cargo\s+audit|"
+        r"govulncheck|osv-scanner|trivy|snyk\s+test|grype",
+    )
+    if not m:
+        return _bad(sid, f"{locks[0]} committed, but no CI vulnerability (SCA) gate found")
+    return _ok(sid, f"{locks[0]} committed; CI audits via '{m.group(0).strip()[:60]}'")
+
+
+def _probe_licence_gate(root: Path) -> ProbeResult:
+    """S8.85 — dependency licences checked against an allowlist; SBOM generated."""
+    sid = "S8.85"
+    text = _workflow_text(root)
+    if text is None:
+        return _unknown(sid, "no CI workflows found")
+    m = _find_command(
+        root,
+        r"governova\s+licences|licensecheck|pip-licenses|license-checker|reuse\s+lint|cargo\s+deny",
+    )
+    if not m:
+        return _bad(sid, "no CI licence-allowlist check found")
+    sbom_present = re.search(r"\bsbom\b|cyclonedx|spdx", text, re.I) is not None
+    if not sbom_present:
+        return _bad(sid, "licence check present, but no SBOM is generated")
+    return _ok(sid, f"CI checks licences and emits an SBOM: '{m.group(0).strip()[:60]}'")
+
+
 PROBES: tuple[Probe, ...] = (
     Probe("S1.19", "Commits follow the conventional format", _probe_conventional_commits),
     Probe("S1.70", "Lint enforced in CI", _probe_lint_in_ci),
@@ -248,6 +320,8 @@ PROBES: tuple[Probe, ...] = (
     Probe("S1.98", "Reproducible installs — lockfile + frozen CI", _probe_frozen_install),
     Probe("S7.6", "Tests run on every PR", _probe_tests_in_ci),
     Probe("S8.25", "Environment configuration hygiene", _probe_env_hygiene),
+    Probe("S8.84", "Lockfile behind a CI vulnerability gate", _probe_cve_gate),
+    Probe("S8.85", "Licence allowlist + SBOM", _probe_licence_gate),
 )
 
 

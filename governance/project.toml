@@ -59,10 +59,10 @@ standard = "S1.105"
 evidence = "scripts/governova_checks/rules.py"
 note = "Enforced by AP-S1.105a — environment URLs inlined as literals are flagged."
 
-[[satisfied]]
-standard = "S8.84"
-evidence = "uv.lock"
-note = "Lockfile committed; CI resolves against it on every run."
+# S8.84 and S8.85 are no longer declared here. Both are now mechanically verified
+# by structural probes against the supply-chain workflow, and this file's own rule
+# is that a standard covered by a passing check needs no entry — a declaration
+# beside mechanical evidence is one more thing to keep in sync and weaker proof.
 
 [[satisfied]]
 standard = "S8.87"

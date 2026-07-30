@@ -8,6 +8,12 @@ on:
   pull_request:
     branches: [main, Dev]
 
+permissions:
+  contents: read
+  # Lets the built-in token reach the platform's own free inference endpoint, which
+  # is the semantic tier's default when no endpoint is configured (see below).
+  models: read
+
 jobs:
   guardian:
     name: Governova Guardian
@@ -30,20 +36,34 @@ jobs:
         shell: bash
         run: uv run governova guard --base "${{ github.event.pull_request.base.sha }}"
 
-      # Advisory semantic review — active only when the LLM secrets are configured;
-      # otherwise a clean no-op (the reliable tiers above are unaffected). Never blocks.
+      # Advisory semantic review — never blocks, and the reliable tiers above are
+      # unaffected by anything that happens here.
+      #
+      # The endpoint resolves as a unit, keyed on GOVERNOVA_LLM_BASE_URL:
+      #
+      #   set   → the operator owns the whole configuration, defaults do not apply
+      #   unset → the platform's own free inference endpoint, reached with the
+      #           built-in token, so the tier is active out of the box with no
+      #           account, no key, and no cost
+      #
+      # All-or-nothing on purpose. Mixing one deployment's model id with another's
+      # endpoint is a 404 that degrades to zero findings — indistinguishable from a
+      # clean review, which is the worst way for this tier to fail.
+      #
+      # On a fork PR the built-in token is read-only and may not carry `models`
+      # access. That is a reachability failure the tier already handles: no findings,
+      # green build, gate untouched.
       - name: Advisory semantic review (optional)
         if: always()
         shell: bash
         env:
-          GOVERNOVA_LLM_MODEL: ${{ secrets.GOVERNOVA_LLM_MODEL }}
-          GOVERNOVA_LLM_BASE_URL: ${{ secrets.GOVERNOVA_LLM_BASE_URL }}
-          GOVERNOVA_LLM_API_KEY: ${{ secrets.GOVERNOVA_LLM_API_KEY }}
-          # Optional. Unset selects the default `chat_completions` protocol, so an
-          # existing deployment needs no change; set `messages` for endpoints that
-          # speak that shape instead.
-          GOVERNOVA_LLM_PROTOCOL: ${{ secrets.GOVERNOVA_LLM_PROTOCOL }}
-          GOVERNOVA_LLM_API_VERSION: ${{ secrets.GOVERNOVA_LLM_API_VERSION }}
+          GOVERNOVA_LLM_BASE_URL: ${{ secrets.GOVERNOVA_LLM_BASE_URL || 'https://models.github.ai/inference' }}
+          GOVERNOVA_LLM_MODEL: ${{ secrets.GOVERNOVA_LLM_BASE_URL && secrets.GOVERNOVA_LLM_MODEL || 'openai/gpt-4.1-mini' }}
+          GOVERNOVA_LLM_API_KEY: ${{ secrets.GOVERNOVA_LLM_BASE_URL && secrets.GOVERNOVA_LLM_API_KEY || secrets.GITHUB_TOKEN }}
+          # Empty selects the default `chat_completions` protocol — which is what the
+          # fallback endpoint speaks. Set `messages` for endpoints of that shape.
+          GOVERNOVA_LLM_PROTOCOL: ${{ secrets.GOVERNOVA_LLM_BASE_URL && secrets.GOVERNOVA_LLM_PROTOCOL || '' }}
+          GOVERNOVA_LLM_API_VERSION: ${{ secrets.GOVERNOVA_LLM_BASE_URL && secrets.GOVERNOVA_LLM_API_VERSION || '' }}
         run: >
           uv run governova-enforce
           --changed

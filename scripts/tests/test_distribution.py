@@ -159,11 +159,70 @@ def test_the_distribution_is_named_for_the_product() -> None:
 
 
 def test_the_wheel_bundles_the_compiled_constitution() -> None:
-    """Without this the installed package has no constitution to govern with."""
+    """Without this the installed package has no constitution to govern with.
+
+    Done by a build hook rather than a static force-include: the file sits at
+    `../compiled/` when building in the repository and at `./compiled/` when
+    building from an sdist, and `uv build` builds the wheel from the sdist. The
+    static form produced a working wheel locally and a broken one in the release
+    pipeline.
+    """
     cfg = _packaging()
-    include = cfg["tool"]["hatch"]["build"]["targets"]["wheel"]["force-include"]
-    assert include["../compiled/constitution.json"] == "governova_compile/data/constitution.json"
+    hook = cfg["tool"]["hatch"]["build"]["hooks"]["custom"]
+    assert hook["path"] == "hatch_build.py"
+    assert (resolve_repo_root() / "scripts" / "hatch_build.py").is_file()
     assert (resolve_repo_root() / "compiled" / "constitution.json").is_file()
+
+
+def test_the_sdist_carries_the_constitution_so_it_can_build_a_wheel() -> None:
+    """An sdist that cannot build a wheel is broken for `pip install --no-binary`."""
+    include = _packaging()["tool"]["hatch"]["build"]["targets"]["sdist"]["force-include"]
+    assert include["../compiled/constitution.json"] == "compiled/constitution.json"
+
+
+def _locate_constitution():  # type: ignore[no-untyped-def]
+    """Import the build hook's resolver, which lives outside the packages."""
+    import sys
+
+    sys.path.insert(0, str(resolve_repo_root() / "scripts"))
+    try:
+        from hatch_build import locate_constitution
+
+        return locate_constitution
+    finally:
+        sys.path.pop(0)
+
+
+@pytest.mark.parametrize(
+    "layout", ["../compiled/constitution.json", "compiled/constitution.json"]
+)
+def test_the_build_hook_finds_the_constitution_in_both_layouts(
+    tmp_path: Path, layout: str
+) -> None:
+    """The repository and an unpacked sdist put the file in different places.
+
+    `uv build` builds the wheel from the sdist, so a resolver that only knows the
+    repository layout produces a working wheel locally and a broken one on release.
+    """
+    project = tmp_path / "project"
+    project.mkdir()
+    target = (project / layout).resolve()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("{}", encoding="utf-8")
+
+    assert _locate_constitution()(project) == target
+
+
+def test_the_build_hook_refuses_to_ship_a_wheel_without_a_constitution(
+    tmp_path: Path,
+) -> None:
+    """A wheel missing it installs cleanly and fails on first use.
+
+    That is a defect the installer discovers rather than the shipper, so the
+    build fails loudly instead.
+    """
+    with pytest.raises(FileNotFoundError, match="compiled constitution was not"):
+        _locate_constitution()(tmp_path)
 
 
 def test_the_bundled_index_is_not_committed_as_a_duplicate() -> None:

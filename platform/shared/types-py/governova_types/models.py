@@ -12,8 +12,19 @@ from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-SCHEMA_VERSION = "1.1.0"
+SCHEMA_VERSION = "1.2.0"
 """Semantic version of the compiled-index schema. See module docstring."""
+
+MAX_GROUNDED_IN_CHARS = 120
+"""The line between a citation and an excerpt.
+
+`Standard.grounded_in` records *where a practice is written down*, not what it
+says. Ideas and methods are not copyrightable; expression is. A reference line —
+author, work, edition, chapter — fits comfortably inside this bound; a paragraph
+of somebody else's prose does not. `governova validate` rejects any entry that
+exceeds it, which is what keeps the provenance field a citation index rather than
+an unlicensed anthology.
+"""
 
 
 # ─── Enums ───────────────────────────────────────────────────────────────────
@@ -200,6 +211,15 @@ class Standard(BaseModel):
     )
     anti_patterns: list[AntiPattern] = Field(default_factory=list)
     cross_references: list[Reference] = Field(default_factory=list)
+    grounded_in: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Provenance — where this requirement is established in the engineering "
+            "canon. Each entry is a citation (author, work, edition, chapter), never "
+            f"an excerpt; entries over {MAX_GROUNDED_IN_CHARS} characters are rejected "
+            "by `governova validate`. Empty means unsourced, not unfounded."
+        ),
+    )
     abbreviated: bool = Field(
         default=False,
         description=(

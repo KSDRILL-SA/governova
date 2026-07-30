@@ -20,12 +20,26 @@ Applies To:   [all systems | specific stack | specific domain]
 Rule:         [the requirement, stated positively]
 Rationale:    [why this standard exists]
 Anti-pattern: AP-S{C}.{N}{letter} — [what failure looks like]
+Grounded In:  [author, work, edition — chapter]   (optional)
 ```
 
 Where:
 - `{C}` = constitution number (0–10, or domain/stack identifier)
 - `{N}` = standard number within that constitution (sequential, no gaps)
 - `{letter}` = anti-pattern variant (a, b, c... for multiple failure modes of one standard)
+
+## Provenance
+
+`Grounded In` is the only optional element of a standard, and the only one that points
+outside the corpus. It records where a requirement is already established in the
+engineering canon, so a standard is defensible by citation rather than by assertion.
+An absent `Grounded In` means the standard is unsourced, not that it is unfounded.
+
+Each entry is a **citation, never an excerpt** (C0 §3.2 SR-7): author, work, edition,
+chapter — never the source's own words. Ideas and methods are not copyrightable;
+expression is, and these documents are compiled and shipped inside a published package.
+`governova validate` rejects any entry longer than 120 characters, which is the
+mechanical form of that boundary.
 
 ## ID permanence rule
 
@@ -53,8 +67,9 @@ Where `{DOMAIN}` is the upper-case domain identifier from the registry in
 `constitution/domains/README.md` (e.g. `FINTECH`, `GOVTECH`).
 
 Domain standards use the **same block shape** as core standards — attribute table plus
-`**Standard:**` / `**Rationale:**` / `**Anti-Patterns:**` labelled blocks — so one format
-governs Layer 2 and Layer 4. Two rules are specific to Layer 4:
+`**Standard:**` / `**Rationale:**` / `**Anti-Patterns:**` labelled blocks, and the same
+optional `**Grounded In:**` — so one format governs Layer 2 and Layer 4. Two rules are
+specific to Layer 4:
 
 1. **Every domain standard declares `**Extends:**`** — at least one core standard it
    builds on. A domain standard with no anchor cannot be conflict-checked against the

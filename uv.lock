@@ -355,7 +355,7 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "governova-types"
-version = "1.1.0"
+version = "1.2.0"
 source = { editable = "platform/shared/types-py" }
 dependencies = [
     { name = "pydantic" },

@@ -2,11 +2,22 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 import pytest
 from governova_compile.compiler import compile_index
 from governova_compile.discovery import CONSTITUTION_REGISTRY, resolve_repo_root
+from governova_compile.schema import (
+    MAX_GROUNDED_IN_CHARS,
+    CompiledIndex,
+    Constitution,
+    DocumentHeader,
+    Priority,
+    Standard,
+)
 from governova_compile.writer import compute_checksum
 from governova_validate.checks import (
+    check_grounded_in,
     check_hierarchy,
     check_phases,
     check_references,
@@ -84,3 +95,70 @@ def test_hierarchy_covers_all_constitutions(index):
 def test_link_integrity(repo_root):
     issues, _ = check_links(repo_root)
     assert issues == [], f"broken links: {[(i.source_path, i.message) for i in issues]}"
+
+
+# ─── Grounded In — provenance is a citation, never an excerpt (C0 §3.2 SR-7) ──
+
+
+def _index_with_grounding(*entries: str) -> CompiledIndex:
+    """A one-standard index whose sole standard carries `entries` as provenance."""
+    standard = Standard(
+        id="S1.1",
+        title="T",
+        constitution_id="C01",
+        priority=Priority.STANDARD,
+        applies_to="All",
+        statement="s",
+        rationale="r",
+        grounded_in=list(entries),
+        source_path="p",
+        source_line=1,
+    )
+    constitution = Constitution(
+        id="C01",
+        number=1,
+        name="Test",
+        header=DocumentHeader(document="C1 — Test"),
+        path="p",
+        standards=[standard],
+    )
+    return CompiledIndex(
+        compiled_at=datetime(2026, 7, 31, tzinfo=UTC),
+        checksum="x",
+        constitutions=[constitution],
+    )
+
+
+def test_grounded_in_rejects_an_excerpt():
+    excerpt = "T" * (MAX_GROUNDED_IN_CHARS + 1)
+    issues = check_grounded_in(_index_with_grounding(excerpt))
+    assert [i.code for i in issues] == ["grounded-in-excerpt"]
+    assert str(MAX_GROUNDED_IN_CHARS) in issues[0].message
+
+
+def test_grounded_in_accepts_a_citation():
+    # The negative case, and the one that matters: a real citation — author, work,
+    # edition, chapter — must pass, or the bound is unusable for its purpose.
+    issues = check_grounded_in(
+        _index_with_grounding(
+            "Sommerville, *Software Engineering*, 10th ed. — ch. 4, requirements engineering",
+            "Coronel & Rob, *Database Systems*, 13th ed. — ch. 6, normalisation of tables",
+        )
+    )
+    assert issues == []
+
+
+def test_grounded_in_boundary_is_inclusive():
+    at_limit = "C" * MAX_GROUNDED_IN_CHARS
+    assert check_grounded_in(_index_with_grounding(at_limit)) == []
+    assert check_grounded_in(_index_with_grounding(at_limit + "C")) != []
+
+
+def test_grounded_in_absent_is_not_a_violation():
+    # An unsourced standard is not a malformed one — 618 of them are unsourced today.
+    assert check_grounded_in(_index_with_grounding()) == []
+
+
+def test_live_corpus_carries_no_excerpts(index):
+    issues = check_grounded_in(index)
+    assert issues == [], f"excerpt in provenance: {[i.message for i in issues]}"

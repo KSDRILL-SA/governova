@@ -39,6 +39,11 @@ jobs:
           GOVERNOVA_LLM_MODEL: ${{ secrets.GOVERNOVA_LLM_MODEL }}
           GOVERNOVA_LLM_BASE_URL: ${{ secrets.GOVERNOVA_LLM_BASE_URL }}
           GOVERNOVA_LLM_API_KEY: ${{ secrets.GOVERNOVA_LLM_API_KEY }}
+          # Optional. Unset selects the default `chat_completions` protocol, so an
+          # existing deployment needs no change; set `messages` for endpoints that
+          # speak that shape instead.
+          GOVERNOVA_LLM_PROTOCOL: ${{ secrets.GOVERNOVA_LLM_PROTOCOL }}
+          GOVERNOVA_LLM_API_VERSION: ${{ secrets.GOVERNOVA_LLM_API_VERSION }}
         run: >
           uv run governova-enforce
           --changed

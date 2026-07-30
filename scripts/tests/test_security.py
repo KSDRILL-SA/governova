@@ -168,12 +168,14 @@ def test_the_notifier_refuses_a_non_http_webhook() -> None:
 
 
 def test_the_semantic_client_refuses_a_non_http_endpoint() -> None:
-    from governova_semantic.client import urllib_transport
-    from governova_semantic.config import SemanticConfig
+    """Every protocol, not only the default — a second transport must not be a gap."""
+    from governova_semantic.client import default_transport
+    from governova_semantic.config import PROTOCOLS, SemanticConfig
 
-    cfg = SemanticConfig(model="m", base_url="file:///etc", api_key="k")
-    with pytest.raises(ValueError):
-        urllib_transport(cfg, [{"role": "user", "content": "x"}])
+    for protocol in PROTOCOLS:
+        cfg = SemanticConfig(model="m", base_url="file:///etc", api_key="k", protocol=protocol)
+        with pytest.raises(ValueError):
+            default_transport(cfg, [{"role": "user", "content": "x"}])
 
 
 def test_evidence_outside_the_repository_is_not_evidence(tmp_path: Path) -> None:
@@ -197,15 +199,17 @@ def test_evidence_outside_the_repository_is_not_evidence(tmp_path: Path) -> None
 
 def test_a_transport_failure_does_not_leak_the_endpoint() -> None:
     """urllib echoes the request URL; an endpoint may embed credentials."""
-    from governova_semantic.client import SemanticUnavailableError, urllib_transport
-    from governova_semantic.config import SemanticConfig
+    from governova_semantic.client import SemanticUnavailableError, default_transport
+    from governova_semantic.config import PROTOCOLS, SemanticConfig
 
-    cfg = SemanticConfig(
-        model="m",
-        base_url="http://user:SUPERSECRET@127.0.0.1:1/v1",
-        api_key="k",
-        timeout=0.2,
-    )
-    with pytest.raises(SemanticUnavailableError) as exc:
-        urllib_transport(cfg, [{"role": "user", "content": "x"}])
-    assert "SUPERSECRET" not in str(exc.value)
+    for protocol in PROTOCOLS:
+        cfg = SemanticConfig(
+            model="m",
+            base_url="http://user:SUPERSECRET@127.0.0.1:1/v1",
+            api_key="k",
+            timeout=0.2,
+            protocol=protocol,
+        )
+        with pytest.raises(SemanticUnavailableError) as exc:
+            default_transport(cfg, [{"role": "user", "content": "x"}])
+        assert "SUPERSECRET" not in str(exc.value)

@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from governova_compile.schema import CompiledIndex, Standard
 from governova_compile.writer import load_active_index
 
-from governova_semantic.client import SemanticUnavailableError, Transport, urllib_transport
+from governova_semantic.client import SemanticUnavailableError, Transport, default_transport
 from governova_semantic.config import SemanticConfig, from_env
 
 _WORD = re.compile(r"[a-z]{4,}")
@@ -109,7 +109,7 @@ def review(
     if not grounded:
         return []
     messages = build_messages(code, grounded)
-    send = transport or urllib_transport
+    send = transport or default_transport
     try:
         content = send(cfg, messages)
     except SemanticUnavailableError:

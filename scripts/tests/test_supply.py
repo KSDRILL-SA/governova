@@ -221,14 +221,58 @@ def test_a_licence_check_with_an_sbom_satisfies(tmp_path: Path) -> None:
 
 
 def test_the_commit_probe_accepts_exactly_the_types_the_standard_lists() -> None:
-    """It once accepted `govern` and `decision`, which S1.19 does not list.
+    """The probe must never be wider than S1.19.
 
-    A probe grading against a rubric wider than its standard reports compliance
-    that was never achieved.
+    It once accepted four types the standard did not grant, reporting compliance
+    that was never achieved. `govern` and `decision` became lawful by C0 §8
+    amendment on 2026-07-30 (C1 v1.4); the probe followed the standard, not the
+    other way round.
     """
     from governova_evidence import _CONVENTIONAL
 
-    for allowed in ("feat", "fix", "chore", "docs", "refactor", "test", "style", "perf", "ci"):
+    for allowed in (
+        "feat", "fix", "chore", "docs", "refactor",
+        "test", "style", "perf", "ci", "govern", "decision",
+    ):
         assert _CONVENTIONAL.match(f"{allowed}: do a thing"), allowed
-    for absent in ("govern", "decision", "harden", "build", "revert", "wip"):
+    for absent in ("harden", "build", "revert", "wip", "security", "governance"):
         assert not _CONVENTIONAL.match(f"{absent}: do a thing"), absent
+
+
+def test_harden_was_refused_by_the_amendment_and_stays_refused() -> None:
+    """The test that this amendment was reasoning rather than convenience.
+
+    Three types were violating S1.19. Two were ratified; `harden` was refused,
+    because security work is a `fix` when it closes a vulnerability and a
+    `chore`/`refactor` otherwise. Had all three been waved through, the
+    amendment would have been a governance product widening its own rules the
+    first time they bit.
+    """
+    from governova_evidence import _CONVENTIONAL
+
+    assert not _CONVENTIONAL.match("harden: security review of the engine")
+    assert _CONVENTIONAL.match("fix: close the ReDoS in the balance rule")
+    assert _CONVENTIONAL.match("chore: raise the mcp floor past the advisory")
+
+
+def test_the_probe_matches_the_standard_as_compiled() -> None:
+    """Read the eleven types out of S1.19 itself and check the probe against them.
+
+    Pins probe and standard together: amending one without the other fails here.
+    """
+    import re as _re
+
+    from governova_compile.discovery import resolve_repo_root
+    from governova_compile.writer import load_active_index
+
+    index = load_active_index(start=resolve_repo_root())
+    standard = next(
+        s for c in index.constitutions for s in c.standards if s.id == "S1.19"
+    )
+    declared = set(_re.findall(r"`([a-z]+)`", standard.statement.split("Valid types:")[1]))
+    assert declared, "could not read the type list out of S1.19"
+
+    from governova_evidence import _CONVENTIONAL
+
+    for kind in declared:
+        assert _CONVENTIONAL.match(f"{kind}: x"), f"S1.19 grants {kind}; the probe refuses it"

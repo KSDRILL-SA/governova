@@ -1,8 +1,8 @@
 {
   "schema_version": "1.1.0",
-  "compiled_at": "2026-07-30T13:22:49.245987Z",
-  "source_commit_sha": "0a3b786",
-  "checksum": "sha256:ef0de86089a953d70a6c64385845ef01ae19cb2bd91bc409414344d707baabd8",
+  "compiled_at": "2026-07-30T15:18:48.775616Z",
+  "source_commit_sha": "494bd51",
+  "checksum": "sha256:043acf024bcc836efa9cb2fb05cc7d7f8c97747485b8fd3cdbf7224320507cbc",
   "framework": [
     {
       "id": "format-specification",
@@ -21605,6 +21605,12 @@
       "name": "Engine Security Posture",
       "status": "ACCEPTED",
       "path": "governance/decisions/ADR-006-engine-security-posture.md"
+    },
+    {
+      "id": "ADR-007",
+      "name": "Lifecycle Completeness",
+      "status": "ACCEPTED",
+      "path": "governance/decisions/ADR-007-lifecycle-completeness.md"
     }
   ],
   "hierarchy": [

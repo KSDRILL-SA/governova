@@ -36,3 +36,8 @@ dashboard.html
 governance-report.md
 system-bible.md
 dist/
+
+# Third-party source material for the Phase 2 corpus work (ADR-007). Not ours to
+# redistribute, and 26 MB of .doc/.pdf that would sit in git forever. The
+# extraction tooling takes a path; the corpus lives outside the repository.
+planning/SDLC&DBLC/

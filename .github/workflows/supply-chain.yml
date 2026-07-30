@@ -41,10 +41,20 @@ jobs:
       # pip-audit, not a hand-rolled scanner: matching packages against advisory
       # databases needs a database that is current, and a stale CVE gate is worse
       # than none because it reports "clean" for advisories it never heard of.
+      #
+      # `--strict` is deliberate: it turns "could not audit this package" into a
+      # failure rather than a silent skip, which is the difference between a gate
+      # and a gate-shaped log line.
+      #
+      # `--no-emit-workspace` excludes this repository's own packages. They are
+      # not published yet, so PyPI cannot resolve them and `--strict` would fail
+      # on our own name — auditing ourselves against an advisory database was
+      # never the point. Dependencies are what this gate exists to check.
       - name: Audit dependencies for known vulnerabilities
         run: |
           set -euo pipefail
-          uv export --frozen --all-packages --no-hashes --format requirements-txt > /tmp/reqs.txt
+          uv export --frozen --all-packages --no-emit-workspace --no-hashes \
+            --format requirements-txt > /tmp/reqs.txt
           uvx pip-audit --requirement /tmp/reqs.txt --strict --progress-spinner off
 
       # ── S8.85 — the licence allowlist ─────────────────────────────────────

@@ -35,3 +35,4 @@ __pycache__/
 dashboard.html
 governance-report.md
 system-bible.md
+dist/

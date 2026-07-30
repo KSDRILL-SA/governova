@@ -1,0 +1,142 @@
+name: Release
+
+# Publishes `governova` to PyPI via OIDC Trusted Publishing.
+#
+# No API token exists anywhere in this repository. GitHub proves its own identity
+# to PyPI at publish time, so there is no long-lived credential to leak, rotate,
+# or accidentally scope too widely. The trust is registered on PyPI against this
+# owner, this repository, this workflow filename, and the `pypi` environment —
+# change any of those four and publishing stops working, by design.
+#
+# Triggered by a tag, never by a merge. Publishing is a deliberate act.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build and verify without publishing."
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ── Gate ────────────────────────────────────────────────────────────────────
+  # A release that fails its own constitution is not a release. Everything that
+  # guards `main` runs again here against the exact commit being shipped, because
+  # a tag can point at anything.
+  verify:
+    name: Verify the release candidate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync from the committed lockfile
+        run: uv sync --all-packages --all-extras --frozen
+
+      - name: The tag must match the packaged version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#v}"
+          packaged=$(uv run python -c \
+            "import tomllib,pathlib;print(tomllib.loads(pathlib.Path('scripts/pyproject.toml').read_text())['project']['version'])")
+          if [ "$tag" != "$packaged" ]; then
+            echo "::error::tag v${tag} does not match scripts/pyproject.toml version ${packaged}"
+            exit 1
+          fi
+          echo "tag v${tag} matches the packaged version"
+
+      - name: Lint
+        run: uv run ruff check scripts/
+
+      - name: Type-check
+        working-directory: scripts
+        run: uv run mypy
+
+      - name: Tests
+        run: uv run pytest scripts/tests -q
+
+      - name: Constitutional index is current
+        run: uv run governova-compile --check
+
+      - name: Generated types are current
+        run: uv run governova-codegen --check
+
+      - name: Structural integrity
+        run: uv run governova-validate
+
+      - name: Dependency licences (S8.85)
+        run: uv run governova licences --sbom sbom.cyclonedx.json
+
+      - name: Build the distributions
+        run: uv build --package governova --out-dir dist/
+
+      # The bundled constitution is what lets an installed `governova` govern a
+      # repository that does not contain one. A wheel without it installs fine
+      # and then fails on first use, so it is checked here rather than discovered
+      # by whoever installs it first.
+      - name: The wheel must carry the compiled constitution
+        run: |
+          set -euo pipefail
+          uv run python - <<'PY'
+          import glob, sys, zipfile
+          wheel = sorted(glob.glob("dist/*.whl"))[-1]
+          names = zipfile.ZipFile(wheel).namelist()
+          bundled = "governova_compile/data/constitution.json"
+          if bundled not in names:
+              sys.exit(f"::error::{wheel} does not bundle {bundled}")
+          size = zipfile.ZipFile(wheel).getinfo(bundled).file_size
+          print(f"{wheel} bundles the constitution ({size:,} bytes)")
+          PY
+
+      # Proves the artifact works before it is published, not after: install the
+      # wheel into a clean environment with no repository around it and confirm
+      # it reads its own constitution.
+      - name: The built wheel must work with no repository present
+        run: |
+          set -euo pipefail
+          python -m venv /tmp/smoke
+          /tmp/smoke/bin/pip install --quiet dist/*.whl
+          mkdir -p /tmp/elsewhere && cd /tmp/elsewhere
+          /tmp/smoke/bin/governova stats
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distributions
+          path: |
+            dist/
+            sbom.cyclonedx.json
+
+  # ── Publish ─────────────────────────────────────────────────────────────────
+  publish:
+    name: Publish to PyPI
+    needs: verify
+    if: startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    # The environment is the access boundary. Without it, anyone who can push a
+    # workflow to this repository could publish under the project's name; with
+    # it, publishing is gated separately from commit access.
+    environment:
+      name: pypi
+      url: https://pypi.org/p/governova
+    permissions:
+      # The OIDC token that PyPI verifies. This is the entire credential.
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: distributions
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

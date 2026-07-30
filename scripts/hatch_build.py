@@ -28,7 +28,15 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from hatchling.builders.hooks.plugin.interface import BuildHookInterface
+try:
+    from hatchling.builders.hooks.plugin.interface import BuildHookInterface
+except ModuleNotFoundError:  # pragma: no cover - only absent outside a build
+    # hatchling is a build-time dependency, present only while a distribution is
+    # being built. The resolver below needs nothing from it, and the test suite
+    # exercises the resolver — so the module must import in an ordinary
+    # environment rather than failing and taking those tests with it. The hook
+    # class is instantiated by hatchling alone, so this base is never used.
+    BuildHookInterface = object
 
 BUNDLED_AT = "governova_compile/data/constitution.json"
 _CANDIDATES = ("../compiled/constitution.json", "compiled/constitution.json")

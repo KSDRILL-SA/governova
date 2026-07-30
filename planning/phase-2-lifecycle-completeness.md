@@ -84,18 +84,43 @@ protocol merged.
 **Why first:** highest novelty, cheapest to build (text rules — no parsers), stack-
 independent, and it addresses the most expensive defect class in software.
 
-### 1.1 · The format specification
+### 1.1 · The interchange format — build this before the linter
 
-The linter is worthless if requirements are not machine-readable. C11 must specify
-**where requirements live and how they are written** — this is the strongest claim
-Governova will make on an adopting team, and it needs to be light enough to accept:
+**Read the ADR-007 addendum first.** Governova does not own requirements; it defines
+an interchange format and reads that. Demanding `requirements/*.md` would be the
+largest claim we make on an adopting team, and the teams with the worst requirements
+discipline — the ones this is for — are exactly those least able to migrate.
 
+Deliver in this order, because each tier is independently useful and tier 1 is what
+makes the feature adoptable at all:
+
+**Tier 1 first — referenced.** Costs a team nothing: they keep Jira, and cite
+`REQ-1234` in a test name, a commit trailer, or a code annotation. From that alone,
+detect **a requirement with no test** and **code with no requirement**. Ship this
+before any grammar work — it is the entry point, and it is where most teams will live.
+
+**Then tier 2/3 — the manifest.** A small, versioned JSON/YAML contract:
+
+```yaml
+schema_version: "1.0"
+requirements:
+  - id: REQ-001
+    statement: "The system shall authenticate users with email and password."
+    kind: functional          # functional | non-functional | domain | constraint
+    obligation: shall         # shall | must | should | may
+    source: "stakeholder interview 2026-03-04"
+    acceptance: "..."
 ```
-requirements/
-  REQ-001-authentication.md
-```
 
-Each requirement, from the canon's grammar:
+Native markdown authoring is **one producer** of this manifest. A team's own CI
+exporting from their tracker is another. Governova reads the manifest either way and
+never calls a tracker API — that would need credentials and break the offline promise
+in ADR-005.
+
+**Tier 0 is `unknown`, never `violated`.** Governova must never punish a team for a
+requirement it cannot see. Same standing rule as `governova_evidence`.
+
+The canon's grammar, which the linter enforces at tiers 2–3:
 
 ```
 <Req ID> The <system> <modal verb> <function>.
@@ -136,9 +161,11 @@ Do *not* write a standard for every slide. Elicitation technique selection is
 judgement; "every requirement has an acceptance criterion" is checkable. Write the
 second kind, and route the first to the semantic tier or leave it out.
 
-**Exit criteria:** `governova requirements lint` runs · ≥7 rules with positive and
-negative tests · zero false positives against a realistic sample · coverage does not
-fall.
+**Exit criteria:** tier 1 linkage detection works against a repository with **no
+manifest at all** · `governova requirements lint` runs on a manifest · ≥7 rules with
+positive and negative tests · zero false positives against a realistic sample · a
+repository with no visible requirements reports **`unknown`, not a violation** ·
+coverage does not fall.
 
 ---
 

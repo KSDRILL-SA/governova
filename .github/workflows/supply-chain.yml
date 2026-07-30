@@ -1,0 +1,63 @@
+name: Supply Chain
+
+# S8.84 — dependency installs run behind a committed lockfile and a CI vulnerability
+# (SCA) gate; SEV0/SEV1 CVEs block merge.
+# S8.85 — every dependency licence is checked against an allowlist; an SBOM is
+# generated for releases.
+#
+# Governova enforced both of these on everyone it governs while running neither
+# itself. A standard the author does not keep is not a standard.
+
+on:
+  pull_request:
+    branches: [main, Dev]
+  push:
+    branches: [main]
+  schedule:
+    # The dependency surface decays without any change to this repository:
+    # an advisory published tomorrow makes today's green build wrong (S8.87).
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  supply-chain:
+    name: CVE gate + licence allowlist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync the workspace from the committed lockfile
+        run: uv sync --all-packages --all-extras --frozen
+
+      # ── S8.84 — the CVE gate ──────────────────────────────────────────────
+      # pip-audit, not a hand-rolled scanner: matching packages against advisory
+      # databases needs a database that is current, and a stale CVE gate is worse
+      # than none because it reports "clean" for advisories it never heard of.
+      - name: Audit dependencies for known vulnerabilities
+        run: |
+          set -euo pipefail
+          uv export --frozen --all-packages --no-hashes --format requirements-txt > /tmp/reqs.txt
+          uvx pip-audit --requirement /tmp/reqs.txt --strict --progress-spinner off
+
+      # ── S8.85 — the licence allowlist ─────────────────────────────────────
+      # Deterministic and offline: read from installed distribution metadata,
+      # because the lockfile records what was resolved and the metadata records
+      # what is actually importable. It is the second that ships.
+      - name: Check dependency licences against the allowlist
+        run: uv run governova licences --sbom sbom.cyclonedx.json
+
+      - name: Upload the SBOM
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.cyclonedx.json
+          if-no-files-found: warn

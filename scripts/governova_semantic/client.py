@@ -1,8 +1,10 @@
-"""Transport for the semantic tier — a minimal chat-completions HTTP client.
+"""Transport for the semantic tier — two minimal HTTP protocols, no SDK.
 
-Speaks the widely-supported `/chat/completions` JSON protocol using only the
-standard library (urllib): no SDK, no provider dependency, no vendor lock-in. The
-transport is a plain callable so tests inject a fake and never touch the network.
+Both transports use only the standard library (urllib): no provider dependency and
+no vendor SDK. Which one runs is the operator's choice via `GOVERNOVA_LLM_PROTOCOL`;
+`chat_completions` is the default, so an existing deployment is unaffected.
+
+The transport is a plain callable so tests inject a fake and never touch the network.
 """
 
 from __future__ import annotations
@@ -11,10 +13,11 @@ import json
 import urllib.error
 import urllib.request
 from collections.abc import Callable
+from typing import Any
 
 from governova_checks.net import require_http_url
 
-from governova_semantic.config import SemanticConfig
+from governova_semantic.config import MESSAGES, SemanticConfig
 
 # A transport takes (config, messages) and returns the assistant's text content.
 Transport = Callable[[SemanticConfig, list[dict[str, str]]], str]
@@ -24,29 +27,18 @@ class SemanticUnavailableError(RuntimeError):
     """Raised when the endpoint cannot be reached or returns an unusable response."""
 
 
-def urllib_transport(config: SemanticConfig, messages: list[dict[str, str]]) -> str:
-    """Default transport: POST to a `/chat/completions` endpoint."""
-    payload = json.dumps(
-        {
-            "model": config.model,
-            "messages": messages,
-            "temperature": 0,
-            "max_tokens": config.max_tokens,
-        }
-    ).encode("utf-8")
+def _post(config: SemanticConfig, headers: dict[str, str], payload: dict[str, Any]) -> Any:
+    """POST JSON to the configured endpoint and return the decoded body."""
     endpoint = require_http_url(config.endpoint, what="semantic endpoint")
     request = urllib.request.Request(
         endpoint,
-        data=payload,
-        headers={
-            "Authorization": f"Bearer {config.api_key}",
-            "Content-Type": "application/json",
-        },
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json", **headers},
         method="POST",
     )
     try:
         with urllib.request.urlopen(request, timeout=config.timeout) as resp:
-            body = json.loads(resp.read().decode("utf-8"))
+            return json.loads(resp.read().decode("utf-8"))
     except (urllib.error.URLError, OSError, ValueError) as exc:
         # The exception text is deliberately not interpolated. urllib echoes the
         # request URL, and an endpoint configured with inline credentials
@@ -55,7 +47,78 @@ def urllib_transport(config: SemanticConfig, messages: list[dict[str, str]]) -> 
         raise SemanticUnavailableError(
             f"semantic endpoint unreachable ({type(exc).__name__})"
         ) from exc
+
+
+def _split_system(messages: list[dict[str, str]]) -> tuple[str, list[dict[str, str]]]:
+    """Separate system turns from the conversation.
+
+    The `messages` protocol carries the system prompt in a dedicated top-level field
+    and does not accept `system` as a conversational role, so a prompt built once has
+    to be reshaped rather than passed straight through.
+    """
+    system = "\n\n".join(m.get("content", "") for m in messages if m.get("role") == "system")
+    rest = [m for m in messages if m.get("role") != "system"]
+    return system, rest
+
+
+def chat_completions_transport(config: SemanticConfig, messages: list[dict[str, str]]) -> str:
+    """POST to a `/chat/completions` endpoint with bearer auth."""
+    body = _post(
+        config,
+        {"Authorization": f"Bearer {config.api_key}"},
+        {
+            "model": config.model,
+            "messages": messages,
+            "temperature": 0,
+            "max_tokens": config.max_tokens,
+        },
+    )
     try:
         return str(body["choices"][0]["message"]["content"])
     except (KeyError, IndexError, TypeError) as exc:
         raise SemanticUnavailableError("unexpected response shape from semantic endpoint") from exc
+
+
+def messages_transport(config: SemanticConfig, messages: list[dict[str, str]]) -> str:
+    """POST to a `/messages` endpoint with key and API-version headers.
+
+    Three deliberate differences from `chat_completions`, each required by the
+    protocol rather than stylistic:
+
+    - The system prompt is a top-level field, not a turn (see `_split_system`).
+    - No sampling parameter is sent. Current models on this protocol reject
+      `temperature` outright, so carrying over the `chat_completions` default of
+      `0` would fail every request.
+    - The reply is a list of typed blocks. The first *text* block is the answer;
+      earlier blocks may be reasoning and must be skipped rather than indexed past.
+    """
+    system, turns = _split_system(messages)
+    payload: dict[str, Any] = {
+        "model": config.model,
+        "max_tokens": config.max_tokens,
+        "messages": turns,
+    }
+    if system:
+        payload["system"] = system
+    body = _post(
+        config,
+        # Header names are fixed by the protocol; both are mandatory.
+        {"x-api-key": config.api_key or "", "anthropic-version": config.api_version},
+        payload,
+    )
+    try:
+        text = next(b["text"] for b in body["content"] if b.get("type") == "text")
+    except (KeyError, TypeError, StopIteration) as exc:
+        # Also the path taken when the endpoint declines the request: the reply is
+        # well-formed but carries no text block. Advisory findings degrade to none,
+        # which is the correct outcome either way.
+        raise SemanticUnavailableError("unexpected response shape from semantic endpoint") from exc
+    return str(text)
+
+
+_TRANSPORTS: dict[str, Transport] = {MESSAGES: messages_transport}
+
+
+def default_transport(config: SemanticConfig, messages: list[dict[str, str]]) -> str:
+    """Dispatch to the transport for the configured protocol."""
+    return _TRANSPORTS.get(config.protocol, chat_completions_transport)(config, messages)

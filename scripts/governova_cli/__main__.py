@@ -485,15 +485,17 @@ def semantic_review(
     """Advisory semantic review (LLM tier) of the given files.
 
     Inactive unless an endpoint is configured via the environment
-    (GOVERNOVA_LLM_MODEL / GOVERNOVA_LLM_BASE_URL / GOVERNOVA_LLM_API_KEY). Findings
-    are advisory and never block. Provider-agnostic; the reliable rules are unaffected.
+    (GOVERNOVA_LLM_MODEL / GOVERNOVA_LLM_BASE_URL / GOVERNOVA_LLM_API_KEY, and
+    optionally GOVERNOVA_LLM_PROTOCOL). Findings are advisory and never block.
+    Provider-agnostic; the reliable rules are unaffected.
     """
     from governova_semantic import from_env, review
 
     if not from_env().is_configured:
         console.print(
             "[yellow]semantic tier inactive[/] — set GOVERNOVA_LLM_MODEL / "
-            "GOVERNOVA_LLM_BASE_URL / GOVERNOVA_LLM_API_KEY to enable it. "
+            "GOVERNOVA_LLM_BASE_URL / GOVERNOVA_LLM_API_KEY to enable it "
+            "(GOVERNOVA_LLM_PROTOCOL selects the wire protocol). "
             "The reliable rules and the gate are unaffected."
         )
         return

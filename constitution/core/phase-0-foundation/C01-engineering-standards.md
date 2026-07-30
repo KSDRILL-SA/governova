@@ -6,9 +6,9 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C1 — Engineering Standards Constitution                            |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.1                                                               |
+| **Version**        | v1.4                                                               |
 | **Status**         | LOCKED                                                             |
-| **Locked**         | 2026-05-08                                                         |
+| **Locked**         | 2026-05-08 (originally); last amended 2026-07-30                   |
 | **Next Review**    | 2026-08-08                                                         |
 | **Applies To**     | All Systems · Both Stacks · Solo Dev · Team                        |
 | **Paired With**    | — (Process and quality document — no implementation guide)         |
@@ -592,13 +592,23 @@ within the 24-hour standard.
 | **Applies To**  | Both Stacks |
 | **Phase**       | Phase 0 — Foundation |
 | **Depends On**  | `S1.3` (one concern per commit) |
-| **Enforced By** | Commitlint · CI commit format check |
+| **Enforced By** | Structural probe (`governova evidence`) · Commitlint where configured |
 
 **Standard:**
 Every commit follows: `{type}({scope}): {description}` — present tense, imperative mood,
 lowercase. Valid types: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `style`,
-`perf`, `ci`. Commit messages do not use "and" — if "and" is needed, there are too many
-concerns in the commit.
+`perf`, `ci`, `govern`, `decision`. Commit messages do not use "and" — if "and" is
+needed, there are too many concerns in the commit.
+
+Two types name governance acts that change no code and therefore fit none of the others:
+
+| Type | Use |
+|------|-----|
+| `govern` | A constitutional amendment — ratifying, amending, or repealing a standard. |
+| `decision` | Recording an architectural decision (an ADR). |
+
+Security work is **not** a type. A change that closes a vulnerability is a `fix`; work
+that reduces exposure without fixing a defect is a `chore` or a `refactor`.
 
 **Correct examples:**
 ```
@@ -606,6 +616,8 @@ feat(auth): add refresh token rotation on every request
 fix(student-service): correct GPA calculation rounding
 refactor(scholarship-model): extract eligibility scoring logic
 chore(deps): upgrade Prisma to 5.12.0
+govern: ratify Part 19 — Architectural Discipline (S1.103–S1.107)
+decision: platform architecture — 3-plane model (ADR-005)
 ```
 
 **Anti-Patterns:**
@@ -2916,9 +2928,11 @@ and constitutional auditing.
 | v1.2 | 2026-06-21 | **Added Part 18 — Operating-Practice & Adoption Governance (S1.99–S1.102):** S1.99 branch→issue→PR→merge with full issue/PR metadata; S1.100 no-AI-references rule on the GitHub metadata surface; S1.101 characterization tests before any brownfield refactor; S1.102 adoption complete only when satisfied or excepted. Anti-patterns AP-S1.99a–AP-S1.102a added. Count 98→102. (C0 §8 amendment; evidence: metadata-less PRs and an AI co-author found during the v2.0 restructure; brownfield safety; Founder L4 approval 2026-06-21.) | Operating practices are part of the product: an ungoverned workflow and AI-tainted history undermine an AI-governance platform, and unsafe brownfield conversion breaks working systems. |
 | v1.3 | 2026-06-22 | **Added Part 19 — Architectural Discipline (S1.103–S1.107):** S1.103 logic lives in its layer (no business logic in UI/transport/data-access); S1.104 data access through repositories (no raw DB/ORM calls outside a repository); S1.105 no hardcoded configuration or magic values; S1.106 DRY — shared code is shared; S1.107 the simplest correct solution ("build smart, not hard"). Anti-patterns AP-S1.103a–AP-S1.107a added. Count 102→107. (C0 §8 amendment per ADR-005 workstream A; layer/context detection reserved for the semantic tier; Founder L4 approval 2026-06-22.) | The existing corpus encoded process and sector specifics but not the universal architectural discipline every system needs; these make separation of concerns, data-access boundaries, configuration hygiene, reuse, and simplicity first-class law. |
 
+| v1.4 | 2026-07-30 | **Amended S1.19 — Conventional Commit Format:** added the `govern` and `decision` types for constitutional amendments and ADRs, with usage guidance and examples; corrected `Enforced By`, which named Commitlint and a CI format check that do not exist, to name the structural probe that actually enforces it. `harden` was considered and **refused** — security work is a `fix` when it closes a vulnerability and `chore`/`refactor` otherwise. Count unchanged at 107. (C0 §8 amendment; evidence: four commits over four months reached for `govern`/`decision`, which no existing type covers — the probe reported 90% conformance; Founder L4 approval 2026-07-30.) | Ratifying a standard and recording an architectural decision are legitimate acts that change no code, so no code-shaped type fits them. A standard that leaves a recurring, lawful act unnamed will be violated by the people acting in good faith. |
+
 ---
 
-> **LOCKED — v1.3 — 2026-06-22** (amended; originally locked v1.0 2026-05-08)
+> **LOCKED — v1.4 — 2026-07-30** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.

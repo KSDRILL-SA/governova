@@ -134,15 +134,25 @@ _FROZEN_TOOLS = (
     r"cargo\s+build[^\n]*--locked|go\s+mod\s+download"
 )
 
-# Exactly the types S1.19 lists — no more.
+# Exactly the eleven types S1.19 lists — no more.
 #
-# This previously also accepted `build`, `revert`, `govern`, and `decision`,
-# which the standard does not. A probe that grades against a rubric wider than
-# the standard it cites reports compliance that was never achieved; it is the
-# same defect as an audit check that scores any file as evidence. The types the
-# repository actually needs are a question for the standard, not for the probe.
+# The probe once accepted `build`, `revert`, `govern`, and `decision`, none of
+# which the standard granted. A probe grading against a rubric wider than the
+# standard it cites reports compliance that was never achieved — the same defect
+# as an audit check scoring any file as evidence. It was narrowed to the nine
+# types the standard then listed, which reported this repository at 90%.
+#
+# `govern` and `decision` are now lawful: added to S1.19 by C0 §8 amendment on
+# 2026-07-30 (C1 v1.4). `harden` was considered in that amendment and **refused**
+# — security work is a `fix` when it closes a vulnerability and `chore`/
+# `refactor` otherwise — so it stays out of this list, and the `harden:` commit
+# in this repository's history remains a violation of record.
+#
+# The rule this list exists under: change the standard first, then the probe.
+# Never the reverse.
 _CONVENTIONAL = re.compile(
-    r"^(?:feat|fix|chore|docs|refactor|test|style|perf|ci)(?:\([^)]+\))?!?:\s+\S"
+    r"^(?:feat|fix|chore|docs|refactor|test|style|perf|ci|govern|decision)"
+    r"(?:\([^)]+\))?!?:\s+\S"
 )
 
 

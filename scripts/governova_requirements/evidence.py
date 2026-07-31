@@ -16,7 +16,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from governova_requirements.lint import lint
-from governova_requirements.model import Tier
+from governova_requirements.model import RequirementSet, Tier
 from governova_requirements.sources import collect
 from governova_requirements.trace import trace
 
@@ -41,10 +41,22 @@ TRACE_BOUND: dict[str, str] = {
     "S11.4": "requirement-without-test",
 }
 
+# §5 traceability closure — the questions that need history rather than a snapshot.
+CLOSURE_BOUND: dict[str, str] = {
+    "S11.13": "orphan-citation",
+    "S11.14": "stale-verification",
+}
+
+# S11.15 is bound separately: `untraced-change` is advisory by construction, so the
+# verdict is a *rate* rather than a presence. A refactor, a dependency bump, and a lint
+# fix all legitimately serve no requirement, and a check that failed on them would be
+# gamed within a week by citing a requirement number in every commit.
+UNTRACED_STANDARD = "S11.15"
+
 REACHABILITY_STANDARD = "S11.1"
 
 MECHANICAL_STANDARDS: frozenset[str] = frozenset(
-    {REACHABILITY_STANDARD, *TRACE_BOUND, *LINT_BOUND}
+    {REACHABILITY_STANDARD, UNTRACED_STANDARD, *TRACE_BOUND, *LINT_BOUND, *CLOSURE_BOUND}
 )
 """The eleven C11 standards with a mechanical enforcement path that exists today."""
 
@@ -93,6 +105,8 @@ def _verdicts(root: Path) -> list[tuple[str, str, str]]:
         else:
             results.append((sid, "satisfied", f"no {code} finding across {report.requirements} requirement(s)"))
 
+    results.extend(_closure_verdicts(root, found))
+
     lintable = [r for r in found.requirements.values() if r.has_text]
     if not lintable:
         reason = f"tier {int(tier)} — no requirement text is reachable, so grammar is unknown"
@@ -107,6 +121,53 @@ def _verdicts(root: Path) -> list[tuple[str, str, str]]:
             results.append((sid, "violated", f"{count} × {code}"))
         else:
             results.append((sid, "satisfied", f"no {code} finding across {len(lintable)} requirement(s)"))
+    return results
+
+
+def _closure_verdicts(root: Path, found: RequirementSet) -> list[tuple[str, str, str]]:
+    """Verdicts for §5, which need history rather than the current state."""
+    from governova_requirements.closure import close
+
+    report = close(root, found)
+    if not report.assessed:
+        reason = "no git history available — closure is unassessed, not violated"
+        return [
+            (sid, "unknown", reason)
+            for sid in sorted({UNTRACED_STANDARD, *CLOSURE_BOUND})
+        ]
+
+    results: list[tuple[str, str, str]] = []
+    by_code = {
+        "orphan-citation": report.orphan_citations,
+        "stale-verification": report.stale_verifications,
+    }
+    for sid, code in sorted(CLOSURE_BOUND.items()):
+        hits = by_code[code]
+        if hits:
+            results.append((sid, "violated", f"{len(hits)} × {code}"))
+        else:
+            results.append((sid, "satisfied", f"no {code} across {report.source_commits} commit(s)"))
+
+    rate = report.citation_rate
+    if rate is None:
+        results.append((UNTRACED_STANDARD, "unknown", "no source-touching commits to inspect"))
+    elif not report.untraced_changes:
+        results.append(
+            (UNTRACED_STANDARD, "satisfied", f"every source commit cites a requirement ({rate}%)")
+        )
+    else:
+        # Deliberately `unknown`, never `violated`. Whether an untraced change *should*
+        # have cited a requirement is a judgement this check cannot make — it makes the
+        # portion visible, which is what the standard actually requires.
+        results.append(
+            (
+                UNTRACED_STANDARD,
+                "unknown",
+                f"{report.cited_commits}/{report.source_commits} source commits cite a "
+                f"requirement ({rate}%) — the untraced portion is visible and needs a "
+                f"human verdict",
+            )
+        )
     return results
 
 

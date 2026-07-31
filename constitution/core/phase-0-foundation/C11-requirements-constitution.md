@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C11 — Requirements Engineering                                     |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.0                                                               |
+| **Version**        | v1.1                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-07-31                                                         |
 | **Next Review**    | 2026-10-31                                                         |
@@ -44,7 +44,7 @@ failing something it never had the chance to demonstrate. A team citing requirem
 identifiers in tests and commit trailers gets traceability at no cost. A team exporting a
 manifest from its own tracker gets the whole constitution.
 
-**This constitution is unusual in the corpus: eleven of its twelve standards are
+**This constitution is unusual in the corpus: fourteen of its fifteen standards are
 mechanically checked at merge.** That is not a coincidence — it is ADR-007 constraint 1
 applied without exception. Requirements engineering has been treated as a discipline of
 judgement for forty years, and most of it is. But a measurable part of it is a *grammar*,
@@ -60,8 +60,9 @@ and a grammar is decidable. The judgement was never the part that was failing.
 | §2 | Requirements Are Well Formed | S11.5–S11.8 |
 | §3 | Requirements Are Verifiable | S11.9–S11.11 |
 | §4 | Requirements Are Managed | S11.12 |
-| §5 | Anti-Patterns Index | — |
-| §6 | Amendment Log | — |
+| §5 | Traceability Closure | S11.13–S11.15 |
+| §6 | Anti-Patterns Index | — |
+| §7 | Amendment Log | — |
 
 ---
 
@@ -450,7 +451,112 @@ a repository it never examined.
 
 ---
 
-## §5 — Anti-Patterns Index
+## §5 — Traceability Closure
+
+`§1` establishes that a requirement reaches code and a test. This part closes the loop in
+the other direction and across time — the questions that need history rather than a
+snapshot, and the ones the discipline has discussed for forty years without mechanising,
+because answering them requires a system that simultaneously knows about requirements,
+code, tests, and their history.
+
+---
+
+### S11.13 — Every Requirement Citation Resolves
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S11.13 |
+| **Priority**    | High |
+| **Applies To**  | All Stacks · systems exposing a declared requirement set |
+| **Phase**       | Phase 0 — Foundation |
+| **Depends On**  | `S11.2` · `S11.4` |
+| **Enforced By** | `governova trace` — `orphan-citation` |
+
+**Standard:**
+Every requirement identifier cited by code, a test, or a commit names a requirement that
+the declared requirement set contains.
+
+**Rationale:**
+A citation that resolves to nothing is worse than an absent one, because it looks
+discharged. The test passes, the link renders, and a reviewer following it finds a
+commitment nobody holds any more — a requirement that was withdrawn, renumbered, or
+absorbed into another. Nothing fails, so nothing prompts anyone to look.
+
+**Anti-Patterns:**
+- `AP-S11.13a` — A test or module citing a requirement identifier the declared set no longer contains, so the link appears intact while verifying a commitment that no longer exists.
+
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering (traceability)
+
+---
+
+### S11.14 — A Requirement That Changes Is Re-Verified
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S11.14 |
+| **Priority**    | High |
+| **Applies To**  | All Stacks · systems exposing a declared requirement set |
+| **Phase**       | Phase 0 — Foundation |
+| **Depends On**  | `S11.4` · `S11.12` |
+| **Enforced By** | `governova trace` — `stale-verification` |
+
+**Standard:**
+When a requirement's statement changes, the tests verifying it are revisited. A test that
+predates the statement it cites does not count as verification of it.
+
+**Rationale:**
+This is worse than a missing test, because it **reports confidence**. The suite is green,
+the citation resolves, coverage is unchanged — and the assertion is against wording that
+has since been rewritten. Every signal a team uses to decide the requirement is met keeps
+saying so, while the thing being met is no longer the thing that was asked for.
+
+**Anti-Patterns:**
+- `AP-S11.14a` — A requirement's statement rewritten with its tests left untouched, so a green suite reports verification of text that no test has ever read.
+
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering (requirements management)
+
+---
+
+### S11.15 — Work Traces to a Requirement, or Is Visibly Untraced
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S11.15 |
+| **Priority**    | Standard |
+| **Applies To**  | All Stacks · all systems |
+| **Phase**       | Phase 0 — Foundation |
+| **Depends On**  | `S11.1` |
+| **Enforced By** | `governova trace` — `untraced-change` · **advisory**, see rationale |
+
+**Standard:**
+A change that alters system behaviour cites the requirement it serves. Changes that
+legitimately serve none — a refactor, a dependency bump, a lint fix — remain visible as
+untraced rather than being counted as traced.
+
+**Rationale:**
+Scope creep is invisible precisely because **nothing about it fails**. The code is
+written, the tests pass, review approves it, and no artifact anywhere records that it
+served no stated purpose. It is discovered at the end of a schedule, as the accumulated
+difference between what was planned and what exists.
+
+The check is deliberately **advisory and never blocking**, and the standard says so
+rather than pretending otherwise: plenty of necessary work serves no requirement, and a
+gate that failed on it would be gamed within a week by citing a requirement number in
+every commit. What the standard requires is that the untraced portion be **measurable**,
+so a team can look at it deliberately instead of discovering it by arithmetic at the end
+of a quarter.
+
+**Anti-Patterns:**
+- `AP-S11.15a` — Behaviour-changing work merged with no cited requirement and no record that it had none, so the gap between what was planned and what was built is discoverable only by inventory.
+
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering (requirements management)
+
+---
+
+## §6 — Anti-Patterns Index
 
 | ID | Anti-Pattern | Violated Standard | Priority |
 |----|-------------|-------------------|----------|
@@ -466,18 +572,23 @@ a repository it never examined.
 | AP-S11.10a | A measurable property with no threshold | S11.10 | High |
 | AP-S11.11a | Declared obligation contradicting the statement | S11.11 | Standard |
 | AP-S11.12a | A requirement edited in place with no record of the change | S11.12 | Standard |
+| AP-S11.13a | A citation naming a requirement the declared set no longer contains | S11.13 | High |
+| AP-S11.14a | A requirement rewritten with its tests left untouched | S11.14 | High |
+| AP-S11.15a | Behaviour-changing work merged with no cited requirement and no record that it had none | S11.15 | Standard |
 
 ---
 
-## §6 — Amendment Log
+## §7 — Amendment Log
 
 | Version | Date | Change | Reason |
 |---------|------|--------|--------|
 | v1.0 | 2026-07-31 | Initial lock — twelve standards establishing requirements engineering as constitutional law (ADR-007 Stage 1). §1 reachability and traceability (S11.1–S11.4), §2 grammar (S11.5–S11.8), §3 verifiability (S11.9–S11.11), §4 management (S11.12). Eleven of twelve are mechanically checked at merge by `governova_requirements`, which shipped **before** this document so that no standard here declares an enforcement path that does not exist. S11.12 is review-only and says why in its own rationale. Core count 618→630. | Governova governed construction and could not say whether the right system was being built — the one defect class that survives every other gate in the corpus, because the code matches the request, the tests assert the request, and nothing is broken. |
 
+| v1.1 | 2026-07-31 | **Added §5 — Traceability Closure (S11.13–S11.15)** (ADR-007 Stage 5). S11.13 every citation resolves to a declared requirement; S11.14 a requirement whose statement changes is re-verified; S11.15 work traces to a requirement or is visibly untraced. Anti-patterns AP-S11.13a–AP-S11.15a added. All three are mechanically checked by `governova trace`, which shipped in the same change. Count 12→15; core total 644→647. | `§1` established that a requirement reaches code and a test. These close the loop in the other direction and across time — a citation resolving to nothing looks discharged, a test predating the statement it cites reports confidence it has not earned, and scope creep is invisible because nothing about it fails. All three need a system that simultaneously knows about requirements, code, tests, and history, which is why they were only possible after Stage 1. |
+
 ---
 
-> **LOCKED — v1.0 — 2026-07-31**
+> **LOCKED — v1.1 — 2026-07-31** (amended; originally locked v1.0 2026-07-31)
 >
 > This document is locked. No standard may be added, removed, or modified without
 > following the Amendment Protocol in C0 §8.

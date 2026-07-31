@@ -336,6 +336,164 @@ def test_declared_requirement_with_no_implementation_is_reported(tmp_path):
     assert any(f.code == "requirement-without-implementation" for f in report.findings)
 
 
+# ─── Stage 5 — traceability closure ──────────────────────────────────────────
+
+
+def _git(path, *args):
+    import subprocess
+
+    subprocess.run(["git", *args], cwd=path, check=True, capture_output=True, text=True)
+
+
+def _repo(tmp_path):
+    _git(tmp_path, "init", "-q")
+    _git(tmp_path, "config", "user.email", "t@example.com")
+    _git(tmp_path, "config", "user.name", "T")
+    return tmp_path
+
+
+def test_an_orphan_citation_is_reported():
+    from governova_requirements import orphan_citations
+
+    # A test cites REQ-404; the declared set does not contain it. The link looks
+    # intact and verifies a commitment nobody holds.
+    found = RequirementSet(
+        tier=Tier.EXPORTED,
+        requirements={"REQ-001": Requirement(id="REQ-001", statement="x", origin="manifest")},
+        citations=[Citation("REQ-404", "tests/test_x.py", "test", 3)],
+    )
+    findings = orphan_citations(found)
+    assert [f.code for f in findings] == ["orphan-citation"]
+    assert findings[0].requirement_id == "REQ-404"
+
+
+def test_a_resolving_citation_is_not_an_orphan():
+    from governova_requirements import orphan_citations
+
+    found = RequirementSet(
+        tier=Tier.EXPORTED,
+        requirements={"REQ-001": Requirement(id="REQ-001", statement="x", origin="manifest")},
+        citations=[Citation("REQ-001", "tests/test_x.py", "test", 3)],
+    )
+    assert orphan_citations(found) == []
+
+
+def test_orphan_citations_are_unassessable_at_tier_one():
+    # At tier 1 the requirement set *is* the set of citations, so every citation
+    # resolves by construction. Reporting a hollow zero would look like the check ran.
+    from governova_requirements import orphan_citations
+
+    found = RequirementSet(
+        tier=Tier.REFERENCED,
+        requirements={"REQ-1": Requirement(id="REQ-1", origin="referenced")},
+        citations=[Citation("REQ-1", "app.py", "source", 1)],
+    )
+    assert orphan_citations(found) == []
+
+
+def test_untraced_changes_are_counted_and_capped(tmp_path):
+    from governova_requirements import untraced_changes
+
+    root = _repo(tmp_path)
+    (root / "app.py").write_text("x = 1\n", encoding="utf-8")
+    _git(root, "add", "-A")
+    _git(root, "commit", "-q", "-m", "feat: add app")
+
+    (root / "app.py").write_text("x = 2\n", encoding="utf-8")
+    _git(root, "add", "-A")
+    _git(root, "commit", "-q", "-m", "feat: serve REQ-001")
+
+    findings, total, cited = untraced_changes(root)
+    assert total == 2 and cited == 1
+    assert [f.code for f in findings] == ["untraced-change"]
+
+
+def test_a_commit_touching_no_source_is_not_an_untraced_change(tmp_path):
+    # The negative half. A docs-only or config-only commit is not scope creep, and
+    # counting it would make the rate meaningless on any real repository.
+    from governova_requirements import untraced_changes
+
+    root = _repo(tmp_path)
+    (root / "README.md").write_text("hello\n", encoding="utf-8")
+    _git(root, "add", "-A")
+    _git(root, "commit", "-q", "-m", "docs: readme")
+    findings, total, cited = untraced_changes(root)
+    assert (findings, total, cited) == ([], 0, 0)
+
+
+def test_closure_is_unassessed_without_git(tmp_path):
+    from governova_requirements import close
+
+    report = close(tmp_path, RequirementSet(tier=Tier.EXPORTED))
+    assert not report.assessed
+    assert report.findings == []
+    assert report.citation_rate is None
+
+
+def test_a_statement_rewrite_makes_its_verification_stale(tmp_path):
+    """The finding that reports confidence it has not earned."""
+    import time
+
+    from governova_requirements import ReaderConfig, collect, stale_verifications
+
+    root = _repo(tmp_path)
+    tests = root / "tests"
+    tests.mkdir()
+    (tests / "test_thing.py").write_text("# REQ-001\ndef test_thing():\n    pass\n", encoding="utf-8")
+    (root / "requirements.governova.json").write_text(
+        _manifest({"id": "REQ-001", "statement": "The system shall do the first thing."}),
+        encoding="utf-8",
+    )
+    _git(root, "add", "-A")
+    _git(root, "commit", "-q", "-m", "initial")
+
+    time.sleep(1.1)  # git timestamps are whole seconds
+    (root / "requirements.governova.json").write_text(
+        _manifest({"id": "REQ-001", "statement": "The system shall do something else entirely."}),
+        encoding="utf-8",
+    )
+    _git(root, "add", "-A")
+    _git(root, "commit", "-q", "-m", "rewrite the requirement")
+
+    found = collect(root, ReaderConfig())
+    findings = stale_verifications(root, found)
+    assert [f.code for f in findings] == ["stale-verification"]
+    assert findings[0].requirement_id == "REQ-001"
+
+
+def test_an_unchanged_requirement_is_not_stale(tmp_path):
+    # The negative half, and the one that decides whether this check is usable: editing
+    # the manifest to add REQ-002 must not age REQ-001's test.
+    import time
+
+    from governova_requirements import ReaderConfig, collect, stale_verifications
+
+    root = _repo(tmp_path)
+    tests = root / "tests"
+    tests.mkdir()
+    (tests / "test_thing.py").write_text("# REQ-001\ndef test_thing():\n    pass\n", encoding="utf-8")
+    (root / "requirements.governova.json").write_text(
+        _manifest({"id": "REQ-001", "statement": "The system shall do the first thing."}),
+        encoding="utf-8",
+    )
+    _git(root, "add", "-A")
+    _git(root, "commit", "-q", "-m", "initial")
+
+    time.sleep(1.1)
+    (root / "requirements.governova.json").write_text(
+        _manifest(
+            {"id": "REQ-001", "statement": "The system shall do the first thing."},
+            {"id": "REQ-002", "statement": "The system shall do a second thing."},
+        ),
+        encoding="utf-8",
+    )
+    _git(root, "add", "-A")
+    _git(root, "commit", "-q", "-m", "add a second requirement")
+
+    found = collect(root, ReaderConfig())
+    assert stale_verifications(root, found) == []
+
+
 def test_untraced_check_is_silent_at_tier_one():
     # At tier 1 the requirement set *is* the set of citations, so every requirement is
     # cited by construction. Asking the question there would answer itself.

@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-07-31T04:42:34.471737Z",
-  "source_commit_sha": "9076883",
-  "checksum": "sha256:7e9b63fbc5487f44e321a512a9f37aa60d027e8041f5d2b959064a6aa2e2f211",
+  "compiled_at": "2026-07-31T05:26:40.547694Z",
+  "source_commit_sha": "cddb82d",
+  "checksum": "sha256:5922c0bfa847a49847896d3cf2a2116ae5f5476b2b3386e3812d54f63f8d694e",
   "framework": [
     {
       "id": "format-specification",
@@ -20334,7 +20334,7 @@
       "header": {
         "document": "C11 — Requirements Engineering",
         "organisation": "KSDRILL SA",
-        "version": "v1.0",
+        "version": "v1.1",
         "status": "LOCKED",
         "locked_date": "2026-07-31",
         "next_review": "2026-10-31",
@@ -20382,7 +20382,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 75
+          "source_line": 76
         },
         {
           "id": "S11.2",
@@ -20416,7 +20416,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 107
+          "source_line": 108
         },
         {
           "id": "S11.3",
@@ -20450,7 +20450,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 137
+          "source_line": 138
         },
         {
           "id": "S11.4",
@@ -20488,7 +20488,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 166
+          "source_line": 167
         },
         {
           "id": "S11.5",
@@ -20522,7 +20522,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 203
+          "source_line": 204
         },
         {
           "id": "S11.6",
@@ -20556,7 +20556,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 232
+          "source_line": 233
         },
         {
           "id": "S11.7",
@@ -20594,7 +20594,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 260
+          "source_line": 261
         },
         {
           "id": "S11.8",
@@ -20628,7 +20628,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 289
+          "source_line": 290
         },
         {
           "id": "S11.9",
@@ -20662,7 +20662,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 324
+          "source_line": 325
         },
         {
           "id": "S11.10",
@@ -20696,7 +20696,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 355
+          "source_line": 356
         },
         {
           "id": "S11.11",
@@ -20730,7 +20730,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 385
+          "source_line": 386
         },
         {
           "id": "S11.12",
@@ -20764,7 +20764,119 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-          "source_line": 418
+          "source_line": 419
+        },
+        {
+          "id": "S11.13",
+          "title": "Every Requirement Citation Resolves",
+          "constitution_id": "C11",
+          "priority": "High",
+          "applies_to": "All Stacks · systems exposing a declared requirement set",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.2",
+              "description": null
+            },
+            {
+              "standard_id": "S11.4",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "`governova trace` — `orphan-citation`"
+          ],
+          "statement": "Every requirement identifier cited by code, a test, or a commit names a requirement that\nthe declared requirement set contains.",
+          "rationale": "A citation that resolves to nothing is worse than an absent one, because it looks\ndischarged. The test passes, the link renders, and a reviewer following it finds a\ncommitment nobody holds any more — a requirement that was withdrawn, renumbered, or\nabsorbed into another. Nothing fails, so nothing prompts anyone to look.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.13a",
+              "description": "A test or module citing a requirement identifier the declared set no longer contains, so the link appears intact while verifying a commitment that no longer exists.",
+              "parent_standard_id": "S11.13"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering (traceability)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 464
+        },
+        {
+          "id": "S11.14",
+          "title": "A Requirement That Changes Is Re-Verified",
+          "constitution_id": "C11",
+          "priority": "High",
+          "applies_to": "All Stacks · systems exposing a declared requirement set",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.4",
+              "description": null
+            },
+            {
+              "standard_id": "S11.12",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "`governova trace` — `stale-verification`"
+          ],
+          "statement": "When a requirement's statement changes, the tests verifying it are revisited. A test that\npredates the statement it cites does not count as verification of it.",
+          "rationale": "This is worse than a missing test, because it **reports confidence**. The suite is green,\nthe citation resolves, coverage is unchanged — and the assertion is against wording that\nhas since been rewritten. Every signal a team uses to decide the requirement is met keeps\nsaying so, while the thing being met is no longer the thing that was asked for.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.14a",
+              "description": "A requirement's statement rewritten with its tests left untouched, so a green suite reports verification of text that no test has ever read.",
+              "parent_standard_id": "S11.14"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering (requirements management)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 493
+        },
+        {
+          "id": "S11.15",
+          "title": "Work Traces to a Requirement, or Is Visibly Untraced",
+          "constitution_id": "C11",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.1",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "`governova trace` — `untraced-change`",
+            "**advisory**",
+            "see rationale"
+          ],
+          "statement": "A change that alters system behaviour cites the requirement it serves. Changes that\nlegitimately serve none — a refactor, a dependency bump, a lint fix — remain visible as\nuntraced rather than being counted as traced.",
+          "rationale": "Scope creep is invisible precisely because **nothing about it fails**. The code is\nwritten, the tests pass, review approves it, and no artifact anywhere records that it\nserved no stated purpose. It is discovered at the end of a schedule, as the accumulated\ndifference between what was planned and what exists.\n\nThe check is deliberately **advisory and never blocking**, and the standard says so\nrather than pretending otherwise: plenty of necessary work serves no requirement, and a\ngate that failed on it would be gamed within a week by citing a requirement number in\nevery commit. What the standard requires is that the untraced portion be **measurable**,\nso a team can look at it deliberately instead of discovering it by arithmetic at the end\nof a quarter.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.15a",
+              "description": "Behaviour-changing work merged with no cited requirement and no record that it had none, so the gap between what was planned and what was built is discoverable only by inventory.",
+              "parent_standard_id": "S11.15"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering (requirements management)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 522
         }
       ]
     },
@@ -23299,8 +23411,8 @@
     ]
   },
   "integrity": {
-    "standards_extracted": 644,
-    "anti_patterns_extracted": 472,
+    "standards_extracted": 647,
+    "anti_patterns_extracted": 475,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

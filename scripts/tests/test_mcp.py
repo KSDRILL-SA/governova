@@ -7,7 +7,7 @@ from governova_mcp import core
 
 def test_list_constitutions():
     cons = core.list_constitutions()
-    assert len(cons) == 13
+    assert len(cons) == 14
     assert all("standards" in c for c in cons)
 
 
@@ -47,4 +47,4 @@ def test_check_text_clean_code_has_no_findings():
 def test_constitution_health():
     h = core.constitution_health()
     assert 0 <= h["score"] <= 100
-    assert h["standards"] == 647
+    assert h["standards"] == 658

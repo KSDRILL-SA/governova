@@ -130,6 +130,67 @@ def test_batch3_advisory_rules_fire():
         assert match is not None and match.confidence == "medium", ap
 
 
+def test_c13_debt_marker_rule_needs_a_tracked_reference():
+    findings = scan_text("# TODO: come back to this\nx = 1\n", file="src/app.py")
+    assert any(f.anti_pattern == "AP-S13.1a" for f in findings)
+
+
+def test_c13_debt_marker_with_a_reference_is_recorded_debt():
+    # The negative half, and the whole point of the rule: a marker that names its
+    # tracked item *is* the recorded decision S13.1 asks for.
+    for recorded in (
+        "# TODO(#412): drop the shim once the migration lands",
+        "// FIXME PROJ-1187 — waiting on upstream",
+        "# HACK: see https://github.com/example/repo/issues/9",
+    ):
+        assert not any(
+            f.anti_pattern == "AP-S13.1a"
+            for f in scan_text(recorded + "\nx = 1\n", file="src/app.py")
+        ), recorded
+
+
+def test_c13_commented_out_code_is_flagged_but_prose_is_not():
+    flagged = scan_text("# return compute(x);\nvalue = 2\n", file="src/app.py")
+    assert any(f.anti_pattern == "AP-S13.3a" for f in flagged)
+    # Ordinary commentary frequently contains these words and must never fire —
+    # a rule that flags explanation is a rule teams delete.
+    for prose in (
+        "# return early when the cache is warm",
+        "# import order matters here for the plugin registry",
+        "# if the endpoint is unreachable we degrade to no findings",
+    ):
+        assert not any(
+            f.anti_pattern == "AP-S13.3a" for f in scan_text(prose + "\n", file="src/app.py")
+        ), prose
+
+
+def test_c13_deprecation_needs_a_stated_removal():
+    assert any(
+        f.anti_pattern == "AP-S13.7a"
+        for f in scan_text("@deprecated\ndef old_api():\n    pass\n", file="src/app.py")
+    )
+
+
+def test_c13_deprecation_with_a_removal_is_a_plan():
+    for planned in (
+        "@deprecated — removed in v3.0",
+        "@deprecated: sunset 2027-01-01",
+        'warnings.warn("gone in 2.5", DeprecationWarning)',
+    ):
+        assert not any(
+            f.anti_pattern == "AP-S13.7a" for f in scan_text(planned + "\n", file="src/app.py")
+        ), planned
+
+
+def test_c13_rules_do_not_fire_in_test_fixtures():
+    # A fixture legitimately holds a bare TODO or a commented line. Firing there
+    # would make all three rules noise on their first run against a real repository.
+    noisy = "# TODO: no reference here\n# return compute(x);\n@deprecated\n"
+    assert not any(
+        f.anti_pattern.startswith("AP-S13.") for f in scan_text(noisy, file="tests/test_x.py")
+    )
+
+
 def test_every_rule_binds_a_real_anti_pattern():
     # Verifies REQ-006 — no rule may bind an anti-pattern outside the corpus.
     # The governance guarantee: no rule may reference an anti-pattern that does
@@ -153,7 +214,7 @@ def test_rule_coverage_floor():
     story when detection grew past line-scanning.
     """
     cov = enforcement_coverage()
-    assert len(RULES) >= 37
+    assert len(RULES) >= 40
     assert cov["mechanical_coverage_pct"] >= 7.0
     # The analyser tier must actually be contributing, or the metric above is a rename.
     assert cov["analyser_enforceable_anti_patterns"] >= 20
@@ -177,7 +238,7 @@ def test_domain_coverage_is_reported_separately_from_core():
     """Layer 4 must never inflate the headline coverage metric."""
     cov = enforcement_coverage()
     # 446 core anti-patterns, plus C11's twelve ratified under ADR-007 Stage 1.
-    assert cov["total_anti_patterns"] == 475, "core denominator changed unexpectedly"
+    assert cov["total_anti_patterns"] == 486, "core denominator changed unexpectedly"
     assert cov["domain_total_anti_patterns"] > 0
     assert all(ap.startswith("AP-D-") for ap in cov["domain_covered"])
     assert not any(ap.startswith("AP-D-") for ap in cov["covered"])

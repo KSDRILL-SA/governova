@@ -25,11 +25,13 @@ import typer
 from governova_checks import DEFAULT_IGNORES, Finding, changed_files, is_ignored, scan_paths
 from governova_compile.discovery import resolve_target_root
 from governova_compile.writer import load_active_index
+from governova_console import configure_stdout
 from governova_semantic import Outcome, ReviewResult
 from governova_semantic import from_env as semantic_from_env
 from governova_semantic import review_result as semantic_review_result
 from rich.console import Console
 
+configure_stdout()
 console = Console()
 err_console = Console(stderr=True)
 

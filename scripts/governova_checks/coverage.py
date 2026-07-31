@@ -65,11 +65,13 @@ def analyser_anti_patterns() -> set[str]:
     gets, and for the same reason. Silently widening a metric makes every historical
     reading of it a lie.
     """
-    try:
-        from governova_requirements.evidence import ENFORCED_ANTI_PATTERNS
-    except ImportError:  # pragma: no cover - the analyser ships in the same wheel
-        return set()
-    return set(ENFORCED_ANTI_PATTERNS)
+    bound: set[str] = set()
+    for module in ("governova_requirements.evidence", "governova_schema.evidence"):
+        try:
+            bound |= set(__import__(module, fromlist=["ENFORCED_ANTI_PATTERNS"]).ENFORCED_ANTI_PATTERNS)
+        except ImportError:  # pragma: no cover - the analysers ship in the same wheel
+            continue
+    return bound
 
 
 def enforcement_coverage(index: CompiledIndex | None = None) -> dict[str, Any]:

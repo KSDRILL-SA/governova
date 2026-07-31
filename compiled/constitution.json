@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-07-31T01:58:12.229262Z",
-  "source_commit_sha": "5fcecf3",
-  "checksum": "sha256:b18b439831d5626fa27f8f9f4d75cff95eec81f9ab57cb773847176b04dae937",
+  "compiled_at": "2026-07-31T04:42:34.471737Z",
+  "source_commit_sha": "9076883",
+  "checksum": "sha256:7e9b63fbc5487f44e321a512a9f37aa60d027e8041f5d2b959064a6aa2e2f211",
   "framework": [
     {
       "id": "format-specification",
@@ -53,7 +53,7 @@
       "header": {
         "document": "C0 — Constitutional Order",
         "organisation": "KSDRILL SA",
-        "version": "v1.2",
+        "version": "v1.3",
         "status": "LOCKED",
         "locked_date": "2026-05-08",
         "next_review": "2026-08-08",
@@ -84,7 +84,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-      "hierarchy_rank": 8,
+      "hierarchy_rank": 9,
       "binds_implementation": false,
       "standards": [
         {
@@ -8887,7 +8887,7 @@
         "paired_with": "C4 — Frontend Implementation Guide"
       },
       "path": "constitution/core/phase-1-core-architecture/C04-frontend-constitution.md",
-      "hierarchy_rank": 5,
+      "hierarchy_rank": 6,
       "binds_implementation": true,
       "standards": [
         {
@@ -11605,7 +11605,7 @@
         "paired_with": "C5 — Database Implementation Guide"
       },
       "path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-      "hierarchy_rank": 4,
+      "hierarchy_rank": 5,
       "binds_implementation": true,
       "standards": [
         {
@@ -13627,7 +13627,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-      "hierarchy_rank": 6,
+      "hierarchy_rank": 7,
       "binds_implementation": false,
       "standards": [
         {
@@ -14909,7 +14909,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-      "hierarchy_rank": 9,
+      "hierarchy_rank": 10,
       "binds_implementation": false,
       "standards": [
         {
@@ -16313,7 +16313,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-      "hierarchy_rank": 10,
+      "hierarchy_rank": 11,
       "binds_implementation": false,
       "standards": [
         {
@@ -18284,7 +18284,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-      "hierarchy_rank": 11,
+      "hierarchy_rank": 12,
       "binds_implementation": false,
       "standards": [
         {
@@ -19136,7 +19136,7 @@
         "paired_with": "`AI-INSTRUCTIONS.md` · `workflow/ksdrill-sa-ai-workflow.md`"
       },
       "path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-      "hierarchy_rank": 12,
+      "hierarchy_rank": 13,
       "binds_implementation": false,
       "standards": [
         {
@@ -20342,7 +20342,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-      "hierarchy_rank": 7,
+      "hierarchy_rank": 8,
       "binds_implementation": false,
       "standards": [
         {
@@ -20765,6 +20765,541 @@
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
           "source_line": 418
+        }
+      ]
+    },
+    {
+      "id": "C14",
+      "number": 14,
+      "name": "Data Design",
+      "phase": "1",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
+      "header": {
+        "document": "C14 — Data Design",
+        "organisation": "KSDRILL SA",
+        "version": "v1.0",
+        "status": "LOCKED",
+        "locked_date": "2026-07-31",
+        "next_review": "2026-10-31",
+        "applies_to": "All Systems · Both Stacks · Solo Dev · Team · any system with persistent data",
+        "paired_with": "C5 — Database Constitution (C5 governs access; C14 governs structure)"
+      },
+      "path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+      "hierarchy_rank": 4,
+      "binds_implementation": false,
+      "standards": [
+        {
+          "id": "S14.1",
+          "title": "Every Entity Is Identifiable",
+          "constitution_id": "C14",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every entity in every store",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S5.10",
+              "description": "required fields on every table"
+            }
+          ],
+          "enforced_by": [
+            "`governova schema` — `no-primary-key`"
+          ],
+          "statement": "Every entity declares a key that identifies exactly one instance of it. A collection whose\nmembers cannot be distinguished from one another is not an entity.",
+          "rationale": "Without identity there is no update — only a filter that might match one row or nine. No\nother entity can reference this one, because a reference needs something to point at.\nDuplicates cannot be prevented, because duplication cannot be defined. Every guarantee\nbelow this one assumes it, which is why it is the first standard in the document.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.1a",
+              "description": "An entity with no declared key, so its rows can be duplicated, cannot be individually updated, and cannot be referenced.",
+              "parent_standard_id": "S14.1"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — The Relational Database Model (entity integrity)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 80
+        },
+        {
+          "id": "S14.2",
+          "title": "No Part of a Key Is Optional",
+          "constitution_id": "C14",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every entity in every store",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.1",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "`governova schema` — `nullable-primary-key`"
+          ],
+          "statement": "No attribute participating in an entity's key is nullable.",
+          "rationale": "A null does not equal another null, so a nullable key attribute makes identity undecidable\nexactly when it matters — two rows with a null in the same position are neither the same\nnor different. Uniqueness silently stops being enforced, and the constraint that appears\nto guarantee identity guarantees nothing.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.2a",
+              "description": "A key whose attributes permit null, so uniqueness stops being enforced for precisely the rows where identity is least certain.",
+              "parent_standard_id": "S14.2"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — The Relational Database Model (entity integrity)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 109
+        },
+        {
+          "id": "S14.3",
+          "title": "Keys Are Stable and Carry No Business Meaning",
+          "constitution_id": "C14",
+          "priority": "High",
+          "applies_to": "All Stacks · every entity in every store",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.1",
+              "description": null
+            },
+            {
+              "standard_id": "S5.5",
+              "description": "cross-database references"
+            }
+          ],
+          "enforced_by": [
+            "review — a key's *stability* is a claim about the future",
+            "which no schema states"
+          ],
+          "statement": "An entity's key does not change over the entity's lifetime, and its value encodes no\nbusiness fact that could change independently of identity.",
+          "rationale": "A key that carries meaning inherits that meaning's volatility. An email address, a\nnational identifier, a product code, a registration number — each is unique until an\norganisation restructures, a person marries, or a regulator reissues the format. When the\nvalue changes, every reference to it is either rewritten across the whole system or\nsilently left pointing at something that no longer exists.\n\nThis standard is **review-only and the reason is worth stating rather than hiding**:\nstability is a claim about how a value will behave in future, and a schema declares no\nsuch thing. A check could see that a key is a string; it cannot see that the string is a\nperson's email. Asserting otherwise would be a guess about meaning.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.3a",
+              "description": "A business value used as a key — email, national id, product code — so that a change to the fact rewrites or orphans every reference to the entity.",
+              "parent_standard_id": "S14.3"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — Advanced Data Modeling (primary key guidelines)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 137
+        },
+        {
+          "id": "S14.4",
+          "title": "Every Reference Resolves",
+          "constitution_id": "C14",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every entity in every store",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.1",
+              "description": null
+            },
+            {
+              "standard_id": "S5.13",
+              "description": "foreign key indexes"
+            }
+          ],
+          "enforced_by": [
+            "`governova schema` — `dangling-foreign-key`"
+          ],
+          "statement": "Every attribute that references another entity names an entity that exists in the model.\nWhere the store enforces referential constraints, the reference is declared to it rather\nthan maintained in application code alone.",
+          "rationale": "An unresolvable reference is a constraint nobody is checking. The column accumulates\nvalues pointing at nothing, and the first thing to discover this is a join that silently\nreturns fewer rows than the reader expected — a wrong answer, delivered confidently, with\nno error anywhere.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.4a",
+              "description": "A foreign key naming an entity that does not exist in the model, so the constraint is unenforceable and the column fills with values pointing at nothing.",
+              "parent_standard_id": "S14.4"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — The Relational Database Model (referential integrity)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 178
+        },
+        {
+          "id": "S14.5",
+          "title": "Every Reference Points at a Key",
+          "constitution_id": "C14",
+          "priority": "High",
+          "applies_to": "All Stacks · every entity in every store",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.4",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "`governova schema` — `foreign-key-to-non-key`"
+          ],
+          "statement": "A reference targets an attribute that identifies exactly one instance — a primary key or a\ndeclared unique attribute. It never targets a merely descriptive attribute.",
+          "rationale": "A reference to a non-unique attribute is a reference to *a set*. The join that follows it\nmultiplies rows rather than resolving one, and the result is an aggregate that is too\nlarge by an amount nobody can predict. Because the schema still looks like it has a\nrelationship, this reads as a data problem for months before it is recognised as a design\none.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.5a",
+              "description": "A reference targeting a descriptive attribute rather than a key, so a join resolves to many rows and every aggregate over it is silently inflated.",
+              "parent_standard_id": "S14.5"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — The Relational Database Model (referential integrity)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 208
+        },
+        {
+          "id": "S14.6",
+          "title": "An Attribute Holds One Value",
+          "constitution_id": "C14",
+          "priority": "High",
+          "applies_to": "All Stacks · every entity in every store",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.1",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "`governova schema` — `repeating-group`",
+            "**advisory**",
+            "see rationale"
+          ],
+          "statement": "An attribute holds a single value of its type, not a list, a delimited string, or a\nrepeating group. Where a store offers a list-valued attribute and it is used deliberately,\n`S14.8` applies.",
+          "rationale": "A list inside an attribute cannot be constrained, referenced, indexed for membership, or\ncounted without parsing. Adding a member is a read-modify-write of the whole value, which\nmakes two concurrent additions lose one. The elements are data the database has been told\nto treat as text.\n\nThe check is **advisory rather than blocking**, and that is the point of ADR-007\nconstraint 4: a list-valued attribute is a repeating group under the relational model and\na correct, considered choice in plenty of real schemas. The concern is universal; the\nverdict belongs to the designer who knows whether the trade was made on purpose.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.6a",
+              "description": "Multiple values packed into one attribute — a CSV string, a delimited list — so membership cannot be queried, constrained, or referenced without parsing.",
+              "parent_standard_id": "S14.6"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — Normalization of Database Tables (first normal form)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 242
+        },
+        {
+          "id": "S14.7",
+          "title": "Third Normal Form Is the Default",
+          "constitution_id": "C14",
+          "priority": "High",
+          "applies_to": "All Stacks · every transactional entity",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.6",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "review — **the analyser reports `unknown` here by design; see rationale**"
+          ],
+          "statement": "An entity that records transactional state is normalised to third normal form unless\n`S14.8` records why it is not: every non-key attribute depends on the key, the whole key,\nand nothing but the key.",
+          "rationale": "Un-normalised structure produces update anomalies — the same fact stored in many rows,\ncorrected in some of them. That is not a performance concern; it is a correctness one,\nand it produces data that disagrees with itself while every constraint still passes.\n\n**This standard is deliberately not mechanically enforced, and that is a finding rather\nthan a gap.** Second and third normal form are properties of *functional dependencies*,\nand a schema does not declare them. Deciding that `city` depends on `postcode` means\nreading meaning out of column names, and being wrong about that on a deliberately\ndenormalised reporting table would discredit every other check the analyser makes. So\n`governova schema` returns these questions as `unknown` with the reason attached, rather\nthan answering them. Undemonstrated compliance is uncounted, exactly as an auditor treats\nit.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.7a",
+              "description": "A transactional entity storing the same fact in many rows, so a correction applied to some of them leaves the data disagreeing with itself while every constraint still passes.",
+              "parent_standard_id": "S14.7"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — Normalization of Database Tables"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 277
+        },
+        {
+          "id": "S14.8",
+          "title": "Denormalisation Is Recorded, Never Assumed",
+          "constitution_id": "C14",
+          "priority": "High",
+          "applies_to": "All Stacks · every store, relational or otherwise",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.7",
+              "description": null
+            },
+            {
+              "standard_id": "S1.85",
+              "description": "ADRs document significant decisions"
+            }
+          ],
+          "enforced_by": [
+            "review — no check can distinguish a recorded trade from an unrecorded one; see rationale"
+          ],
+          "statement": "Where a model departs from normalised structure — a duplicated attribute, an embedded\ndocument, a list-valued attribute, a wide denormalised read model — the departure is\nrecorded with what it buys, what it costs, and how the duplicated fact is kept consistent.\nDenormalisation is a decision, not a default.",
+          "rationale": "This is the standard that makes the rest of `§3` usable outside a relational store.\nDenormalisation is frequently correct: it is how document stores model aggregates and how\nread models are made fast. **What is never correct is denormalising by accident**, because\nthen nobody owns the consistency of the duplicated fact and no reader can tell a\nconsidered trade from an oversight.\n\nAn unrecorded departure also defeats review permanently. The next engineer sees\nduplication, cannot tell whether it was deliberate, and either propagates it or removes\nthe thing that was holding a performance requirement together.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.8a",
+              "description": "Duplicated or embedded data with no record of the trade, so a later reader cannot distinguish a deliberate optimisation from an oversight and no one owns keeping the copies consistent.",
+              "parent_standard_id": "S14.8"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — Normalization of Database Tables (denormalisation)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 315
+        },
+        {
+          "id": "S14.9",
+          "title": "A Many-to-Many Relationship Has a Bridge Entity",
+          "constitution_id": "C14",
+          "priority": "High",
+          "applies_to": "All Stacks · every model with many-to-many associations",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.1",
+              "description": null
+            },
+            {
+              "standard_id": "S14.4",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "`governova schema` — `unresolved-many-to-many`",
+            "**advisory**"
+          ],
+          "statement": "A many-to-many association is modelled as an explicit bridge entity with its own key. It\nis not left for a tool to synthesise.",
+          "rationale": "The association itself has attributes, and they arrive later without exception — when the\nmembership started, who granted it, what role it confers, whether it is still active. An\nimplicit join table has nowhere to put them, so adding the first one is a migration\nagainst a table nobody designed, whose name, key, and indexes were chosen by a generator.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.9a",
+              "description": "A many-to-many left implicit, so the association can carry no attributes of its own and the first one required forces a migration against a generated table.",
+              "parent_standard_id": "S14.9"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — Entity-Relationship (ER) Modeling (M:N resolution)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 355
+        },
+        {
+          "id": "S14.10",
+          "title": "Fan Traps Are Resolved or Documented",
+          "constitution_id": "C14",
+          "priority": "Standard",
+          "applies_to": "All Stacks · every model with branching one-to-many relationships",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.4",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "`governova schema` — `fan-trap`",
+            "**advisory**"
+          ],
+          "statement": "Where one entity is the parent of two or more one-to-many relationships, the model records\nthat joining the children through the parent does not produce a valid combined result.",
+          "rationale": "The shape is legitimate and common — a customer with invoices and with payments. The trap\nis that a query joining both through the customer multiplies invoices by payments, and the\ntotal it reports is not wrong-looking, just wrong. Nothing errors. The number is simply\ntoo large, by a factor that varies per customer, and it will be believed.\n\nThe structure is not a defect, so the standard asks for the hazard to be known rather than\nfor the model to change.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.10a",
+              "description": "Two one-to-many children joined through their shared parent, producing a silently inflated aggregate that raises no error and is believed.",
+              "parent_standard_id": "S14.10"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — Advanced Data Modeling (fan traps)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 384
+        },
+        {
+          "id": "S14.11",
+          "title": "One Fact Has One Path",
+          "constitution_id": "C14",
+          "priority": "Standard",
+          "applies_to": "All Stacks · every model",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.4",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "`governova schema` — `redundant-relationship`",
+            "**advisory**"
+          ],
+          "statement": "Where two entities are related both directly and through a third, the shortcut is recorded\nas a deliberate denormalisation under `S14.8` or removed.",
+          "rationale": "Two paths to the same fact can disagree, and nothing in the model prevents it — an order\nlinked to a customer directly *and* through its account will eventually name two different\ncustomers. The shortcut is often a real optimisation, which is why the standard asks for\nthe trade to be recorded rather than for the edge to be deleted. What it forbids is a\nsecond path nobody decided to create.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.11a",
+              "description": "The same fact reachable by two relationship paths with nothing keeping them in agreement, so the model can assert two different answers to one question.",
+              "parent_standard_id": "S14.11"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — Advanced Data Modeling (redundant relationships)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 416
+        },
+        {
+          "id": "S14.12",
+          "title": "History Is Keyed by Time",
+          "constitution_id": "C14",
+          "priority": "High",
+          "applies_to": "All Stacks · every entity recording state over time",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.1",
+              "description": null
+            },
+            {
+              "standard_id": "S5.65",
+              "description": "ledger immutability"
+            }
+          ],
+          "enforced_by": [
+            "`governova schema` — `time-variant-without-temporal-key`",
+            "**advisory**"
+          ],
+          "statement": "An entity that records how something changed over time includes a temporal attribute in\nits key, so that two states of the same subject can coexist.",
+          "rationale": "Time-variant data keyed only by its subject can hold exactly one version of it. The second\nversion either overwrites the first — history silently lost, with the columns that were\nsupposed to record it still present and now meaningless — or violates the key. A price\nhistory that cannot hold two prices is a price.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.12a",
+              "description": "An entity carrying validity or version attributes whose key omits them, so each new state overwrites the previous one and the history the columns promise is never actually retained.",
+              "parent_standard_id": "S14.12"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — Advanced Data Modeling (time-variant data)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 450
+        },
+        {
+          "id": "S14.13",
+          "title": "The Model Passes Three Design Stages",
+          "constitution_id": "C14",
+          "priority": "Standard",
+          "applies_to": "All Stacks · every system with persistent data",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S5.6",
+              "description": "database selection documented at design time"
+            },
+            {
+              "standard_id": "S11.1",
+              "description": "requirements reachable"
+            }
+          ],
+          "enforced_by": [
+            "review — a design *stage* leaves no artifact a schema file can be checked against"
+          ],
+          "statement": "A data model is designed in three distinct stages before it is built: **conceptual** —\nwhich entities exist and how they relate, independent of any product; **logical** —\nattributes, keys, and normalisation, independent of any engine; **physical** — types,\nindexes, partitioning, and storage for the chosen engine. Each stage is completed before\nthe next begins.",
+          "rationale": "Collapsing the stages is how engine features become the model. Starting at physical design\nproduces entities shaped by what was convenient to index rather than by what the business\nactually distinguishes, and that shape then outlives the engine that suggested it. Keeping\nconceptual design free of product and logical design free of engine is what makes a model\nportable, reviewable by people who do not know the engine, and stable when the engine\nchanges.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.13a",
+              "description": "A schema authored directly in the engine's DDL with no conceptual or logical model, so entity boundaries were decided by indexing convenience and cannot be reviewed by anyone who does not know the engine.",
+              "parent_standard_id": "S14.13"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — Database Design (the database life cycle)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 488
+        },
+        {
+          "id": "S14.14",
+          "title": "Physical Design Is Recorded Against What It Optimises",
+          "constitution_id": "C14",
+          "priority": "Standard",
+          "applies_to": "All Stacks · every system with persistent data",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.13",
+              "description": null
+            },
+            {
+              "standard_id": "S5.25",
+              "description": "indexes on query-critical fields"
+            }
+          ],
+          "enforced_by": [
+            "review — an index's *purpose* exists nowhere a schema file can be read from"
+          ],
+          "statement": "Every physical-design decision — an index, a partition, a materialised view, a storage\nchoice — records the access pattern it serves.",
+          "rationale": "An index with no recorded purpose cannot be removed. Nobody knows which query depends on\nit, so it survives every review, is maintained on every write forever, and accumulates\nalongside the others. The cost is invisible because it is paid in write latency rather\nthan in anything a dashboard names, and the only honest way to retire one is to know what\nit was for.",
+          "anti_patterns": [
+            {
+              "id": "AP-S14.14a",
+              "description": "An index or partition with no recorded access pattern, so it can never be safely removed and is paid for on every write indefinitely.",
+              "parent_standard_id": "S14.14"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Coronel & Rob, *Database Systems* — Database Design (physical design)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C14-data-design-constitution.md",
+          "source_line": 522
         }
       ]
     }
@@ -22730,6 +23265,7 @@
     "C00",
     "C03",
     "C02",
+    "C14",
     "C05",
     "C04",
     "C06",
@@ -22750,7 +23286,8 @@
       "C03",
       "C04",
       "C05",
-      "C06"
+      "C06",
+      "C14"
     ],
     "2": [
       "C07",
@@ -22762,8 +23299,8 @@
     ]
   },
   "integrity": {
-    "standards_extracted": 630,
-    "anti_patterns_extracted": 458,
+    "standards_extracted": 644,
+    "anti_patterns_extracted": 472,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

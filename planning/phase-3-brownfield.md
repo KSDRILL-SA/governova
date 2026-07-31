@@ -208,23 +208,39 @@ incidental token, and the standards the code actually violated were never submit
 Backends were being scored on standards they were never shown. The figures that stood here
 have been removed rather than annotated — a stale number in a plan gets quoted.
 
-**First valid measurement** — `gpt-oss:120b-cloud`, 17 fixtures, 10 required findings, 3
-runs, worst run governs:
+**Latest measurement** — `gpt-oss:120b-cloud`, 17 fixtures, 10 required findings, 3 runs,
+worst run governs. Figures are **after** `#191`:
 
-| run | precision (bar 90%) | recall (bar 40%) |
+| | before `#191` | after `#191` |
 |---|---|---|
-| 1 | 48% | 100% |
-| 2 | 45% | 90% |
-| 3 | **33%** | 90% |
+| worst-run precision | 33% | **47%** |
+| worst-run recall | 90% | **90% — held** |
+| false positives per run | 11 / 11 / 18 | 9 / 10 / 7 |
 
-**Worst run 33% precision, 90% recall. Fail — and not a near miss.**
+**Still FAIL. 47% is not close to 90%.**
 
-**The direction matters more than the verdict.** Recall rose to near-perfect: the tier finds
-essentially every seeded violation, including the structural `S1.106`/`S1.107` cases no
-deterministic rule can reach. Precision fell, and that is the honest consequence of fixing
-grounding rather than a regression — the tier now submits eight highly-applicable structural
-standards on *every* snippet, including the clean ones, and shown a standard the model finds
-a way to apply it.
+`#191` sent each standard's anti-pattern description as an explicit *report only when*
+clause, on the theory that statements like "never inlined as literals in code" are
+prohibitions with no stopping condition. It bought **14 points of worst-run precision at
+zero recall cost**, which is why it was kept — but **the predicted mechanism was wrong.**
+The two fixtures written as the *negative case* for `S1.105` and `S2.53` are still flagged
+by the standard they satisfy, and `clean-ownership-checked-before-read` picked up `S1.103`
+on top. The noise partly *moved* rather than reduced.
+
+So the remaining false positives are no longer concentrated in two standards — they are
+spread one or two each across five. **That is a different problem from the one `#190` was
+opened for, and the "give those two a stopping condition" framing is closed.**
+
+The evidence now points at something the prompt cannot reach: **the model judges a snippet
+with no surrounding codebase.** `clean-ownership-checked-before-read` calls
+`documents.get_for_owner(document_id, owner_id=user.id)` — ownership *is* enforced, but only
+if you trust the method name. Next hypotheses, in cost order:
+
+1. **Say in the prompt that the snippet is an excerpt**, and that a called function may be
+   assumed to do what its name says. Cheap, and aimed straight at the two survivors.
+2. **Ask for a confidence and drop low-confidence findings** — the same idea as the existing
+   ungrounded-citation filter, applied to certainty.
+3. **Only then** a tuned local model (`#138`).
 
 **So the tier is restraint-limited, not reach-limited**, and the deficit is concentrated:
 `S1.105` causes 8 of 11 false positives and `S2.53` causes 4, while `S1.3`, `S1.107` and

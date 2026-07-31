@@ -143,6 +143,15 @@ def relevant_standards(index: CompiledIndex, code: str, limit: int = 12) -> list
 
 
 def build_messages(code: str, standards: list[Standard]) -> list[dict[str, str]]:
+    """Build the review prompt.
+
+    The instruction to **withhold** is as important as the instruction to find, and was
+    missing from the first version. Measured on `gpt-oss:120b`, the original prompt scored
+    50–75% precision: the model found the real violations and could not resist adding
+    marginal ones, because nothing asked it not to. A tier whose findings cannot be taken
+    at face value is worse than no tier, so the prompt now states the asymmetry the bar
+    encodes — a missed violation is cheaper than an invented one.
+    """
     catalogue = "\n".join(f"- {s.id}: {s.title} — {s.statement}" for s in standards)
     system = (
         "You are a constitutional code reviewer. You are given a set of governance "
@@ -151,6 +160,12 @@ def build_messages(code: str, standards: list[Standard]) -> list[dict[str, str]]
         '{"findings":[{"standard":"S<c>.<n>","line":<int or null>,"message":"<why>"}]}. '
         "Cite only standards from the provided list. If there are no violations, return "
         '{"findings":[]}. Do not invent standards or wrap the JSON in prose.'
+        "\n\n"
+        "Report only violations you would defend in a code review. When a standard only "
+        "arguably applies, or the code is a reasonable choice somebody made on purpose, "
+        "report nothing for it. A missed violation costs little; a wrong one destroys "
+        "trust in every other finding you make. Returning an empty list is a correct and "
+        "expected answer for well-written code."
     )
     user = f"Standards:\n{catalogue}\n\nCode:\n{code}"
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]

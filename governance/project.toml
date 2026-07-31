@@ -79,6 +79,31 @@ standard = "S10.40"
 evidence = "protocols/github-workflow.md"
 note = "Solo-mode merge authority; sensitive changes merged deliberately by the founder."
 
+# ── Requirements interchange ─────────────────────────────────────────────────
+# Read by `governova requirements`. Governova is at **tier 0** for its own work: it
+# keeps no requirements manifest and does not cite requirement ids in its commits.
+# That is reported as `unknown`, never as a violation, which is the same treatment
+# any adopting team gets (ADR-007 addendum).
+#
+# The exclusions below are not suppressed findings. The requirements linter's own
+# tests are full of example ids — `REQ-1234`, `PROJ-77` — which are fixtures, not
+# requirements of this project. Without this the tool would report nine requirements
+# Governova does not have, and a governance tool whose first output about itself is
+# untrue has no standing to report on anyone else.
+
+# The excluded set is exactly "the requirements engine and its documentation" — the
+# files whose *subject* is requirement identifiers. Every `REQ-1234` in them is an
+# example of the format, written to explain it. This is the cost of a tool that scans
+# the repository it is implemented in, and it is bounded: an adopting team excludes
+# nothing, because their repository does not contain this engine.
+
+[requirements]
+exclude = [
+    "scripts/governova_requirements/",
+    "scripts/governova_cli/__main__.py",
+    "scripts/tests/test_requirements.py",
+]
+
 # ── Approved exceptions ──────────────────────────────────────────────────────
 # Each must cite an ADR that exists in governance/decisions/.
 

@@ -113,6 +113,7 @@ packages = [
     "governova_evidence",
     "governova_supply",
     "governova_ingest",
+    "governova_requirements",
 ]
 
 [tool.mypy]
@@ -140,4 +141,5 @@ files = [
     "governova_evidence",
     "governova_supply",
     "governova_ingest",
+    "governova_requirements",
 ]

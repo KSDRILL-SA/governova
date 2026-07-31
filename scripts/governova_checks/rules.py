@@ -499,6 +499,60 @@ RULES: list[Rule] = [
         "high",
         path_exclude=TEST_PATHS,
     ),
+    # ── C13 — Software Evolution & Maintenance ──────────────────────────────
+    #
+    # All three are `medium`, so they warn and never block. Each describes work
+    # somebody deliberately left behind, and the judgement about whether it was
+    # right to belongs to the team, not to a gate. Test paths are excluded
+    # throughout: a fixture legitimately contains a bare `TODO` or a commented
+    # line, and firing there would make the rules noise on their first run.
+    Rule(
+        "AP-S13.1a",
+        "S13.1",
+        re.compile(
+            # A debt marker on a line carrying no tracked reference. The reference is
+            # sought across the *whole line* rather than after the marker, because
+            # `see #412 — TODO` is as common as `TODO(#412)`. Accepts `#123`,
+            # `PROJ-1234`, and bare issue URLs, covering every tracker convention in
+            # common use. Both quantifiers are bounded.
+            r"^(?!.{0,300}(?:#\d{1,7}|\b[A-Z][A-Z0-9]{1,9}-\d{1,7}\b|https?://))"
+            r".{0,200}\b(?:TODO|FIXME|HACK|XXX)\b",
+        ),
+        "Debt marker with no tracked reference. S13.1: a deferred decision carries a reference to the item that records it — a bare marker is invisible to planning.",
+        "medium",
+        path_exclude=TEST_PATHS,
+    ),
+    Rule(
+        "AP-S13.3a",
+        "S13.3",
+        re.compile(
+            # A comment whose content is executable code. Requires both a statement
+            # keyword *and* a code-shaped terminator, because prose frequently
+            # contains the word "return" and almost never ends in `;` or `{`.
+            r"^\s{0,60}(?://|#)\s{0,4}"
+            r"(?:return|def |class |import |from |const |let |var |function |public |private |if |for |while |print)"
+            r"[^\n]{0,160}[;{)]\s{0,4}$",
+        ),
+        "Executable code retained as a comment. S13.3: delete it — version control is the record of what it was, with an author, a date, and a reason.",
+        "medium",
+        path_exclude=TEST_PATHS,
+    ),
+    Rule(
+        "AP-S13.7a",
+        "S13.7",
+        re.compile(
+            # A deprecation marker on a line stating no version, date, or removal.
+            # Scanned across the whole line rather than after the marker: in
+            # `warnings.warn("gone in 2.5", DeprecationWarning)` the removal note
+            # precedes the marker, and a trailing-only lookahead reported it as
+            # open-ended. Both quantifiers are bounded.
+            r"^(?!.{0,300}(?:\bv?\d{1,3}\.\d{1,3}|20\d\d-\d\d|\bremov|\bsunset|\bdrop))"
+            r".{0,200}(?:@[Dd]eprecated|DeprecationWarning|@[Oo]bsolete)",
+        ),
+        "Deprecation with no stated removal. S13.7: name the version or date it goes — an open-ended deprecation gives no consumer a reason to migrate.",
+        "medium",
+        path_exclude=TEST_PATHS,
+    ),
 ]
 
 

@@ -104,7 +104,7 @@ CONSTITUTION_REGISTRY: tuple[ConstitutionEntry, ...] = (
         8,
         "Platform Reliability",
         Phase.QUALITY_RELIABILITY,
-        11,
+        12,
         False,
         "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
     ),
@@ -113,7 +113,7 @@ CONSTITUTION_REGISTRY: tuple[ConstitutionEntry, ...] = (
         9,
         "Product & Feature",
         Phase.PRODUCT_INTELLIGENCE,
-        12,
+        13,
         False,
         "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
     ),
@@ -122,7 +122,7 @@ CONSTITUTION_REGISTRY: tuple[ConstitutionEntry, ...] = (
         10,
         "AI Collaboration",
         Phase.PRODUCT_INTELLIGENCE,
-        13,
+        14,
         False,
         "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
     ),
@@ -134,6 +134,19 @@ CONSTITUTION_REGISTRY: tuple[ConstitutionEntry, ...] = (
         8,
         False,
         "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+    ),
+    # C13 sits directly below C07 and above C08. Evolution governs the period after a
+    # system ships, so it yields to the quality gates that decide whether it may — but
+    # it outranks deployment and operations, because a change that is unsafe to make is
+    # not made safe by the care with which it is released.
+    ConstitutionEntry(
+        "C13",
+        13,
+        "Software Evolution",
+        Phase.QUALITY_RELIABILITY,
+        11,
+        False,
+        "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
     ),
     # C14 sits directly above C05 (C0 §7.1). C05 governs how data is accessed; C14
     # governs how it is structured, and structure constrains every query written
@@ -162,6 +175,7 @@ HIERARCHY_ORDER: tuple[ConstitutionId, ...] = (
     "C11",
     "C01",
     "C07",
+    "C13",
     "C08",
     "C09",
     "C10",

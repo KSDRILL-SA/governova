@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-07-31T05:26:40.547694Z",
-  "source_commit_sha": "cddb82d",
-  "checksum": "sha256:5922c0bfa847a49847896d3cf2a2116ae5f5476b2b3386e3812d54f63f8d694e",
+  "compiled_at": "2026-07-31T05:59:32.999981Z",
+  "source_commit_sha": "d06dc00",
+  "checksum": "sha256:fa9af5e295a932759b6d59e168877dc0cf333220f64de8688180a5b593659e47",
   "framework": [
     {
       "id": "format-specification",
@@ -53,7 +53,7 @@
       "header": {
         "document": "C0 — Constitutional Order",
         "organisation": "KSDRILL SA",
-        "version": "v1.3",
+        "version": "v1.4",
         "status": "LOCKED",
         "locked_date": "2026-05-08",
         "next_review": "2026-08-08",
@@ -16313,7 +16313,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-      "hierarchy_rank": 11,
+      "hierarchy_rank": 12,
       "binds_implementation": false,
       "standards": [
         {
@@ -18284,7 +18284,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-      "hierarchy_rank": 12,
+      "hierarchy_rank": 13,
       "binds_implementation": false,
       "standards": [
         {
@@ -19136,7 +19136,7 @@
         "paired_with": "`AI-INSTRUCTIONS.md` · `workflow/ksdrill-sa-ai-workflow.md`"
       },
       "path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-      "hierarchy_rank": 13,
+      "hierarchy_rank": 14,
       "binds_implementation": false,
       "standards": [
         {
@@ -20877,6 +20877,427 @@
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
           "source_line": 522
+        }
+      ]
+    },
+    {
+      "id": "C13",
+      "number": 13,
+      "name": "Software Evolution",
+      "phase": "2",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
+      "header": {
+        "document": "C13 — Software Evolution & Maintenance",
+        "organisation": "KSDRILL SA",
+        "version": "v1.0",
+        "status": "LOCKED",
+        "locked_date": "2026-07-31",
+        "next_review": "2026-10-31",
+        "applies_to": "All Systems · Both Stacks · Solo Dev · Team · every system past its first release",
+        "paired_with": "`protocols/brownfield-adoption.md`"
+      },
+      "path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+      "hierarchy_rank": 11,
+      "binds_implementation": false,
+      "standards": [
+        {
+          "id": "S13.1",
+          "title": "A Deferred Decision Is Recorded Where Work Is Tracked",
+          "constitution_id": "C13",
+          "priority": "High",
+          "applies_to": "All Stacks · every system past its first release",
+          "phase": "2",
+          "phase_label": "Phase 2 — Quality & Reliability",
+          "depends_on": [
+            {
+              "standard_id": "S1.85",
+              "description": "ADRs document significant decisions"
+            }
+          ],
+          "enforced_by": [
+            "reliable-tier rule — `AP-S13.1a` (in-code marker with no tracked reference)"
+          ],
+          "statement": "A decision deferred in code — a shortcut, a known limitation, a temporary workaround —\ncarries a reference to the tracked item that records it. A bare marker is not a record.",
+          "rationale": "`TODO` without a reference is a note to a person who has left. It is invisible to\nplanning, absent from every estimate, and discovered by whoever next opens the file — who\nhas no way to learn whether it is a week old or five years old, whether it still applies,\nor whether removing it breaks something. Debt that is only visible to people already\nreading the line is debt nobody can decide about.",
+          "anti_patterns": [
+            {
+              "id": "AP-S13.1a",
+              "description": "A `TODO`, `FIXME`, `HACK`, or `XXX` marker carrying no reference to a tracked item, so the deferred decision exists only where someone happens to read it.",
+              "parent_standard_id": "S13.1"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (maintenance prediction)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+          "source_line": 71
+        },
+        {
+          "id": "S13.2",
+          "title": "The System Maintains a Debt Register",
+          "constitution_id": "C13",
+          "priority": "Standard",
+          "applies_to": "All Stacks · every system past its first release",
+          "phase": "2",
+          "phase_label": "Phase 2 — Quality & Reliability",
+          "depends_on": [
+            {
+              "standard_id": "S13.1",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "structural probe — a debt register exists and is reachable"
+          ],
+          "statement": "The system keeps one place where known debt is listed with its cost and its consequence —\na register in the repository, or a labelled set in the tracker the team already uses.",
+          "rationale": "Per-item records answer *what* is owed and never *how much*. Without one aggregate view,\ndebt is negotiated one item at a time against features, which it loses every time, because\nthe cost of any single item is small and the cost of all of them is the thing nobody is\nlooking at.",
+          "anti_patterns": [
+            {
+              "id": "AP-S13.2a",
+              "description": "Debt tracked only as scattered individual items with no aggregate view, so its total is never visible and it is negotiated away one item at a time.",
+              "parent_standard_id": "S13.2"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (maintenance prediction)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+          "source_line": 101
+        },
+        {
+          "id": "S13.3",
+          "title": "Dead Code Is Deleted, Not Commented Out",
+          "constitution_id": "C13",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems under version control",
+          "phase": "2",
+          "phase_label": "Phase 2 — Quality & Reliability",
+          "depends_on": [
+            {
+              "standard_id": "S1.106",
+              "description": "shared code is shared"
+            }
+          ],
+          "enforced_by": [
+            "reliable-tier rule — `AP-S13.3a` (commented-out code)"
+          ],
+          "statement": "Code that is no longer wanted is deleted. Version control is the record of what it was.",
+          "rationale": "Commented-out code is read by everyone and understood by nobody. It cannot be compiled,\ntested, linted, or refactored, so it silently rots while remaining prominent enough that\nthe next reader must decide whether it matters — a decision they have no information to\nmake. The history it is preserving is already preserved, with an author and a date and a\nreason, in the thing whose entire purpose is preserving it.",
+          "anti_patterns": [
+            {
+              "id": "AP-S13.3a",
+              "description": "Executable code retained as a comment instead of deleted, so it is neither maintained nor removed and every later reader must decide afresh whether it matters.",
+              "parent_standard_id": "S13.3"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (code smells)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+          "source_line": 130
+        },
+        {
+          "id": "S13.4",
+          "title": "Every Change Declares Its Maintenance Type",
+          "constitution_id": "C13",
+          "priority": "Standard",
+          "applies_to": "All Stacks · every system past its first release",
+          "phase": "2",
+          "phase_label": "Phase 2 — Quality & Reliability",
+          "depends_on": [
+            {
+              "standard_id": "S1.19",
+              "description": "conventional commit format"
+            }
+          ],
+          "enforced_by": [
+            "structural probe — maintenance profile derived from commit types"
+          ],
+          "statement": "Every change is classifiable as **corrective** (repairing a defect), **adaptive**\n(responding to a changed environment), **perfective** (adding or improving capability), or",
+          "rationale": "Without classification, the question *\"where is our effort actually going\"* has no answer,\nand it is the question that decides whether a system is being invested in or bailed out. A\nteam spending most of its effort correctively is not choosing that; it is discovering it,\nusually too late to change the trajectory.\n\nDerived rather than recorded on purpose: a second field a human must fill in is a second\nfield that drifts, and `S1.19` already requires the first one.",
+          "anti_patterns": [
+            {
+              "id": "AP-S13.4a",
+              "description": "Changes landing with no classifiable type, so the split between fixing, adapting, extending, and preventing is unmeasurable and the system's trajectory is invisible.",
+              "parent_standard_id": "S13.4"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (maintenance types)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+          "source_line": 163
+        },
+        {
+          "id": "S13.5",
+          "title": "A Change to Shared Structure Carries an Impact Analysis",
+          "constitution_id": "C13",
+          "priority": "High",
+          "applies_to": "All Stacks · every change to an interface, schema, or contract others depend on",
+          "phase": "2",
+          "phase_label": "Phase 2 — Quality & Reliability",
+          "depends_on": [
+            {
+              "standard_id": "S14.13",
+              "description": "three design stages"
+            },
+            {
+              "standard_id": "S11.3",
+              "description": "requirements reach code"
+            }
+          ],
+          "enforced_by": [
+            "review — impact is a claim about *consumers*",
+            "which a repository cannot enumerate"
+          ],
+          "statement": "A change to a published interface, a shared schema, or a data contract records what\ndepends on it and what each dependant must do.",
+          "rationale": "The cost of a change to shared structure is almost never in the change. It is in the\nconsumers, and they are discovered in production by whoever they belong to. An impact\nanalysis moves that discovery to before the merge, which is the only point at which the\nchange is still cheap.\n\nThis is **review-only and the reason is worth stating**: the dependants of a published\ninterface generally live in other repositories, other teams, or other organisations.\nNothing this engine can read enumerates them, and a check that inspected only this\nrepository would report a clean result for exactly the changes that hurt most.",
+          "anti_patterns": [
+            {
+              "id": "AP-S13.5a",
+              "description": "A published interface or shared schema changed with no record of what depends on it, so consumers discover the break in production and the cost lands on whoever owns them.",
+              "parent_standard_id": "S13.5"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (change impact analysis)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+          "source_line": 197
+        },
+        {
+          "id": "S13.6",
+          "title": "Complexity Is Actively Reduced",
+          "constitution_id": "C13",
+          "priority": "Standard",
+          "applies_to": "All Stacks · every system past its first release",
+          "phase": "2",
+          "phase_label": "Phase 2 — Quality & Reliability",
+          "depends_on": [
+            {
+              "standard_id": "S1.107",
+              "description": "the simplest correct solution"
+            },
+            {
+              "standard_id": "S13.2",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "review — the canon's own claim is that this trend is only visible over time"
+          ],
+          "statement": "Preventive work that reduces structural complexity is scheduled deliberately, not left to\noccur as a side effect of feature work.",
+          "rationale": "Complexity increases as a system evolves **unless work is done to reduce it**. This is a\nproperty of change itself, not of careless engineering: each change is locally reasonable\nand the accumulation is not. Because no single change is where the problem appears, no\nreview of a single change can catch it, and preventive work that is never scheduled is\nnever done — it loses to every feature, individually, forever.\n\nReview-only because the trend is measurable only over a period longer than any one merge,\nand a per-merge check would either fire on everything or on nothing.",
+          "anti_patterns": [
+            {
+              "id": "AP-S13.6a",
+              "description": "Preventive work left entirely to opportunism, so structural complexity accumulates through changes that are each individually reasonable.",
+              "parent_standard_id": "S13.6"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (Lehman's laws)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+          "source_line": 231
+        },
+        {
+          "id": "S13.7",
+          "title": "Deprecation States When Removal Happens",
+          "constitution_id": "C13",
+          "priority": "High",
+          "applies_to": "All Stacks · every published interface",
+          "phase": "2",
+          "phase_label": "Phase 2 — Quality & Reliability",
+          "depends_on": [
+            {
+              "standard_id": "S13.5",
+              "description": null
+            },
+            {
+              "standard_id": "S8.87",
+              "description": "temporal governance of the external surface"
+            }
+          ],
+          "enforced_by": [
+            "reliable-tier rule — `AP-S13.7a` (deprecation with no stated removal)"
+          ],
+          "statement": "A deprecation marker states when the thing is removed — a version or a date. A deprecation\nwith no end is a label, not a plan.",
+          "rationale": "An open-ended deprecation gives a consumer no reason to act, so none does. The marker\naccumulates, the old path is maintained indefinitely alongside the new one, and the cost\nof the migration is paid forever rather than once. Removing it later without a stated date\nthen breaks consumers who were, reasonably, waiting to be told.",
+          "anti_patterns": [
+            {
+              "id": "AP-S13.7a",
+              "description": "A deprecation marker with no version or date for removal, so no consumer has a reason to migrate and both paths are maintained indefinitely.",
+              "parent_standard_id": "S13.7"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (software maintenance)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+          "source_line": 268
+        },
+        {
+          "id": "S13.8",
+          "title": "A Removal Is Preceded by a Deprecation Period",
+          "constitution_id": "C13",
+          "priority": "High",
+          "applies_to": "All Stacks · every published interface",
+          "phase": "2",
+          "phase_label": "Phase 2 — Quality & Reliability",
+          "depends_on": [
+            {
+              "standard_id": "S13.7",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "review — a *removal* is the absence of code",
+            "which no line-scan can observe"
+          ],
+          "statement": "A published interface is deprecated, and the stated period elapses, before it is removed.\nRemoval without that sequence is a breaking change and is governed as one.",
+          "rationale": "Consumers cannot migrate from something they were never told was going away. The\ndeprecation period is not politeness — it is the only mechanism by which the cost of a\nremoval is distributed over time rather than delivered to every consumer simultaneously\non the day it ships.\n\nReview-only for a structural reason: a removal is an *absence*, and the reliable tier\nscans lines that exist. Detecting it needs a diff of the published surface against its\nprevious release, which is a release-time comparison rather than a merge-time one.",
+          "anti_patterns": [
+            {
+              "id": "AP-S13.8a",
+              "description": "A published interface removed without a prior deprecation period, delivering the migration cost to every consumer at once on the day it ships.",
+              "parent_standard_id": "S13.8"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (software maintenance)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+          "source_line": 297
+        },
+        {
+          "id": "S13.9",
+          "title": "Every Legacy System Has a Recorded Disposition",
+          "constitution_id": "C13",
+          "priority": "High",
+          "applies_to": "All Stacks · every system inherited or maintained past its design life",
+          "phase": "2",
+          "phase_label": "Phase 2 — Quality & Reliability",
+          "depends_on": [
+            {
+              "standard_id": "S1.85",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "review — the disposition is a business judgement",
+            "recorded as an ADR"
+          ],
+          "statement": "A legacy system carries a recorded decision to **maintain**, **reengineer**, **replace**,\nor **retire** it, with the business value and system quality that decision rests on. The\ndecision is revisited on a stated schedule.",
+          "rationale": "The default for a legacy system is *continue as before*, and it is a default nobody\nchooses — it is what happens when no one decides. That is how systems of low business\nvalue and low quality are maintained for a decade at full cost, and how systems of high\nbusiness value are replaced because nobody wrote down that they were working.",
+          "anti_patterns": [
+            {
+              "id": "AP-S13.9a",
+              "description": "A legacy system maintained by default with no recorded disposition, so continuation is never a decision anyone made and never comes up for review.",
+              "parent_standard_id": "S13.9"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (legacy system management)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+          "source_line": 334
+        },
+        {
+          "id": "S13.10",
+          "title": "Reengineering Preserves Behaviour Before Improving It",
+          "constitution_id": "C13",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every reengineering effort",
+          "phase": "2",
+          "phase_label": "Phase 2 — Quality & Reliability",
+          "depends_on": [
+            {
+              "standard_id": "S1.101",
+              "description": "characterisation tests"
+            },
+            {
+              "standard_id": "S6.45",
+              "description": "incremental, non-breaking conversion"
+            }
+          ],
+          "enforced_by": [
+            "review — the paired standards above carry the mechanical part"
+          ],
+          "statement": "Reengineering changes how a system is built without changing what it does. Behaviour is\npinned before structure is altered, and any intended change in behaviour is a separate,\nseparately reviewed change.",
+          "rationale": "Reengineering and feature work performed together are indistinguishable in review and in\nbisection. When something breaks — and it does — nobody can tell whether the structural\nchange or the behavioural one caused it, so the safe response is reverting both, which\ndiscards the reengineering that was probably fine.\n\nThis standard exists to *name the separation*; the mechanical enforcement lives in the\nstandards it depends on, and duplicating them here would violate `S1.106`.",
+          "anti_patterns": [
+            {
+              "id": "AP-S13.10a",
+              "description": "Structural change and behavioural change delivered in one indivisible unit, so a regression cannot be attributed and the only safe response discards both.",
+              "parent_standard_id": "S13.10"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (reengineering)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+          "source_line": 364
+        },
+        {
+          "id": "S13.11",
+          "title": "Perceived Quality Is Measured, Not Assumed",
+          "constitution_id": "C13",
+          "priority": "Standard",
+          "applies_to": "All Stacks · every system past its first release",
+          "phase": "2",
+          "phase_label": "Phase 2 — Quality & Reliability",
+          "depends_on": [
+            {
+              "standard_id": "S13.4",
+              "description": null
+            },
+            {
+              "standard_id": "S8.87",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "review — a *trend* needs a history of measurements this engine does not retain"
+          ],
+          "statement": "A system tracks at least one measure of how well it is serving its users over time, and\nreviews it on a stated schedule.",
+          "rationale": "Perceived quality declines unless a system is adapted to its changing environment — and\nthe decline is invisible from inside, because nothing about the system changed. The\nenvironment did. A team without a measure over time concludes the system is fine, because\nevery individual signal it has says so, right up until users leave.\n\nReview-only because a trend requires retained measurements across releases, and this\nengine deliberately holds no state between runs.",
+          "anti_patterns": [
+            {
+              "id": "AP-S13.11a",
+              "description": "A system with no measure of user-perceived quality over time, so environmental decline is invisible until it is expressed as attrition.",
+              "parent_standard_id": "S13.11"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (Lehman's laws)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
+          "source_line": 397
         }
       ]
     },
@@ -23384,6 +23805,7 @@
     "C11",
     "C01",
     "C07",
+    "C13",
     "C08",
     "C09",
     "C10"
@@ -23403,7 +23825,8 @@
     ],
     "2": [
       "C07",
-      "C08"
+      "C08",
+      "C13"
     ],
     "3": [
       "C09",
@@ -23411,8 +23834,8 @@
     ]
   },
   "integrity": {
-    "standards_extracted": 647,
-    "anti_patterns_extracted": 475,
+    "standards_extracted": 658,
+    "anti_patterns_extracted": 486,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

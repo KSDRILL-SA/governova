@@ -324,6 +324,89 @@ def _probe_licence_gate(root: Path) -> ProbeResult:
     return _ok(sid, f"CI checks licences and emits an SBOM: '{m.group(0).strip()[:60]}'")
 
 
+_DEBT_REGISTER_CANDIDATES = (
+    "TECHNICAL_DEBT.md",
+    "DEBT.md",
+    "docs/technical-debt.md",
+    "governance/technical-debt.md",
+    "docs/debt.md",
+)
+
+# Commit types mapped to the canon's four maintenance classes. Derived from the type
+# `S1.19` already requires rather than from a second field a human must fill in — a
+# second field is a second thing that drifts.
+_MAINTENANCE_CLASS: dict[str, str] = {
+    "fix": "corrective",
+    "ci": "adaptive",
+    "chore": "adaptive",
+    "build": "adaptive",
+    "feat": "perfective",
+    "perf": "perfective",
+    "style": "perfective",
+    "docs": "perfective",
+    "refactor": "preventive",
+    "test": "preventive",
+    "govern": "adaptive",
+    "decision": "adaptive",
+}
+
+
+def _probe_debt_register(root: Path) -> ProbeResult:
+    """S13.2 — one place where known debt is listed with its cost."""
+    sid = "S13.2"
+    for candidate in _DEBT_REGISTER_CANDIDATES:
+        path = root / candidate
+        if path.is_file() and (text := _read(path)) and len(text.strip()) > 40:
+            return _ok(sid, f"debt register at {candidate} ({len(text.splitlines())} lines)")
+    # A register may legitimately live in the team's tracker rather than the
+    # repository, and this engine never calls a tracker. Absent is therefore
+    # unknown, not violated — the same rule every probe here follows.
+    return _unknown(
+        sid,
+        "no debt register found in the repository; it may live in the tracker, "
+        "which this engine does not read",
+    )
+
+
+def _probe_maintenance_classification(root: Path) -> ProbeResult:
+    """S13.4 — every change is classifiable as corrective, adaptive, perfective, or preventive."""
+    sid = "S13.4"
+    try:
+        result = subprocess.run(
+            ["git", "log", "-n", "100", "--no-merges", "--format=%s"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=15,
+        )
+    except (subprocess.SubprocessError, OSError):
+        return _unknown(sid, "git history unavailable")
+
+    subjects = [s for s in result.stdout.splitlines() if s.strip()]
+    if not subjects:
+        return _unknown(sid, "no commits to inspect")
+
+    profile: dict[str, int] = {}
+    unclassified = 0
+    for subject in subjects:
+        match = _CONVENTIONAL.match(subject)
+        klass = _MAINTENANCE_CLASS.get(match.group(1).lower()) if match else None
+        if klass is None:
+            unclassified += 1
+        else:
+            profile[klass] = profile.get(klass, 0) + 1
+
+    mix = " · ".join(f"{k} {v}" for k, v in sorted(profile.items())) or "none"
+    if unclassified:
+        return _bad(
+            sid,
+            f"{unclassified}/{len(subjects)} recent commits carry no classifiable type; "
+            f"profile so far: {mix}",
+        )
+    return _ok(sid, f"{len(subjects)} recent commits classified — {mix}")
+
+
 PROBES: tuple[Probe, ...] = (
     Probe("S1.19", "Commits follow the conventional format", _probe_conventional_commits),
     Probe("S1.70", "Lint enforced in CI", _probe_lint_in_ci),
@@ -335,6 +418,8 @@ PROBES: tuple[Probe, ...] = (
     Probe("S8.25", "Environment configuration hygiene", _probe_env_hygiene),
     Probe("S8.84", "Lockfile behind a CI vulnerability gate", _probe_cve_gate),
     Probe("S8.85", "Licence allowlist + SBOM", _probe_licence_gate),
+    Probe("S13.2", "A debt register exists and is reachable", _probe_debt_register),
+    Probe("S13.4", "Every change declares its maintenance type", _probe_maintenance_classification),
 )
 
 

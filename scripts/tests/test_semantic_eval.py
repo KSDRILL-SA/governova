@@ -137,6 +137,102 @@ def test_an_invention_outside_the_grounded_set_is_dropped_before_scoring():
     assert report.precision == 1.0
 
 
+def test_a_defensible_finding_is_neither_a_hit_nor_an_invention():
+    """The neutral class, added after the first real measurement.
+
+    A 120b model scored well below its real accuracy because most of its "inventions"
+    were correct —
+    `S1.50` (explicit return types) is genuinely violated by these Python snippets.
+    Scoring a correct finding as an invention measures how completely the fixture was
+    annotated, not how good the backend is.
+    """
+    fixture = next(f for f in FIXTURES if f.acceptable)
+    extra = sorted(fixture.acceptable)[0]
+
+    def also_acceptable(code: str) -> list[str]:
+        # Only on the fixture that tolerates it. Adding it everywhere would be a real
+        # invention on fixtures that do not — `clean-plain-utility` declares its return
+        # type, so `S1.50` there would be genuinely wrong.
+        found = set(_perfect(code))
+        if fixture.code.strip() in code:
+            found.add(extra)
+        return sorted(found)
+
+    report = evaluate(index=INDEX, config=ACTIVE, transport=_backend(also_acceptable))
+    assert report.false_positives == 0, "a defensible finding was scored as an invention"
+    assert report.precision == 1.0
+    assert report.tolerated_extras > 0, "the defensible findings should still be reported"
+
+
+def test_a_clean_fixture_tolerating_an_extra_still_counts_as_kept_clean():
+    # Otherwise `clean kept clean` silently measures annotation completeness too.
+    clean = next(f for f in FIXTURES if f.is_clean and f.acceptable)
+    extra = sorted(clean.acceptable)[0]
+    report = evaluate(
+        index=INDEX, config=ACTIVE, transport=_backend(lambda code: [extra] if clean.code.strip() in code else [])
+    )
+    assert report.clean_fixtures_kept_clean == report.clean_fixtures
+
+
+def test_an_unreadable_reply_scores_as_finding_nothing_not_as_a_broken_run():
+    """A backend that answers with no verdict is deficient, not absent.
+
+    Scored as finding nothing — which costs it recall — while the outcome records why,
+    so it is never mistaken for a clean review.
+    """
+    from governova_semantic import Outcome
+
+    report = evaluate(index=INDEX, config=ACTIVE, transport=lambda cfg, msgs: "")
+    assert report.assessed, "an unreadable reply must not abort the run"
+    assert all(o.outcome is Outcome.UNPARSEABLE for o in report.outcomes)
+    assert report.recall == 0.0
+    assert report.passed is False
+
+
+def test_an_inconsistent_backend_is_judged_on_its_worst_run():
+    """Consistency is the property a governance gate needs.
+
+    Measured on a real model: precision ranged 50%-75% across eight passes over identical
+    input. A backend that clears the bar on average and fails one run in three gives two
+    answers for the same code, and neither can be defended — so the worst run governs and
+    averaging it away would hide exactly the instability that makes it unusable.
+    """
+    calls = {"n": 0}
+
+    def flaky(cfg, messages):
+        # Perfect on the first pass over the set, then invents on every later one.
+        calls["n"] += 1
+        expected = set(_perfect(messages[-1]["content"]))
+        if calls["n"] > len(FIXTURES):
+            expected.add("S3.14")
+        return json.dumps(
+            {"findings": [{"standard": s, "line": 1, "message": "x"} for s in sorted(expected)]}
+        )
+
+    report = evaluate(index=INDEX, config=ACTIVE, transport=flaky, runs=3)
+    assert len(report.runs) == 3
+    assert report.runs[0].precision == 1.0, "the first pass should be clean"
+    worst = report.worst_run
+    assert worst is not None and worst.precision is not None and worst.precision < 1.0
+    assert report.passed is False, "a backend that fails any run must not pass"
+    assert report.spread is not None
+
+
+def test_a_consistent_backend_passes_across_runs():
+    # The negative half: repeating the measurement must not itself cause a failure.
+    report = evaluate(index=INDEX, config=ACTIVE, transport=_backend(_perfect), runs=3)
+    assert len(report.runs) == 3
+    assert report.passed is True
+    assert report.spread is None, "no spread when every run agrees"
+
+
+def test_a_single_run_reports_no_spread():
+    report = evaluate(index=INDEX, config=ACTIVE, transport=_backend(_perfect))
+    assert report.runs == []
+    assert report.worst_run is None
+    assert report.spread is None
+
+
 def test_a_silent_backend_does_not_pass():
     """Reporting nothing is not perfect precision. It is #142 in miniature."""
     report = evaluate(index=INDEX, config=ACTIVE, transport=_backend(lambda code: []))

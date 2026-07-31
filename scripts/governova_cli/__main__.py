@@ -516,6 +516,13 @@ def semantic_review(
         if not p.is_file():
             continue
         result = review_result(p.read_text(encoding="utf-8", errors="replace"), index=index)
+        if result.outcome is Outcome.UNPARSEABLE:
+            console.print(
+                f"[bold red]semantic tier RETURNED NO VERDICT[/] — {result.detail}.\n"
+                f"[dim]The endpoint answered, so this is not an outage. Zero findings "
+                f"here means nothing was read.[/]"
+            )
+            raise typer.Exit(code=1)
         if result.outcome is Outcome.UNAVAILABLE:
             # Never report "no findings" for a review that did not happen. That
             # ambiguity is what let an endpoint retire unnoticed for two releases.
@@ -972,6 +979,15 @@ def requirements_lint(
 @app.command(name="semantic-eval")
 def semantic_eval(
     repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+    runs: Annotated[
+        int,
+        typer.Option(
+            "--runs",
+            min=1,
+            max=20,
+            help="Measure the set this many times. Use 3+ before deciding — one run is a sample.",
+        ),
+    ] = 1,
     strict: Annotated[
         bool, typer.Option("--strict", help="Exit non-zero when the backend misses the bar.")
     ] = False,
@@ -984,7 +1000,7 @@ def semantic_eval(
     """
     from governova_semantic import MIN_PRECISION, MIN_RECALL, evaluate
 
-    report = evaluate(index=_load(_root(repo_root)))
+    report = evaluate(index=_load(_root(repo_root)), runs=runs)
 
     if not report.assessed:
         console.print("[yellow]unassessed[/] — the backend could not be measured.")
@@ -992,8 +1008,17 @@ def semantic_eval(
             console.print(f"[dim]· {note}[/]")
         return
 
-    console.print(f"model={report.model} measured={report.measured_at}")
+    console.print(f"model={report.model} measured={report.measured_at} runs={max(runs, 1)}")
     console.print(report.summary())
+    if report.spread is not None:
+        worst = report.worst_run
+        console.print(
+            f"[dim]precision across runs: {report.spread} — the verdict uses the worst "
+            f"({worst.precision:.0%}/{worst.recall:.0%}), because the same code reviewed "
+            f"twice must not give two answers[/]"
+            if worst and worst.precision is not None and worst.recall is not None
+            else f"[dim]precision across runs: {report.spread}[/]"
+        )
     console.print(
         f"[dim]true positives {report.true_positives} · "
         f"false positives {report.false_positives} · "

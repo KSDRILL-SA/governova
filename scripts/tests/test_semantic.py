@@ -186,6 +186,50 @@ def test_no_endpoint_is_bundled_anywhere():
     assert offenders == [], f"a retired endpoint is still referenced in: {offenders}"
 
 
+def test_an_empty_reply_is_not_a_clean_review():
+    """A 200 carrying no verdict must not read as "reviewed, nothing found".
+
+    The case that produced this: a reasoning model spent its token budget on an internal
+    `reasoning` field and returned `content: ""`. Nothing errored, the status was 200, and
+    a build would have gone green on a review that produced no answer — `#142`'s failure
+    class wearing different clothes.
+    """
+    from governova_semantic import Outcome, review_result
+
+    std = next(s for c in INDEX.constitutions for s in c.standards)
+    result = review_result("code", standards=[std], index=INDEX, config=ACTIVE, transport=lambda c, m: "")
+    assert result.outcome is Outcome.UNPARSEABLE
+    assert not result.ran
+    assert "MAX_TOKENS" in result.detail
+
+
+def test_prose_instead_of_json_is_also_no_verdict():
+    from governova_semantic import Outcome, review_result
+
+    std = next(s for c in INDEX.constitutions for s in c.standards)
+    chatty = "Sure! I looked at the code and it seems fine to me."
+    result = review_result("code", standards=[std], index=INDEX, config=ACTIVE, transport=lambda c, m: chatty)
+    assert result.outcome is Outcome.UNPARSEABLE
+
+
+def test_an_explicit_empty_findings_list_is_a_clean_review():
+    """The negative half, and the distinction the whole change rests on.
+
+    `{"findings": []}` is the model saying *no violations*. That is a real answer and
+    must stay distinguishable from no answer at all.
+    """
+    from governova_semantic import Outcome, review_result
+
+    std = next(s for c in INDEX.constitutions for s in c.standards)
+    result = review_result(
+        "code", standards=[std], index=INDEX, config=ACTIVE,
+        transport=lambda c, m: json.dumps({"findings": []}),
+    )
+    assert result.outcome is Outcome.REVIEWED
+    assert result.ran
+    assert result.findings == []
+
+
 def test_describe_code_with_mock_and_inactive():
     out = describe_code("def f():\n    pass\n", config=ACTIVE, transport=lambda c, m: "  Defines f.  ")
     assert out == "Defines f."

@@ -23,10 +23,12 @@ from governova_semantic.review import (
     ReviewResult,
     SemanticFinding,
     build_messages,
+    declares_semantic_tier,
     parse_findings,
     relevant_standards,
     review,
     review_result,
+    semantic_pool,
 )
 
 __all__ = [
@@ -42,6 +44,7 @@ __all__ = [
     "SemanticFinding",
     "SemanticUnavailableError",
     "build_messages",
+    "declares_semantic_tier",
     "describe_code",
     "evaluate",
     "from_env",
@@ -49,4 +52,5 @@ __all__ = [
     "relevant_standards",
     "review",
     "review_result",
+    "semantic_pool",
 ]

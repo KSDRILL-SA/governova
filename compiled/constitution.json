@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-07-31T07:03:58.302108Z",
-  "source_commit_sha": "5622c1e",
-  "checksum": "sha256:d8733abf68a738306407b550a80a839a238ceb9b8fa6b608f8f73b299caee0c7",
+  "compiled_at": "2026-07-31T15:57:48.090372Z",
+  "source_commit_sha": "19c0969",
+  "checksum": "sha256:1fe12c3ee8abfc1334009bb260fb7db2b97b04f61869e0c767bbc138272c3c93",
   "framework": [
     {
       "id": "format-specification",
@@ -199,7 +199,8 @@
           ],
           "enforced_by": [
             "Code Review",
-            "ESLint"
+            "ESLint",
+            "Semantic tier"
           ],
           "statement": "Every unit of code — function, component, service, module, branch, commit, and PR — has\nexactly one concern. A function that does two things is two functions. A commit that\ntouches two features is two commits. A PR that covers two concerns is two PRs.",
           "rationale": "Single-concern units are independently testable, deployable, and debuggable. When a\nproduction failure occurs, the failure surface of a single-concern unit is predictable.\nMixed-concern units produce failures whose root cause is untraceable without reading the\nentire unit.",
@@ -5019,7 +5020,8 @@
           ],
           "enforced_by": [
             "Code Review",
-            "Security Audit"
+            "Security Audit",
+            "Semantic tier"
           ],
           "statement": "Error responses never contain: database error messages, stack traces, internal file paths,\ntable names, column names, SQL fragments, or any internal implementation detail. In all\nenvironments, error responses contain only the standard error shape (S2.22). Stack traces\nare in logs — not in responses.",
           "rationale": "",
@@ -6310,7 +6312,8 @@
           ],
           "enforced_by": [
             "Code Review",
-            "Security Audit"
+            "Security Audit",
+            "Semantic tier"
           ],
           "statement": "Any operation modifying or reading a user-owned resource validates that the requesting\nuser owns that resource before executing. Validation is in the service layer — not only\nin the route handler guard. The service queries the resource, confirms owner ID matches\nthe authenticated user ID, and rejects with 403 on mismatch.",
           "rationale": "",

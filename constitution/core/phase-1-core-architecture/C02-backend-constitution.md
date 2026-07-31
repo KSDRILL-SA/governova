@@ -540,7 +540,7 @@ frontend origin is permitted. CORS wildcard in production is a Critical security
 | **Applies To** | Both Stacks |
 | **Phase** | Phase 1 — Core Architecture |
 | **Depends On** | `S2.22` |
-| **Enforced By** | Code Review · Security Audit |
+| **Enforced By** | Code Review · Security Audit · Semantic tier |
 
 **Standard:**
 Error responses never contain: database error messages, stack traces, internal file paths,
@@ -1558,7 +1558,7 @@ a secret is a security incident.
 | **Applies To** | Both Stacks |
 | **Phase** | Phase 1 — Core Architecture |
 | **Depends On** | `S2.1`, `S2.25` |
-| **Enforced By** | Code Review · Security Audit |
+| **Enforced By** | Code Review · Security Audit · Semantic tier |
 
 **Standard:**
 Any operation modifying or reading a user-owned resource validates that the requesting

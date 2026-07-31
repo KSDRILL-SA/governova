@@ -261,3 +261,67 @@ def test_scan_paths_skips_non_source_extensions(tmp_path):
     # Only the .ts file is scanned; the .json is ignored by extension.
     assert all(f.file and f.file.endswith("x.ts") for f in findings)
     assert len(findings) == 1
+
+
+# ─── The escape hatch an anti-pattern's own text grants (#128) ───────────────
+
+
+def _suppression_findings(line: str, file: str = "sample.ts") -> list[str]:
+    return [f.anti_pattern for f in scan_text(line, file=file) if f.anti_pattern in SUPPRESSIONS]
+
+
+SUPPRESSIONS = {"AP-S1.48b", "AP-S1.57b"}
+
+
+def test_an_undocumented_type_suppression_still_fires():
+    assert _suppression_findings("value = something()  # type: ignore") == ["AP-S1.57b"]
+    assert _suppression_findings("value = something()  # type: ignore[arg-type]") == ["AP-S1.57b"]
+
+
+def test_a_type_suppression_carrying_an_issue_reference_does_not_fire():
+    """`AP-S1.57b` is "`# type: ignore` **without** a GitHub Issue reference".
+
+    Matching only the first half of that sentence grades against a rubric wider than the
+    standard it cites, and punishes the documented form exactly as hard as the
+    undocumented one — which removes the incentive to document that S1.57 is asking for.
+    """
+    for line in (
+        "value = f()  # type: ignore[arg-type]  # see #456",
+        "value = f()  # type: ignore  # GH-4321",
+        "value = f()  # type: ignore  # https://github.com/owner/repo/issues/12",
+    ):
+        assert _suppression_findings(line) == [], line
+
+
+def test_the_typescript_suppression_has_the_same_clause_and_the_same_narrowing():
+    assert _suppression_findings("// @ts-ignore") == ["AP-S1.48b"]
+    assert _suppression_findings("// @ts-expect-error") == ["AP-S1.48b"]
+    assert _suppression_findings("// @ts-expect-error -- upstream types are wrong, see #98") == []
+
+
+def test_the_issue_reference_cannot_be_satisfied_by_the_comment_marker_itself():
+    # `#` opens the suppression comment. If `ISSUE_REFERENCE` matched a bare `#` or a
+    # `#` followed by anything, every suppression would excuse itself.
+    assert _suppression_findings("value = f()  # type: ignore  # fix later") == ["AP-S1.57b"]
+    assert _suppression_findings("value = f()  # type: ignore  # ticket") == ["AP-S1.57b"]
+
+
+def test_an_unless_clause_never_widens_what_a_rule_detects():
+    # `unless` may only remove findings. A rule without one is unaffected.
+    plain = scan_text("localStorage.setItem('access_token', t)", file="a.ts")
+    assert plain, "an unrelated rule must be untouched by the suppression mechanism"
+
+
+def test_suppression_scanning_stays_linear_on_a_hostile_line():
+    """`unless` is a second regex rather than a lookahead so this cannot backtrack.
+
+    A negative lookahead spanning the rest of the line would reintroduce exactly the
+    cost `MAX_LINE_LENGTH` exists to bound, on a gate that runs in other people's CI.
+    """
+    import time
+
+    hostile = "# type: ignore " + ("#" * 3000)
+    start = time.perf_counter()
+    for _ in range(200):
+        scan_text(hostile, file="a.py")
+    assert time.perf_counter() - start < 2.0

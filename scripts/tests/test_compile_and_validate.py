@@ -40,10 +40,11 @@ EXPECTED_COUNTS = {
     "C09": 30,
     "C10": 40,
     "C11": 15,
+    "C12": 9,
     "C13": 11,
     "C14": 14,
 }
-EXPECTED_TOTAL = 658
+EXPECTED_TOTAL = 667
 
 
 @pytest.fixture(scope="module")

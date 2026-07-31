@@ -171,7 +171,7 @@ def test_the_committed_package_parses_the_real_index():
 
         data = json.loads((root / "compiled" / "constitution.json").read_text(encoding="utf-8"))
         index = governova_types.CompiledIndex.model_validate(data)
-        assert len(index.constitutions) == 14
+        assert len(index.constitutions) == 15
         assert index.domains, "Layer 4 must survive the round trip"
     finally:
         sys.path.remove(str(types_py))

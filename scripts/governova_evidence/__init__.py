@@ -407,6 +407,148 @@ def _probe_maintenance_classification(root: Path) -> ProbeResult:
     return _ok(sid, f"{len(subjects)} recent commits classified — {mix}")
 
 
+# ─── C12 — System Modelling ──────────────────────────────────────────────────
+
+# Text formats whose changes are legible in a diff. An exported image may accompany
+# a model; it is never the model (S12.3).
+_DIFFABLE_MODEL_SUFFIXES = frozenset({".puml", ".plantuml", ".mmd", ".mermaid", ".d2", ".dot", ".dbml"})
+# Opaque formats: a change to one is invisible in review, so the model stops changing.
+_OPAQUE_MODEL_SUFFIXES = frozenset({".drawio", ".vsdx", ".xmi", ".eap", ".graffle", ".sketch"})
+# Where models conventionally live. Used to keep the scan bounded and to avoid
+# reading a stray `.dot` in a build directory as an architectural model.
+_MODEL_DIRS = ("docs", "doc", "design", "architecture", "models", "diagrams", "adr")
+_CONTEXT_WORDS = re.compile(r"\b(?:context|boundary|system[- ]landscape|c4|container)\b", re.I)
+_MERMAID_FENCE = re.compile(r"^```\s*mermaid\b", re.M)
+# Published contracts a model may describe (S12.7).
+_CONTRACT_NAMES = re.compile(
+    r"(?:openapi|swagger)\.(?:ya?ml|json)$|\.(?:proto|graphql|gql)$|schema\.prisma$", re.I
+)
+
+
+def _model_files(root: Path) -> list[Path]:
+    """Model artifacts under version control, in a stable order."""
+    found: list[Path] = []
+    for directory in _MODEL_DIRS:
+        base = root / directory
+        if not base.is_dir():
+            continue
+        for path in base.rglob("*"):
+            if not path.is_file():
+                continue
+            suffix = path.suffix.lower()
+            # A fenced diagram inside a document counts. Most teams model that way
+            # rather than in a modelling tool, and a probe that missed them would
+            # report `unknown` for repositories that are in fact modelling.
+            is_model = suffix in _DIFFABLE_MODEL_SUFFIXES or suffix in _OPAQUE_MODEL_SUFFIXES
+            if is_model or (
+                suffix in {".md", ".markdown"}
+                and (text := _read(path))
+                and _MERMAID_FENCE.search(text)
+            ):
+                found.append(path)
+    return sorted(found, key=lambda p: p.as_posix())
+
+
+def _probe_models_versioned(root: Path) -> ProbeResult:
+    """S12.2 — models live in the repository, versioned with the code."""
+    sid = "S12.2"
+    models = _model_files(root)
+    if not models:
+        # A team may model in a tool this engine cannot see. Absent is unknown, never
+        # violated — the same rule every probe here follows.
+        return _unknown(
+            sid,
+            "no model artifacts found in the repository; models may be held elsewhere, "
+            "which this engine cannot read",
+        )
+    names = ", ".join(p.relative_to(root).as_posix() for p in models[:3])
+    return _ok(sid, f"{len(models)} model artifact(s) under version control: {names}")
+
+
+def _probe_models_are_diffable(root: Path) -> ProbeResult:
+    """S12.3 — a model is expressed in a form whose changes are legible in a diff."""
+    sid = "S12.3"
+    models = _model_files(root)
+    if not models:
+        return _unknown(sid, "no model artifacts to inspect")
+    opaque = [p for p in models if p.suffix.lower() in _OPAQUE_MODEL_SUFFIXES]
+    if opaque:
+        names = ", ".join(p.relative_to(root).as_posix() for p in opaque[:3])
+        return _bad(sid, f"{len(opaque)} model(s) in an opaque format — changes cannot be reviewed: {names}")
+    return _ok(sid, f"all {len(models)} model artifact(s) are diffable text")
+
+
+def _probe_context_model(root: Path) -> ProbeResult:
+    """S12.1 — a system boundary is modelled before its first external interface."""
+    sid = "S12.1"
+    models = _model_files(root)
+    if not models:
+        return _unknown(sid, "no model artifacts found; a boundary model may be held elsewhere")
+    named = [p for p in models if _CONTEXT_WORDS.search(p.stem)]
+    if named:
+        return _ok(sid, f"boundary model present: {named[0].relative_to(root).as_posix()}")
+    # Models exist but none names a boundary. That is a real signal, not a violation:
+    # a boundary may be modelled inside a document whose filename says nothing.
+    return _unknown(
+        sid,
+        f"{len(models)} model(s) present but none is named as a context or boundary model",
+    )
+
+
+def _probe_models_track_contracts(root: Path) -> ProbeResult:
+    """S12.7 — models change with the contracts they describe.
+
+    Compares the last commit touching any model against the last commit touching any
+    published contract. Model drift is a correctness problem with a delay: nothing
+    fails when a model goes stale, so it is discovered only when somebody acts on it.
+    """
+    sid = "S12.7"
+    models = _model_files(root)
+    if not models:
+        return _unknown(sid, "no model artifacts to compare against")
+
+    contracts = [
+        p
+        for p in root.rglob("*")
+        if p.is_file()
+        and _CONTRACT_NAMES.search(p.name)
+        and not any(part in {".git", "node_modules", ".venv"} for part in p.parts)
+    ]
+    if not contracts:
+        return _unknown(sid, "no published contract found to compare models against")
+
+    model_time = max((_last_commit_time(root, p) or 0) for p in models)
+    contract_time = max((_last_commit_time(root, p) or 0) for p in contracts)
+    if not model_time or not contract_time:
+        return _unknown(sid, "git history unavailable for models or contracts")
+    if model_time < contract_time:
+        return _bad(
+            sid,
+            "a published contract changed more recently than any model describing it — "
+            "the models may no longer hold",
+        )
+    return _ok(sid, "models are no older than the contracts they describe")
+
+
+def _last_commit_time(root: Path, path: Path) -> int | None:
+    try:
+        relative = path.relative_to(root).as_posix()
+    except ValueError:
+        return None
+    try:
+        result = subprocess.run(
+            ["git", "log", "-n", "1", "--format=%ct", "--", relative],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=15,
+        )
+    except (subprocess.SubprocessError, OSError):
+        return None
+    return int(result.stdout.strip()) if result.stdout.strip().isdigit() else None
+
+
 PROBES: tuple[Probe, ...] = (
     Probe("S1.19", "Commits follow the conventional format", _probe_conventional_commits),
     Probe("S1.70", "Lint enforced in CI", _probe_lint_in_ci),
@@ -418,6 +560,10 @@ PROBES: tuple[Probe, ...] = (
     Probe("S8.25", "Environment configuration hygiene", _probe_env_hygiene),
     Probe("S8.84", "Lockfile behind a CI vulnerability gate", _probe_cve_gate),
     Probe("S8.85", "Licence allowlist + SBOM", _probe_licence_gate),
+    Probe("S12.1", "A system boundary is modelled", _probe_context_model),
+    Probe("S12.2", "Models are versioned with the code", _probe_models_versioned),
+    Probe("S12.3", "Models are expressed in a form that diffs", _probe_models_are_diffable),
+    Probe("S12.7", "Models change with the contracts they describe", _probe_models_track_contracts),
     Probe("S13.2", "A debt register exists and is reachable", _probe_debt_register),
     Probe("S13.4", "Every change declares its maintenance type", _probe_maintenance_classification),
 )

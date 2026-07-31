@@ -41,6 +41,67 @@ def _git_repo(root: Path, subjects: list[str]) -> None:
 # ─── Governance of the probe set ─────────────────────────────────────────────
 
 
+def _model_repo(tmp_path, *files: tuple[str, str]):
+    docs = tmp_path / "docs"
+    docs.mkdir(parents=True, exist_ok=True)
+    for name, body in files:
+        path = docs / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(body, encoding="utf-8")
+    return tmp_path
+
+
+def test_c12_absent_models_are_unknown_never_violated(tmp_path) -> None:
+    """A team may model in a tool this engine cannot read. Absent is unassessed."""
+    from governova_evidence import Verdict, run_probes
+
+    verdicts = {r.standard: r.verdict for r in run_probes(tmp_path)}
+    for sid in ("S12.1", "S12.2", "S12.3", "S12.7"):
+        assert verdicts[sid] is Verdict.UNKNOWN, sid
+
+
+def test_c12_diffable_models_satisfy_and_opaque_ones_do_not(tmp_path) -> None:
+    from governova_evidence import (
+        Verdict,
+        _probe_models_are_diffable,
+        _probe_models_versioned,
+    )
+
+    root = _model_repo(tmp_path, ("system-context.puml", "@startuml\n@enduml\n"))
+    assert _probe_models_versioned(root).verdict is Verdict.SATISFIED
+    assert _probe_models_are_diffable(root).verdict is Verdict.SATISFIED
+
+    # An opaque model cannot be reviewed, so a change to it is never reviewed.
+    (root / "docs" / "architecture.drawio").write_text("<mxfile/>", encoding="utf-8")
+    assert _probe_models_are_diffable(root).verdict is Verdict.VIOLATED
+
+
+def test_c12_a_mermaid_block_in_markdown_counts_as_a_model(tmp_path) -> None:
+    # Most teams model in fenced diagrams inside docs rather than in a modelling tool,
+    # and a probe that missed those would report `unknown` for repositories that are
+    # in fact modelling.
+    from governova_evidence import Verdict, _probe_models_versioned
+
+    root = _model_repo(tmp_path, ("design.md", "# Design\n\n```mermaid\ngraph TD;\nA-->B;\n```\n"))
+    assert _probe_models_versioned(root).verdict is Verdict.SATISFIED
+
+
+def test_c12_boundary_model_is_recognised_by_name(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_context_model
+
+    named = _model_repo(tmp_path, ("system-context.puml", "@startuml\n@enduml\n"))
+    assert _probe_context_model(named).verdict is Verdict.SATISFIED
+
+
+def test_c12_models_without_a_boundary_are_unknown_not_violated(tmp_path) -> None:
+    # The negative half: a boundary may be modelled inside a document whose filename
+    # says nothing, so absence of the *name* is not evidence of absence of the model.
+    from governova_evidence import Verdict, _probe_context_model
+
+    unnamed = _model_repo(tmp_path, ("sequence-checkout.puml", "@startuml\n@enduml\n"))
+    assert _probe_context_model(unnamed).verdict is Verdict.UNKNOWN
+
+
 def test_every_probe_binds_a_standard_that_exists() -> None:
     """A probe citing a non-existent standard is as ungrounded as a stray rule."""
     root = resolve_repo_root()

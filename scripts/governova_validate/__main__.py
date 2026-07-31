@@ -14,7 +14,7 @@ import typer
 from governova_compile.discovery import resolve_repo_root
 from governova_compile.schema import CompiledIndex, IntegrityIssue, Severity
 from governova_compile.writer import load_index, verify_checksum
-from rich.console import Console
+from governova_console import console as shared_console
 from rich.table import Table
 
 from governova_validate.checks import ALL_CHECKS
@@ -24,7 +24,7 @@ app = typer.Typer(
     add_completion=False,
     help="Validate the compiled Governova constitutional index.",
 )
-console = Console()
+console = shared_console()
 
 _ERROR_SEVERITIES = {Severity.SEV0, Severity.SEV1, Severity.SEV2}
 

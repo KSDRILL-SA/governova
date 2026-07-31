@@ -24,9 +24,9 @@ from governova_compile.writer import (
     verify_checksum,
     write_index,
 )
+from governova_console import console as shared_console
 from governova_validate.checks import ALL_CHECKS
 from governova_validate.links import check_links
-from rich.console import Console
 from rich.table import Table
 
 app = typer.Typer(
@@ -34,7 +34,9 @@ app = typer.Typer(
     no_args_is_help=True,
     help="Governova — constitutional governance for AI-assisted development.",
 )
-console = Console()
+
+
+console = shared_console()
 
 _ERROR_SEVERITIES = {Severity.SEV0, Severity.SEV1, Severity.SEV2}
 

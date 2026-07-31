@@ -15,7 +15,7 @@ from typing import Annotated
 import typer
 from governova_compile.discovery import resolve_repo_root
 from governova_compile.schema import export_json_schema
-from rich.console import Console
+from governova_console import console as shared_console
 
 from governova_codegen.python_types import generate_python_types
 
@@ -23,7 +23,7 @@ app = typer.Typer(
     add_completion=False,
     help="Generate TypeScript and Python types from the Governova schema.",
 )
-console = Console()
+console = shared_console()
 
 
 @app.command()

@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
-from rich.console import Console
+from governova_console import console as shared_console
 from rich.table import Table
 
 from governova_ingest import Extracted, ExtractionError, extract_corpus
@@ -21,7 +21,7 @@ app = typer.Typer(
     add_completion=False,
     help="Extract text from a source corpus for the practice-to-standard conversion.",
 )
-console = Console()
+console = shared_console()
 
 
 @app.command()

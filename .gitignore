@@ -41,3 +41,9 @@ dist/
 # redistribute, and 26 MB of .doc/.pdf that would sit in git forever. The
 # extraction tooling takes a path; the corpus lives outside the repository.
 planning/SDLC&DBLC/
+
+# Text extracted from that corpus by `governova-ingest`. It is working material for
+# an author, not a repository artifact — and committing it would redistribute the
+# expression that not committing the sources exists to avoid.
+planning/extracted/
+*.corpus.json

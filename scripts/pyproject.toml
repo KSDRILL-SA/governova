@@ -53,6 +53,7 @@ governova-compile = "governova_compile.__main__:app"
 governova-validate = "governova_validate.__main__:app"
 governova-codegen = "governova_codegen.__main__:app"
 governova-enforce = "governova_enforce.__main__:app"
+governova-ingest = "governova_ingest.__main__:app"
 
 [project.optional-dependencies]
 dev = [
@@ -60,6 +61,14 @@ dev = [
     "pytest-cov>=5.0",
     "ruff>=0.6",
     "mypy>=1.11",
+]
+# `pypdf` backs one maintainer command (`governova-ingest`) used to read the Phase 2
+# source corpus. It is an extra rather than a runtime dependency because governing a
+# consumer's repository never reads a PDF, and a governance tool that pulls a document
+# parser into every install is carrying weight its users did not ask for. The legacy
+# `.doc` path needs nothing beyond the standard library.
+ingest = [
+    "pypdf>=5.0",
 ]
 
 [build-system]
@@ -103,6 +112,7 @@ packages = [
     "governova_project",
     "governova_evidence",
     "governova_supply",
+    "governova_ingest",
 ]
 
 [tool.mypy]
@@ -129,4 +139,5 @@ files = [
     "governova_project",
     "governova_evidence",
     "governova_supply",
+    "governova_ingest",
 ]

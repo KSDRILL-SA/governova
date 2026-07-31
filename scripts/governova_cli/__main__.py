@@ -967,5 +967,61 @@ def requirements_lint(
         raise typer.Exit(code=1)
 
 
+@app.command()
+def schema(
+    paths: Annotated[
+        list[Path] | None,
+        typer.Argument(help="Schema files. Omitted = discover them under the repository."),
+    ] = None,
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+    strict: Annotated[
+        bool, typer.Option("--strict", help="Exit non-zero when certain findings exist.")
+    ] = False,
+) -> None:
+    """Analyse data-model soundness (C14) — Prisma and SQL DDL."""
+    from governova_schema import Confidence, analyse_path, analyse_repository
+
+    root = repo_root or resolve_target_root()
+    if paths:
+        schemas, findings, unknowns = [], [], []
+        for p in paths:
+            s, f, u = analyse_path(p, root=root)
+            schemas.append(s)
+            findings.extend(f)
+            unknowns.extend(u)
+    else:
+        schemas, findings, unknowns = analyse_repository(root)
+
+    if not schemas:
+        # No schema is not a sound schema. Same rule as requirements tier 0.
+        console.print("[yellow]unknown[/] — no Prisma or SQL schema found in this repository.")
+        return
+
+    tables = sum(len(s.tables) for s in schemas)
+    certain = [f for f in findings if f.confidence is Confidence.CERTAIN]
+    probable = [f for f in findings if f.confidence is Confidence.PROBABLE]
+    console.print(
+        f"schemas={len(schemas)} tables={tables} "
+        f"certain={len(certain)} probable={len(probable)}"
+    )
+    for finding in (*certain, *probable):
+        mark = "[red]certain[/]" if finding.confidence is Confidence.CERTAIN else "[yellow]probable[/]"
+        where = f"{finding.source_path}:{finding.table}" if finding.table else finding.source_path
+        console.print(f"  {mark} [bold]{finding.code}[/] {where} — {finding.message}")
+
+    for note in (n for s in schemas for n in s.notes):
+        console.print(f"[dim]· {note}[/]")
+
+    if unknowns:
+        # Printed, not omitted. A silent gap looks like a clean result.
+        questions = sorted({u.question for u in unknowns})
+        console.print(
+            f"\n[dim]unanswered: {', '.join(questions)} — a schema does not declare "
+            f"functional dependencies, and guessing them would discredit the rest.[/]"
+        )
+    if certain and strict:
+        raise typer.Exit(code=1)
+
+
 if __name__ == "__main__":
     app()

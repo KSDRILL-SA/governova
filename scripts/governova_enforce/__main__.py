@@ -139,10 +139,18 @@ def _run_semantic(scannable: list[Path], fmt: Fmt, root: Path) -> int:
     """
     cfg = semantic_from_env()
     if not cfg.is_configured:
-        if fmt is not Fmt.github:
-            console.print(
-                "[dim]semantic tier inactive — set GOVERNOVA_LLM_* to enable the advisory pass[/]"
-            )
+        # Inactive is a valid, stated outcome — not a silence. There is no default
+        # endpoint (ADR-008), so this is the expected result until one is configured,
+        # and saying so keeps it distinguishable from an endpoint that died.
+        message = (
+            "semantic tier inactive — no endpoint configured (ADR-008: no default is "
+            "bundled). Set GOVERNOVA_LLM_* to enable the advisory pass; a local "
+            "OpenAI-compatible server is the zero-cost route."
+        )
+        if fmt is Fmt.github:
+            print(f"::notice::{message}")
+        elif fmt is not Fmt.json:
+            console.print(f"[dim]{message}[/]")
         return 0
     if fmt is Fmt.json:
         return 0  # json output is the reliable-tier machine contract

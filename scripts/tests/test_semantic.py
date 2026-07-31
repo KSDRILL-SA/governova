@@ -83,6 +83,81 @@ def test_review_degrades_on_transport_error():
     assert review("code", standards=[std], index=INDEX, config=ACTIVE, transport=boom) == []
 
 
+def test_a_clean_review_and_a_failed_one_are_distinguishable():
+    """The defect #142 was filed for, and the reason it survived two releases.
+
+    An unreachable endpoint, a rejected token, and a genuinely clean review all
+    produce zero findings. Before this, all three produced *identical* output — so a
+    green build was not evidence the tier had run, and for two releases it had not.
+    """
+    from governova_semantic import Outcome, review_result
+    from governova_semantic.client import SemanticUnavailableError
+
+    std = next(s for c in INDEX.constitutions for s in c.standards)
+
+    def clean(cfg, messages):
+        return json.dumps({"findings": []})
+
+    def dead(cfg, messages):
+        raise SemanticUnavailableError("semantic endpoint returned HTTP 410", status=410)
+
+    reviewed = review_result("code", standards=[std], index=INDEX, config=ACTIVE, transport=clean)
+    failed = review_result("code", standards=[std], index=INDEX, config=ACTIVE, transport=dead)
+
+    # Both have no findings — that is the whole trap.
+    assert reviewed.findings == failed.findings == []
+    # And they are no longer confusable.
+    assert reviewed.outcome is Outcome.REVIEWED and reviewed.ran
+    assert failed.outcome is Outcome.UNAVAILABLE and not failed.ran
+    assert failed.status == 410
+
+
+def test_the_inactive_and_ungrounded_outcomes_are_also_named():
+    from governova_semantic import Outcome, review_result
+
+    inactive = review_result("anything", config=from_env({}), transport=lambda c, m: 1 / 0)
+    assert inactive.outcome is Outcome.INACTIVE and not inactive.ran
+
+    ungrounded = review_result(
+        "code", standards=[], index=INDEX, config=ACTIVE, transport=lambda c, m: 1 / 0
+    )
+    assert ungrounded.outcome is Outcome.NOT_GROUNDED and not ungrounded.ran
+
+
+def test_the_diagnostic_never_echoes_a_url_or_a_key():
+    """ADR-006 — errors never echo URLs or credentials, and CI logs are widely read.
+
+    The negative half of the fix: making failure visible must not make secrets
+    visible. A status code carries no secret; a URL configured as
+    `https://user:key@host` carries two.
+    """
+    import urllib.error
+
+    from governova_semantic.client import SemanticUnavailableError, _post
+
+    secret_url = "https://user:sup3rs3cret@endpoint.example/v1"
+    cfg = SemanticConfig(model="m", base_url=secret_url, api_key="sk-abcdef123456")
+
+    def raiser(request, timeout):
+        raise urllib.error.HTTPError(secret_url, 410, "Gone", {}, None)  # type: ignore[arg-type]
+
+    import governova_semantic.client as client_mod
+
+    original = client_mod.urllib.request.urlopen
+    client_mod.urllib.request.urlopen = raiser  # type: ignore[assignment]
+    try:
+        with pytest.raises(SemanticUnavailableError) as excinfo:
+            _post(cfg, {}, {})
+    finally:
+        client_mod.urllib.request.urlopen = original  # type: ignore[assignment]
+
+    text = str(excinfo.value)
+    assert "410" in text
+    assert "sup3rs3cret" not in text
+    assert "sk-abcdef123456" not in text
+    assert "endpoint.example" not in text
+
+
 def test_describe_code_with_mock_and_inactive():
     out = describe_code("def f():\n    pass\n", config=ACTIVE, transport=lambda c, m: "  Defines f.  ")
     assert out == "Defines f."

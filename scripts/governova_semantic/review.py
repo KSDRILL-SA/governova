@@ -11,7 +11,8 @@ from __future__ import annotations
 
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from enum import StrEnum
 
 from governova_compile.schema import CompiledIndex, Standard
 from governova_compile.writer import load_active_index
@@ -30,6 +31,53 @@ class SemanticFinding:
     line: int | None = None
     tier: str = "semantic"
     advisory: bool = True
+
+
+class Outcome(StrEnum):
+    """What actually happened, as distinct from what was found.
+
+    This tier degrades silently by design — an advisory check that fails a build over
+    a typo'd secret is a worse product, and REQ-008 fixes that. But *silent* and
+    *invisible* are different things, and conflating them cost two releases: an
+    unreachable endpoint, a rejected token, and a clean review all produced zero
+    findings, so a green build was not evidence the tier had run at all.
+
+    The outcome is reported; the build result still never changes.
+    """
+
+    INACTIVE = "inactive"
+    """No endpoint, key, or model configured. The tier is off, deliberately."""
+
+    NOT_GROUNDED = "not-grounded"
+    """No standard was relevant to this code, so nothing was asked."""
+
+    REVIEWED = "reviewed"
+    """The endpoint answered. Findings are the real answer, including none."""
+
+    UNAVAILABLE = "unavailable"
+    """The endpoint did not answer. **Zero findings here means nothing.**"""
+
+
+@dataclass(frozen=True)
+class ReviewResult:
+    """A review's findings *and* whether the review happened."""
+
+    outcome: Outcome
+    findings: list[SemanticFinding] = field(default_factory=list)
+    detail: str = ""
+    """Human-readable diagnosis. Never contains a URL, a key, or any part of either."""
+
+    status: int | None = None
+    """HTTP status when the endpoint answered with one. Safe to log; carries no secret."""
+
+    @property
+    def ran(self) -> bool:
+        """True only when the endpoint actually answered.
+
+        The property every caller should branch on before treating an empty finding
+        list as a clean review.
+        """
+        return self.outcome is Outcome.REVIEWED
 
 
 def _all_standards(index: CompiledIndex) -> list[Standard]:
@@ -92,6 +140,53 @@ def parse_findings(content: str, allowed_ids: set[str]) -> list[SemanticFinding]
     return out
 
 
+def review_result(
+    code: str,
+    standards: list[Standard] | None = None,
+    *,
+    index: CompiledIndex | None = None,
+    config: SemanticConfig | None = None,
+    transport: Transport | None = None,
+) -> ReviewResult:
+    """Run an advisory semantic review of `code`, reporting what happened.
+
+    Never raises and never changes a build result (REQ-008) — but it always says
+    which of the four outcomes occurred, so an empty finding list can be read
+    correctly instead of being mistaken for a clean review.
+    """
+    cfg = config or from_env()
+    if not cfg.is_configured:
+        return ReviewResult(
+            outcome=Outcome.INACTIVE,
+            detail="no endpoint, model, or key configured — set GOVERNOVA_LLM_*",
+        )
+    idx = index or load_active_index()
+    grounded = standards if standards is not None else relevant_standards(idx, code)
+    if not grounded:
+        return ReviewResult(
+            outcome=Outcome.NOT_GROUNDED,
+            detail="no standard matched this code, so none was submitted for review",
+        )
+    messages = build_messages(code, grounded)
+    send = transport or default_transport
+    try:
+        content = send(cfg, messages)
+    except SemanticUnavailableError as exc:
+        # The tier degrades rather than failing. What changed is that it now says so.
+        return ReviewResult(
+            outcome=Outcome.UNAVAILABLE,
+            detail=str(exc),
+            status=getattr(exc, "status", None),
+        )
+    allowed = {s.id.upper() for s in grounded}
+    findings = parse_findings(content, allowed)
+    return ReviewResult(
+        outcome=Outcome.REVIEWED,
+        findings=findings,
+        detail=f"reviewed against {len(grounded)} grounded standard(s)",
+    )
+
+
 def review(
     code: str,
     standards: list[Standard] | None = None,
@@ -100,21 +195,12 @@ def review(
     config: SemanticConfig | None = None,
     transport: Transport | None = None,
 ) -> list[SemanticFinding]:
-    """Run an advisory semantic review of `code`. Returns [] when inactive or on error."""
-    cfg = config or from_env()
-    if not cfg.is_configured:
-        return []  # inactive — nothing is configured
-    idx = index or load_active_index()
-    grounded = standards if standards is not None else relevant_standards(idx, code)
-    if not grounded:
-        return []
-    messages = build_messages(code, grounded)
-    send = transport or default_transport
-    try:
-        content = send(cfg, messages)
-    except SemanticUnavailableError:
-        # REQ-008 — an advisory tier leaves the build result unchanged, so an
-        # unreachable endpoint degrades to no findings rather than to a failure.
-        return []
-    allowed = {s.id.upper() for s in grounded}
-    return parse_findings(content, allowed)
+    """Findings only. Prefer `review_result` — an empty list here is ambiguous.
+
+    Kept because callers that genuinely only want findings should not have to unpack
+    an outcome they will ignore. Anything reporting to a human should use
+    `review_result` and branch on `.ran`.
+    """
+    return review_result(
+        code, standards, index=index, config=config, transport=transport
+    ).findings

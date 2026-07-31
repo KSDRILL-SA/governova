@@ -493,7 +493,7 @@ def semantic_review(
     optionally GOVERNOVA_LLM_PROTOCOL). Findings are advisory and never block.
     Provider-agnostic; the reliable rules are unaffected.
     """
-    from governova_semantic import from_env, review
+    from governova_semantic import Outcome, from_env, review_result
 
     if not from_env().is_configured:
         console.print(
@@ -505,18 +505,34 @@ def semantic_review(
         return
     index = _load(_root(repo_root))
     total = 0
+    reviewed = 0
     for p in paths:
         if not p.is_file():
             continue
-        findings = review(p.read_text(encoding="utf-8", errors="replace"), index=index)
-        for f in findings:
+        result = review_result(p.read_text(encoding="utf-8", errors="replace"), index=index)
+        if result.outcome is Outcome.UNAVAILABLE:
+            # Never report "no findings" for a review that did not happen. That
+            # ambiguity is what let an endpoint retire unnoticed for two releases.
+            console.print(
+                f"[bold red]semantic tier DID NOT RUN[/] — {result.detail}.\n"
+                f"[dim]Advisory only, so nothing is failing; but zero findings here "
+                f"means nothing was checked. Verify the endpoint, the token's "
+                f"permissions, and the model id, in that order.[/]"
+            )
+            raise typer.Exit(code=1)
+        if result.ran:
+            reviewed += 1
+        for f in result.findings:
             loc = f"{p}:{f.line}" if f.line else str(p)
             console.print(f"  [magenta]semantic[/] [bold]{f.standard}[/] {loc} — {f.message}")
             total += 1
+    if not reviewed:
+        console.print("[yellow]no file matched a standard[/] — nothing was submitted for review.")
+        return
     console.print(
-        f"[dim]{total} advisory semantic finding(s)[/]"
+        f"[dim]{total} advisory semantic finding(s) across {reviewed} reviewed file(s)[/]"
         if total
-        else "[green]no semantic findings[/]"
+        else f"[green]reviewed {reviewed} file(s) — no semantic findings[/]"
     )
 
 

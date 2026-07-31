@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C0 — Constitutional Order                                          |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.4                                                               |
+| **Version**        | v1.5                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -384,14 +384,11 @@ lock date and back-filled here.
 | **C9** | Product & Feature | Phase 3 | S9.1–S9.30 | 30 | — | LOCKED |
 | **C10** | AI Collaboration | Phase 3 | S10.1–S10.37 | 37 | — | LOCKED (v1.1) |
 | **C11** | Requirements Engineering | Phase 0 | S11.1–S11.15 | 15 | — | LOCKED (v1.1) |
+| **C12** | System Modelling | Phase 1 | S12.1–S12.9 | 9 | C11 · C06 | LOCKED (v1.0) |
 | **C13** | Software Evolution | Phase 2 | S13.1–S13.11 | 11 | `protocols/brownfield-adoption.md` | LOCKED (v1.0) |
 | **C14** | Data Design | Phase 1 | S14.1–S14.14 | 14 | C5 — Database Constitution | LOCKED (v1.0) |
 
-> **C12 (System Modelling) is reserved by ADR-007 and not yet written.** The gap in the
-> numbering is deliberate: its identifier was assigned when the phase was decided, and an
-> identifier is never reassigned (`framework/format-specification.md`, ID permanence).
-
-> **System total: 658 unique standards across 14 constitutions.**
+> **System total: 667 unique standards across 15 constitutions.**
 > Every standard has exactly one home constitution. Cross-references do not imply shared
 > ownership. No overlap. No footnotes.
 >
@@ -453,6 +450,7 @@ lock date and back-filled here.
 | **C2 — Backend Constitution** | Service architecture, API contracts, OpenAPI-first development, database access from backend services, performance, resilience, security middleware, observability, FastAPI specifics |
 | **C3 — Auth Constitution** | Authentication strategy per stack, NextAuth.js governance, JWT lifecycle, RBAC, OAuth, session management, security baseline, audit logging |
 | **C4 — Frontend Constitution** | Frontend architecture, mobile-first standards, state management, Angular and Next.js specific standards, group-build methodology, layer build order |
+| **C12 — System Modelling** | What the system *is*: its boundary, which modelling views it maintains, interaction and behavioural models, and whether a model still matches the system it describes |
 | **C14 — Data Design** | How data is *structured*: entity identity, referential integrity, normalisation and deliberate denormalisation, relationship modelling (M:N resolution, fan traps, redundant paths), time-variant data, and the three-stage database life cycle |
 | **C5 — Database Constitution** | Database assignment by data type, PostgreSQL and Prisma standards, MongoDB and Beanie standards, ChromaDB standards, cross-database integrity, migration governance |
 | **C6 — Full-Stack Architecture** | Dual-stack system topology, stack assignment framework for new systems, request flows per stack, cross-stack communication, deployment coordination, ADR process |
@@ -504,6 +502,7 @@ C14 — Data Design                   ← How data is structured. Schema soundne
 C5  — Database Constitution         ← Data storage and integrity decisions.
 C4  — Frontend Constitution         ← UI, client-side, and rendering decisions.
 C6  — Full-Stack Architecture       ← Integration, stack assignment, and topology.
+C12 — System Modelling              ← What the system is. Boundary and views.
 C11 — Requirements Engineering      ← What the system must do. Scope and traceability.
 C1  — Engineering Standards         ← Process, workflow, and code quality decisions.
 C7  — Testing Constitution          ← Quality validation and coverage decisions.
@@ -919,9 +918,11 @@ new failure pattern produces a new entry. The register grows — it is never pru
 
 | v1.4 | 2026-07-31 | **Admitted C13 — Software Evolution & Maintenance** as the fourteenth core constitution (ADR-007 Stage 4). §5.1 register gains its row and the system total moves to 658 across 14 constitutions; C12 remains reserved and unwritten. §6 places it in Phase 2 alongside C7 and C8. §7.1 inserts it at **rank 11**, directly below C7 and above C8. No existing standard changed in meaning, scope, priority, or enforcement; ranks from C8 downward shift by one. | Every constitution before C13 governed a system being *built*. Maintenance consumes the majority of a system's lifetime cost and was addressed only by a brownfield protocol. Rank 11 encodes the trade: evolution yields to the quality gates that decide whether a change may ship, but outranks deployment and operations, because a change that is unsafe to make is not made safe by the care with which it is released. |
 
+| v1.5 | 2026-07-31 | **Admitted C12 — System Modelling** as the fifteenth core constitution (ADR-007 Stage 3), completing the four constitutions that phase adds. §5.1 register gains its row and the system total moves to 667 across 15 constitutions; the reserved-identifier note is removed, since no core identifier is now unwritten. §6 places it in Phase 1. §7.1 inserts it at **rank 8**, directly below C6 and above C11. No existing standard changed in meaning, scope, priority, or enforcement; ranks from C11 downward shift by one. | C11 governs what a system must do and C6 governs the architecture built to do it; nothing governed deciding what the system *is*. Rank 8 encodes the trade: a model expresses an architecture and so yields to the constitutions that decide it, but outranks requirements traceability, because a model is the form in which a requirement becomes something an architecture can be built from. |
+
 ---
 
-> **LOCKED — v1.4 — 2026-07-31**
+> **LOCKED — v1.5 — 2026-07-31**
 >
 > This document is locked. No section, standard, format specification, protocol, or register
 > entry may be added, removed, or modified without following the Amendment Protocol defined

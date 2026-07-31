@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-07-31T05:59:32.999981Z",
-  "source_commit_sha": "d06dc00",
-  "checksum": "sha256:fa9af5e295a932759b6d59e168877dc0cf333220f64de8688180a5b593659e47",
+  "compiled_at": "2026-07-31T06:27:21.546217Z",
+  "source_commit_sha": "4261f50",
+  "checksum": "sha256:fa6ba90db508aed0a7ab9b019cc9e539c86dcb75d3ffbaedc417051ca9df7e4b",
   "framework": [
     {
       "id": "format-specification",
@@ -53,7 +53,7 @@
       "header": {
         "document": "C0 — Constitutional Order",
         "organisation": "KSDRILL SA",
-        "version": "v1.4",
+        "version": "v1.5",
         "status": "LOCKED",
         "locked_date": "2026-05-08",
         "next_review": "2026-08-08",
@@ -84,7 +84,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-      "hierarchy_rank": 9,
+      "hierarchy_rank": 10,
       "binds_implementation": false,
       "standards": [
         {
@@ -14909,7 +14909,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-      "hierarchy_rank": 10,
+      "hierarchy_rank": 11,
       "binds_implementation": false,
       "standards": [
         {
@@ -16313,7 +16313,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-      "hierarchy_rank": 12,
+      "hierarchy_rank": 13,
       "binds_implementation": false,
       "standards": [
         {
@@ -18284,7 +18284,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-      "hierarchy_rank": 13,
+      "hierarchy_rank": 14,
       "binds_implementation": false,
       "standards": [
         {
@@ -19136,7 +19136,7 @@
         "paired_with": "`AI-INSTRUCTIONS.md` · `workflow/ksdrill-sa-ai-workflow.md`"
       },
       "path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-      "hierarchy_rank": 14,
+      "hierarchy_rank": 15,
       "binds_implementation": false,
       "standards": [
         {
@@ -20342,7 +20342,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
-      "hierarchy_rank": 8,
+      "hierarchy_rank": 9,
       "binds_implementation": false,
       "standards": [
         {
@@ -20881,6 +20881,363 @@
       ]
     },
     {
+      "id": "C12",
+      "number": 12,
+      "name": "System Modelling",
+      "phase": "1",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
+      "header": {
+        "document": "C12 — System Modelling",
+        "organisation": "KSDRILL SA",
+        "version": "v1.0",
+        "status": "LOCKED",
+        "locked_date": "2026-07-31",
+        "next_review": "2026-10-31",
+        "applies_to": "All Systems · Both Stacks · Solo Dev · Team",
+        "paired_with": "C11 — Requirements Engineering · C06 — Full-Stack Architecture"
+      },
+      "path": "constitution/core/phase-1-core-architecture/C12-modelling-constitution.md",
+      "hierarchy_rank": 8,
+      "binds_implementation": false,
+      "standards": [
+        {
+          "id": "S12.1",
+          "title": "A System Boundary Is Modelled Before Its First External Interface",
+          "constitution_id": "C12",
+          "priority": "High",
+          "applies_to": "All Stacks · every system with an external dependency or consumer",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S11.1",
+              "description": "requirements reachable"
+            },
+            {
+              "standard_id": "S6.8",
+              "description": "architectural decisions recorded"
+            }
+          ],
+          "enforced_by": [
+            "structural probe — a context model artifact exists in the repository"
+          ],
+          "statement": "Before a system exposes or consumes its first external interface, it carries a model of\nits boundary: what is inside the system, what is outside, and what crosses.",
+          "rationale": "The boundary is the one architectural decision that cannot be deferred, because every\nsubsequent decision assumes an answer to it. Teams that never state it discover they held\ndifferent answers at integration time — the expensive moment, when both sides are built.\nA boundary model is also the only artifact that makes \"out of scope\" a statement about the\nsystem rather than an opinion about a ticket.",
+          "anti_patterns": [
+            {
+              "id": "AP-S12.1a",
+              "description": "External interfaces built with no model of what is inside the system and what is outside it, so scope is negotiated per-ticket and integration reveals that no two people held the same boundary.",
+              "parent_standard_id": "S12.1"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 5, System Modeling (context models)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C12-modelling-constitution.md",
+          "source_line": 76
+        },
+        {
+          "id": "S12.2",
+          "title": "Models Are Versioned With the Code They Describe",
+          "constitution_id": "C12",
+          "priority": "High",
+          "applies_to": "All Stacks · all systems",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S12.1",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "structural probe — model artifacts present under version control"
+          ],
+          "statement": "A model lives in the repository alongside what it describes, and changes through the same\nreview as the code. A model held only in a wiki, a shared drive, or a diagramming service\nis not part of the system.",
+          "rationale": "A model outside version control cannot be reviewed with the change that invalidates it,\ncannot be reverted with a revert, and cannot be found by anybody who was not told where it\nis. It also has no author and no date that survives, so a reader cannot judge its age —\nwhich is the only fact they need most.",
+          "anti_patterns": [
+            {
+              "id": "AP-S12.2a",
+              "description": "Models held outside version control, so they cannot be reviewed alongside the change that invalidates them and a reader cannot tell how old they are.",
+              "parent_standard_id": "S12.2"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 5, System Modeling"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C12-modelling-constitution.md",
+          "source_line": 106
+        },
+        {
+          "id": "S12.3",
+          "title": "A Model Is Expressed in a Form That Diffs",
+          "constitution_id": "C12",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S12.2",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "structural probe — model artifacts are diffable text",
+            "not opaque binaries"
+          ],
+          "statement": "Models are authored in a text format whose changes are legible in a diff. An exported\nimage may accompany a model; it is never the model.",
+          "rationale": "A model that cannot be diffed cannot be reviewed, and a change nobody can review is a\nchange nobody does review. The practical consequence is that the model stops changing:\ncorrecting it requires opening a separate tool, so the correction is deferred, and the\nmodel drifts from the system in the one direction it never recovers from.",
+          "anti_patterns": [
+            {
+              "id": "AP-S12.3a",
+              "description": "A model kept only as an opaque binary or exported image, so a change to it is invisible in review and correcting it requires leaving the repository.",
+              "parent_standard_id": "S12.3"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 5, System Modeling"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C12-modelling-constitution.md",
+          "source_line": 136
+        },
+        {
+          "id": "S12.4",
+          "title": "The Views a System Maintains Are Declared",
+          "constitution_id": "C12",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S12.1",
+              "description": null
+            },
+            {
+              "standard_id": "S6.8",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "review — which views a system needs is a judgement about that system"
+          ],
+          "statement": "A system records which modelling views it maintains — **context**, **interaction**,",
+          "rationale": "Undeclared modelling produces two failures that look opposite and share a cause. Either\nevery view is attempted, most are abandoned half-finished, and readers cannot tell the\nabandoned from the current; or no view is maintained and each engineer models privately,\nin their head, differently. Naming the set converts modelling from an aspiration into a\ncommitment with a scope.\n\nReview-only for a reason worth stating: which views a system needs depends on what the\nsystem does. A check that demanded all four would be wrong for most systems, and one that\ndemanded any would be satisfied by the least useful.",
+          "anti_patterns": [
+            {
+              "id": "AP-S12.4a",
+              "description": "Modelling attempted with no declared set of views, so abandoned diagrams sit indistinguishable from current ones and no reader can tell which to trust.",
+              "parent_standard_id": "S12.4"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 5, System Modeling"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C12-modelling-constitution.md",
+          "source_line": 172
+        },
+        {
+          "id": "S12.5",
+          "title": "Every Cross-Boundary Flow Has an Interaction Model",
+          "constitution_id": "C12",
+          "priority": "High",
+          "applies_to": "All Stacks · every flow crossing a system or trust boundary",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S12.1",
+              "description": null
+            },
+            {
+              "standard_id": "S2.2",
+              "description": "layers communicate through defined contracts"
+            }
+          ],
+          "enforced_by": [
+            "review — a *flow* spans systems this repository cannot enumerate"
+          ],
+          "statement": "A flow that crosses a system boundary or a trust boundary carries a model of the\ninteraction: who initiates it, what passes, in what order, and what happens when a step\nfails.",
+          "rationale": "Cross-boundary failure modes are the ones nobody owns. Inside a system, a broken call is\nsomebody's bug; across a boundary, each side believes the other handles it, and the\nresulting gap is discovered by a user. The ordering matters as much as the content —\nmost integration defects are not wrong data but right data at the wrong time.\n\nReview-only because the other side of a boundary is, by definition, not in this\nrepository. A check confined to one repository would report a clean result for exactly the\nflows that fail.",
+          "anti_patterns": [
+            {
+              "id": "AP-S12.5a",
+              "description": "A cross-boundary flow with no modelled sequence or failure path, so each side assumes the other handles the failure and neither does.",
+              "parent_standard_id": "S12.5"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 5, System Modeling (interaction models)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C12-modelling-constitution.md",
+          "source_line": 206
+        },
+        {
+          "id": "S12.6",
+          "title": "An Entity With a Lifecycle Has a Behavioural Model",
+          "constitution_id": "C12",
+          "priority": "Standard",
+          "applies_to": "All Stacks · every entity with more than two states",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S14.12",
+              "description": "history is keyed by time"
+            }
+          ],
+          "enforced_by": [
+            "review — a lifecycle's *legality* is domain meaning",
+            "not a shape in the code"
+          ],
+          "statement": "An entity that moves through states carries a model of those states and the transitions\npermitted between them, including which transitions are forbidden.",
+          "rationale": "State machines that exist only as scattered conditionals permit every transition nobody\nexplicitly prevented. The forbidden transitions are the point — a refunded order that\nbecomes shippable, a cancelled subscription that renews, an approved document that returns\nto draft carrying its approval. Each is legal in code and illegal in the business, and the\ngap is invisible until it happens.\n\nReview-only because which transitions are illegal is domain meaning. Nothing in a\nrepository distinguishes a missing transition from a forbidden one.",
+          "anti_patterns": [
+            {
+              "id": "AP-S12.6a",
+              "description": "An entity's lifecycle existing only as scattered conditionals, so every transition nobody explicitly prevented is permitted, including the ones the business forbids.",
+              "parent_standard_id": "S12.6"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 5, System Modeling (behavioural models)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C12-modelling-constitution.md",
+          "source_line": 240
+        },
+        {
+          "id": "S12.7",
+          "title": "A Model Changes With the Contract It Describes",
+          "constitution_id": "C12",
+          "priority": "Critical",
+          "applies_to": "All Stacks · every system carrying both a model and a published contract",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S12.2",
+              "description": null
+            },
+            {
+              "standard_id": "S13.5",
+              "description": "impact analysis on shared structure"
+            }
+          ],
+          "enforced_by": [
+            "structural probe — model artifacts are not older than the contracts they describe"
+          ],
+          "statement": "When a published contract changes — an API specification, a schema, an interface\ndefinition — the models describing it change in the same review or are recorded as no\nlonger describing it.",
+          "rationale": "Model drift is not a documentation problem; it is a **correctness** problem with a delay.\nEvery reader who trusts a stale model makes a decision on false information, and the more\nauthoritative the model looks the more expensive the decision. Because nothing fails when\na model goes stale, the drift is discovered only when somebody acts on it.",
+          "anti_patterns": [
+            {
+              "id": "AP-S12.7a",
+              "description": "A published contract changed with its models left untouched, so every reader who trusts them makes decisions on a description of a system that no longer exists.",
+              "parent_standard_id": "S12.7"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 5, System Modeling"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C12-modelling-constitution.md",
+          "source_line": 277
+        },
+        {
+          "id": "S12.8",
+          "title": "A Model Names What It Realises",
+          "constitution_id": "C12",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S11.1",
+              "description": null
+            },
+            {
+              "standard_id": "S12.4",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "review — a model's *subject* is meaning",
+            "which no artifact declares mechanically"
+          ],
+          "statement": "A model names the requirements or the architectural decision it realises. A model that\nexplains nothing in particular explains nothing.",
+          "rationale": "This is where modelling earns its place: it is the bridge between what was asked for and\nwhat was built, and a model attached to neither is decoration. The practical test is\ndeletion — nobody can decide whether a model may be deleted without knowing what it was\nfor, so unattached models are never deleted and accumulate until the set as a whole is\ndistrusted.",
+          "anti_patterns": [
+            {
+              "id": "AP-S12.8a",
+              "description": "A model naming neither a requirement nor a decision, so nobody can judge whether it is still needed and it survives every review by default.",
+              "parent_standard_id": "S12.8"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 5, System Modeling"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C12-modelling-constitution.md",
+          "source_line": 307
+        },
+        {
+          "id": "S12.9",
+          "title": "A Model That No Longer Holds Is Corrected or Deleted",
+          "constitution_id": "C12",
+          "priority": "High",
+          "applies_to": "All Stacks · all systems",
+          "phase": "1",
+          "phase_label": "Phase 1 — Core Architecture",
+          "depends_on": [
+            {
+              "standard_id": "S12.7",
+              "description": null
+            },
+            {
+              "standard_id": "S13.3",
+              "description": "dead code is deleted"
+            }
+          ],
+          "enforced_by": [
+            "review — whether a model still *holds* is a comparison only a reader can make"
+          ],
+          "statement": "A model discovered not to match the system is corrected, or deleted with a note of what\nreplaced it. It is not left in place with a caveat.",
+          "rationale": "A model marked \"may be out of date\" is read by everyone as authoritative anyway, because\nthe caveat is at the top and the detail is everywhere else. Retaining it costs what a wrong\nmodel costs and buys what no model buys. Deleting it is the honest act: a reader with no\nmodel asks someone, and gets a true answer.",
+          "anti_patterns": [
+            {
+              "id": "AP-S12.9a",
+              "description": "A known-stale model retained behind a disclaimer, so it keeps the authority of documentation while carrying none of the accuracy.",
+              "parent_standard_id": "S12.9"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 5, System Modeling"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-1-core-architecture/C12-modelling-constitution.md",
+          "source_line": 337
+        }
+      ]
+    },
+    {
       "id": "C13",
       "number": 13,
       "name": "Software Evolution",
@@ -20899,7 +21256,7 @@
         "paired_with": "`protocols/brownfield-adoption.md`"
       },
       "path": "constitution/core/phase-2-quality-reliability/C13-evolution-constitution.md",
-      "hierarchy_rank": 11,
+      "hierarchy_rank": 12,
       "binds_implementation": false,
       "standards": [
         {
@@ -23802,6 +24159,7 @@
     "C05",
     "C04",
     "C06",
+    "C12",
     "C11",
     "C01",
     "C07",
@@ -23821,6 +24179,7 @@
       "C04",
       "C05",
       "C06",
+      "C12",
       "C14"
     ],
     "2": [
@@ -23834,8 +24193,8 @@
     ]
   },
   "integrity": {
-    "standards_extracted": 658,
-    "anti_patterns_extracted": 486,
+    "standards_extracted": 667,
+    "anti_patterns_extracted": 495,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

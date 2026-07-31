@@ -84,10 +84,31 @@ def _all_standards(index: CompiledIndex) -> list[Standard]:
     return [s for c in index.constitutions for s in c.standards]
 
 
-def relevant_standards(index: CompiledIndex, code: str, limit: int = 12) -> list[Standard]:
-    """Pick the standards most likely relevant to `code` by title-word overlap.
+ALWAYS_GROUNDED: tuple[str, ...] = ("S1.106", "S1.107")
+"""Standards with **no lexical signature**, submitted on every review.
 
-    A cheap, deterministic pre-filter that keeps the prompt grounded and bounded.
+Word overlap cannot select these, and no amount of scoring will change that: duplication
+and speculative generality are *structural* properties of code, not vocabulary in it.
+`S1.106` ("Don't Repeat Yourself") and `S1.107` ("The Simplest Correct Solution") are
+aphorisms whose words never appear in the code they govern.
+
+That made them the most expensive possible gap, because both are **deliberately left to
+the semantic tier precisely because they have no deterministic signature** — so a
+lexical pre-filter guaranteed the tier could never reach the two standards it exists for.
+Found by the evaluation harness on its first run against a perfect backend, which scored
+0.5 recall with nothing wrong with the backend.
+
+Kept as a short explicit list rather than inferred. Any inference would be a guess about
+which standards lack a signature, and the list is small because the property is rare.
+"""
+
+
+def relevant_standards(index: CompiledIndex, code: str, limit: int = 12) -> list[Standard]:
+    """Pick the standards most likely relevant to `code`, and submit only those.
+
+    A cheap, deterministic pre-filter that keeps the prompt grounded and bounded. It is
+    also a **ceiling on the tier's recall** — a standard this never selects cannot be
+    found, however good the model is — which is why `ALWAYS_GROUNDED` exists.
     """
     tokens = set(_WORD.findall(code.lower()))
     scored: list[tuple[int, Standard]] = []
@@ -97,7 +118,13 @@ def relevant_standards(index: CompiledIndex, code: str, limit: int = 12) -> list
         if overlap:
             scored.append((overlap, s))
     scored.sort(key=lambda t: (-t[0], t[1].id))
-    return [s for _, s in scored[:limit]]
+    selected = [s for _, s in scored[:limit]]
+
+    chosen = {s.id for s in selected}
+    unconditional = [
+        s for s in _all_standards(index) if s.id in ALWAYS_GROUNDED and s.id not in chosen
+    ]
+    return [*selected, *unconditional]
 
 
 def build_messages(code: str, standards: list[Standard]) -> list[dict[str, str]]:

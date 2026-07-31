@@ -193,10 +193,39 @@ def test_describe_code_with_mock_and_inactive():
 
 
 def test_relevant_standards_and_messages():
+    from governova_semantic.review import ALWAYS_GROUNDED
+
     picked = relevant_standards(INDEX, "authentication token refresh session", limit=5)
-    assert len(picked) <= 5
+    # `limit` bounds the *lexically matched* set. The unconditional standards are added
+    # on top of it, because word overlap can never select them and they are the two the
+    # tier exists to reach.
+    assert len(picked) <= 5 + len(ALWAYS_GROUNDED)
     msgs = build_messages("code here", picked)
     assert msgs[0]["role"] == "system" and "code here" in msgs[1]["content"]
+
+
+def test_standards_with_no_lexical_signature_are_always_submitted():
+    """The recall ceiling the evaluation harness found on its first run.
+
+    `S1.106` and `S1.107` are aphorisms — "Don't Repeat Yourself", "The Simplest Correct
+    Solution" — whose words never appear in the code they govern. Both are deliberately
+    left to the semantic tier because they have no *deterministic* signature, so a purely
+    lexical pre-filter guaranteed the tier could never reach the two standards it exists
+    for. A perfect backend scored 0.5 recall with nothing wrong with the backend.
+    """
+    from governova_semantic.review import ALWAYS_GROUNDED
+
+    unrelated = "def add(a, b):\n    return a + b\n"
+    picked = {s.id for s in relevant_standards(INDEX, unrelated)}
+    assert set(ALWAYS_GROUNDED) <= picked
+
+
+def test_the_unconditional_set_is_not_duplicated_when_it_also_matches():
+    # A standard that matches lexically *and* is unconditional must appear once, or the
+    # prompt carries it twice and the catalogue reads as though it mattered more.
+    picked = relevant_standards(INDEX, "shared code repeat yourself simplest correct solution")
+    ids = [s.id for s in picked]
+    assert len(ids) == len(set(ids))
 
 
 # --- protocol selection ---------------------------------------------------------

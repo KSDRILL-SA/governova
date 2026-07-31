@@ -10,6 +10,7 @@ The transport is a plain callable so tests inject a fake and never touch the net
 from __future__ import annotations
 
 import json
+import time
 import urllib.error
 import urllib.request
 from collections.abc import Callable
@@ -38,8 +39,50 @@ class SemanticUnavailableError(RuntimeError):
         self.status = status
 
 
+TRANSIENT_STATUSES: frozenset[int] = frozenset({429, 500, 502, 503, 504})
+"""Statuses that mean *try again*, not *this will never work*.
+
+Deliberately narrow. `401`, `404` and `410` are answers — retrying them wastes a
+build's time and tells nobody anything. These five are the ones a healthy endpoint
+still emits under load or during a deploy.
+
+Found while measuring a hosted backend: a single evaluation makes tens of sequential
+calls, and the provider returned an isolated `502` partway through more than once. The
+harness correctly refused to report a partial score, so the measurement could not be
+taken at all — a retry is the difference between measurable and not.
+"""
+
+MAX_ATTEMPTS = 3
+"""Total tries, not extra ones. Bounded so an outage still fails, and fails promptly.
+
+After the last attempt the error is raised exactly as before, so an endpoint that is
+genuinely down is still reported as `UNAVAILABLE` with its status. A retry must never
+be able to turn an outage into silence.
+"""
+
+BACKOFF_SECONDS = 2.0
+"""Base for exponential backoff between attempts — 2s, then 4s."""
+
+
 def _post(config: SemanticConfig, headers: dict[str, str], payload: dict[str, Any]) -> Any:
-    """POST JSON to the configured endpoint and return the decoded body."""
+    """POST JSON to the configured endpoint and return the decoded body.
+
+    Retries only `TRANSIENT_STATUSES`, at most `MAX_ATTEMPTS` times, with exponential
+    backoff. Every other failure is raised on the first attempt.
+    """
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        try:
+            return _post_once(config, headers, payload)
+        except SemanticUnavailableError as exc:
+            retryable = exc.status in TRANSIENT_STATUSES
+            if not retryable or attempt == MAX_ATTEMPTS:
+                raise
+            time.sleep(BACKOFF_SECONDS ** (attempt - 1) * BACKOFF_SECONDS)
+    raise AssertionError("unreachable")  # pragma: no cover - the loop always returns or raises
+
+
+def _post_once(config: SemanticConfig, headers: dict[str, str], payload: dict[str, Any]) -> Any:
+    """One POST. Separated so the retry policy is readable on its own."""
     endpoint = require_http_url(config.endpoint, what="semantic endpoint")
     request = urllib.request.Request(
         endpoint,

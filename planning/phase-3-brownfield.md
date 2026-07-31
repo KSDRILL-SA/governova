@@ -199,36 +199,53 @@ recommendation.
 | **Defer indefinitely** | Deferring with no criteria is the `S8.87` decay that produced `#142` |
 | **Build the evaluation harness first** | **Done** — `governova semantic-eval`, #171/#175 |
 
-### Measured, 2026-07-31
+### Measured — and re-measured after the grounding defect
 
-The harness exists and both candidates have been run through it:
+**Everything measured before 2026-08-01 was invalid.** `#180` found that the tier's
+grounding filter selected standards by word overlap between their *titles* and the
+*identifiers in the code*: on a loan-assessment handler all twelve it chose matched a single
+incidental token, and the standards the code actually violated were never submitted.
+Backends were being scored on standards they were never shown. The figures that stood here
+have been removed rather than annotated — a stale number in a plan gets quoted.
 
-| Backend | Precision (bar 90%) | Recall | Time | Verdict |
-|---|---|---|---|---|
-| `qwen2.5-coder:1.5b` local, CPU | **0%** | 0% | 13m 24s | ✗ |
-| `gpt-oss:120b` cloud, reasoning | **60–100%** (mean 75%) | mean 80% | 1m 21s | ✗ |
+**First valid measurement** — `gpt-oss:120b-cloud`, 17 fixtures, 10 required findings, 3
+runs, worst run governs:
 
-The 1.5b invented twelve findings and fired on **all four clean fixtures**, including a
-`slugify` function. At ~100s per file it is also too slow regardless of accuracy.
+| run | precision (bar 90%) | recall (bar 40%) |
+|---|---|---|
+| 1 | 48% | 100% |
+| 2 | 45% | 90% |
+| 3 | **33%** | 90% |
 
-The 120b **found the structural `S1.106` duplication case** the 1.5b could not touch, and
-3 of 4 real violations — then over-reported. **A calibration problem, not a capability
-one.**
+**Worst run 33% precision, 90% recall. Fail — and not a near miss.**
 
-Run-to-run variance was large — precision spanned a 15–40 point range across passes over
-identical input — which is why the harness gained `--runs` and judges on the worst pass.
+**The direction matters more than the verdict.** Recall rose to near-perfect: the tier finds
+essentially every seeded violation, including the structural `S1.106`/`S1.107` cases no
+deterministic rule can reach. Precision fell, and that is the honest consequence of fixing
+grounding rather than a regression — the tier now submits eight highly-applicable structural
+standards on *every* snippet, including the clean ones, and shown a standard the model finds
+a way to apply it.
 
-The 120b figures above are **after** `#178`, which added a *withhold* instruction to the
-prompt: mean precision moved 57% → 75% and mean recall 65% → 80%. A calibration fix worth
-one paragraph, and still short of the bar.
+**So the tier is restraint-limited, not reach-limited**, and the deficit is concentrated:
+`S1.105` causes 8 of 11 false positives and `S2.53` causes 4, while `S1.3`, `S1.107` and
+`S2.18` are essentially quiet. Two of those are damning rather than debatable — the fixtures
+written as the *negative case* for `S1.105` and `S2.53` were both flagged by the very
+standard they satisfy. Both statements read as unconditional prohibitions (*no* magic
+values, *any* user-scoped operation), so the model has no stopping condition.
+
+The other local result that survives: **`qwen2.5-coder:1.5b` invents findings freely**, firing
+on every clean fixture including a `slugify` function, at ~100s per file. **`qwen2.5-coder:7b`
+is unmeasurable on the dev machine** — one fixture hit the 900s timeout, the set extrapolates
+to ~2 hours — which is a hardware verdict on an Intel N150, not a model verdict. Nothing is
+known about it either way.
 
 ### Why not the local model yet
 
-**Its quality cannot currently be measured.** Governova has no evaluation harness for
-semantic findings. Without one, *"is this model good enough"* is unanswerable — and
-shipping an unmeasured model into a governance tool is exactly the *false satisfied* the
-whole corpus forbids. A semantic tier that invents a finding against `S1.104` is worse than
-one switched off, because a wrong finding teaches people to discount the right ones.
+**Its quality can now be measured, and nothing has passed.** The harness exists, and the
+argument it was built to settle still stands: shipping an unmeasured model into a governance
+tool is exactly the *false satisfied* the whole corpus forbids. A semantic tier that invents
+a finding against `S1.104` is worse than one switched off, because a wrong finding teaches
+people to discount the right ones — and at 33% precision that is what would happen.
 
 **It is also a different discipline** — eval sets, serving, distribution size, licensing —
 opened while Phase 3 is the thing with adopters waiting. And **ADR-005 already put AI on
@@ -241,13 +258,23 @@ The harness is built and has done its job: `#138` is now a decision backed by nu
 rather than intuition, and **any** backend — local or hosted — is gated behind a
 measurable bar, so the next endpoint retirement is survivable.
 
-Two cheap experiments remain before any model is tuned or shipped:
+Experiments remaining, in cost order — the first is now much narrower than it looked:
 
-1. ~~**Prompt for restraint.**~~ **Done — `#178`.** Mean precision 57% → 75%, mean recall
-   65% → 80%. Still short of the bar.
-2. **Measure a larger stock coder model.** If nothing reaches 90% precision, **the bar is
-   wrong and should be amended deliberately** rather than quietly relaxed to let something
-   through.
+1. **Give `S1.105` and `S2.53` a stopping condition in the submitted catalogue.** They cause
+   most of the deficit, and both read as unconditional prohibitions. This is a
+   prompt-construction change, not a corpus change — the standards are correctly written for
+   human readers. **One run of 1.9 minutes to find out.**
+2. **Submit fewer standards per review** — eight structural standards on one snippet invites
+   eight opinions. Scope by `applies_to` and language, or review in smaller grounded batches.
+3. **Only then** a tuned local model, which is what `#138` is actually about — and note that
+   this repository has **no evidence either way** about a competent local coder model, since
+   the 7b could not be run here.
+
+**The bar stands.** It was unreachable by construction before `#181` — at four required
+findings the only reachable precisions were 100%, 80%, 67%, 57% and 50%, so 90% silently
+meant *zero false positives in every run*. At ten required findings one mistake passes and
+two fail, and a test holds that property. If a later backend lands *just* short, that is when
+amending the bar becomes a live question — deliberately, not quietly. 33% is nowhere near it.
 
 Until then: BYO endpoint works today, and the local OpenAI-compatible recipe is documented
 in ADR-008 — offline, free, no account.

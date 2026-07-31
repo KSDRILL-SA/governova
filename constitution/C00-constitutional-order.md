@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C0 — Constitutional Order                                          |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.1                                                               |
+| **Version**        | v1.2                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -383,10 +383,16 @@ lock date and back-filled here.
 | **C8** | Platform Reliability | Phase 2 | S8.1–S8.82 | 82 | — | LOCKED |
 | **C9** | Product & Feature | Phase 3 | S9.1–S9.30 | 30 | — | LOCKED |
 | **C10** | AI Collaboration | Phase 3 | S10.1–S10.37 | 37 | — | LOCKED (v1.1) |
+| **C11** | Requirements Engineering | Phase 0 | S11.1–S11.12 | 12 | — | LOCKED (v1.0) |
 
-> **System total: 596 unique standards across 11 constitutions.**
+> **System total: 630 unique standards across 12 constitutions.**
 > Every standard has exactly one home constitution. Cross-references do not imply shared
 > ownership. No overlap. No footnotes.
+>
+> The per-row ranges above are **as-locked** and predate later amendments; several
+> constitutions have grown since. `compiled/constitution.json` is authoritative for the
+> live count, and `governova stats` regenerates it. The total on this line tracks the
+> live figure.
 
 ---
 
@@ -418,7 +424,13 @@ lock date and back-filled here.
 
 | Constitution | What It Governs |
 |---|---|
+| **C11 — Requirements Engineering** | What the system is required to do, and whether that can be traced: the interchange contract, requirement identity, requirement → code → test traceability, the obligation grammar, verifiability and quantified thresholds, requirement change management |
 | **C1 — Engineering Standards** | How we work, how we write code, the 8-phase feature lifecycle, the feature proposal standard, self-review and PR standards, Git discipline, conventional commits, sprint governance, TypeScript and Python code quality, documentation standards |
+
+> **C11 is read first within Phase 0.** Requirements precede the first line of code, and
+> C1's feature lifecycle begins from a requirement C11 governs the form of. A team with no
+> reachable requirements is **unassessed, not in violation** — C11 degrades to `unknown`
+> rather than blocking adoption.
 
 ---
 
@@ -483,6 +495,7 @@ C2  — Backend Constitution          ← Architecture and API contract decision
 C5  — Database Constitution         ← Data storage and integrity decisions.
 C4  — Frontend Constitution         ← UI, client-side, and rendering decisions.
 C6  — Full-Stack Architecture       ← Integration, stack assignment, and topology.
+C11 — Requirements Engineering      ← What the system must do. Scope and traceability.
 C1  — Engineering Standards         ← Process, workflow, and code quality decisions.
 C7  — Testing Constitution          ← Quality validation and coverage decisions.
 C8  — Platform Reliability          ← Deployment and operational decisions.
@@ -493,6 +506,13 @@ C10 — AI Collaboration              ← AI governance and permission boundary 
 The hierarchy governs conflicts — it does not imply importance. C9 and C10 are at the
 bottom of conflict resolution order because product and AI decisions must yield to
 technical correctness, not because product decisions are unimportant.
+
+**C11 sits below every architecture constitution and above C1** for the same reason read
+in both directions. A requirement never authorises an unsound schema, a weakened auth
+control, or a broken API contract — technique beats scope, and a requirement asking for
+one of those is a requirement to be renegotiated, not a licence. But a requirement does
+outrank general engineering practice, because building the wrong thing correctly is the
+costlier failure and the one no later refactor recovers.
 
 ---
 
@@ -877,10 +897,11 @@ new failure pattern produces a new entry. The register grows — it is never pru
 |---------|------|--------|--------|
 | v1.0 | 2026-05-08 | Initial lock — full rebuild of the KSDRILL SA constitutional system. HTML → Markdown. New terminology system (Standards, Anti-Patterns, Practices). Constitution-scoped standard ID format (`S{C}.{N}`). Solo/team split moved to overlays only. C1 formed by merging Team & Process + Code Quality + MentorConnect workflow. C6 formed by merging Full System Design + Full-Stack Integration. C8 formed by merging Infrastructure + Incident Response. C10 AI Collaboration added as new Phase 3 constitution with five-engineer relay model (Claude, Claude Code, ChatGPT, DeepSeek, Kimi). Implementation guides for C2, C3, C4, C5 at full depth. Auth localStorage regression (CF-01) fixed in C3 S3.14. API versioning gap addressed in C2 S2.76–S2.80. Observability consolidated into C8. Tailwind+Custom CSS dual-tool philosophy formalised in C4. ORM+Raw SQL dual-tool philosophy formalised in C5. ADRs for all four flagship systems locked. CONSTITUTION-INDEX.md template added. AI Engineer Workflow constitutionalized in workflow/. §5 standard counts populated: 594 total unique standards across C1–C10. | Full system rebuild — version reset. |
 | v1.1 | 2026-07-31 | §3.1 — added `**Grounded In:**` to the standard block as the one optional element, carrying provenance for a requirement as a citation. §3.2 — added SR-7 governing it: a citation, never an excerpt, bounded at 120 characters and rejected by `governova validate` above that. No standard added, removed, or changed in scope; the count stays 618. | A standard defended by citation is defensible to an architecture board or a regulator; a standard defended by assertion is house style. Governova's Part 19 standards were a rediscovery of established practice and said so nowhere, which understated them. ADR-007 constraint 3 requires that the provenance carry a reference and never the source's expression, because these documents are compiled, published, and shipped inside a PyPI wheel — an excerpt here is a licensing defect in every consumer's dependency tree. |
+| v1.2 | 2026-07-31 | **Admitted C11 — Requirements Engineering** as the twelfth core constitution (ADR-007 Stage 1). §5.1 register gains its row and the system total moves to 630 across 12 constitutions, with a note that per-row ranges are as-locked while the compiled index is authoritative. §6 places C11 **first within Phase 0** — requirements precede the first line of code, and C1's feature lifecycle begins from a requirement C11 governs the form of. §7.1 inserts it at **rank 7**, below every architecture constitution and above C1, with the reasoning stated inline. No existing standard changed in meaning, scope, priority, or enforcement; only the ranks below C6 shift by one. | Requirements defects are the most expensive class in software and survive every other gate this corpus provides — the code matches the request, the tests assert the request, and nothing is broken. The hierarchy position encodes the trade in both directions: technique beats scope, so a requirement never authorises an unsound schema or a weakened auth control and one that asks for either is renegotiated rather than obeyed; but scope beats general engineering practice, because building the wrong thing correctly is the failure no later refactor recovers. |
 
 ---
 
-> **LOCKED — v1.1 — 2026-07-31**
+> **LOCKED — v1.2 — 2026-07-31**
 >
 > This document is locked. No section, standard, format specification, protocol, or register
 > entry may be added, removed, or modified without following the Amendment Protocol defined

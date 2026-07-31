@@ -32,12 +32,16 @@ CONSTITUTION_REGISTRY: tuple[ConstitutionEntry, ...] = (
     ConstitutionEntry(
         "C00", 0, "Constitutional Order", None, 1, False, "constitution/C00-constitutional-order.md"
     ),
+    # C11 sits directly above C01 and below every architecture constitution
+    # (C0 §7.1). Technique beats scope — a requirement never authorises an unsound
+    # schema or a weakened auth control — but scope beats general engineering
+    # practice, because building the wrong thing correctly is the costlier failure.
     ConstitutionEntry(
         "C01",
         1,
         "Engineering Standards",
         Phase.FOUNDATION,
-        7,
+        8,
         False,
         "constitution/core/phase-0-foundation/C01-engineering-standards.md",
     ),
@@ -91,7 +95,7 @@ CONSTITUTION_REGISTRY: tuple[ConstitutionEntry, ...] = (
         7,
         "Testing Constitution",
         Phase.QUALITY_RELIABILITY,
-        8,
+        9,
         False,
         "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
     ),
@@ -100,7 +104,7 @@ CONSTITUTION_REGISTRY: tuple[ConstitutionEntry, ...] = (
         8,
         "Platform Reliability",
         Phase.QUALITY_RELIABILITY,
-        9,
+        10,
         False,
         "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
     ),
@@ -109,7 +113,7 @@ CONSTITUTION_REGISTRY: tuple[ConstitutionEntry, ...] = (
         9,
         "Product & Feature",
         Phase.PRODUCT_INTELLIGENCE,
-        10,
+        11,
         False,
         "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
     ),
@@ -118,9 +122,18 @@ CONSTITUTION_REGISTRY: tuple[ConstitutionEntry, ...] = (
         10,
         "AI Collaboration",
         Phase.PRODUCT_INTELLIGENCE,
-        11,
+        12,
         False,
         "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
+    ),
+    ConstitutionEntry(
+        "C11",
+        11,
+        "Requirements Engineering",
+        Phase.FOUNDATION,
+        7,
+        False,
+        "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
     ),
 )
 
@@ -132,6 +145,7 @@ HIERARCHY_ORDER: tuple[ConstitutionId, ...] = (
     "C05",
     "C04",
     "C06",
+    "C11",
     "C01",
     "C07",
     "C08",

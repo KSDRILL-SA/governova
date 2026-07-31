@@ -50,12 +50,33 @@ def validate_rules(index: CompiledIndex | None = None) -> list[str]:
     return sorted(r.anti_pattern for r in RULES if r.anti_pattern not in defined)
 
 
+def analyser_anti_patterns() -> set[str]:
+    """Anti-patterns bound by an **analyser** rather than by a reliable-tier rule.
+
+    `coverage_pct` has always meant "anti-patterns a regex rule reaches", and it keeps
+    that meaning here so the number stays comparable with every figure ever reported
+    against it. But that definition stopped being the whole truth when detection grew
+    past line-scanning: C11's grammar and traceability findings are as mechanical as
+    any rule, and are invisible to a metric that only counts `RULES`.
+
+    So this is reported **alongside** rather than folded in — the same treatment Layer 4
+    gets, and for the same reason. Silently widening a metric makes every historical
+    reading of it a lie.
+    """
+    try:
+        from governova_requirements.evidence import ENFORCED_ANTI_PATTERNS
+    except ImportError:  # pragma: no cover - the analyser ships in the same wheel
+        return set()
+    return set(ENFORCED_ANTI_PATTERNS)
+
+
 def enforcement_coverage(index: CompiledIndex | None = None) -> dict[str, Any]:
     """How much of the constitution's anti-pattern surface is enforceable.
 
-    The top-level keys describe **core** coverage and keep the meaning they have
-    always had, so the metric stays comparable across time. Layer 4 coverage is
-    reported alongside under `domain_*` rather than folded into the headline.
+    The top-level keys describe **core** coverage by the reliable tier and keep the
+    meaning they have always had, so the metric stays comparable across time. Layer 4
+    coverage is reported alongside under `domain_*`, and analyser-bound coverage under
+    `analyser_*` / `mechanical_*`, rather than being folded into the headline.
     """
     core = index_anti_patterns(index)
     domain = domain_anti_patterns(index)
@@ -66,6 +87,10 @@ def enforcement_coverage(index: CompiledIndex | None = None) -> dict[str, Any]:
     total = len(core)
     pct = round(100 * len(covered) / total, 1) if total else 0.0
     domain_pct = round(100 * len(covered_domain) / len(domain), 1) if domain else 0.0
+
+    by_analyser = analyser_anti_patterns() & core
+    mechanical = covered | by_analyser
+    mechanical_pct = round(100 * len(mechanical) / total, 1) if total else 0.0
 
     high = sum(1 for r in RULES if r.confidence == "high")
     medium = sum(1 for r in RULES if r.confidence == "medium")
@@ -82,4 +107,8 @@ def enforcement_coverage(index: CompiledIndex | None = None) -> dict[str, Any]:
         "domain_total_anti_patterns": len(domain),
         "domain_coverage_pct": domain_pct,
         "domain_covered": sorted(covered_domain),
+        "analyser_enforceable_anti_patterns": len(by_analyser),
+        "analyser_covered": sorted(by_analyser),
+        "mechanical_enforceable_anti_patterns": len(mechanical),
+        "mechanical_coverage_pct": mechanical_pct,
     }

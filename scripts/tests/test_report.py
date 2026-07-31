@@ -59,9 +59,9 @@ def test_json_render():
 
 
 def test_build_report_on_repo_is_well_formed():
-    # Composition test against the real repo: 11 constitutional areas, counts add up.
+    # Composition test against the real repo: 12 constitutional areas, counts add up.
     br = build_report()
-    assert len(br.areas) == 11
-    assert br.areas_green + br.areas_amber + br.areas_red == 11
+    assert len(br.areas) == 12
+    assert br.areas_green + br.areas_amber + br.areas_red == 12
     assert br.events.adrs >= 1 and br.events.runbooks >= 1
     assert 0 <= br.score.score <= 100

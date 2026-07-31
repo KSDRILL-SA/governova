@@ -20,6 +20,7 @@ will examine again.
 
 from __future__ import annotations
 
+import contextlib
 import re
 import subprocess
 from collections.abc import Callable
@@ -335,6 +336,26 @@ PROBES: tuple[Probe, ...] = (
 )
 
 
+def _requirements_results(root: Path) -> list[ProbeResult]:
+    """C11's mechanically checked standards, from the requirements analyser.
+
+    A fourth kind of evidence joins the three this module was built for. The probes
+    above answer questions about the repository's *shape*; these answer questions
+    about what it was asked to do, which needs an analyser rather than a file scan.
+    The dependency runs one way — this module knows about the analyser, never the
+    reverse — and the verdict discipline is identical: a repository exposing no
+    requirements is UNKNOWN, never SATISFIED and never VIOLATED.
+    """
+    try:
+        from governova_requirements.evidence import probe_verdicts
+    except ImportError:  # pragma: no cover - the analyser ships in the same wheel
+        return []
+    return [
+        ProbeResult(standard, Verdict(verdict), evidence)
+        for standard, verdict, evidence in probe_verdicts(root)
+    ]
+
+
 def run_probes(root: Path) -> list[ProbeResult]:
     """Run every probe against `root`. A probe that raises is UNKNOWN, never satisfied."""
     results: list[ProbeResult] = []
@@ -344,6 +365,10 @@ def run_probes(root: Path) -> list[ProbeResult]:
         # A broken probe must never claim success — any failure becomes UNKNOWN.
         except Exception as exc:
             results.append(_unknown(probe.standard, f"probe error: {type(exc).__name__}"))
+    # The analyser already degrades every failure to UNKNOWN internally; this is the
+    # belt to that braces, so an import-time fault cannot take the probe tier with it.
+    with contextlib.suppress(Exception):
+        results.extend(_requirements_results(root))
     return results
 
 
@@ -353,4 +378,10 @@ def satisfied_standards(root: Path) -> set[str]:
 
 
 def probed_standards() -> set[str]:
-    return {p.standard for p in PROBES}
+    """Standards this tier can reach — the file-shape probes plus the analysers."""
+    reachable = {p.standard for p in PROBES}
+    try:
+        from governova_requirements.evidence import MECHANICAL_STANDARDS
+    except ImportError:  # pragma: no cover - the analyser ships in the same wheel
+        return reachable
+    return reachable | set(MECHANICAL_STANDARDS)

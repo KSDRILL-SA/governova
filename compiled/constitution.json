@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-07-31T00:12:08.868380Z",
-  "source_commit_sha": "c876498",
-  "checksum": "sha256:90e1b6c088054668f4fbd6d443b1b4b662783420c8cda70304de2026b1e135c7",
+  "compiled_at": "2026-07-31T01:14:37.125463Z",
+  "source_commit_sha": "f698863",
+  "checksum": "sha256:9f0204c236a790934749700b0120d1332e2d87835d8589eb32e85e4f3d09c474",
   "framework": [
     {
       "id": "format-specification",
@@ -53,7 +53,7 @@
       "header": {
         "document": "C0 — Constitutional Order",
         "organisation": "KSDRILL SA",
-        "version": "v1.1",
+        "version": "v1.2",
         "status": "LOCKED",
         "locked_date": "2026-05-08",
         "next_review": "2026-08-08",
@@ -84,7 +84,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-      "hierarchy_rank": 7,
+      "hierarchy_rank": 8,
       "binds_implementation": false,
       "standards": [
         {
@@ -14909,7 +14909,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-      "hierarchy_rank": 8,
+      "hierarchy_rank": 9,
       "binds_implementation": false,
       "standards": [
         {
@@ -16313,7 +16313,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-      "hierarchy_rank": 9,
+      "hierarchy_rank": 10,
       "binds_implementation": false,
       "standards": [
         {
@@ -18284,7 +18284,7 @@
         "paired_with": null
       },
       "path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-      "hierarchy_rank": 10,
+      "hierarchy_rank": 11,
       "binds_implementation": false,
       "standards": [
         {
@@ -19136,7 +19136,7 @@
         "paired_with": "`AI-INSTRUCTIONS.md` · `workflow/ksdrill-sa-ai-workflow.md`"
       },
       "path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-      "hierarchy_rank": 11,
+      "hierarchy_rank": 12,
       "binds_implementation": false,
       "standards": [
         {
@@ -20320,6 +20320,451 @@
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
           "source_line": 582
+        }
+      ]
+    },
+    {
+      "id": "C11",
+      "number": 11,
+      "name": "Requirements Engineering",
+      "phase": "0",
+      "slug": null,
+      "regulatory_basis": [],
+      "reference_systems": [],
+      "header": {
+        "document": "C11 — Requirements Engineering",
+        "organisation": "KSDRILL SA",
+        "version": "v1.0",
+        "status": "LOCKED",
+        "locked_date": "2026-07-31",
+        "next_review": "2026-10-31",
+        "applies_to": "All Systems · Both Stacks · Solo Dev · Team",
+        "paired_with": null
+      },
+      "path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+      "hierarchy_rank": 7,
+      "binds_implementation": false,
+      "standards": [
+        {
+          "id": "S11.1",
+          "title": "Requirements Are Reachable by the Toolchain",
+          "constitution_id": "C11",
+          "priority": "High",
+          "applies_to": "All Stacks · all systems",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S1.27",
+              "description": "feature lifecycle"
+            },
+            {
+              "standard_id": "S9.7",
+              "description": "feature gate questions"
+            }
+          ],
+          "enforced_by": [
+            "`governova requirements status`",
+            "structural probe (`governova_requirements`)"
+          ],
+          "statement": "A system's requirements are reachable by its toolchain — as identifiers cited from code,\ntests, and commit trailers, or as a manifest in the published interchange format. How they\nare authored and where they are stored remains the team's choice; that they can be read is\nnot.",
+          "rationale": "Requirements held only in a tracker nobody links to, or in a conversation nobody recorded,\ncannot be traced, tested against, or audited. Every downstream guarantee in this\nconstitution rests on being able to name what was asked for. A system whose requirements\nare unreachable cannot demonstrate that it built the right thing, however well it built\nwhat it built.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.1a",
+              "description": "Requirements existing only as tickets, chat messages, or verbal agreement, with nothing in the repository linking any change to any of them.",
+              "parent_standard_id": "S11.1"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 75
+        },
+        {
+          "id": "S11.2",
+          "title": "Requirement Identifiers Are Unique and Permanent",
+          "constitution_id": "C11",
+          "priority": "High",
+          "applies_to": "All Stacks · all systems",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.1",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "requirements linter — `duplicate-id`"
+          ],
+          "statement": "Each requirement carries one identifier, no identifier names two requirements, and an\nidentifier is never reused once retired.",
+          "rationale": "An identifier naming two requirements makes every trace built on it ambiguous, and the\nambiguity is silent — both requirements appear linked, and a reviewer reading either sees\na satisfied reference. A reused identifier is worse: it silently reassigns the evidence\nof one requirement to another, so tests written for the retired requirement appear to\nverify the new one.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.2a",
+              "description": "The same requirement identifier appearing on two requirements, or reassigned to a new requirement after the original was withdrawn.",
+              "parent_standard_id": "S11.2"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 107
+        },
+        {
+          "id": "S11.3",
+          "title": "Every Requirement Reaches Implementing Code",
+          "constitution_id": "C11",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.1",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "`governova requirements trace` — `requirement-without-implementation`"
+          ],
+          "statement": "Every requirement a system declares is cited by the code that implements it. A requirement\nthat no artifact references is either unbuilt or untraceable, and the system records which.",
+          "rationale": "A requirement with no implementing code is invisible to everyone except the person who\nremembers it. It surfaces at release as a missing feature nobody scheduled, or at audit as\na commitment nobody can evidence. The check costs nothing and is the only mechanical answer\nto \"did we actually build all of it\".",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.3a",
+              "description": "A requirement carried in the manifest release after release with nothing in the repository referencing it, and no record of it having been descoped.",
+              "parent_standard_id": "S11.3"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 137
+        },
+        {
+          "id": "S11.4",
+          "title": "Every Requirement Is Verified by a Test That Cites It",
+          "constitution_id": "C11",
+          "priority": "Critical",
+          "applies_to": "All Stacks · all systems",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.1",
+              "description": null
+            },
+            {
+              "standard_id": "S7.7",
+              "description": "service unit tests"
+            }
+          ],
+          "enforced_by": [
+            "`governova requirements trace` — `requirement-without-test`"
+          ],
+          "statement": "Every requirement is verified by at least one test that names it. The citation is part of\nthe test — in its name, a comment, or an annotation — so the link survives refactoring and\nis readable by tooling.",
+          "rationale": "A requirement with no test is an assumption. Nothing detects when it stops being true: a\nrefactor silently removes the behaviour, every test still passes, and the regression is\nfound by the user who depended on it. Coverage percentages do not answer this question —\na suite can be at 90% coverage and verify nothing anybody asked for.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.4a",
+              "description": "A requirement implemented and shipped with no test citing its identifier, so its regression is undetectable by the suite.",
+              "parent_standard_id": "S11.4"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 8, Software Testing (acceptance testing)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 166
+        },
+        {
+          "id": "S11.5",
+          "title": "Every Requirement States an Obligation",
+          "constitution_id": "C11",
+          "priority": "High",
+          "applies_to": "All Stacks · all systems with readable requirement text",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.1",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "requirements linter — `modal-absent`"
+          ],
+          "statement": "Every requirement uses exactly one obligation verb — `shall` (mandatory), `must` (mandatory\nand critical), `should` (recommended), or `may` (optional).",
+          "rationale": "A statement with no obligation verb does not say whether it binds anyone. \"The system\nauthenticates users\" describes; it does not require. At the point of a trade-off — the only\npoint at which a requirement matters — nobody can tell whether it was negotiable, and the\nanswer is decided by whoever is under the most schedule pressure.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.5a",
+              "description": "A descriptive sentence recorded as a requirement, with no obligation verb, leaving its bindingness to be inferred under pressure.",
+              "parent_standard_id": "S11.5"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 203
+        },
+        {
+          "id": "S11.6",
+          "title": "Every Requirement Follows the Canonical Grammar",
+          "constitution_id": "C11",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems with readable requirement text",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.5",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "requirements linter — `grammar`"
+          ],
+          "statement": "A requirement reads `<subject> <obligation verb> <function>` — a named subject, one\nobligation verb, and the behaviour required of it.",
+          "rationale": "A fixed shape is what makes a requirement machine-readable and comparable. Free-form prose\nhides missing subjects and missing behaviour behind fluent sentences, and a requirement\nwhose subject is absent cannot be assigned to a component or to a person.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.6a",
+              "description": "A requirement whose subject is missing or implied, so no component owns it and no test knows what to exercise.",
+              "parent_standard_id": "S11.6"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 232
+        },
+        {
+          "id": "S11.7",
+          "title": "One Obligation per Requirement",
+          "constitution_id": "C11",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems with readable requirement text",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.5",
+              "description": null
+            },
+            {
+              "standard_id": "S1.3",
+              "description": "single concern"
+            }
+          ],
+          "enforced_by": [
+            "requirements linter — `two-obligations`"
+          ],
+          "statement": "A requirement expresses one obligation. Two obligations joined by a conjunction are two\nrequirements and are recorded as two, each with its own identifier.",
+          "rationale": "A compound requirement cannot be partially satisfied on the record: implementing half of it\nleaves the whole marked incomplete, or — far more commonly — the whole marked complete.\nIts test verifies one clause and the other silently never ships. Splitting them costs one\nidentifier and makes both states visible.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.7a",
+              "description": "A requirement joining two obligations with \"and\", so its status cannot distinguish half-built from built.",
+              "parent_standard_id": "S11.7"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 260
+        },
+        {
+          "id": "S11.8",
+          "title": "Every Obligation Names Its Actor",
+          "constitution_id": "C11",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems with readable requirement text",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.6",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "requirements linter — `passive-actor`"
+          ],
+          "statement": "A requirement names the component responsible for meeting it. Passive obligations that\nname no actor are not accepted.",
+          "rationale": "\"Credentials shall be validated\" binds nobody. Every component assumes another one does it,\nwhich is how an authorisation check ends up implemented nowhere — each layer trusting a\nneighbour that was trusting it back. Naming the actor converts a requirement into an\nassignment.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.8a",
+              "description": "A passive requirement (\"shall be validated\", \"shall be logged\") with no named component, so responsibility is diffused across every layer and held by none.",
+              "parent_standard_id": "S11.8"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 289
+        },
+        {
+          "id": "S11.9",
+          "title": "Requirements Contain No Unverifiable Terms",
+          "constitution_id": "C11",
+          "priority": "High",
+          "applies_to": "All Stacks · all systems with readable requirement text",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.6",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "requirements linter — `vague-term`"
+          ],
+          "statement": "A requirement states the property it requires, not an impression of it. Terms whose\nsatisfaction cannot be demonstrated — *fast*, *easy*, *user-friendly*, *intuitive*,\n*efficient*, *robust*, *seamless*, *appropriate* — are replaced by the measurable property\nthey were standing in for.",
+          "rationale": "An unverifiable term makes a requirement permanently disputable: no evidence can settle it,\nso it is settled by whoever is more senior or more insistent. It is also the most common\nway a requirement passes review — everyone agrees the system should be fast, which is\nprecisely why agreeing to it commits nobody to anything.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.9a",
+              "description": "A requirement resting on an unverifiable adjective, so no test can be written for it and no evidence can close it.",
+              "parent_standard_id": "S11.9"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 324
+        },
+        {
+          "id": "S11.10",
+          "title": "Every Measurable Requirement Carries a Threshold",
+          "constitution_id": "C11",
+          "priority": "High",
+          "applies_to": "All Stacks · all systems with readable requirement text",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.9",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "requirements linter — `unquantified`"
+          ],
+          "statement": "A requirement naming a measurable property — latency, throughput, availability, capacity,\nrecovery time — states its threshold and the condition under which it is measured.",
+          "rationale": "\"High availability\" is a budget request, not a requirement. Without a number there is no\npoint at which the system is finished and no point at which it has regressed, so the\nproperty is engineered to whatever was convenient and discovered to be insufficient in\nproduction. The condition matters as much as the number: 99.9% measured yearly and 99.9%\nmeasured monthly are different systems.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.10a",
+              "description": "A non-functional requirement naming a measurable property with no figure attached, leaving both \"done\" and \"regressed\" undefined.",
+              "parent_standard_id": "S11.10"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 355
+        },
+        {
+          "id": "S11.11",
+          "title": "Declared Metadata Agrees With the Requirement Text",
+          "constitution_id": "C11",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems exporting a requirements manifest",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.5",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "requirements linter — `obligation-mismatch`"
+          ],
+          "statement": "Where a requirement's obligation is declared as a field as well as written in its\nstatement, the two agree.",
+          "rationale": "Two sources for the same fact will disagree eventually, and the disagreement is silent:\na tracker export labelling a `should` as mandatory produces a report that over-states\nwhat the system is committed to, and nobody reads both fields. The mismatch is a defect in\nthe export the team cannot otherwise see.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.11a",
+              "description": "An exported requirement whose obligation field contradicts the obligation verb in its own statement, so the report and the text bind differently.",
+              "parent_standard_id": "S11.11"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 385
+        },
+        {
+          "id": "S11.12",
+          "title": "Requirement Change Is Recorded Where the Requirement Lives",
+          "constitution_id": "C11",
+          "priority": "Standard",
+          "applies_to": "All Stacks · all systems",
+          "phase": "0",
+          "phase_label": "Phase 0 — Foundation",
+          "depends_on": [
+            {
+              "standard_id": "S11.2",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "review — see rationale; no mechanical path exists and none is claimed"
+          ],
+          "statement": "When a requirement changes, the change is recorded against that requirement's identifier\nwhere the requirement lives, with what changed and why. Requirements are amended, never\nsilently replaced.",
+          "rationale": "A requirement that changes without a record makes every artifact citing it ambiguous —\na test written against the old text still passes, still cites the same identifier, and now\nverifies something nobody asked for. This is the one standard here with **no mechanical\nenforcement, and the reason is worth stating rather than hiding**: Governova reads the\nrequirement set as it is *now*. It does not hold the history, because the history lives in\nthe tracker the team owns and calling that tracker would require credentials and network\naccess this engine does not take. A check that cannot see the previous version cannot\ndetect that a version was replaced, and a check that guessed would return `satisfied` for\na repository it never examined.",
+          "anti_patterns": [
+            {
+              "id": "AP-S11.12a",
+              "description": "A requirement's text edited in place with no record, leaving tests and code citing an identifier whose meaning has changed underneath them.",
+              "parent_standard_id": "S11.12"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 4, Requirements Engineering (requirements management)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-0-foundation/C11-requirements-constitution.md",
+          "source_line": 418
         }
       ]
     }
@@ -22282,6 +22727,7 @@
     "C05",
     "C04",
     "C06",
+    "C11",
     "C01",
     "C07",
     "C08",
@@ -22290,7 +22736,8 @@
   ],
   "phases": {
     "0": [
-      "C01"
+      "C01",
+      "C11"
     ],
     "1": [
       "C02",
@@ -22309,8 +22756,8 @@
     ]
   },
   "integrity": {
-    "standards_extracted": 618,
-    "anti_patterns_extracted": 446,
+    "standards_extracted": 630,
+    "anti_patterns_extracted": 458,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

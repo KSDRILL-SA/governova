@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C7 — Testing Constitution                                          |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.0                                                               |
+| **Version**        | v1.1                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -122,6 +122,9 @@ Tests that survive refactors are tests that describe behaviour. "This endpoint r
 
 **Cross-References:** `S7.8` (Angular TestBed uses fixture assertions, not internal properties)
 
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 8, Software Testing (black-box testing)
+
 ---
 
 ### S7.4 — Tests Are Independent — No Shared Mutable State Between Tests
@@ -211,6 +214,9 @@ Every function in the service layer (Angular services, Next.js API utilities, Py
 
 **Cross-References:** `S2.1` (service layer), `S7.25` (coverage gate)
 
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 8, Software Testing (unit testing)
+
 ---
 
 ### S7.8 — Angular: Test With TestBed and Fixture Assertions — Not Internal Properties
@@ -276,6 +282,9 @@ Mocked databases test that the mock behaves correctly, not that the application 
 - `AP-S7.10a` — `jest.mock('../../lib/prisma')` and mocking all Prisma client calls for integration tests — this tests that the mock returns the right values, not that the database query is correct.
 
 **Cross-References:** `S7.39` (test database setup), `S7.40` (transaction rollback per test)
+
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 8, Software Testing (integration testing)
 
 ---
 
@@ -448,6 +457,9 @@ The minimum E2E test suite for every platform: (1) full registration and email v
 - `AP-S7.18a` — E2E tests only for the happy path — a login form that shows nothing on invalid credentials is only discovered in production.
 
 **Cross-References:** `S7.17` (Playwright), `S7.11` (auth tests), `C9` (primary workflow definition)
+
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 8, Software Testing (system and acceptance testing)
 
 ---
 
@@ -716,10 +728,11 @@ Integration tests run against a dedicated test database — never production, ne
 | Version | Date | Change | Reason |
 |---------|------|--------|--------|
 | v1.0 | 2026-05-08 | Initial lock — rebuilt from Testing Constitution v3.0. Test runner assignments updated (Vitest replaces Karma, RTL replaces Enzyme). Cross-database integration test standards (S7.15) added. axe-core CI accessibility gate (S7.20) added. Financial calculation Decimal test requirement (S7.38) added. Toolchain reference table consolidated in §7.44. | Full system rebuild — HTML to Markdown, version reset. |
+| v1.1 | 2026-07-31 | **Added `Grounded In` provenance to S7.3, S7.7, S7.10, S7.18:** each now cites the testing level or technique the canon establishes — black-box testing (S7.3), unit testing (S7.7), integration testing (S7.10), and system and acceptance testing (S7.18). **S7.25 was examined and deliberately left uncited**: the canon establishes testing levels but sets no coverage thresholds, so the locked percentages are a house decision and citing them would claim a grounding that does not exist. Count unchanged at 43; no standard's meaning, scope, priority, or enforcement changed. (C0 §3.1 `Grounded In`; ADR-007 Stage 0; citations verified with `governova-ingest` per `protocols/practice-to-standard.md`.) | The testing levels C7 enforces are the canon's, not this project's invention. Saying so distinguishes the standards that restate established practice from the ones that encode a local choice — and S7.25 is the second kind. |
 
 ---
 
-> **LOCKED — v1.0 — 2026-05-08**
+> **LOCKED — v1.1 — 2026-07-31** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.

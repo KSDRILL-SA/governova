@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C1 — Engineering Standards Constitution                            |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.4                                                               |
+| **Version**        | v1.5                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08 (originally); last amended 2026-07-30                   |
 | **Next Review**    | 2026-08-08                                                         |
@@ -2673,6 +2673,9 @@ Logic in the wrong layer cannot be tested, reused, or replaced independently —
 **Anti-Patterns:**
 - `AP-S1.103a` — A business rule (calculation, authorization decision, workflow) implemented inside a UI component, route handler, or data-access call instead of a service.
 
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 6, Architectural Design (layered style; cohesion and coupling)
+
 ---
 
 ### S1.104 — Data Access Through Repositories
@@ -2694,6 +2697,10 @@ Scattered direct data access makes the data contract un-auditable and un-changea
 
 **Anti-Patterns:**
 - `AP-S1.104a` — A database/ORM call (raw SQL, `prisma.*`, `psycopg2`, `$queryRaw`) issued outside a repository — from a route, a service, or the UI.
+
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 6, Architectural Design (repository pattern)
+- Coronel & Rob, *Database Systems* — Database Design (the database serves the information system)
 
 ---
 
@@ -2739,6 +2746,9 @@ Copy-pasted logic drifts — a fix applied to one copy and missed in another is 
 **Anti-Patterns:**
 - `AP-S1.106a` — The same logic, type, or constant copy-pasted across modules instead of extracted into a shared library.
 
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (duplicate code)
+
 ---
 
 ### S1.107 — The Simplest Correct Solution
@@ -2760,6 +2770,9 @@ Unrequired complexity is permanent cost — it must be read, tested, and maintai
 
 **Anti-Patterns:**
 - `AP-S1.107a` — Speculative abstraction, premature optimization, or polish added before the foundation exists and passes its lifecycle loop.
+
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 9, Software Evolution (speculative generality)
 
 ---
 
@@ -2929,10 +2942,11 @@ and constitutional auditing.
 | v1.3 | 2026-06-22 | **Added Part 19 — Architectural Discipline (S1.103–S1.107):** S1.103 logic lives in its layer (no business logic in UI/transport/data-access); S1.104 data access through repositories (no raw DB/ORM calls outside a repository); S1.105 no hardcoded configuration or magic values; S1.106 DRY — shared code is shared; S1.107 the simplest correct solution ("build smart, not hard"). Anti-patterns AP-S1.103a–AP-S1.107a added. Count 102→107. (C0 §8 amendment per ADR-005 workstream A; layer/context detection reserved for the semantic tier; Founder L4 approval 2026-06-22.) | The existing corpus encoded process and sector specifics but not the universal architectural discipline every system needs; these make separation of concerns, data-access boundaries, configuration hygiene, reuse, and simplicity first-class law. |
 
 | v1.4 | 2026-07-30 | **Amended S1.19 — Conventional Commit Format:** added the `govern` and `decision` types for constitutional amendments and ADRs, with usage guidance and examples; corrected `Enforced By`, which named Commitlint and a CI format check that do not exist, to name the structural probe that actually enforces it. `harden` was considered and **refused** — security work is a `fix` when it closes a vulnerability and `chore`/`refactor` otherwise. Count unchanged at 107. (C0 §8 amendment; evidence: four commits over four months reached for `govern`/`decision`, which no existing type covers — the probe reported 90% conformance; Founder L4 approval 2026-07-30.) | Ratifying a standard and recording an architectural decision are legitimate acts that change no code, so no code-shaped type fits them. A standard that leaves a recurring, lawful act unnamed will be violated by the people acting in good faith. |
+| v1.5 | 2026-07-31 | **Added `Grounded In` provenance to Part 19 (S1.103, S1.104, S1.106, S1.107):** each now cites where its requirement is established in the engineering canon — S1.103 and S1.104 in architectural design (layered style, cohesion and coupling, the repository pattern), S1.106 and S1.107 in software evolution (duplicate code, speculative generality). **S1.105 was examined and deliberately left uncited** — no source in the corpus establishes it, and an unverifiable citation is worse than none. Count unchanged at 107; no standard's meaning, scope, priority, or enforcement changed. (C0 §3.1 `Grounded In`, added by the C0 v1.1 amendment; ADR-007 Stage 0; citations verified against the sources with `governova-ingest` per `protocols/practice-to-standard.md`.) | Part 19 was a rediscovery of established practice and said so nowhere, which understated it: a standard defended by citation is defensible to an architecture board or a regulator, while one defended by assertion is house style. |
 
 ---
 
-> **LOCKED — v1.4 — 2026-07-30** (amended; originally locked v1.0 2026-05-08)
+> **LOCKED — v1.5 — 2026-07-31** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.

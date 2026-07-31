@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C5 — Database Constitution                                         |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.1                                                               |
+| **Version**        | v1.2                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -189,6 +189,9 @@ Every new data entity has its database destination documented in the feature pro
 
 **Cross-References:** `S1.27` (feature lifecycle — design phase includes database assignment), `S5.1` (criteria)
 
+**Grounded In:**
+- Coronel & Rob, *Database Systems* — Database Design (the database life cycle)
+
 ---
 
 ### S5.7 — No Direct Database Access from Frontend — Always Through Backend
@@ -290,6 +293,9 @@ Every Prisma model must define four base fields: `id String @id @default(cuid())
 
 **Cross-References:** `S5.8` (soft delete), `S5.5` (cross-database refs use cuid)
 
+**Grounded In:**
+- Coronel & Rob, *Database Systems* — The Relational Database Model (entity integrity)
+
 ---
 
 ### S5.11 — No SELECT * — Explicit `select` on Every Prisma Query
@@ -359,6 +365,9 @@ Every foreign key field in the Prisma schema has an explicit `@@index` or `@inde
 
 **Cross-References:** `S5.9` (Prisma schema), `S5.25` (index standards)
 
+**Grounded In:**
+- Coronel & Rob, *Database Systems* — The Relational Database Model (referential integrity; indexes)
+
 ---
 
 ### S5.14 — Pagination on All List Queries — No Unbounded Results
@@ -403,6 +412,9 @@ Sequential writes without transactions create a window where write 1 succeeds an
 - `AP-S5.15a` — Sequential `prisma.deposit.create()` followed by `prisma.account.update()` without a transaction — a network error after the deposit creates an inconsistency where the deposit exists but the balance was not updated.
 
 **Cross-References:** `S5.3` (financial data integrity), `S5.20` (raw SQL transactions)
+
+**Grounded In:**
+- Coronel & Rob, *Database Systems* — Advanced SQL (transaction management)
 
 ---
 
@@ -928,10 +940,11 @@ An editable ledger is not a ledger — it is a spreadsheet. Auditability, disput
 |---------|------|--------|--------|
 | v1.0 | 2026-05-08 | Initial lock — rebuilt from Database Constitution v3.0. Raw SQL governance formalised as Part 3 (S5.19–S5.24) — raw SQL elevated to first-class governed tool alongside Prisma ORM. `prisma.$queryRaw` parameterisation (S5.21) and soft delete filter obligation for raw SQL (S5.22) added. Decimal column mandate for monetary values (S5.28) added. Terminology updated. Standard IDs introduced. | Full system rebuild + raw SQL governance formalisation. |
 | v1.1 | 2026-06-15 | **Added Part 9 — Financial Ledger Integrity (S5.65 — Ledger Immutability):** financial-movement tables (ledger, financial-event, audit) are append-only — app role holds INSERT+SELECT only, UPDATE/DELETE revoked at grant layer and blocked by trigger; corrections are reversing entries; ledgers are exempt from S5.8 soft-delete (a delete-stamp is itself an UPDATE). Anti-pattern AP-S5.65a added. Count 64→65. (C0 §8 amendment A-1; origin MASTER-SPEC §16.2; proven by schema.sql violation test; adversarial + cross-constitution review in the amendment issue; Founder L4 approval 2026-06-15.) | An editable ledger is not a ledger. Append-only financial records are required for auditability, dispute resolution, and regulatory trust across every KSDRILL system. |
+| v1.2 | 2026-07-31 | **Added `Grounded In` provenance to S5.6, S5.10, S5.13, S5.15:** each now cites where its requirement is established in the relational canon — the database life cycle (S5.6), entity integrity (S5.10), referential integrity and indexes (S5.13), and transaction management (S5.15). Cited by **chapter title rather than chapter number**: the corpus carries two documents that both identify as "Chapter 5" because numbering moved between editions, so a number would assert something unverified. Count unchanged at 65; no standard's meaning, scope, priority, or enforcement changed. (C0 §3.1 `Grounded In`; ADR-007 Stage 0; citations verified with `governova-ingest` per `protocols/practice-to-standard.md` §6.) | C5 governs how data is *accessed*; its integrity and transaction standards restate properties the relational model established decades ago, and saying so makes them defensible by citation rather than by assertion. |
 
 ---
 
-> **LOCKED — v1.1 — 2026-06-15** (amended; originally locked v1.0 2026-05-08)
+> **LOCKED — v1.2 — 2026-07-31** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.

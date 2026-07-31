@@ -162,3 +162,41 @@ def test_grounded_in_absent_is_not_a_violation():
 def test_live_corpus_carries_no_excerpts(index):
     issues = check_grounded_in(index)
     assert issues == [], f"excerpt in provenance: {[i.message for i in issues]}"
+
+
+# The standards retro-cited in ADR-007 Stage 0. Pinned by ID because provenance is
+# easy to drop silently in an unrelated edit — a citation nobody notices vanishing is
+# a claim quietly withdrawn.
+RETRO_CITED = {
+    "S1.103",
+    "S1.104",
+    "S1.106",
+    "S1.107",
+    "S5.6",
+    "S5.10",
+    "S5.13",
+    "S5.15",
+    "S7.3",
+    "S7.7",
+    "S7.10",
+    "S7.18",
+}
+
+
+def test_retro_cited_standards_still_carry_provenance(index):
+    cited = {s.id for c in index.constitutions for s in c.standards if s.grounded_in}
+    assert cited >= RETRO_CITED, f"provenance lost from: {sorted(RETRO_CITED - cited)}"
+
+
+def test_standards_deliberately_left_uncited_stay_uncited(index):
+    """The negative half, and the one that carries the argument.
+
+    `S1.105` has no source in the corpus that establishes it, and `S7.25`'s coverage
+    thresholds are a local decision — the canon sets testing levels, not percentages.
+    Citing either would claim a grounding that does not exist, which is the failure
+    the 120-character bound and this whole field exist to prevent. If a later change
+    adds provenance here, it must be because a real source was found.
+    """
+    by_id = {s.id: s for c in index.constitutions for s in c.standards}
+    for sid in ("S1.105", "S7.25"):
+        assert by_id[sid].grounded_in == [], f"{sid} gained an unverified citation"

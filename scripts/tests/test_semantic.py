@@ -427,3 +427,80 @@ def test_both_protocols_refuse_a_non_http_endpoint():
         cfg = replace(ACTIVE, base_url="file:///etc/passwd", protocol=protocol)
         with pytest.raises(ValueError):
             client.default_transport(cfg, PROMPT)
+
+
+# ─── Transient failures versus real ones ────────────────────────────────────
+
+
+def _stub_urlopen(responses):
+    """Serve `responses` in order: an int raises that HTTP status, a dict is a body."""
+    import urllib.error
+
+    calls = {"n": 0}
+
+    def urlopen(request, timeout=None):
+        calls["n"] += 1
+        item = responses[min(calls["n"] - 1, len(responses) - 1)]
+        if isinstance(item, int):
+            raise urllib.error.HTTPError("https://endpoint.example/v1", item, "err", {}, None)
+
+        payload = json.dumps(item).encode("utf-8")
+
+        class _Resp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *exc):
+                return False
+
+            def read(self):
+                return payload
+
+        return _Resp()
+
+    return urlopen, calls
+
+
+def _patched(monkeypatch, responses):
+    import governova_semantic.client as client_mod
+
+    urlopen, calls = _stub_urlopen(responses)
+    monkeypatch.setattr(client_mod.urllib.request, "urlopen", urlopen)
+    monkeypatch.setattr(client_mod.time, "sleep", lambda _s: None)  # no real backoff in tests
+    return calls
+
+
+def test_a_transient_status_is_retried_and_can_succeed(monkeypatch):
+    """A single 502 partway through a run must not lose the whole measurement.
+
+    An evaluation makes tens of sequential calls, and a hosted backend returned an
+    isolated 502 more than once. The harness correctly refuses to report a partial
+    score, so one blip made the measurement impossible to take at all.
+    """
+    from governova_semantic.client import _post
+
+    body = {"choices": [{"message": {"content": "{}"}}]}
+    calls = _patched(monkeypatch, [502, body])
+    assert _post(ACTIVE, {}, {}) == body
+    assert calls["n"] == 2, "the first attempt should have been retried"
+
+
+def test_a_retry_never_turns_an_outage_into_silence(monkeypatch):
+    from governova_semantic.client import MAX_ATTEMPTS, SemanticUnavailableError, _post
+
+    calls = _patched(monkeypatch, [503])
+    with pytest.raises(SemanticUnavailableError) as excinfo:
+        _post(ACTIVE, {}, {})
+    assert excinfo.value.status == 503, "the real status must survive every retry"
+    assert calls["n"] == MAX_ATTEMPTS, "retries are bounded, so an outage still fails promptly"
+
+
+def test_a_definitive_answer_is_not_retried(monkeypatch):
+    """401, 404 and 410 are answers. Retrying them wastes a build and tells nobody anything."""
+    from governova_semantic.client import SemanticUnavailableError, _post
+
+    for status in (401, 404, 410):
+        calls = _patched(monkeypatch, [status])
+        with pytest.raises(SemanticUnavailableError):
+            _post(ACTIVE, {}, {})
+        assert calls["n"] == 1, f"HTTP {status} must fail on the first attempt"

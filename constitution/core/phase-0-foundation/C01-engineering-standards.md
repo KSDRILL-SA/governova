@@ -151,7 +151,7 @@ These decisions are far harder to fix than they are to get right at design time.
 | **Applies To**  | Both Stacks |
 | **Phase**       | Phase 0 — Foundation |
 | **Depends On**  | `S1.2` (understand before implementing) |
-| **Enforced By** | Code Review · ESLint |
+| **Enforced By** | Code Review · ESLint · Semantic tier |
 
 **Standard:**
 Every unit of code — function, component, service, module, branch, commit, and PR — has

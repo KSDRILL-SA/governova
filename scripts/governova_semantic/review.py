@@ -99,47 +99,72 @@ def _all_standards(index: CompiledIndex) -> list[Standard]:
     return [s for c in index.constitutions for s in c.standards]
 
 
-ALWAYS_GROUNDED: tuple[str, ...] = ("S1.106", "S1.107")
-"""Standards with **no lexical signature**, submitted on every review.
+def declares_semantic_tier(standard: Standard) -> bool:
+    """Whether a standard names the semantic tier as one of its enforcement paths.
 
-Word overlap cannot select these, and no amount of scoring will change that: duplication
-and speculative generality are *structural* properties of code, not vocabulary in it.
-`S1.106` ("Don't Repeat Yourself") and `S1.107` ("The Simplest Correct Solution") are
-aphorisms whose words never appear in the code they govern.
+    Read from `enforced_by`, which the standard's author writes. This is a *declaration*,
+    not a measurement, and it deliberately feeds no score — coverage is computed from
+    `RULES`, so adding a standard to this tier cannot inflate any published number.
+    """
+    return any("semantic" in path.lower() for path in standard.enforced_by)
 
-That made them the most expensive possible gap, because both are **deliberately left to
-the semantic tier precisely because they have no deterministic signature** — so a
-lexical pre-filter guaranteed the tier could never reach the two standards it exists for.
-Found by the evaluation harness on its first run against a perfect backend, which scored
-0.5 recall with nothing wrong with the backend.
 
-Kept as a short explicit list rather than inferred. Any inference would be a guess about
-which standards lack a signature, and the list is small because the property is rare.
-"""
+def semantic_pool(index: CompiledIndex) -> list[Standard]:
+    """The standards this tier exists to check, in index order.
+
+    **The pool is declared, not inferred.** The previous implementation ranked all 670
+    standards by word overlap between their titles and the identifiers in the code, and
+    submitted the top twelve. On a loan-assessment handler every one of those twelve
+    matched on a single incidental token — `async` selected "Async Standup Replaces
+    Synchronous Daily Meetings", `post` selected "Post-Merge Cleanup Is Mandatory", `debt`
+    selected "The System Maintains a Debt Register" — while `S1.103` and `S1.105`, which
+    the code actually violated, scored zero and were never submitted at all.
+
+    That is not a filter that needs better weighting. Code identifiers and standard titles
+    are different vocabularies, and the standards this tier is *for* are the ones whose
+    words provably never appear in the code they govern: whether a unit has one concern,
+    whether an abstraction is speculative, whether two blocks are the same logic. No
+    lexical score can select those, which is why the old implementation carried a
+    hardcoded `ALWAYS_GROUNDED` list for the two it most obviously missed — a patch on a
+    mechanism that was wrong rather than incomplete.
+
+    So the pool is whatever declares `semantic tier` in `enforced_by`. That makes the
+    tier's scope explicit and auditable, puts it under the same review as any other change
+    to the corpus, and makes reachability a property that can be asserted in CI instead of
+    an emergent accident of vocabulary.
+    """
+    return [s for s in _all_standards(index) if declares_semantic_tier(s)]
+
+
+def _signature(standard: Standard) -> set[str]:
+    """Every word that could plausibly tie a standard to code that breaks it.
+
+    Anti-pattern descriptions matter most here — they are written in terms of what the
+    defect looks like ("implemented inside a UI component, route handler, or data-access
+    call"), where the title is written in terms of the principle.
+    """
+    parts = [standard.title, standard.statement, *(a.description for a in standard.anti_patterns)]
+    return set(_WORD.findall(" ".join(parts).lower()))
 
 
 def relevant_standards(index: CompiledIndex, code: str, limit: int = 12) -> list[Standard]:
-    """Pick the standards most likely relevant to `code`, and submit only those.
+    """The standards submitted for review of `code`.
 
-    A cheap, deterministic pre-filter that keeps the prompt grounded and bounded. It is
-    also a **ceiling on the tier's recall** — a standard this never selects cannot be
-    found, however good the model is — which is why `ALWAYS_GROUNDED` exists.
+    The whole pool when it fits in the budget, which is the normal case and the one worth
+    optimising for: a small declared pool means every standard the tier is responsible for
+    is checked on every review, and recall has no pre-filter ceiling at all.
+
+    Ranking only decides what to drop once the pool outgrows `limit`. It scores against the
+    full signature rather than the title, and breaks ties by id so the selection is
+    deterministic — but a pool large enough to need it has outgrown one prompt, and
+    splitting the review is the better answer than silently discarding standards.
     """
+    pool = semantic_pool(index)
+    if len(pool) <= limit:
+        return pool
     tokens = set(_WORD.findall(code.lower()))
-    scored: list[tuple[int, Standard]] = []
-    for s in _all_standards(index):
-        title_words = set(_WORD.findall(s.title.lower()))
-        overlap = len(title_words & tokens)
-        if overlap:
-            scored.append((overlap, s))
-    scored.sort(key=lambda t: (-t[0], t[1].id))
-    selected = [s for _, s in scored[:limit]]
-
-    chosen = {s.id for s in selected}
-    unconditional = [
-        s for s in _all_standards(index) if s.id in ALWAYS_GROUNDED and s.id not in chosen
-    ]
-    return [*selected, *unconditional]
+    ranked = sorted(pool, key=lambda s: (-len(_signature(s) & tokens), s.id))
+    return ranked[:limit]
 
 
 def build_messages(code: str, standards: list[Standard]) -> list[dict[str, str]]:

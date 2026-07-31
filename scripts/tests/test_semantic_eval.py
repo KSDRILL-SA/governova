@@ -24,7 +24,13 @@ from governova_semantic import (
 )
 from governova_semantic.client import SemanticUnavailableError
 from governova_semantic.config import from_env
-from governova_semantic.fixtures import FIXTURES, Fixture, expected_standards
+from governova_semantic.fixtures import (
+    FIXTURES,
+    Fixture,
+    expected_standards,
+    required_findings,
+)
+from governova_semantic.review import relevant_standards
 
 INDEX = load_index(resolve_repo_root() / "compiled" / "constitution.json")
 ACTIVE = SemanticConfig(model="probe-model", base_url="https://endpoint.example/v1", api_key="k")
@@ -79,6 +85,46 @@ def test_the_fixture_set_measures_both_directions():
 def test_fixture_ids_are_unique():
     ids = [f.id for f in FIXTURES]
     assert len(ids) == len(set(ids))
+
+
+def test_every_expected_standard_is_actually_submitted_to_the_backend():
+    """A fixture the pre-filter cannot reach measures the pre-filter, not the backend.
+
+    This was invisible for an entire measurement round. Five fixtures expected standards
+    that grounding never submitted, so a backend was scored as missing violations it was
+    never asked about — and the number that came back looked like a model problem.
+
+    Cheap to assert, needs no endpoint, and fails the build the moment a fixture is
+    written against a standard the tier is not declared to check.
+    """
+    unreachable = {
+        fixture.id: sorted(fixture.expected - {s.id for s in relevant_standards(INDEX, fixture.code)})
+        for fixture in FIXTURES
+    }
+    offenders = {fid: missing for fid, missing in unreachable.items() if missing}
+    assert offenders == {}, (
+        "fixtures expect standards that grounding never submits — either declare the "
+        f"standard for the semantic tier or drop the fixture: {offenders}"
+    )
+
+
+def test_the_set_is_large_enough_for_the_precision_bar_to_be_a_threshold():
+    """Precision's granularity is set by the number of required findings.
+
+    With four required findings the only reachable scores were 100%, 80%, 67%, 57% and
+    50% — so a 90% bar was not a threshold, it was `zero false positives, every run`
+    written as a percentage. The set must be big enough that one mistake still passes and
+    two do not, or the bar is measuring something other than what it says.
+    """
+    required = required_findings()
+    assert required / (required + 1) >= MIN_PRECISION, (
+        f"{required} required findings: a single false positive scores "
+        f"{required / (required + 1):.0%}, below the {MIN_PRECISION:.0%} bar — the bar is "
+        "unreachable by construction, not by backend quality"
+    )
+    assert required / (required + 2) < MIN_PRECISION, (
+        "two false positives must fail, or the bar tolerates more than it claims"
+    )
 
 
 # ─── Scoring ─────────────────────────────────────────────────────────────────
@@ -146,13 +192,20 @@ def test_a_defensible_finding_is_neither_a_hit_nor_an_invention():
     Scoring a correct finding as an invention measures how completely the fixture was
     annotated, not how good the backend is.
     """
-    fixture = next(f for f in FIXTURES if f.acceptable)
-    extra = sorted(fixture.acceptable)[0]
+    # The extra must be one the backend could actually cite: `parse_findings` drops any
+    # standard outside the grounded pool, so an off-pool annotation would be discarded
+    # upstream and this test would pass without exercising the neutral class at all.
+    fixture, extra = next(
+        (f, sid)
+        for f in FIXTURES
+        for sid in sorted(f.acceptable)
+        if sid in {s.id for s in relevant_standards(INDEX, f.code)}
+    )
 
     def also_acceptable(code: str) -> list[str]:
         # Only on the fixture that tolerates it. Adding it everywhere would be a real
-        # invention on fixtures that do not — `clean-plain-utility` declares its return
-        # type, so `S1.50` there would be genuinely wrong.
+        # invention on fixtures that do not — `clean-plain-utility` is not multi-concern,
+        # so `S1.3` there would be genuinely wrong.
         found = set(_perfect(code))
         if fixture.code.strip() in code:
             found.add(extra)
@@ -204,7 +257,10 @@ def test_an_inconsistent_backend_is_judged_on_its_worst_run():
         calls["n"] += 1
         expected = set(_perfect(messages[-1]["content"]))
         if calls["n"] > len(FIXTURES):
-            expected.add("S3.14")
+            # Must be a *grounded* standard to reach the score at all — an off-pool
+            # citation is dropped by `parse_findings`, and this test would then measure
+            # the anti-hallucination filter instead of run-to-run instability.
+            expected.add("S2.53")
         return json.dumps(
             {"findings": [{"standard": s, "line": 1, "message": "x"} for s in sorted(expected)]}
         )

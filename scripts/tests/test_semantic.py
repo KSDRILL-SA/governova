@@ -14,7 +14,9 @@ from governova_semantic import (
     client,
     describe_code,
     parse_findings,
+    declares_semantic_tier,
     relevant_standards,
+    semantic_pool,
     review,
 )
 from governova_semantic import config as config_mod
@@ -236,40 +238,61 @@ def test_describe_code_with_mock_and_inactive():
     assert describe_code("code", config=from_env({})) == ""  # inactive
 
 
-def test_relevant_standards_and_messages():
-    from governova_semantic.review import ALWAYS_GROUNDED
+def test_the_pool_is_exactly_what_declares_the_tier():
+    """Membership is a declaration in `enforced_by`, not an inference from vocabulary."""
+    pool = semantic_pool(INDEX)
+    assert pool, "no standard declares the semantic tier — the tier would review nothing"
+    assert all(declares_semantic_tier(s) for s in pool)
+    declared = {
+        s.id for c in INDEX.constitutions for s in c.standards if declares_semantic_tier(s)
+    }
+    assert {s.id for s in pool} == declared, "the pool must not add or drop anything"
 
-    picked = relevant_standards(INDEX, "authentication token refresh session", limit=5)
-    # `limit` bounds the *lexically matched* set. The unconditional standards are added
-    # on top of it, because word overlap can never select them and they are the two the
-    # tier exists to reach.
-    assert len(picked) <= 5 + len(ALWAYS_GROUNDED)
-    msgs = build_messages("code here", picked)
-    assert msgs[0]["role"] == "system" and "code here" in msgs[1]["content"]
+
+def test_selection_does_not_depend_on_the_words_in_the_code():
+    """The defect that made the first measurement round meaningless.
+
+    The old pre-filter ranked all 670 standards by title-word overlap against the
+    identifiers in the code. On a loan-assessment handler all twelve it chose matched a
+    single incidental token — `async` selected "Async Standup Replaces Synchronous Daily
+    Meetings", `debt` selected "The System Maintains a Debt Register" — while `S1.103` and
+    `S1.105`, which the code actually violated, scored zero and were never submitted. The
+    tier was scored on standards it was never shown.
+
+    Two snippets sharing no vocabulary must now be reviewed against the same standards,
+    because what the tier is responsible for does not depend on what a variable is called.
+    """
+    arithmetic = "def add(a, b):\n    return a + b\n"
+    handler = '@router.post("/loans")\nasync def assess(application):\n    return {}\n'
+    assert [s.id for s in relevant_standards(INDEX, arithmetic)] == [
+        s.id for s in relevant_standards(INDEX, handler)
+    ]
 
 
-def test_standards_with_no_lexical_signature_are_always_submitted():
+def test_standards_with_no_lexical_signature_are_still_submitted():
     """The recall ceiling the evaluation harness found on its first run.
 
     `S1.106` and `S1.107` are aphorisms — "Don't Repeat Yourself", "The Simplest Correct
-    Solution" — whose words never appear in the code they govern. Both are deliberately
-    left to the semantic tier because they have no *deterministic* signature, so a purely
-    lexical pre-filter guaranteed the tier could never reach the two standards it exists
-    for. A perfect backend scored 0.5 recall with nothing wrong with the backend.
+    Solution" — whose words never appear in the code they govern. They were once carried
+    by a hardcoded `ALWAYS_GROUNDED` list, which fixed the two known cases and left every
+    other standard of the same kind unreachable. Declaring the tier covers them all.
     """
-    from governova_semantic.review import ALWAYS_GROUNDED
-
-    unrelated = "def add(a, b):\n    return a + b\n"
-    picked = {s.id for s in relevant_standards(INDEX, unrelated)}
-    assert set(ALWAYS_GROUNDED) <= picked
+    picked = {s.id for s in relevant_standards(INDEX, "def add(a, b):\n    return a + b\n")}
+    assert {"S1.106", "S1.107"} <= picked
 
 
-def test_the_unconditional_set_is_not_duplicated_when_it_also_matches():
-    # A standard that matches lexically *and* is unconditional must appear once, or the
-    # prompt carries it twice and the catalogue reads as though it mattered more.
-    picked = relevant_standards(INDEX, "shared code repeat yourself simplest correct solution")
-    ids = [s.id for s in picked]
+def test_ranking_only_applies_once_the_pool_outgrows_the_budget():
+    pool = semantic_pool(INDEX)
+    assert len(relevant_standards(INDEX, "code", limit=len(pool))) == len(pool)
+    squeezed = relevant_standards(INDEX, "code", limit=2)
+    assert len(squeezed) == 2
+    ids = [s.id for s in squeezed]
     assert len(ids) == len(set(ids))
+
+
+def test_messages_carry_the_catalogue_and_the_code():
+    msgs = build_messages("code here", relevant_standards(INDEX, "code here"))
+    assert msgs[0]["role"] == "system" and "code here" in msgs[1]["content"]
 
 
 # --- protocol selection ---------------------------------------------------------

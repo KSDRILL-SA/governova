@@ -98,7 +98,9 @@ def test_every_expected_standard_is_actually_submitted_to_the_backend():
     written against a standard the tier is not declared to check.
     """
     unreachable = {
-        fixture.id: sorted(fixture.expected - {s.id for s in relevant_standards(INDEX, fixture.code)})
+        fixture.id: sorted(
+            fixture.expected - {s.id for s in relevant_standards(INDEX, fixture.code)}
+        )
         for fixture in FIXTURES
     }
     offenders = {fid: missing for fid, missing in unreachable.items() if missing}
@@ -222,7 +224,9 @@ def test_a_clean_fixture_tolerating_an_extra_still_counts_as_kept_clean():
     clean = next(f for f in FIXTURES if f.is_clean and f.acceptable)
     extra = sorted(clean.acceptable)[0]
     report = evaluate(
-        index=INDEX, config=ACTIVE, transport=_backend(lambda code: [extra] if clean.code.strip() in code else [])
+        index=INDEX,
+        config=ACTIVE,
+        transport=_backend(lambda code: [extra] if clean.code.strip() in code else []),
     )
     assert report.clean_fixtures_kept_clean == report.clean_fixtures
 

@@ -12,12 +12,12 @@ from governova_semantic import (
     SemanticConfig,
     build_messages,
     client,
+    declares_semantic_tier,
     describe_code,
     parse_findings,
-    declares_semantic_tier,
     relevant_standards,
-    semantic_pool,
     review,
+    semantic_pool,
 )
 from governova_semantic import config as config_mod
 from governova_semantic.config import from_env
@@ -42,17 +42,21 @@ def test_configured_detection_and_endpoint():
 
 def test_parse_drops_hallucinated_standards():
     content = json.dumps(
-        {"findings": [
-            {"standard": "S2.34", "line": 5, "message": "money as float"},
-            {"standard": "S99.99", "line": 1, "message": "not a real standard"},
-        ]}
+        {
+            "findings": [
+                {"standard": "S2.34", "line": 5, "message": "money as float"},
+                {"standard": "S99.99", "line": 1, "message": "not a real standard"},
+            ]
+        }
     )
     out = parse_findings(content, allowed_ids={"S2.34"})
     assert len(out) == 1 and out[0].standard == "S2.34" and out[0].line == 5
 
 
 def test_parse_handles_code_fenced_json():
-    content = "```json\n" + json.dumps({"findings": [{"standard": "S2.1", "message": "x"}]}) + "\n```"
+    content = (
+        "```json\n" + json.dumps({"findings": [{"standard": "S2.1", "message": "x"}]}) + "\n```"
+    )
     out = parse_findings(content, allowed_ids={"S2.1"})
     assert len(out) == 1 and out[0].standard == "S2.1"
 
@@ -62,10 +66,12 @@ def test_review_with_mock_transport_keeps_only_grounded():
 
     def fake_transport(cfg, messages):
         return json.dumps(
-            {"findings": [
-                {"standard": std.id, "line": 3, "message": "violates this"},
-                {"standard": "S88.88", "line": 9, "message": "hallucinated"},
-            ]}
+            {
+                "findings": [
+                    {"standard": std.id, "line": 3, "message": "violates this"},
+                    {"standard": "S88.88", "line": 9, "message": "hallucinated"},
+                ]
+            }
         )
 
     out = review("some code", standards=[std], index=INDEX, config=ACTIVE, transport=fake_transport)
@@ -181,9 +187,8 @@ def test_no_endpoint_is_bundled_anywhere():
     offenders = [
         p.relative_to(root).as_posix()
         for p in sources
-        if "test_semantic" not in p.name and "models.github.ai" in p.read_text(
-            encoding="utf-8", errors="replace"
-        )
+        if "test_semantic" not in p.name
+        and "models.github.ai" in p.read_text(encoding="utf-8", errors="replace")
     ]
     assert offenders == [], f"a retired endpoint is still referenced in: {offenders}"
 
@@ -199,7 +204,9 @@ def test_an_empty_reply_is_not_a_clean_review():
     from governova_semantic import Outcome, review_result
 
     std = next(s for c in INDEX.constitutions for s in c.standards)
-    result = review_result("code", standards=[std], index=INDEX, config=ACTIVE, transport=lambda c, m: "")
+    result = review_result(
+        "code", standards=[std], index=INDEX, config=ACTIVE, transport=lambda c, m: ""
+    )
     assert result.outcome is Outcome.UNPARSEABLE
     assert not result.ran
     assert "MAX_TOKENS" in result.detail
@@ -210,7 +217,9 @@ def test_prose_instead_of_json_is_also_no_verdict():
 
     std = next(s for c in INDEX.constitutions for s in c.standards)
     chatty = "Sure! I looked at the code and it seems fine to me."
-    result = review_result("code", standards=[std], index=INDEX, config=ACTIVE, transport=lambda c, m: chatty)
+    result = review_result(
+        "code", standards=[std], index=INDEX, config=ACTIVE, transport=lambda c, m: chatty
+    )
     assert result.outcome is Outcome.UNPARSEABLE
 
 
@@ -224,7 +233,10 @@ def test_an_explicit_empty_findings_list_is_a_clean_review():
 
     std = next(s for c in INDEX.constitutions for s in c.standards)
     result = review_result(
-        "code", standards=[std], index=INDEX, config=ACTIVE,
+        "code",
+        standards=[std],
+        index=INDEX,
+        config=ACTIVE,
         transport=lambda c, m: json.dumps({"findings": []}),
     )
     assert result.outcome is Outcome.REVIEWED
@@ -233,7 +245,9 @@ def test_an_explicit_empty_findings_list_is_a_clean_review():
 
 
 def test_describe_code_with_mock_and_inactive():
-    out = describe_code("def f():\n    pass\n", config=ACTIVE, transport=lambda c, m: "  Defines f.  ")
+    out = describe_code(
+        "def f():\n    pass\n", config=ACTIVE, transport=lambda c, m: "  Defines f.  "
+    )
     assert out == "Defines f."
     assert describe_code("code", config=from_env({})) == ""  # inactive
 
@@ -243,9 +257,7 @@ def test_the_pool_is_exactly_what_declares_the_tier():
     pool = semantic_pool(INDEX)
     assert pool, "no standard declares the semantic tier — the tier would review nothing"
     assert all(declares_semantic_tier(s) for s in pool)
-    declared = {
-        s.id for c in INDEX.constitutions for s in c.standards if declares_semantic_tier(s)
-    }
+    declared = {s.id for c in INDEX.constitutions for s in c.standards if declares_semantic_tier(s)}
     assert {s.id for s in pool} == declared, "the pool must not add or drop anything"
 
 

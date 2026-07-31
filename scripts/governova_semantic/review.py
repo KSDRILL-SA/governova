@@ -312,6 +312,4 @@ def review(
     an outcome they will ignore. Anything reporting to a human should use
     `review_result` and branch on `.ran`.
     """
-    return review_result(
-        code, standards, index=index, config=config, transport=transport
-    ).findings
+    return review_result(code, standards, index=index, config=config, transport=transport).findings

@@ -82,7 +82,7 @@ _LAYER_VIOLATION = Fixture(
     # handler is defensible. S1.50/S2.5: this snippet declares no return type.
     acceptable=frozenset({"S2.1", "S1.50", "S2.5"}),
     note="Business logic — a discount calculation — implemented inside a transport handler.",
-    code='''\
+    code="""\
 @router.post("/orders")
 async def create_order(request: OrderRequest):
     # Pricing logic living in the transport layer rather than a service.
@@ -95,7 +95,7 @@ async def create_order(request: OrderRequest):
         discount = 0
     total = subtotal - discount
     return {"total": total}
-''',
+""",
 )
 
 _REPOSITORY_VIOLATION = Fixture(
@@ -104,7 +104,7 @@ _REPOSITORY_VIOLATION = Fixture(
     expected=frozenset({"S1.104"}),
     acceptable=frozenset({"S1.50", "S2.5", "S2.28"}),
     note="Direct ORM data access issued from a service instead of through a repository.",
-    code='''\
+    code="""\
 class InvoiceService:
     async def mark_paid(self, invoice_id: str) -> None:
         # Direct database access from the service layer — no repository boundary.
@@ -115,7 +115,7 @@ class InvoiceService:
             record = invoice_data.scalar_one()
             record.status = "paid"
             await session.commit()
-''',
+""",
 )
 
 _DUPLICATION_VIOLATION = Fixture(
@@ -127,7 +127,7 @@ _DUPLICATION_VIOLATION = Fixture(
         "The same normalisation logic repeated verbatim in two places. No deterministic "
         "signature exists for this, which is why it is left to the semantic tier."
     ),
-    code='''\
+    code="""\
 def register_user(payload):
     email = payload["email"].strip().lower()
     if "+" in email.split("@")[0]:
@@ -140,7 +140,7 @@ def invite_user(payload):
     if "+" in email.split("@")[0]:
         email = email.split("+")[0] + "@" + email.split("@")[1]
     return send_invite(email)
-''',
+""",
 )
 
 _SPECULATIVE_VIOLATION = Fixture(
@@ -152,7 +152,7 @@ _SPECULATIVE_VIOLATION = Fixture(
         "An abstraction layer with exactly one implementation and no current requirement "
         "for a second — the simplest correct solution was not chosen."
     ),
-    code='''\
+    code="""\
 class NotificationStrategy(ABC):
     @abstractmethod
     def send(self, message: str) -> None: ...
@@ -173,7 +173,7 @@ class NotificationStrategyFactory:
 
 def notify(message: str) -> None:
     NotificationStrategyFactory.create().send(message)
-''',
+""",
 )
 
 _MULTI_CONCERN_VIOLATION = Fixture(
@@ -185,7 +185,7 @@ _MULTI_CONCERN_VIOLATION = Fixture(
         "One function that parses a file, validates rows, writes them, and sends mail. "
         "Four concerns, one unit."
     ),
-    code='''\
+    code="""\
 def process_upload(raw_csv, connection, mailer):
     rows = []
     for line in raw_csv.splitlines()[1:]:
@@ -204,7 +204,7 @@ def process_upload(raw_csv, connection, mailer):
     for name, email, amount in rows:
         mailer.send(email, "Thank you", f"Dear {name}, we received {amount}.")
     return len(rows)
-''',
+""",
 )
 
 _LEAKED_INTERNALS_VIOLATION = Fixture(
@@ -218,7 +218,7 @@ _LEAKED_INTERNALS_VIOLATION = Fixture(
         "The driver's own message — carrying the table name and the SQL — is handed "
         "straight back to the caller."
     ),
-    code='''\
+    code="""\
 @router.get("/accounts/{account_id}")
 async def read_account(account_id: str):
     try:
@@ -228,7 +228,7 @@ async def read_account(account_id: str):
             status_code=500,
             content={"detail": str(exc), "query": exc.statement, "trace": traceback.format_exc()},
         )
-''',
+""",
 )
 
 _MISSING_OWNERSHIP_VIOLATION = Fixture(
@@ -240,7 +240,7 @@ _MISSING_OWNERSHIP_VIOLATION = Fixture(
         "The caller is authenticated, so the handler assumes the document is theirs. Any "
         "signed-in user can read any document by guessing an id."
     ),
-    code='''\
+    code="""\
 @router.get("/documents/{document_id}")
 async def read_document(document_id: str, user: User = Depends(current_user)):
     # `user` is authenticated but never compared against the document's owner.
@@ -248,7 +248,7 @@ async def read_document(document_id: str, user: User = Depends(current_user)):
     if document is None:
         raise HTTPException(status_code=404)
     return document
-''',
+""",
 )
 
 _MAGIC_VALUES_VIOLATION = Fixture(
@@ -260,7 +260,7 @@ _MAGIC_VALUES_VIOLATION = Fixture(
         "An environment-specific host and three unexplained numbers, all inlined at the "
         "point of use."
     ),
-    code='''\
+    code="""\
 async def sync_ledger(client):
     response = await client.post(
         "https://api.eu-west-1.internal.acme.com/v2/ledger/sync",
@@ -275,7 +275,7 @@ async def sync_ledger(client):
         )
         attempts += 1
     return response
-''',
+""",
 )
 
 _ROUTE_LOGIC_AND_MAGIC_VIOLATION = Fixture(
@@ -286,7 +286,7 @@ _ROUTE_LOGIC_AND_MAGIC_VIOLATION = Fixture(
     expected=frozenset({"S1.103", "S1.105"}),
     acceptable=frozenset({"S2.1", "S1.67", "S1.50", "S2.5"}),
     note="Eligibility policy written into the handler, with its thresholds inlined.",
-    code='''\
+    code="""\
 @router.post("/loans/assess")
 async def assess(application: LoanApplication):
     if application.credit_score < 640:
@@ -296,7 +296,7 @@ async def assess(application: LoanApplication):
     if application.months_employed < 24:
         return {"eligible": False, "reason": "tenure"}
     return {"eligible": True, "limit": application.monthly_income * 4.5}
-''',
+""",
 )
 
 # ─── Clean fixtures — where precision is measured ────────────────────────────
@@ -309,7 +309,7 @@ _CLEAN_SERVICE = Fixture(
         "Correct layering: the handler delegates, the service holds the rule, data access "
         "goes through a repository. A backend reporting anything here is unusable."
     ),
-    code='''\
+    code="""\
 @router.post("/orders")
 async def create_order(request: OrderRequest, service: OrderService = Depends()):
     order = await service.place(request.customer_id, request.lines)
@@ -323,7 +323,7 @@ class OrderService:
     async def place(self, customer_id: str, lines: list[OrderLine]) -> Order:
         order = Order.draft(customer_id, lines)
         return await self._orders.add(order)
-''',
+""",
 )
 
 _CLEAN_SIMILAR_NOT_DUPLICATE = Fixture(
@@ -335,7 +335,7 @@ _CLEAN_SIMILAR_NOT_DUPLICATE = Fixture(
         "case for S1.106 — a backend that calls structural similarity duplication will "
         "report it on every well-factored codebase."
     ),
-    code='''\
+    code="""\
 def total_incl_tax(lines: list[Line], rate: Decimal) -> Decimal:
     subtotal = sum((line.amount for line in lines), Decimal("0"))
     return subtotal + (subtotal * rate)
@@ -344,7 +344,7 @@ def total_incl_tax(lines: list[Line], rate: Decimal) -> Decimal:
 def total_after_refunds(lines: list[Line], refunds: list[Refund]) -> Decimal:
     subtotal = sum((line.amount for line in lines), Decimal("0"))
     return subtotal - sum((refund.amount for refund in refunds), Decimal("0"))
-''',
+""",
 )
 
 _CLEAN_JUSTIFIED_ABSTRACTION = Fixture(
@@ -355,7 +355,7 @@ _CLEAN_JUSTIFIED_ABSTRACTION = Fixture(
         "An abstraction with two real implementations serving a present requirement. The "
         "negative case for S1.107 — a backend that flags every interface will be ignored."
     ),
-    code='''\
+    code="""\
 class PaymentGateway(Protocol):
     def charge(self, amount: Decimal, token: str) -> ChargeResult: ...
 
@@ -368,7 +368,7 @@ class StripeGateway:
 class PayfastGateway:
     def charge(self, amount: Decimal, token: str) -> ChargeResult:
         return _to_result(payfast.submit(amount=amount, token=token))
-''',
+""",
 )
 
 _CLEAN_PLAIN_UTILITY = Fixture(
@@ -416,7 +416,7 @@ _CLEAN_TRANSLATED_ERROR = Fixture(
         "The driver error is logged and translated; the response carries the uniform "
         "shape and nothing internal. The negative case for S2.18 and S2.43."
     ),
-    code='''\
+    code="""\
 @router.get("/accounts/{account_id}")
 async def read_account(account_id: str) -> AccountResponse:
     try:
@@ -427,7 +427,7 @@ async def read_account(account_id: str) -> AccountResponse:
             status_code=503,
             detail={"error": "Account lookup is unavailable.", "code": "ACCOUNT_UNAVAILABLE"},
         ) from None
-''',
+""",
 )
 
 _CLEAN_OWNERSHIP_ENFORCED = Fixture(
@@ -438,7 +438,7 @@ _CLEAN_OWNERSHIP_ENFORCED = Fixture(
         "Ownership is part of the query, so a guessed id returns 404 rather than another "
         "tenant's row. The negative case for S2.53."
     ),
-    code='''\
+    code="""\
 @router.get("/documents/{document_id}")
 async def read_document(
     document_id: str, user: User = Depends(current_user)
@@ -447,7 +447,7 @@ async def read_document(
     if document is None:
         raise HTTPException(status_code=404)
     return DocumentResponse.from_domain(document)
-''',
+""",
 )
 
 _CLEAN_NAMED_CONSTANTS = Fixture(
@@ -459,7 +459,7 @@ _CLEAN_NAMED_CONSTANTS = Fixture(
         "The negative case for S1.105 and S1.67 — a backend that flags any numeric "
         "literal will flag `0`, `1` and every index in the codebase."
     ),
-    code='''\
+    code="""\
 LEDGER_SYNC_TIMEOUT_SECONDS = 30
 LEDGER_SYNC_MAX_ATTEMPTS = 5
 BACKOFF_BASE_SECONDS = 2
@@ -474,7 +474,7 @@ async def sync_ledger(client: AsyncClient, settings: Settings) -> Response:
             return response
         await asyncio.sleep(BACKOFF_BASE_SECONDS**attempt)
     return response
-''',
+""",
 )
 
 

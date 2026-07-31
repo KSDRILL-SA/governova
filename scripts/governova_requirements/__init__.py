@@ -25,6 +25,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from governova_requirements.closure import (
+    ClosureReport,
+    close,
+    orphan_citations,
+    stale_verifications,
+    untraced_changes,
+)
 from governova_requirements.lint import (
     MAX_STATEMENT_CHARS,
     LintRule,
@@ -63,6 +70,7 @@ __all__ = [
     "MAX_STATEMENT_CHARS",
     "OBLIGATIONS",
     "Citation",
+    "ClosureReport",
     "Finding",
     "LintRule",
     "ManifestError",
@@ -72,11 +80,13 @@ __all__ = [
     "Tier",
     "TraceReport",
     "assess",
+    "close",
     "collect",
     "find_manifest",
     "lint",
     "lint_requirement",
     "load_config",
+    "orphan_citations",
     "parse_manifest",
     "read_manifest",
     "read_referenced",
@@ -84,7 +94,9 @@ __all__ = [
     "register_rule",
     "registered_readers",
     "rules",
+    "stale_verifications",
     "trace",
+    "untraced_changes",
 ]
 
 

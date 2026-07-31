@@ -968,6 +968,68 @@ def requirements_lint(
 
 
 @app.command()
+def trace(
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+    as_json: Annotated[bool, typer.Option("--json", help="Machine-readable output.")] = False,
+    strict: Annotated[
+        bool, typer.Option("--strict", help="Exit non-zero when a link is broken.")
+    ] = False,
+) -> None:
+    """Requirement ↔ code ↔ test traceability, in both directions."""
+    from governova_requirements import close, collect, load_config
+    from governova_requirements.closure import to_json
+    from governova_requirements.trace import trace as trace_links
+
+    root = repo_root or resolve_target_root()
+    config = load_config(root)
+    found = collect(root, config)
+    links = trace_links(found)
+    closure = close(root, found, config)
+
+    if as_json:
+        print(to_json(closure), end="")
+        return
+
+    if not links.assessed:
+        console.print("[yellow]unknown[/] — no requirements reachable in this repository.")
+        for note in links.notes:
+            console.print(f"[dim]· {note}[/]")
+        return
+
+    coverage = links.coverage_pct
+    console.print(
+        f"tier={int(links.tier)} requirements={links.requirements} "
+        f"verified={links.tested} unverified={links.untested} "
+        f"coverage={coverage if coverage is not None else '—'}%"
+    )
+    rate = closure.citation_rate
+    if closure.assessed:
+        console.print(
+            f"[dim]source commits inspected={closure.source_commits} "
+            f"citing a requirement={closure.cited_commits}"
+            f"{f' ({rate}%)' if rate is not None else ''}[/]"
+        )
+
+    # Forward direction: requirement → code → test.
+    for finding in links.findings:
+        console.print(f"  [yellow]{finding.code}[/] {finding.message}")
+    # Reverse direction, and the direction across time.
+    for finding in (*closure.orphan_citations, *closure.stale_verifications):
+        console.print(f"  [red]{finding.code}[/] {finding.message}")
+    for finding in closure.untraced_changes:
+        console.print(f"  [dim]{finding.code}[/] {finding.message}")
+
+    for note in (*links.notes, *(closure.notes or [])):
+        console.print(f"[dim]· {note}[/]")
+
+    # Only a broken link fails. An untraced change is a prompt for judgement — a
+    # refactor, a dependency bump, and a lint fix all legitimately serve no requirement.
+    broken = [*closure.orphan_citations, *closure.stale_verifications, *links.findings]
+    if broken and strict:
+        raise typer.Exit(code=1)
+
+
+@app.command()
 def schema(
     paths: Annotated[
         list[Path] | None,

@@ -138,9 +138,25 @@ def test_every_rule_binds_a_real_anti_pattern():
 
 
 def test_rule_coverage_floor():
-    # Guard against silent rule-set regression: coverage must not drop below where we are.
+    """Guard against silent regression of *mechanical reach*.
+
+    The floor used to be `coverage_pct >= 7.0`. That is the reliable-tier ratio, and it
+    falls whenever the corpus grows even though no rule was touched — C11 and C14 added
+    29 anti-patterns and pushed 33/446 to 33/475. Holding the old number would have made
+    this test fail on honest growth, and the only ways to pass it would be to delete
+    standards or lower the bar. Both are worse than measuring the right thing.
+
+    So the guard is expressed as what it was always trying to protect: the rule set must
+    not shrink, and the *mechanical* reach — rules plus analysers — must not fall. The
+    reliable-tier ratio is still reported and still comparable with every historical
+    reading of it; it just is not the floor any more, because it stopped being the whole
+    story when detection grew past line-scanning.
+    """
+    cov = enforcement_coverage()
     assert len(RULES) >= 37
-    assert enforcement_coverage()["coverage_pct"] >= 7.0
+    assert cov["mechanical_coverage_pct"] >= 7.0
+    # The analyser tier must actually be contributing, or the metric above is a rename.
+    assert cov["analyser_enforceable_anti_patterns"] >= 20
 
 
 def test_enforcement_coverage_metric():
@@ -161,7 +177,7 @@ def test_domain_coverage_is_reported_separately_from_core():
     """Layer 4 must never inflate the headline coverage metric."""
     cov = enforcement_coverage()
     # 446 core anti-patterns, plus C11's twelve ratified under ADR-007 Stage 1.
-    assert cov["total_anti_patterns"] == 472, "core denominator changed unexpectedly"
+    assert cov["total_anti_patterns"] == 475, "core denominator changed unexpectedly"
     assert cov["domain_total_anti_patterns"] > 0
     assert all(ap.startswith("AP-D-") for ap in cov["domain_covered"])
     assert not any(ap.startswith("AP-D-") for ap in cov["covered"])

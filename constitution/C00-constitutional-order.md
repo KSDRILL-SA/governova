@@ -383,7 +383,7 @@ lock date and back-filled here.
 | **C8** | Platform Reliability | Phase 2 | S8.1–S8.82 | 82 | — | LOCKED |
 | **C9** | Product & Feature | Phase 3 | S9.1–S9.30 | 30 | — | LOCKED |
 | **C10** | AI Collaboration | Phase 3 | S10.1–S10.37 | 37 | — | LOCKED (v1.1) |
-| **C11** | Requirements Engineering | Phase 0 | S11.1–S11.12 | 12 | — | LOCKED (v1.0) |
+| **C11** | Requirements Engineering | Phase 0 | S11.1–S11.15 | 15 | — | LOCKED (v1.1) |
 | **C14** | Data Design | Phase 1 | S14.1–S14.14 | 14 | C5 — Database Constitution | LOCKED (v1.0) |
 
 > **C12 (System Modelling) and C13 (Software Evolution) are reserved by ADR-007 and not
@@ -391,7 +391,7 @@ lock date and back-filled here.
 > when the phase was decided, and an identifier is never reassigned
 > (`framework/format-specification.md`, ID permanence).
 
-> **System total: 644 unique standards across 13 constitutions.**
+> **System total: 647 unique standards across 13 constitutions.**
 > Every standard has exactly one home constitution. Cross-references do not imply shared
 > ownership. No overlap. No footnotes.
 >

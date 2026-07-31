@@ -13,6 +13,7 @@ import json
 import re
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import Any
 
 from governova_compile.schema import CompiledIndex, Standard
 from governova_compile.writer import load_active_index
@@ -56,6 +57,20 @@ class Outcome(StrEnum):
 
     UNAVAILABLE = "unavailable"
     """The endpoint did not answer. **Zero findings here means nothing.**"""
+
+    UNPARSEABLE = "unparseable"
+    """The endpoint answered, and the answer carried no readable verdict.
+
+    Distinct from `REVIEWED` with no findings, which is a clean review, and distinct
+    from `UNAVAILABLE`, which is a dead endpoint. Collapsing this into either is how a
+    tier reports confidence it never earned.
+
+    The case that made it concrete: a reasoning model spends its token budget on an
+    internal `reasoning` field and returns `content: ""`. Nothing errors, the HTTP status
+    is 200, and a build goes green on a review that produced no answer. Raising
+    `GOVERNOVA_LLM_MAX_TOKENS` is usually the fix — which is only discoverable if the
+    outcome says so.
+    """
 
 
 @dataclass(frozen=True)
@@ -141,8 +156,18 @@ def build_messages(code: str, standards: list[Standard]) -> list[dict[str, str]]
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
-def parse_findings(content: str, allowed_ids: set[str]) -> list[SemanticFinding]:
-    """Parse the model's JSON and keep only citations of allowed (real) standards."""
+def payload(content: str) -> dict[str, Any] | None:
+    """The JSON object the model was asked for, or None if the reply carried none.
+
+    Separated from `parse_findings` because the two failures it distinguishes are
+    otherwise identical and mean opposite things: **`{"findings": []}` is a clean
+    review; an empty or unparseable reply is no review at all.** Collapsing both to an
+    empty finding list is how a tier reports confidence it never earned.
+
+    The case that made this concrete: a reasoning model spends its token budget on a
+    `reasoning` field and returns `content: ""`. Nothing errors, nothing is logged, and
+    the build goes green on a review that produced no answer.
+    """
     text = content.strip()
     fence = _FENCE.search(text)
     if fence:
@@ -150,8 +175,16 @@ def parse_findings(content: str, allowed_ids: set[str]) -> list[SemanticFinding]
     try:
         data = json.loads(text)
     except ValueError:
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def parse_findings(content: str, allowed_ids: set[str]) -> list[SemanticFinding]:
+    """Parse the model's JSON and keep only citations of allowed (real) standards."""
+    data = payload(content)
+    if data is None:
         return []
-    raw = data.get("findings", []) if isinstance(data, dict) else []
+    raw = data.get("findings", [])
     out: list[SemanticFinding] = []
     for item in raw:
         if not isinstance(item, dict):
@@ -204,6 +237,17 @@ def review_result(
             outcome=Outcome.UNAVAILABLE,
             detail=str(exc),
             status=getattr(exc, "status", None),
+        )
+    if payload(content) is None:
+        # A 200 carrying no readable verdict. Reporting this as a clean review would be
+        # the same defect as reporting an unreachable endpoint as one.
+        return ReviewResult(
+            outcome=Outcome.UNPARSEABLE,
+            detail=(
+                "the endpoint answered but returned no readable JSON verdict "
+                f"({len(content.strip())} char(s) of content) — a reasoning model may "
+                f"need a larger GOVERNOVA_LLM_MAX_TOKENS"
+            ),
         )
     allowed = {s.id.upper() for s in grounded}
     findings = parse_findings(content, allowed)

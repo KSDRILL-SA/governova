@@ -26,21 +26,40 @@ from dataclasses import dataclass, field
 class Fixture:
     """One evaluation case.
 
-    `expected` is the set of standards a competent reviewer would cite. Anything else the
-    backend reports is a false positive — including a finding that is arguably true but
-    not the one this fixture is about, because a tier that reports adjacent concerns on
-    every file is a tier whose output nobody reads.
+    Three classes, not two, because real code violates several standards at once and a
+    two-class scheme punishes a backend for being right about something the fixture
+    author did not think to list:
+
+    - **`expected`** — what a competent reviewer would cite. Finding these is recall.
+    - **`acceptable`** — defensible but not required. Scored as **neither** a hit nor an
+      invention.
+    - **everything else** — a false positive, and precision is measured on these.
+
+    The neutral class was added after the first real measurement. A 120b model was
+    scored well below its real accuracy, because most of its "inventions" were correct:
+    `S1.50` and
+    `S2.5` (explicit return types) are genuinely violated by these Python snippets, and
+    `S2.1` is the backend-scoped statement of the same concern as `S1.103`. Scoring a
+    correct finding as an invention makes the harness measure fixture completeness
+    rather than backend quality.
     """
 
     id: str
     language: str
     code: str
     expected: frozenset[str] = field(default_factory=frozenset)
+    acceptable: frozenset[str] = field(default_factory=frozenset)
     note: str = ""
 
     @property
     def is_clean(self) -> bool:
+        """No *required* finding. A clean fixture may still have acceptable ones."""
         return not self.expected
+
+    @property
+    def tolerated(self) -> frozenset[str]:
+        """Everything that is not counted against the backend."""
+        return self.expected | self.acceptable
 
 
 # ─── Violating fixtures ──────────────────────────────────────────────────────
@@ -49,6 +68,9 @@ _LAYER_VIOLATION = Fixture(
     id="layer-logic-in-route",
     language="python",
     expected=frozenset({"S1.103"}),
+    # S2.1 is C2's backend-scoped statement of the same concern; citing it on a route
+    # handler is defensible. S1.50/S2.5: this snippet declares no return type.
+    acceptable=frozenset({"S2.1", "S1.50", "S2.5"}),
     note="Business logic — a discount calculation — implemented inside a transport handler.",
     code='''\
 @router.post("/orders")
@@ -70,6 +92,7 @@ _REPOSITORY_VIOLATION = Fixture(
     id="data-access-outside-repository",
     language="python",
     expected=frozenset({"S1.104"}),
+    acceptable=frozenset({"S1.50", "S2.5", "S2.28"}),
     note="Direct ORM data access issued from a service instead of through a repository.",
     code='''\
 class InvoiceService:
@@ -89,6 +112,7 @@ _DUPLICATION_VIOLATION = Fixture(
     id="duplicated-shared-logic",
     language="python",
     expected=frozenset({"S1.106"}),
+    acceptable=frozenset({"S1.50", "S2.5"}),
     note=(
         "The same normalisation logic repeated verbatim in two places. No deterministic "
         "signature exists for this, which is why it is left to the semantic tier."
@@ -113,6 +137,7 @@ _SPECULATIVE_VIOLATION = Fixture(
     id="speculative-generality",
     language="python",
     expected=frozenset({"S1.107"}),
+    acceptable=frozenset({"S1.50", "S2.5"}),
     note=(
         "An abstraction layer with exactly one implementation and no current requirement "
         "for a second — the simplest correct solution was not chosen."
@@ -146,6 +171,7 @@ def notify(message: str) -> None:
 _CLEAN_SERVICE = Fixture(
     id="clean-layered-service",
     language="python",
+    acceptable=frozenset({"S1.50", "S2.5"}),
     note=(
         "Correct layering: the handler delegates, the service holds the rule, data access "
         "goes through a repository. A backend reporting anything here is unusable."
@@ -170,6 +196,7 @@ class OrderService:
 _CLEAN_SIMILAR_NOT_DUPLICATE = Fixture(
     id="clean-similar-but-not-duplicate",
     language="python",
+    acceptable=frozenset({"S1.50", "S2.5"}),
     note=(
         "Two functions of similar shape doing genuinely different things. The negative "
         "case for S1.106 — a backend that calls structural similarity duplication will "
@@ -190,6 +217,7 @@ def total_after_refunds(lines: list[Line], refunds: list[Refund]) -> Decimal:
 _CLEAN_JUSTIFIED_ABSTRACTION = Fixture(
     id="clean-abstraction-with-two-implementations",
     language="python",
+    acceptable=frozenset({"S1.50", "S2.5"}),
     note=(
         "An abstraction with two real implementations serving a present requirement. The "
         "negative case for S1.107 — a backend that flags every interface will be ignored."
@@ -239,5 +267,9 @@ FIXTURES: tuple[Fixture, ...] = (
 
 
 def expected_standards() -> frozenset[str]:
-    """Every standard the fixture set expects to be found. Validated against the index."""
-    return frozenset(sid for fixture in FIXTURES for sid in fixture.expected)
+    """Every standard the fixture set names, required or tolerated.
+
+    Both classes are validated against the compiled index: an `acceptable` entry naming
+    a standard that does not exist would silently excuse a real invention.
+    """
+    return frozenset(sid for fixture in FIXTURES for sid in fixture.tolerated)

@@ -172,6 +172,11 @@ def _run_semantic(scannable: list[Path], fmt: Fmt, root: Path) -> int:
             rel = p.as_posix()
 
         result = semantic_review_result(code, index=index)
+        if result.outcome is Outcome.UNPARSEABLE:
+            # A 200 with no readable verdict. Reported like an outage because it has the
+            # same consequence — nothing was reviewed — and the same invisibility.
+            unavailable = result
+            break
         if result.outcome is Outcome.UNAVAILABLE:
             # Stop at the first failure. Every remaining file would fail the same way,
             # and hammering a dead endpoint once per file is neither informative nor

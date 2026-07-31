@@ -4,9 +4,18 @@ Living documents that govern **how** Governova gets built. Distinct from `govern
 
 | File | Purpose |
 |------|---------|
+| `handoff-2026-07-31.md` | **Current engineer handoff — read this first.** State of the system, standing rules, open work, traps |
+| `phase-3-brownfield.md` | **Next phase.** Staged plan for ADR-005 workstream C — onboarding systems Governova has never seen |
+| `phase-2-lifecycle-completeness.md` | ADR-007 — **complete.** Retained as the worked example of a staged plan that held |
+| `strengthening-roadmap.md` | Standing improvements to the engine and its evidence tiers |
 | `governova-build-plan.md` | The master build plan — six phases (A–F) from zero to v1.0, with deliverables, dependencies, and locked decisions |
 | `phase-a-spec.md` | Detailed spec for Phase A — constitution as data (parser, validator, schema, types) |
-| `phase-{B…F}-spec.md` | Drafted before each phase begins, approved by L4 before any code is written |
+| `handoff-2026-07-30.md` | **Superseded.** Retained because its §3 standing rules and §5 traps are still cited |
+
+> **Phase numbering.** `governova-build-plan.md` uses letters (A–F) for the *engine* build.
+> ADR-005 and ADR-007 use numbers (Phase 1–4) for the *platform* workstreams. They are
+> different sequences over the same repository, and both are live: the letters describe how
+> the engine was built, the numbers describe what the platform ships next.
 
 ---
 

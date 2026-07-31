@@ -195,9 +195,28 @@ recommendation.
 
 | Option | Assessment |
 |---|---|
-| **Ship a local model now** (`#138`) | Right destination, wrong next move — see below |
+| **Ship a local model now** (`#138`) | **Measured and rejected** — see below |
 | **Defer indefinitely** | Deferring with no criteria is the `S8.87` decay that produced `#142` |
-| **Build the evaluation harness first** | **Recommended** |
+| **Build the evaluation harness first** | **Done** — `governova semantic-eval`, #171/#175 |
+
+### Measured, 2026-07-31
+
+The harness exists and both candidates have been run through it:
+
+| Backend | Precision (bar 90%) | Recall | Time | Verdict |
+|---|---|---|---|---|
+| `qwen2.5-coder:1.5b` local, CPU | **0%** | 0% | 13m 24s | ✗ |
+| `gpt-oss:120b` cloud, reasoning | **50–75%** | 50–75% | 1m 21s | ✗ |
+
+The 1.5b invented twelve findings and fired on **all four clean fixtures**, including a
+`slugify` function. At ~100s per file it is also too slow regardless of accuracy.
+
+The 120b **found the structural `S1.106` duplication case** the 1.5b could not touch, and
+3 of 4 real violations — then over-reported. **A calibration problem, not a capability
+one.**
+
+Run-to-run variance was large: precision 50–75% across eight passes over identical input.
+That is why the harness gained `--runs` and judges on the worst pass.
 
 ### Why not the local model yet
 
@@ -214,16 +233,19 @@ model needs a decision about how it relates to that.
 
 ### The recommendation
 
-**Build the evaluation harness before choosing any backend.** A fixture set of
-known-violating and known-clean code with expected findings, plus a scorer. Cheap,
-deterministic, and the same discipline as everything else here.
+The harness is built and has done its job: `#138` is now a decision backed by numbers
+rather than intuition, and **any** backend — local or hosted — is gated behind a
+measurable bar, so the next endpoint retirement is survivable.
 
-It does three things at once:
+Two cheap experiments remain before any model is tuned or shipped:
 
-- Makes *"is this backend good enough for governance"* answerable **for the first time**.
-- Turns `#138` from a hope into a decision made on evidence.
-- **Gates any backend** — local or hosted — behind a measurable bar, so the next endpoint
-  retirement is survivable.
+1. **Prompt for restraint.** The system prompt asks the model to identify violations and
+   never asks it to withhold marginal ones. One line — *"report only what you would defend
+   in review; when uncertain, report nothing"* — and the harness measures whether it moves
+   precision.
+2. **Measure a larger stock coder model.** If nothing reaches 90% precision, **the bar is
+   wrong and should be amended deliberately** rather than quietly relaxed to let something
+   through.
 
 Until then: BYO endpoint works today, and the local OpenAI-compatible recipe is documented
 in ADR-008 — offline, free, no account.

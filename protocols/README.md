@@ -14,6 +14,7 @@ executable procedures that make the constitutional standards actionable.
 | `github-workflow.md` | **GitHub Operating Standard** — branch→issue→PR→merge order, no-AI-references rule, full issue/PR metadata, mode-based merge authority (solo/team) |
 | `brownfield-adoption.md` | **Brownfield Adoption Standard** — onboarding/converting existing systems: gap analysis, non-breaking incremental conversion, edge-case register |
 | `external-governance.md` | **External & Ecosystem Governance** — third-party frameworks, dependencies/supply-chain, external APIs, integrations, vendors, temporal governance |
+| `project-governance.md` | **Project Governance** — planning, estimation, scheduling, and risk as *practice*. Records why project management is a protocol and not a constitution, and the six things deliberately left unstandardised |
 | `practice-to-standard.md` | **Practice-to-Standard Conversion** — how established practice becomes constitutional law: eligibility and the copyright boundary, reproducible reading, the four narrowing filters, enforcement-path selection, provenance citation, and recording what was rejected |
 | `git-workflow.md` | Branch model, commit convention, PR process, golden rules (mechanics) |
 | `modes/` | Operating modes: personal, team, enterprise |

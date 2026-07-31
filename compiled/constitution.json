@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-07-31T06:27:21.546217Z",
-  "source_commit_sha": "4261f50",
-  "checksum": "sha256:fa6ba90db508aed0a7ab9b019cc9e539c86dcb75d3ffbaedc417051ca9df7e4b",
+  "compiled_at": "2026-07-31T07:03:58.302108Z",
+  "source_commit_sha": "5622c1e",
+  "checksum": "sha256:d8733abf68a738306407b550a80a839a238ceb9b8fa6b608f8f73b299caee0c7",
   "framework": [
     {
       "id": "format-specification",
@@ -18276,7 +18276,7 @@
       "header": {
         "document": "C9 — Product & Feature Constitution",
         "organisation": "KSDRILL SA",
-        "version": "v1.0",
+        "version": "v1.1",
         "status": "LOCKED",
         "locked_date": "2026-05-08",
         "next_review": "2026-08-08",
@@ -19114,6 +19114,108 @@
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
           "source_line": 387
+        },
+        {
+          "id": "S9.31",
+          "title": "Every Identified Risk Has a Named Owner and a Mitigation",
+          "constitution_id": "C09",
+          "priority": "High",
+          "applies_to": "All Stacks · every project with a recorded risk",
+          "phase": "3",
+          "phase_label": "Phase 3 — Product & Intelligence",
+          "depends_on": [
+            {
+              "standard_id": "S1.85",
+              "description": "ADRs document significant decisions"
+            }
+          ],
+          "enforced_by": [
+            "structural probe — risk register entries carry an owner"
+          ],
+          "statement": "Each recorded risk names one accountable person, the mitigation in place, and the\nobservable signal that it is occurring. The owner is a person, never a team or a queue.",
+          "rationale": "A risk register listing dangers with nobody attached is a document that makes a team feel\nprepared while changing nothing about what happens. Ownership by a group is ownership by\nnobody — every member reasonably assumes another is watching. And a risk with no stated\ntrigger is watched by no one even when it is owned, because nobody knows what watching\nwould consist of.",
+          "anti_patterns": [
+            {
+              "id": "AP-S9.31a",
+              "description": "A risk recorded with no named individual owner, or with a team named in place of a person, so every member reasonably assumes somebody else is watching it.",
+              "parent_standard_id": "S9.31"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 22, Project Management (risk management)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
+          "source_line": 427
+        },
+        {
+          "id": "S9.32",
+          "title": "Estimates Are Recorded Against Their Actuals",
+          "constitution_id": "C09",
+          "priority": "Standard",
+          "applies_to": "All Stacks · every project that estimates work",
+          "phase": "3",
+          "phase_label": "Phase 3 — Product & Intelligence",
+          "depends_on": [
+            {
+              "standard_id": "S9.31",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "structural probe — estimate/actual pairs are readable and drift is computable"
+          ],
+          "statement": "Where work is estimated, the estimate and the actual are both recorded against the same\nitem, in the same unit, so that drift between them can be measured over time.",
+          "rationale": "**Estimation accuracy is a feedback loop, not a talent.** A team that records estimates and\nnever compares them to actuals is not estimating; it is guessing repeatedly and learning\nnothing, and each new estimate starts from the same knowledge as the last.\n\nThis is the one part of project management that is both mechanisable and valuable, which is\nwhy it is a standard and the rest of the discipline is a protocol. Individual misses are\nnoise; a consistent direction is a signal, and it is usually a signal about scope discovery\nrather than about speed.",
+          "anti_patterns": [
+            {
+              "id": "AP-S9.32a",
+              "description": "Estimates recorded with no actuals captured against them, so the estimate is never falsified and the next one starts from the same knowledge as the last.",
+              "parent_standard_id": "S9.32"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 22, Project Management (estimation)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
+          "source_line": 457
+        },
+        {
+          "id": "S9.33",
+          "title": "A Completed Project Records What It Delivered Against What It Planned",
+          "constitution_id": "C09",
+          "priority": "Standard",
+          "applies_to": "All Stacks · every project reaching completion",
+          "phase": "3",
+          "phase_label": "Phase 3 — Product & Intelligence",
+          "depends_on": [
+            {
+              "standard_id": "S9.32",
+              "description": null
+            }
+          ],
+          "enforced_by": [
+            "review — a project's *completion* is a judgement no repository state declares"
+          ],
+          "statement": "A completed project records what was delivered against what was planned, what changed and\nwhen it was decided, which assumptions held, and what the estimation drift was.",
+          "rationale": "Without a closure record, every project begins from the same starting knowledge as the last\none, and the organisation's estimate of its own capability never improves. This is\ndeliberately **not** a retrospective: a retrospective is about how the team worked, and\nthis is about how the *plan* performed. Teams frequently do the first and almost never do\nthe second, which is why the same planning error recurs across projects staffed by people\nwho all learned from the previous one.\n\nReview-only, and the reason is structural: nothing in a repository declares that a project\nis finished. A check would either fire on every merge or on none.",
+          "anti_patterns": [
+            {
+              "id": "AP-S9.33a",
+              "description": "A project ending with no record of plan against outcome, so the next project begins from identical starting knowledge and repeats the same planning error.",
+              "parent_standard_id": "S9.33"
+            }
+          ],
+          "cross_references": [],
+          "grounded_in": [
+            "Sommerville, *Software Engineering* 10e — ch. 22, Project Management (project closure)"
+          ],
+          "abbreviated": false,
+          "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
+          "source_line": 490
         }
       ]
     },
@@ -24193,8 +24295,8 @@
     ]
   },
   "integrity": {
-    "standards_extracted": 667,
-    "anti_patterns_extracted": 495,
+    "standards_extracted": 670,
+    "anti_patterns_extracted": 498,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

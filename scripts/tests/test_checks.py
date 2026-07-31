@@ -238,7 +238,7 @@ def test_domain_coverage_is_reported_separately_from_core():
     """Layer 4 must never inflate the headline coverage metric."""
     cov = enforcement_coverage()
     # 446 core anti-patterns, plus C11's twelve ratified under ADR-007 Stage 1.
-    assert cov["total_anti_patterns"] == 495, "core denominator changed unexpectedly"
+    assert cov["total_anti_patterns"] == 498, "core denominator changed unexpectedly"
     assert cov["domain_total_anti_patterns"] > 0
     assert all(ap.startswith("AP-D-") for ap in cov["domain_covered"])
     assert not any(ap.startswith("AP-D-") for ap in cov["covered"])

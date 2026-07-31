@@ -25,6 +25,12 @@ from governova_evidence import probed_standards
 # deliberate act that shows up in this file's diff.
 PHASE_2_CONSTITUTIONS: frozenset[str] = frozenset({"C11", "C12", "C13", "C14"})
 
+# Standards Phase 2 added to *existing* constitutions. ADR-007's constraint is on
+# "standards added in this phase", not on standards living in new documents — so folding
+# project governance into C9 rather than making it a fifth constitution must not exempt it
+# from the bar it would otherwise have had to meet.
+PHASE_2_ADDITIONS: frozenset[str] = frozenset({"S9.31", "S9.32", "S9.33"})
+
 MINIMUM_MECHANICAL_RATIO = 0.40
 """ADR-007 constraint 2. Not an aspiration."""
 
@@ -38,8 +44,8 @@ def _phase_2_standards(index) -> list:
     return [
         standard
         for constitution in index.constitutions
-        if constitution.id in PHASE_2_CONSTITUTIONS
         for standard in constitution.standards
+        if constitution.id in PHASE_2_CONSTITUTIONS or standard.id in PHASE_2_ADDITIONS
     ]
 
 

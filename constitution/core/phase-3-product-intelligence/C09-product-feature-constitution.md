@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C9 — Product & Feature Constitution                                |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.0                                                               |
+| **Version**        | v1.1                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -404,6 +404,120 @@ MVP "done" is defined by the completion of the primary user workflow end-to-end 
 | `AP-S9.10a` | Feature flag in environment variable instead of database | S9.10 | High |
 | `AP-S9.14a` | MVP declared done in staging | S9.14 | High |
 | `AP-S9.20a` | v2 features deployed but hidden in v1 | S9.20 | Standard |
+| `AP-S9.31a` | A risk recorded with no named individual owner | S9.31 | High |
+| `AP-S9.32a` | Estimates recorded with no actuals captured against them | S9.32 | Standard |
+| `AP-S9.33a` | A project ending with no record of plan against outcome | S9.33 | Standard |
+
+---
+
+## Part 9 — Project Governance
+
+Added by ADR-007 Stage 6. `protocols/project-governance.md` carries planning, estimation,
+scheduling, and risk as **practice**; these three standards are the parts of that
+discipline that are genuinely checkable.
+
+ADR-007 considered a fifth Phase 2 constitution for project management and **refused**.
+Most of the discipline is context-dependent judgement — the right sprint length for two
+people is wrong for forty — and forty unenforceable standards about scheduling would
+inflate every coverage denominator in this system while lowering the score, which is the
+precise failure the enforcement constraint exists to prevent.
+
+---
+
+### S9.31 — Every Identified Risk Has a Named Owner and a Mitigation
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S9.31 |
+| **Priority**    | High |
+| **Applies To**  | All Stacks · every project with a recorded risk |
+| **Phase**       | Phase 3 — Product & Intelligence |
+| **Depends On**  | `S1.85` (ADRs document significant decisions) |
+| **Enforced By** | structural probe — risk register entries carry an owner |
+
+**Standard:**
+Each recorded risk names one accountable person, the mitigation in place, and the
+observable signal that it is occurring. The owner is a person, never a team or a queue.
+
+**Rationale:**
+A risk register listing dangers with nobody attached is a document that makes a team feel
+prepared while changing nothing about what happens. Ownership by a group is ownership by
+nobody — every member reasonably assumes another is watching. And a risk with no stated
+trigger is watched by no one even when it is owned, because nobody knows what watching
+would consist of.
+
+**Anti-Patterns:**
+- `AP-S9.31a` — A risk recorded with no named individual owner, or with a team named in place of a person, so every member reasonably assumes somebody else is watching it.
+
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 22, Project Management (risk management)
+
+---
+
+### S9.32 — Estimates Are Recorded Against Their Actuals
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S9.32 |
+| **Priority**    | Standard |
+| **Applies To**  | All Stacks · every project that estimates work |
+| **Phase**       | Phase 3 — Product & Intelligence |
+| **Depends On**  | `S9.31` |
+| **Enforced By** | structural probe — estimate/actual pairs are readable and drift is computable |
+
+**Standard:**
+Where work is estimated, the estimate and the actual are both recorded against the same
+item, in the same unit, so that drift between them can be measured over time.
+
+**Rationale:**
+**Estimation accuracy is a feedback loop, not a talent.** A team that records estimates and
+never compares them to actuals is not estimating; it is guessing repeatedly and learning
+nothing, and each new estimate starts from the same knowledge as the last.
+
+This is the one part of project management that is both mechanisable and valuable, which is
+why it is a standard and the rest of the discipline is a protocol. Individual misses are
+noise; a consistent direction is a signal, and it is usually a signal about scope discovery
+rather than about speed.
+
+**Anti-Patterns:**
+- `AP-S9.32a` — Estimates recorded with no actuals captured against them, so the estimate is never falsified and the next one starts from the same knowledge as the last.
+
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 22, Project Management (estimation)
+
+---
+
+### S9.33 — A Completed Project Records What It Delivered Against What It Planned
+
+| Attribute       | Value |
+|-----------------|-------|
+| **ID**          | S9.33 |
+| **Priority**    | Standard |
+| **Applies To**  | All Stacks · every project reaching completion |
+| **Phase**       | Phase 3 — Product & Intelligence |
+| **Depends On**  | `S9.32` |
+| **Enforced By** | review — a project's *completion* is a judgement no repository state declares |
+
+**Standard:**
+A completed project records what was delivered against what was planned, what changed and
+when it was decided, which assumptions held, and what the estimation drift was.
+
+**Rationale:**
+Without a closure record, every project begins from the same starting knowledge as the last
+one, and the organisation's estimate of its own capability never improves. This is
+deliberately **not** a retrospective: a retrospective is about how the team worked, and
+this is about how the *plan* performed. Teams frequently do the first and almost never do
+the second, which is why the same planning error recurs across projects staffed by people
+who all learned from the previous one.
+
+Review-only, and the reason is structural: nothing in a repository declares that a project
+is finished. A check would either fire on every merge or on none.
+
+**Anti-Patterns:**
+- `AP-S9.33a` — A project ending with no record of plan against outcome, so the next project begins from identical starting knowledge and repeats the same planning error.
+
+**Grounded In:**
+- Sommerville, *Software Engineering* 10e — ch. 22, Project Management (project closure)
 
 ---
 
@@ -429,9 +543,11 @@ MVP "done" is defined by the completion of the primary user workflow end-to-end 
 |---------|------|--------|--------|
 | v1.0 | 2026-05-08 | Initial lock — rebuilt from Product & Feature Constitution v3.0. Feature group table formalised (S9.8). v1 feature sets per system documented with counts (S9.9). MVP done criteria aligned with production environment requirement (S9.14). Performance and accessibility added as explicit MVP criteria (S9.18, S9.19). | Full system rebuild — HTML to Markdown, version reset. |
 
+| v1.1 | 2026-07-31 | **Added Part 9 — Project Governance (S9.31–S9.33)** (ADR-007 Stage 6). S9.31 every identified risk has a named individual owner and a mitigation; S9.32 estimates are recorded against their actuals so drift is measurable; S9.33 a completed project records delivered against planned. Anti-patterns AP-S9.31a–AP-S9.33a added. Two are mechanically checked by structural probes; S9.33 is review-only because nothing in a repository declares a project finished. Paired with `protocols/project-governance.md`. Count 30→33. | ADR-007 considered a fifth Phase 2 constitution for project management and refused: most of the discipline is context-dependent judgement, and forty unenforceable standards about scheduling would inflate every coverage denominator while lowering the score. Only three parts of it are genuinely checkable, and estimation calibration is the one part that is both mechanisable and valuable — a team that records estimates and never compares them to actuals is guessing repeatedly and learning nothing. |
+
 ---
 
-> **LOCKED — v1.0 — 2026-05-08**
+> **LOCKED — v1.1 — 2026-07-31** (amended; originally locked v1.0 2026-05-08)
 >
 > This document is locked. No standard may be added, removed, or modified
 > without following the Amendment Protocol defined in C0 §8.

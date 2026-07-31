@@ -6,7 +6,7 @@
 |--------------------|--------------------------------------------------------------------|
 | **Document**       | C0 — Constitutional Order                                          |
 | **Organisation**   | KSDRILL SA                                                         |
-| **Version**        | v1.2                                                               |
+| **Version**        | v1.3                                                               |
 | **Status**         | LOCKED                                                             |
 | **Locked**         | 2026-05-08                                                         |
 | **Next Review**    | 2026-08-08                                                         |
@@ -384,8 +384,14 @@ lock date and back-filled here.
 | **C9** | Product & Feature | Phase 3 | S9.1–S9.30 | 30 | — | LOCKED |
 | **C10** | AI Collaboration | Phase 3 | S10.1–S10.37 | 37 | — | LOCKED (v1.1) |
 | **C11** | Requirements Engineering | Phase 0 | S11.1–S11.12 | 12 | — | LOCKED (v1.0) |
+| **C14** | Data Design | Phase 1 | S14.1–S14.14 | 14 | C5 — Database Constitution | LOCKED (v1.0) |
 
-> **System total: 630 unique standards across 12 constitutions.**
+> **C12 (System Modelling) and C13 (Software Evolution) are reserved by ADR-007 and not
+> yet written.** The gap in the numbering is deliberate: their identifiers were assigned
+> when the phase was decided, and an identifier is never reassigned
+> (`framework/format-specification.md`, ID permanence).
+
+> **System total: 644 unique standards across 13 constitutions.**
 > Every standard has exactly one home constitution. Cross-references do not imply shared
 > ownership. No overlap. No footnotes.
 >
@@ -447,6 +453,7 @@ lock date and back-filled here.
 | **C2 — Backend Constitution** | Service architecture, API contracts, OpenAPI-first development, database access from backend services, performance, resilience, security middleware, observability, FastAPI specifics |
 | **C3 — Auth Constitution** | Authentication strategy per stack, NextAuth.js governance, JWT lifecycle, RBAC, OAuth, session management, security baseline, audit logging |
 | **C4 — Frontend Constitution** | Frontend architecture, mobile-first standards, state management, Angular and Next.js specific standards, group-build methodology, layer build order |
+| **C14 — Data Design** | How data is *structured*: entity identity, referential integrity, normalisation and deliberate denormalisation, relationship modelling (M:N resolution, fan traps, redundant paths), time-variant data, and the three-stage database life cycle |
 | **C5 — Database Constitution** | Database assignment by data type, PostgreSQL and Prisma standards, MongoDB and Beanie standards, ChromaDB standards, cross-database integrity, migration governance |
 | **C6 — Full-Stack Architecture** | Dual-stack system topology, stack assignment framework for new systems, request flows per stack, cross-stack communication, deployment coordination, ADR process |
 
@@ -492,6 +499,7 @@ lock date and back-filled here.
 C0  — Constitutional Order          ← Supreme authority. Governs the governance system.
 C3  — Auth Constitution             ← Security decisions. Highest domain authority.
 C2  — Backend Constitution          ← Architecture and API contract decisions.
+C14 — Data Design                   ← How data is structured. Schema soundness.
 C5  — Database Constitution         ← Data storage and integrity decisions.
 C4  — Frontend Constitution         ← UI, client-side, and rendering decisions.
 C6  — Full-Stack Architecture       ← Integration, stack assignment, and topology.
@@ -506,6 +514,12 @@ C10 — AI Collaboration              ← AI governance and permission boundary 
 The hierarchy governs conflicts — it does not imply importance. C9 and C10 are at the
 bottom of conflict resolution order because product and AI decisions must yield to
 technical correctness, not because product decisions are unimportant.
+
+**C14 sits directly above C5.** C5 governs how data is *accessed*; C14 governs how it is
+*structured*, and structure constrains every query written against it. A query can be
+rewritten on a Tuesday; a schema cannot without a migration against everything already
+written under it. So where an access decision and a structural one conflict, the
+structural one governs.
 
 **C11 sits below every architecture constitution and above C1** for the same reason read
 in both directions. A requirement never authorises an unsound schema, a weakened auth
@@ -899,9 +913,11 @@ new failure pattern produces a new entry. The register grows — it is never pru
 | v1.1 | 2026-07-31 | §3.1 — added `**Grounded In:**` to the standard block as the one optional element, carrying provenance for a requirement as a citation. §3.2 — added SR-7 governing it: a citation, never an excerpt, bounded at 120 characters and rejected by `governova validate` above that. No standard added, removed, or changed in scope; the count stays 618. | A standard defended by citation is defensible to an architecture board or a regulator; a standard defended by assertion is house style. Governova's Part 19 standards were a rediscovery of established practice and said so nowhere, which understated them. ADR-007 constraint 3 requires that the provenance carry a reference and never the source's expression, because these documents are compiled, published, and shipped inside a PyPI wheel — an excerpt here is a licensing defect in every consumer's dependency tree. |
 | v1.2 | 2026-07-31 | **Admitted C11 — Requirements Engineering** as the twelfth core constitution (ADR-007 Stage 1). §5.1 register gains its row and the system total moves to 630 across 12 constitutions, with a note that per-row ranges are as-locked while the compiled index is authoritative. §6 places C11 **first within Phase 0** — requirements precede the first line of code, and C1's feature lifecycle begins from a requirement C11 governs the form of. §7.1 inserts it at **rank 7**, below every architecture constitution and above C1, with the reasoning stated inline. No existing standard changed in meaning, scope, priority, or enforcement; only the ranks below C6 shift by one. | Requirements defects are the most expensive class in software and survive every other gate this corpus provides — the code matches the request, the tests assert the request, and nothing is broken. The hierarchy position encodes the trade in both directions: technique beats scope, so a requirement never authorises an unsound schema or a weakened auth control and one that asks for either is renegotiated rather than obeyed; but scope beats general engineering practice, because building the wrong thing correctly is the failure no later refactor recovers. |
 
+| v1.3 | 2026-07-31 | **Admitted C14 — Data Design** as the thirteenth core constitution (ADR-007 Stage 2). §5.1 register gains its row and the system total moves to 644 across 13 constitutions, with a note that C12 and C13 are reserved by ADR-007, not yet written, and their identifiers permanent. §6 places C14 in Phase 1 ahead of C5 — structure is designed before access. §7.1 inserts it at **rank 4**, directly above C5, with the reasoning stated inline. No existing standard changed in meaning, scope, priority, or enforcement; ranks from C5 downward shift by one. | C5 governs how data is *accessed*; nothing governed how it is *structured*, and structure constrains every query written against it. A query can be rewritten on a Tuesday; a schema cannot without a migration against every row already written under it — so where an access decision and a structural one conflict, the structural one governs. |
+
 ---
 
-> **LOCKED — v1.2 — 2026-07-31**
+> **LOCKED — v1.3 — 2026-07-31**
 >
 > This document is locked. No section, standard, format specification, protocol, or register
 > entry may be added, removed, or modified without following the Amendment Protocol defined

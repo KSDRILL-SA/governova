@@ -348,14 +348,17 @@ def _requirements_results(root: Path) -> list[ProbeResult]:
     reverse — and the verdict discipline is identical: a repository exposing no
     requirements is UNKNOWN, never SATISFIED and never VIOLATED.
     """
-    try:
-        from governova_requirements.evidence import probe_verdicts
-    except ImportError:  # pragma: no cover - the analyser ships in the same wheel
-        return []
-    return [
-        ProbeResult(standard, Verdict(verdict), evidence)
-        for standard, verdict, evidence in probe_verdicts(root)
-    ]
+    results: list[ProbeResult] = []
+    for module in ("governova_requirements.evidence", "governova_schema.evidence"):
+        try:
+            probe_verdicts = __import__(module, fromlist=["probe_verdicts"]).probe_verdicts
+        except ImportError:  # pragma: no cover - the analysers ship in the same wheel
+            continue
+        results.extend(
+            ProbeResult(standard, Verdict(verdict), evidence)
+            for standard, verdict, evidence in probe_verdicts(root)
+        )
+    return results
 
 
 def run_probes(root: Path) -> list[ProbeResult]:
@@ -382,8 +385,9 @@ def satisfied_standards(root: Path) -> set[str]:
 def probed_standards() -> set[str]:
     """Standards this tier can reach — the file-shape probes plus the analysers."""
     reachable = {p.standard for p in PROBES}
-    try:
-        from governova_requirements.evidence import MECHANICAL_STANDARDS
-    except ImportError:  # pragma: no cover - the analyser ships in the same wheel
-        return reachable
-    return reachable | set(MECHANICAL_STANDARDS)
+    for module in ("governova_requirements.evidence", "governova_schema.evidence"):
+        try:
+            reachable |= set(__import__(module, fromlist=["MECHANICAL_STANDARDS"]).MECHANICAL_STANDARDS)
+        except ImportError:  # pragma: no cover - the analysers ship in the same wheel
+            continue
+    return reachable

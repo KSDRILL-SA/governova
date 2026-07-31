@@ -10,6 +10,14 @@ from __future__ import annotations
 from governova_semantic.client import SemanticUnavailableError
 from governova_semantic.config import SemanticConfig, from_env
 from governova_semantic.describe import describe_code
+from governova_semantic.evaluation import (
+    MIN_PRECISION,
+    MIN_RECALL,
+    EvaluationReport,
+    FixtureOutcome,
+    evaluate,
+)
+from governova_semantic.fixtures import FIXTURES, Fixture
 from governova_semantic.review import (
     Outcome,
     ReviewResult,
@@ -22,6 +30,12 @@ from governova_semantic.review import (
 )
 
 __all__ = [
+    "FIXTURES",
+    "MIN_PRECISION",
+    "MIN_RECALL",
+    "EvaluationReport",
+    "Fixture",
+    "FixtureOutcome",
     "Outcome",
     "ReviewResult",
     "SemanticConfig",
@@ -29,6 +43,7 @@ __all__ = [
     "SemanticUnavailableError",
     "build_messages",
     "describe_code",
+    "evaluate",
     "from_env",
     "parse_findings",
     "relevant_standards",

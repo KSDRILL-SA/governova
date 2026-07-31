@@ -967,6 +967,73 @@ def requirements_lint(
         raise typer.Exit(code=1)
 
 
+@app.command(name="semantic-eval")
+def semantic_eval(
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+    strict: Annotated[
+        bool, typer.Option("--strict", help="Exit non-zero when the backend misses the bar.")
+    ] = False,
+) -> None:
+    """Measure whether the configured semantic backend is good enough to be trusted.
+
+    Runs the evaluation fixtures and scores precision and recall. Precision is weighted
+    far above recall: a missed violation disappoints, an invented one discredits every
+    other finding the tier makes.
+    """
+    from governova_semantic import MIN_PRECISION, MIN_RECALL, evaluate
+
+    report = evaluate(index=_load(_root(repo_root)))
+
+    if not report.assessed:
+        console.print("[yellow]unassessed[/] — the backend could not be measured.")
+        for note in report.notes:
+            console.print(f"[dim]· {note}[/]")
+        return
+
+    console.print(f"model={report.model} measured={report.measured_at}")
+    console.print(report.summary())
+    console.print(
+        f"[dim]true positives {report.true_positives} · "
+        f"false positives {report.false_positives} · "
+        f"false negatives {report.false_negatives}[/]"
+    )
+
+    table = Table("Fixture", "Expected", "Found", "Verdict", box=None, pad_edge=False)
+    for outcome in report.outcomes:
+        if outcome.false_positives:
+            verdict = f"[red]invented {', '.join(sorted(outcome.false_positives))}[/]"
+        elif outcome.false_negatives:
+            missed = ", ".join(sorted(outcome.false_negatives))
+            # A standard the pre-filter never submitted is not the model's miss.
+            verdict = (
+                f"[yellow]not grounded: {missed}[/]"
+                if outcome.ungrounded
+                else f"[yellow]missed {missed}[/]"
+            )
+        else:
+            verdict = "[green]correct[/]"
+        table.add_row(
+            outcome.fixture_id,
+            ", ".join(sorted(outcome.expected)) or "—",
+            ", ".join(sorted(outcome.found)) or "—",
+            verdict,
+        )
+    console.print(table)
+
+    for note in report.notes:
+        console.print(f"[dim]· {note}[/]")
+
+    if report.passed:
+        console.print(f"[bold green]✓ clears the bar[/] (≥{MIN_PRECISION:.0%} precision, ≥{MIN_RECALL:.0%} recall)")
+        return
+    console.print(
+        f"[bold red]✗ below the bar[/] — this backend should not be relied on for "
+        f"governance findings (≥{MIN_PRECISION:.0%} precision, ≥{MIN_RECALL:.0%} recall)"
+    )
+    if strict:
+        raise typer.Exit(code=1)
+
+
 @app.command()
 def trace(
     repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,

@@ -206,7 +206,7 @@ The harness exists and both candidates have been run through it:
 | Backend | Precision (bar 90%) | Recall | Time | Verdict |
 |---|---|---|---|---|
 | `qwen2.5-coder:1.5b` local, CPU | **0%** | 0% | 13m 24s | ✗ |
-| `gpt-oss:120b` cloud, reasoning | **50–75%** | 50–75% | 1m 21s | ✗ |
+| `gpt-oss:120b` cloud, reasoning | **60–100%** (mean 75%) | mean 80% | 1m 21s | ✗ |
 
 The 1.5b invented twelve findings and fired on **all four clean fixtures**, including a
 `slugify` function. At ~100s per file it is also too slow regardless of accuracy.
@@ -215,8 +215,12 @@ The 120b **found the structural `S1.106` duplication case** the 1.5b could not t
 3 of 4 real violations — then over-reported. **A calibration problem, not a capability
 one.**
 
-Run-to-run variance was large: precision 50–75% across eight passes over identical input.
-That is why the harness gained `--runs` and judges on the worst pass.
+Run-to-run variance was large — precision spanned a 15–40 point range across passes over
+identical input — which is why the harness gained `--runs` and judges on the worst pass.
+
+The 120b figures above are **after** `#178`, which added a *withhold* instruction to the
+prompt: mean precision moved 57% → 75% and mean recall 65% → 80%. A calibration fix worth
+one paragraph, and still short of the bar.
 
 ### Why not the local model yet
 
@@ -239,10 +243,8 @@ measurable bar, so the next endpoint retirement is survivable.
 
 Two cheap experiments remain before any model is tuned or shipped:
 
-1. **Prompt for restraint.** The system prompt asks the model to identify violations and
-   never asks it to withhold marginal ones. One line — *"report only what you would defend
-   in review; when uncertain, report nothing"* — and the harness measures whether it moves
-   precision.
+1. ~~**Prompt for restraint.**~~ **Done — `#178`.** Mean precision 57% → 75%, mean recall
+   65% → 80%. Still short of the bar.
 2. **Measure a larger stock coder model.** If nothing reaches 90% precision, **the bar is
    wrong and should be amended deliberately** rather than quietly relaxed to let something
    through.

@@ -850,5 +850,102 @@ def licences(
     raise typer.Exit(code=1)
 
 
+requirements_app = typer.Typer(
+    no_args_is_help=True,
+    help="Read, trace, and lint the requirements this repository exposes.",
+)
+app.add_typer(requirements_app, name="requirements")
+
+
+@requirements_app.command("status")
+def requirements_status(
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+) -> None:
+    """Report which requirements tier this repository is at, and why."""
+    from governova_requirements import Tier, collect
+
+    root = repo_root or resolve_target_root()
+    found = collect(root)
+    label = {
+        Tier.INVISIBLE: "[yellow]0 — invisible[/]",
+        Tier.REFERENCED: "[green]1 — referenced[/]",
+        Tier.EXPORTED: "[green]2 — exported[/]",
+        Tier.NATIVE: "[green]3 — native[/]",
+    }[found.tier]
+    t = Table.grid(padding=(0, 2))
+    t.add_row("Tier:", label)
+    t.add_row("Requirements:", str(len(found.requirements)))
+    t.add_row("Citations:", str(len(found.citations)))
+    console.print(t)
+    for note in found.notes:
+        console.print(f"[dim]· {note}[/]")
+    if found.tier is Tier.INVISIBLE:
+        # Tier 0 is unknown, never a violation. Exiting non-zero here would punish a
+        # team for a requirement Governova simply cannot see (ADR-007 addendum).
+        console.print(
+            "\n[dim]Unassessed, not failing. Cite requirement ids "
+            "(REQ-1234) in tests or commit trailers to reach tier 1 at no cost.[/]"
+        )
+
+
+@requirements_app.command("trace")
+def requirements_trace(
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+    strict: Annotated[
+        bool, typer.Option("--strict", help="Exit non-zero when findings exist.")
+    ] = False,
+) -> None:
+    """Show requirement ↔ code ↔ test linkage."""
+    from governova_requirements import collect, trace
+
+    root = repo_root or resolve_target_root()
+    report = trace(collect(root))
+
+    if not report.assessed:
+        console.print("[yellow]unknown[/] — no requirements reachable in this repository.")
+        for note in report.notes:
+            console.print(f"[dim]· {note}[/]")
+        return
+
+    coverage = report.coverage_pct
+    console.print(
+        f"tier={int(report.tier)} requirements={report.requirements} "
+        f"tested={report.tested} untested={report.untested} "
+        f"coverage={coverage if coverage is not None else '—'}%"
+    )
+    for finding in report.findings:
+        console.print(f"  [yellow]{finding.code}[/] {finding.message}")
+    if report.findings and strict:
+        raise typer.Exit(code=1)
+
+
+@requirements_app.command("lint")
+def requirements_lint(
+    repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
+    strict: Annotated[
+        bool, typer.Option("--strict", help="Exit non-zero when findings exist.")
+    ] = False,
+) -> None:
+    """Lint requirement text against the canonical grammar (tiers 2–3)."""
+    from governova_requirements import Tier, collect, lint
+
+    root = repo_root or resolve_target_root()
+    found = collect(root)
+    if found.tier < Tier.EXPORTED:
+        console.print(
+            "[yellow]unknown[/] — no requirement text is reachable, so nothing can be linted."
+        )
+        for note in found.notes:
+            console.print(f"[dim]· {note}[/]")
+        return
+
+    findings = lint(found.requirements.values())
+    console.print(f"requirements={len(found.requirements)} findings={len(findings)}")
+    for finding in findings:
+        console.print(f"  [yellow]{finding.code}[/] {finding.requirement_id} — {finding.message}")
+    if findings and strict:
+        raise typer.Exit(code=1)
+
+
 if __name__ == "__main__":
     app()

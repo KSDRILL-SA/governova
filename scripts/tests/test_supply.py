@@ -61,6 +61,7 @@ def test_free_text_licences_normalise_to_spdx(raw: str, expected: str) -> None:
 
 @pytest.mark.parametrize("raw", ["", "   ", "See LICENSE file for details"])
 def test_an_unrecognised_licence_stays_unknown(raw: str) -> None:
+    # Verifies REQ-007 — a licence outside the allowlist is rejected.
     """Guessing a licence permissive is the one error this gate exists to prevent."""
     assert normalise(raw) == "UNKNOWN"
     assert not is_allowed(normalise(raw))

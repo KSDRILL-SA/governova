@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "statement": "The Governova engine shall govern a repository that does not contain the engine's own source tree.",
+      "kind": "functional",
+      "obligation": "shall",
+      "source": "ADR-005 — platform architecture; discovered as a defect in #113 and closed by #127",
+      "acceptance": "A wheel installed into a clean environment runs against a directory holding no constitution/ and no .git, and reports on it."
+    },
+    {
+      "id": "REQ-002",
+      "statement": "A Governova check shall report unknown when it cannot determine whether a standard is satisfied.",
+      "kind": "constraint",
+      "obligation": "shall",
+      "source": "ADR-006 — engine security posture; the standing rule governing every evidence tier",
+      "acceptance": "A probe, analyser, or tier-0 requirements read that lacks the information to answer returns unknown, never satisfied and never violated."
+    },
+    {
+      "id": "REQ-003",
+      "statement": "The relay shall refuse an L4 approval request from any non-human actor at the API boundary.",
+      "kind": "constraint",
+      "obligation": "shall",
+      "source": "ADR-005 — permission model; S10.8. Exercised live and recorded at seq 4 of the audit chain",
+      "acceptance": "A non-human actor requesting L4 is refused, and the refusal is recorded as a SEV1 violation rather than discarded."
+    },
+    {
+      "id": "REQ-004",
+      "statement": "The compiler shall produce a byte-identical constitutional index from unchanged source markdown.",
+      "kind": "non-functional",
+      "obligation": "shall",
+      "source": "ADR-005 — the compiled index as the single machine-readable contract",
+      "acceptance": "Two compile runs over the same source yield the same content checksum, on any platform and independent of line endings."
+    },
+    {
+      "id": "REQ-005",
+      "statement": "The audit trail shall link each record to its predecessor with a hash that detects any later edit.",
+      "kind": "functional",
+      "obligation": "shall",
+      "source": "ADR-005 — governance runtime; the property the tamper-evident design exists to provide",
+      "acceptance": "Altering or removing any record breaks verification of the chain from that point onward."
+    },
+    {
+      "id": "REQ-006",
+      "statement": "Every deterministic detection rule shall bind an anti-pattern that exists in the compiled constitution.",
+      "kind": "constraint",
+      "obligation": "shall",
+      "source": "ADR-005 — rule engine governance; prevents the rule set drifting from the corpus",
+      "acceptance": "Validation of the rule set against the compiled index returns no unbound anti-pattern."
+    },
+    {
+      "id": "REQ-007",
+      "statement": "The supply-chain gate shall reject a dependency whose licence is absent from the allowlist.",
+      "kind": "functional",
+      "obligation": "shall",
+      "source": "S8.85 — ratified 2026-06-21; the gate found a live CVE on its first run",
+      "acceptance": "A dependency carrying an unknown or copyleft licence fails the gate unless a recorded exception names it."
+    },
+    {
+      "id": "REQ-008",
+      "statement": "An advisory-tier check shall leave the build result unchanged regardless of what it finds.",
+      "kind": "constraint",
+      "obligation": "shall",
+      "source": "ADR-005 — detection tiers; an advisory tier that blocks on a typo'd secret is a worse product",
+      "acceptance": "Advisory findings are reported and the process exit status is unaffected by their presence or count."
+    }
+  ]
+}

@@ -37,7 +37,7 @@ def _index_body_for_checksum(index: CompiledIndex) -> str:
     return json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
 
 
-def compute_checksum(index: CompiledIndex) -> str:
+def compute_checksum(index: CompiledIndex) -> str:  # implements REQ-004
     body = _index_body_for_checksum(index)
     digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
     return f"sha256:{digest}"

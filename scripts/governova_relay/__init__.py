@@ -45,7 +45,10 @@ class RelayState(StrEnum):
 
 
 class RelayViolationError(Exception):
-    """A refused transition. Carries the severity the protocol assigns it."""
+    """A refused transition. Carries the severity the protocol assigns it.
+
+    Implements REQ-003 — the refusal of a non-human L4 approval is raised here.
+    """
 
     def __init__(self, message: str, *, severity: str = "SEV1", standard: str = "S10.8") -> None:
         super().__init__(message)

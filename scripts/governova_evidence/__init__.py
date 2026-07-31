@@ -30,6 +30,8 @@ from pathlib import Path
 
 
 class Verdict(StrEnum):
+    """Implements REQ-002 — a check that cannot determine an answer says so."""
+
     SATISFIED = "satisfied"
     VIOLATED = "violated"
     UNKNOWN = "unknown"  # cannot determine — never counted as satisfied

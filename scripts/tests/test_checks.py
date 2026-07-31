@@ -131,6 +131,7 @@ def test_batch3_advisory_rules_fire():
 
 
 def test_every_rule_binds_a_real_anti_pattern():
+    # Verifies REQ-006 — no rule may bind an anti-pattern outside the corpus.
     # The governance guarantee: no rule may reference an anti-pattern that does
     # not exist in the compiled constitution.
     assert validate_rules() == []

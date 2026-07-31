@@ -80,10 +80,12 @@ evidence = "protocols/github-workflow.md"
 note = "Solo-mode merge authority; sensitive changes merged deliberately by the founder."
 
 # ── Requirements interchange ─────────────────────────────────────────────────
-# Read by `governova requirements`. Governova is at **tier 0** for its own work: it
-# keeps no requirements manifest and does not cite requirement ids in its commits.
-# That is reported as `unknown`, never as a violation, which is the same treatment
-# any adopting team gets (ADR-007 addendum).
+# Read by `governova requirements`. Governova is at **tier 2** for its own work:
+# `requirements.governova.json` declares eight requirements it actually holds, each
+# traceable to a decision that already existed, each cited from implementing code and
+# from a test. C11 was ratified before any of that existed, and the honest verdict in
+# the meantime was `unknown` — never a violation, which is the same treatment any
+# adopting team gets (ADR-007 addendum).
 #
 # The exclusions below are not suppressed findings. The requirements linter's own
 # tests are full of example ids — `REQ-1234`, `PROJ-77` — which are fixtures, not

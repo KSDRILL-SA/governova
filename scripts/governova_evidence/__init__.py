@@ -407,6 +407,128 @@ def _probe_maintenance_classification(root: Path) -> ProbeResult:
     return _ok(sid, f"{len(subjects)} recent commits classified — {mix}")
 
 
+# ─── C9 Part 9 — Project Governance ──────────────────────────────────────────
+
+_RISK_REGISTER_CANDIDATES = (
+    "RISKS.md",
+    "RISK_REGISTER.md",
+    "docs/risks.md",
+    "governance/risks.md",
+    "governance/risk-register.md",
+)
+_ESTIMATE_RECORD_CANDIDATES = (
+    "governance/estimates.md",
+    "governance/estimates.csv",
+    "docs/estimates.md",
+    "ESTIMATES.md",
+)
+# A markdown table row: `| description | owner | mitigation |`. Bounded, as every
+# quantifier here is.
+_TABLE_ROW = re.compile(r"^\s{0,4}\|(.{1,600})\|\s{0,4}$", re.M)
+_HEADER_SEP = re.compile(r"^\s{0,4}\|[\s:|-]{3,200}\|\s{0,4}$")
+# Placeholders that look like an owner and name nobody. A team is not a person.
+_NOT_A_PERSON = re.compile(
+    r"^\s{0,4}(?:-{1,3}|—|n/?a|tbd|tba|unassigned|none|\?+|"
+    r"[\w ]{0,30}\b(?:team|squad|guild|group|everyone|all)\b[\w ]{0,20})\s{0,4}$",
+    re.I,
+)
+
+
+def _first_existing(root: Path, candidates: tuple[str, ...]) -> tuple[str, str] | None:
+    for name in candidates:
+        path = root / name
+        if path.is_file() and (text := _read(path)):
+            return name, text
+    return None
+
+
+def _table_rows(text: str) -> list[list[str]]:
+    """Body rows of the first markdown table, header and separator dropped."""
+    rows: list[list[str]] = []
+    seen_separator = False
+    for line in text.splitlines():
+        if _HEADER_SEP.match(line):
+            seen_separator = True
+            rows.clear()  # everything before the separator was the header
+            continue
+        match = _TABLE_ROW.match(line)
+        if match and seen_separator:
+            rows.append([cell.strip() for cell in match.group(1).split("|")])
+    return rows
+
+
+def _probe_risk_ownership(root: Path) -> ProbeResult:
+    """S9.31 — each recorded risk names one accountable person.
+
+    Ownership by a group is ownership by nobody: every member reasonably assumes
+    another is watching. So a cell naming a team is treated as unowned, not as owned.
+    """
+    sid = "S9.31"
+    found = _first_existing(root, _RISK_REGISTER_CANDIDATES)
+    if found is None:
+        # A register may live in the tracker this engine never calls. Unknown, not
+        # violated — the same rule every probe here follows.
+        return _unknown(sid, "no risk register found in the repository")
+    name, text = found
+
+    rows = _table_rows(text)
+    if not rows:
+        return _unknown(sid, f"{name} present but holds no readable table of risks")
+
+    header_match = _TABLE_ROW.search(text)
+    header = [c.strip().lower() for c in header_match.group(1).split("|")] if header_match else []
+    try:
+        owner_column = next(i for i, c in enumerate(header) if "owner" in c)
+    except StopIteration:
+        return _unknown(sid, f"{name} has no owner column, so ownership cannot be read")
+
+    unowned = [
+        row
+        for row in rows
+        if owner_column >= len(row) or not row[owner_column] or _NOT_A_PERSON.match(row[owner_column])
+    ]
+    if unowned:
+        return _bad(sid, f"{len(unowned)}/{len(rows)} risk(s) in {name} name no accountable person")
+    return _ok(sid, f"all {len(rows)} risk(s) in {name} name an accountable person")
+
+
+def _probe_estimate_calibration(root: Path) -> ProbeResult:
+    """S9.32 — estimates are recorded against their actuals so drift is measurable.
+
+    Mechanisable exactly when the data is exposed, which is the same shape the
+    requirements tiers use: absent data is unknown, never a violation.
+    """
+    sid = "S9.32"
+    found = _first_existing(root, _ESTIMATE_RECORD_CANDIDATES)
+    if found is None:
+        return _unknown(sid, "no estimate record found in the repository")
+    name, text = found
+
+    rows = _table_rows(text)
+    header_match = _TABLE_ROW.search(text)
+    header = [c.strip().lower() for c in header_match.group(1).split("|")] if header_match else []
+    has_estimate = any("estimate" in c for c in header)
+    has_actual = any("actual" in c for c in header)
+    if not rows or not (has_estimate and has_actual):
+        return _unknown(
+            sid, f"{name} present but carries no estimate/actual pair, so drift is not computable"
+        )
+
+    actual_column = next(i for i, c in enumerate(header) if "actual" in c)
+    missing = [
+        row
+        for row in rows
+        if actual_column >= len(row) or not row[actual_column] or _NOT_A_PERSON.match(row[actual_column])
+    ]
+    if missing:
+        return _bad(
+            sid,
+            f"{len(missing)}/{len(rows)} estimate(s) in {name} have no actual recorded — "
+            f"the estimate is never falsified",
+        )
+    return _ok(sid, f"all {len(rows)} estimate(s) in {name} carry an actual; drift is computable")
+
+
 # ─── C12 — System Modelling ──────────────────────────────────────────────────
 
 # Text formats whose changes are legible in a diff. An exported image may accompany
@@ -560,6 +682,8 @@ PROBES: tuple[Probe, ...] = (
     Probe("S8.25", "Environment configuration hygiene", _probe_env_hygiene),
     Probe("S8.84", "Lockfile behind a CI vulnerability gate", _probe_cve_gate),
     Probe("S8.85", "Licence allowlist + SBOM", _probe_licence_gate),
+    Probe("S9.31", "Every recorded risk names an accountable person", _probe_risk_ownership),
+    Probe("S9.32", "Estimates are recorded against their actuals", _probe_estimate_calibration),
     Probe("S12.1", "A system boundary is modelled", _probe_context_model),
     Probe("S12.2", "Models are versioned with the code", _probe_models_versioned),
     Probe("S12.3", "Models are expressed in a form that diffs", _probe_models_are_diffable),

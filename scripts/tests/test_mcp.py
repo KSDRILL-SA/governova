@@ -47,4 +47,4 @@ def test_check_text_clean_code_has_no_findings():
 def test_constitution_health():
     h = core.constitution_health()
     assert 0 <= h["score"] <= 100
-    assert h["standards"] == 667
+    assert h["standards"] == 670

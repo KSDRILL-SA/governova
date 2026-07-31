@@ -41,6 +41,68 @@ def _git_repo(root: Path, subjects: list[str]) -> None:
 # ─── Governance of the probe set ─────────────────────────────────────────────
 
 
+def test_s931_a_team_named_as_owner_is_unowned(tmp_path) -> None:
+    """Ownership by a group is ownership by nobody.
+
+    Every member reasonably assumes another is watching, which is exactly the failure
+    S9.31 exists to prevent — so a cell naming a team must not satisfy the probe.
+    """
+    from governova_evidence import Verdict, _probe_risk_ownership
+
+    (tmp_path / "RISKS.md").write_text(
+        "| Risk | Owner | Mitigation |\n"
+        "|---|---|---|\n"
+        "| Vendor outage | the platform team | failover |\n",
+        encoding="utf-8",
+    )
+    assert _probe_risk_ownership(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s931_a_named_person_owns_the_risk(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_risk_ownership
+
+    (tmp_path / "RISKS.md").write_text(
+        "| Risk | Owner | Mitigation | Trigger |\n"
+        "|---|---|---|---|\n"
+        "| Vendor outage | Thandi M | dual-region failover | error rate > 2% |\n",
+        encoding="utf-8",
+    )
+    assert _probe_risk_ownership(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s931_absent_register_is_unknown(tmp_path) -> None:
+    # A register may live in the tracker this engine never calls.
+    from governova_evidence import Verdict, _probe_risk_ownership
+
+    assert _probe_risk_ownership(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s932_an_estimate_with_no_actual_is_never_falsified(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_estimate_calibration
+
+    (tmp_path / "ESTIMATES.md").write_text(
+        "| Item | Estimate | Actual |\n|---|---|---|\n| REQ-001 | 3-5d | — |\n",
+        encoding="utf-8",
+    )
+    assert _probe_estimate_calibration(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s932_recorded_actuals_make_drift_computable(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_estimate_calibration
+
+    (tmp_path / "ESTIMATES.md").write_text(
+        "| Item | Estimate | Actual |\n|---|---|---|\n| REQ-001 | 3-5d | 6d |\n| REQ-002 | 2d | 2d |\n",
+        encoding="utf-8",
+    )
+    assert _probe_estimate_calibration(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s932_absent_record_is_unknown(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_estimate_calibration
+
+    assert _probe_estimate_calibration(tmp_path).verdict is Verdict.UNKNOWN
+
+
 def _model_repo(tmp_path, *files: tuple[str, str]):
     docs = tmp_path / "docs"
     docs.mkdir(parents=True, exist_ok=True)

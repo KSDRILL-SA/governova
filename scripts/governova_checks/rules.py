@@ -50,6 +50,20 @@ class Rule:
     confidence: Confidence = "high"
     path_include: re.Pattern[str] | None = None
     path_exclude: re.Pattern[str] | None = None
+    unless: re.Pattern[str] | None = None
+    """The escape hatch an anti-pattern's own text grants, matched on the same line.
+
+    Several anti-patterns are written as *"X **without** Y"* — `AP-S1.57b` is
+    "`# type: ignore` without a GitHub Issue reference". A rule that matches only X
+    grades against a rubric wider than the standard it cites, and punishes the
+    documented form exactly as hard as the undocumented one, which removes any
+    incentive to document. `unless` carries the Y clause so the rule matches the whole
+    sentence rather than its first half.
+
+    Expressed as a second pattern rather than a negative lookahead deliberately: a
+    lookahead spanning the rest of the line reintroduces the backtracking that
+    `MAX_LINE_LENGTH` exists to bound, and two linear scans cannot.
+    """
 
     @property
     def path_scoped(self) -> bool:
@@ -110,6 +124,18 @@ DATA_LAYER = re.compile(
     r"(?:^|/)[^/]*(?:repository|repositories|dao)[^/]*\.[a-z]+$|"
     r"(?:^|/)(?:tests?|__tests__|spec|e2e)/|"
     r"[._-](?:test|spec)\.[a-z]+$|(?:^|/)test_[^/]*\.py$|(?:^|/)conftest\.py$"
+)
+
+# A reference to a tracked issue, in the forms a suppression is actually written
+# with: `#123`, `GH-123`, or a link to an issue on any forge. This is the `Y` in
+# the several anti-patterns phrased "X without a GitHub Issue reference".
+#
+# `#123` requires a preceding space or delimiter so it cannot match the `#` that
+# opens the suppression comment itself, and every quantifier is bounded: this runs
+# on every line of every scanned file inside other people's CI.
+ISSUE_REFERENCE = re.compile(
+    r"(?:(?<=\s)|(?<=[(\[,:]))#\d{1,7}\b|\bGH-\d{1,7}\b|/issues/\d{1,7}\b",
+    re.IGNORECASE,
 )
 
 # TypeScript-family files. `: any` and `as any` are type annotations that exist
@@ -283,6 +309,10 @@ RULES: list[Rule] = [
         re.compile(r"@ts-(?:ignore|expect-error)"),
         "Type checking suppressed (@ts-ignore/@ts-expect-error). S1.48: suppress only with a tracked issue reference.",
         "medium",
+        # Same "without a GitHub Issue reference" clause as AP-S1.57b, and the same
+        # defect: `@ts-expect-error` is idiomatically written *with* a justification,
+        # so the undocumented form is the one the standard is aimed at.
+        unless=ISSUE_REFERENCE,
     ),
     Rule(
         "AP-S1.49b",
@@ -373,9 +403,10 @@ RULES: list[Rule] = [
     Rule(
         "AP-S1.57b",
         "S1.57",
-        re.compile(r"#\s*type:\s*ignore"),
+        re.compile(r"#\s{0,8}type:\s{0,8}ignore"),
         "Type checking suppressed (# type: ignore). S1.57: fix the type, or reference a tracked issue.",
         "medium",
+        unless=ISSUE_REFERENCE,
     ),
     Rule(
         "AP-S2.75a",
@@ -598,7 +629,7 @@ def scan_text(code: str, *, file: str | None = None) -> list[Finding]:
             continue
         for rule in applicable:
             m = rule.pattern.search(line)
-            if m:
+            if m and not (rule.unless is not None and rule.unless.search(line)):
                 findings.append(
                     Finding(
                         anti_pattern=rule.anti_pattern,

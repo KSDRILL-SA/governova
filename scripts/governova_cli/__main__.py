@@ -497,10 +497,14 @@ def semantic_review(
 
     if not from_env().is_configured:
         console.print(
-            "[yellow]semantic tier inactive[/] — set GOVERNOVA_LLM_MODEL / "
-            "GOVERNOVA_LLM_BASE_URL / GOVERNOVA_LLM_API_KEY to enable it "
-            "(GOVERNOVA_LLM_PROTOCOL selects the wire protocol). "
-            "The reliable rules and the gate are unaffected."
+            "[yellow]semantic tier inactive[/] — no endpoint configured (ADR-008: there "
+            "is no default, and none is bundled).\n"
+            "[dim]Set GOVERNOVA_LLM_BASE_URL / GOVERNOVA_LLM_MODEL / "
+            "GOVERNOVA_LLM_API_KEY to any endpoint speaking chat_completions or "
+            "messages.\nThe zero-cost route is a local OpenAI-compatible server — no "
+            "account, no bill, nothing leaves the machine:\n"
+            "  GOVERNOVA_LLM_BASE_URL=http://localhost:11434/v1\n"
+            "The deterministic rules, the probes, and the gate are unaffected.[/]"
         )
         return
     index = _load(_root(repo_root))

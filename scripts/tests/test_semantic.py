@@ -158,6 +158,34 @@ def test_the_diagnostic_never_echoes_a_url_or_a_key():
     assert "endpoint.example" not in text
 
 
+def test_no_endpoint_is_bundled_anywhere():
+    """ADR-008 — the semantic tier ships with no default endpoint.
+
+    The retired one sat in a workflow default for two releases and reached nothing
+    while every build stayed green. A default that lies is worse than no default,
+    because it turns an absent capability into a believed one. This asserts that no
+    hostname this project does not control has crept back into the engine or the CI
+    configuration.
+    """
+    cfg = from_env({})
+    assert cfg.base_url is None and cfg.model is None and cfg.api_key is None
+    assert not cfg.is_configured
+
+    root = resolve_repo_root()
+    sources = [
+        *(root / "scripts").rglob("*.py"),
+        *(root / ".github" / "workflows").glob("*.yml"),
+    ]
+    offenders = [
+        p.relative_to(root).as_posix()
+        for p in sources
+        if "test_semantic" not in p.name and "models.github.ai" in p.read_text(
+            encoding="utf-8", errors="replace"
+        )
+    ]
+    assert offenders == [], f"a retired endpoint is still referenced in: {offenders}"
+
+
 def test_describe_code_with_mock_and_inactive():
     out = describe_code("def f():\n    pass\n", config=ACTIVE, transport=lambda c, m: "  Defines f.  ")
     assert out == "Defines f."

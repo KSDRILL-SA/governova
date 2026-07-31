@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-07-31T01:14:37.125463Z",
-  "source_commit_sha": "f698863",
-  "checksum": "sha256:9f0204c236a790934749700b0120d1332e2d87835d8589eb32e85e4f3d09c474",
+  "compiled_at": "2026-07-31T01:58:12.229262Z",
+  "source_commit_sha": "5fcecf3",
+  "checksum": "sha256:b18b439831d5626fa27f8f9f4d75cff95eec81f9ab57cb773847176b04dae937",
   "framework": [
     {
       "id": "format-specification",
@@ -22718,6 +22718,12 @@
       "name": "Lifecycle Completeness",
       "status": "ACCEPTED",
       "path": "governance/decisions/ADR-007-lifecycle-completeness.md"
+    },
+    {
+      "id": "ADR-008",
+      "name": "The Semantic Tier Has No Default Endpoint",
+      "status": "ACCEPTED",
+      "path": "governance/decisions/ADR-008-semantic-tier-endpoint.md"
     }
   ],
   "hierarchy": [

@@ -39,31 +39,32 @@ jobs:
       # Advisory semantic review — never blocks, and the reliable tiers above are
       # unaffected by anything that happens here.
       #
-      # The endpoint resolves as a unit, keyed on GOVERNOVA_LLM_BASE_URL:
+      # There is no default endpoint (ADR-008). This step previously fell back to the
+      # platform's own free inference API, which was **fully retired on 2026-07-30**;
+      # the fallback returned HTTP 410 and the tier silently reached nothing for two
+      # releases while every build stayed green.
       #
-      #   set   → the operator owns the whole configuration, defaults do not apply
-      #   unset → the platform's own free inference endpoint, reached with the
-      #           built-in token, so the tier is active out of the box with no
-      #           account, no key, and no cost
+      # It was removed rather than replaced. Every remaining provider needs an account
+      # and a credential, so no substitute restores the property that made a default
+      # possible — it would only pick a vendor on the adopter's behalf and re-create a
+      # dependency this project cannot monitor (S8.87). A default that lies is worse
+      # than no default, because it turns an absent capability into a believed one.
       #
-      # All-or-nothing on purpose. Mixing one deployment's model id with another's
-      # endpoint is a 404 that degrades to zero findings — indistinguishable from a
-      # clean review, which is the worst way for this tier to fail.
+      # With no secrets set the tier reports `inactive` and this step is a no-op.
+      # Configure any endpoint speaking `chat_completions` or `messages` — including a
+      # local OpenAI-compatible server, which is the zero-cost, offline route.
       #
-      # On a fork PR the built-in token is read-only and may not carry `models`
-      # access. That is a reachability failure the tier already handles: no findings,
-      # green build, gate untouched.
+      # The gate is unaffected either way: an advisory tier never changes a build
+      # result (REQ-008), and since #153 it says which of the two happened.
       - name: Advisory semantic review (optional)
         if: always()
         shell: bash
         env:
-          GOVERNOVA_LLM_BASE_URL: ${{ secrets.GOVERNOVA_LLM_BASE_URL || 'https://models.github.ai/inference' }}
-          GOVERNOVA_LLM_MODEL: ${{ secrets.GOVERNOVA_LLM_BASE_URL && secrets.GOVERNOVA_LLM_MODEL || 'openai/gpt-4.1-mini' }}
-          GOVERNOVA_LLM_API_KEY: ${{ secrets.GOVERNOVA_LLM_BASE_URL && secrets.GOVERNOVA_LLM_API_KEY || secrets.GITHUB_TOKEN }}
-          # Empty selects the default `chat_completions` protocol — which is what the
-          # fallback endpoint speaks. Set `messages` for endpoints of that shape.
-          GOVERNOVA_LLM_PROTOCOL: ${{ secrets.GOVERNOVA_LLM_BASE_URL && secrets.GOVERNOVA_LLM_PROTOCOL || '' }}
-          GOVERNOVA_LLM_API_VERSION: ${{ secrets.GOVERNOVA_LLM_BASE_URL && secrets.GOVERNOVA_LLM_API_VERSION || '' }}
+          GOVERNOVA_LLM_BASE_URL: ${{ secrets.GOVERNOVA_LLM_BASE_URL }}
+          GOVERNOVA_LLM_MODEL: ${{ secrets.GOVERNOVA_LLM_MODEL }}
+          GOVERNOVA_LLM_API_KEY: ${{ secrets.GOVERNOVA_LLM_API_KEY }}
+          GOVERNOVA_LLM_PROTOCOL: ${{ secrets.GOVERNOVA_LLM_PROTOCOL }}
+          GOVERNOVA_LLM_API_VERSION: ${{ secrets.GOVERNOVA_LLM_API_VERSION }}
         run: >
           uv run governova-enforce
           --changed

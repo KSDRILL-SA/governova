@@ -167,6 +167,33 @@ def relevant_standards(index: CompiledIndex, code: str, limit: int = 12) -> list
     return ranked[:limit]
 
 
+def _catalogue_entry(standard: Standard) -> str:
+    """One standard as the model sees it: the rule, then what breaking it looks like.
+
+    **A statement alone is a prohibition without a stopping condition.** `S1.105` reads
+    "values that carry meaning are named and sourced from configuration — never inlined as
+    literals", and a model given only that will find something matching in almost any code,
+    including code that already complies. Measured: `S1.105` and `S2.53` produced 12 of the
+    false positives in a run scoring 33% precision, and both were reported against the
+    fixtures written as their *negative* case — code doing exactly what the standard asks.
+
+    The corpus already carries the missing half. An anti-pattern describes the concrete
+    defect and, crucially, its contrast: `AP-S1.105a` is a literal inlined *"instead of
+    named configuration"*, which exempts the named-constant case the statement appears to
+    forbid. `AP-S2.53a` is a guard *"checking JWT role but not specific resource
+    ownership"*, not any handler touching a user's data.
+
+    Statements are written for humans applying judgement, and they are correct as written —
+    this is a prompt-construction change, not a corpus change. (Distinct from the earlier
+    experiment that fed anti-pattern text to the *grounding pre-filter*, which measured no
+    improvement and was reverted; that filter no longer exists.)
+    """
+    entry = f"- {standard.id}: {standard.title} — {standard.statement}"
+    for anti in standard.anti_patterns:
+        entry += f"\n    Report only when: {anti.description}"
+    return entry
+
+
 def build_messages(code: str, standards: list[Standard]) -> list[dict[str, str]]:
     """Build the review prompt.
 
@@ -177,7 +204,7 @@ def build_messages(code: str, standards: list[Standard]) -> list[dict[str, str]]
     at face value is worse than no tier, so the prompt now states the asymmetry the bar
     encodes — a missed violation is cheaper than an invented one.
     """
-    catalogue = "\n".join(f"- {s.id}: {s.title} — {s.statement}" for s in standards)
+    catalogue = "\n".join(_catalogue_entry(s) for s in standards)
     system = (
         "You are a constitutional code reviewer. You are given a set of governance "
         "standards and a code snippet. Identify only genuine violations of the listed "

@@ -24,8 +24,9 @@ from governova_validate.checks import (
 )
 from governova_validate.links import check_links
 
-# The live per-constitution standard counts after the 2026-06-22 ratification
-# (613 + Part 19 Architectural Discipline S1.103–S1.107 = 618).
+# The live per-constitution standard counts. 618 after the 2026-06-22 ratification
+# (613 + Part 19 Architectural Discipline S1.103–S1.107), plus C11 Requirements
+# Engineering (S11.1–S11.12) ratified 2026-07-31 under ADR-007 Stage 1 = 630.
 EXPECTED_COUNTS = {
     "C00": 0,
     "C01": 107,
@@ -38,8 +39,9 @@ EXPECTED_COUNTS = {
     "C08": 87,
     "C09": 30,
     "C10": 40,
+    "C11": 12,
 }
-EXPECTED_TOTAL = 618
+EXPECTED_TOTAL = 630
 
 
 @pytest.fixture(scope="module")

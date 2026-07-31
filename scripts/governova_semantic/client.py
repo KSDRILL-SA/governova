@@ -24,7 +24,18 @@ Transport = Callable[[SemanticConfig, list[dict[str, str]]], str]
 
 
 class SemanticUnavailableError(RuntimeError):
-    """Raised when the endpoint cannot be reached or returns an unusable response."""
+    """Raised when the endpoint cannot be reached or returns an unusable response.
+
+    `status` carries the HTTP status when there was one. A status code is **safe to
+    surface** — unlike the URL, it embeds no credential — and it is the difference
+    between a diagnosis and a shrug: `410` says the service is retiring, `401` says
+    the token, `404` says the path, `429` says the quota. The tier that swallowed all
+    four indistinguishably is what made this defect invisible for two releases.
+    """
+
+    def __init__(self, message: str, *, status: int | None = None) -> None:
+        super().__init__(message)
+        self.status = status
 
 
 def _post(config: SemanticConfig, headers: dict[str, str], payload: dict[str, Any]) -> Any:
@@ -39,11 +50,18 @@ def _post(config: SemanticConfig, headers: dict[str, str], payload: dict[str, An
     try:
         with urllib.request.urlopen(request, timeout=config.timeout) as resp:
             return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        # The status is reported; the URL and the body are not. urllib puts the
+        # request URL in the exception text, and an endpoint configured with inline
+        # credentials (`https://user:key@host`) would put them in a CI log that many
+        # people can read. A bare status code carries no secret and answers the only
+        # question worth asking: was this the endpoint, the token, or the model.
+        raise SemanticUnavailableError(
+            f"semantic endpoint returned HTTP {exc.code}", status=exc.code
+        ) from exc
     except (urllib.error.URLError, OSError, ValueError) as exc:
-        # The exception text is deliberately not interpolated. urllib echoes the
-        # request URL, and an endpoint configured with inline credentials
-        # (`https://user:key@host`) would put them in a CI log that many people
-        # can read. The exception type is enough to diagnose reachability.
+        # No status to report — DNS, TLS, timeout, or a malformed body. The exception
+        # type is the most that can be said without echoing the request.
         raise SemanticUnavailableError(
             f"semantic endpoint unreachable ({type(exc).__name__})"
         ) from exc

@@ -25,8 +25,9 @@ import typer
 from governova_checks import DEFAULT_IGNORES, Finding, changed_files, is_ignored, scan_paths
 from governova_compile.discovery import resolve_target_root
 from governova_compile.writer import load_active_index
+from governova_semantic import Outcome, ReviewResult
 from governova_semantic import from_env as semantic_from_env
-from governova_semantic import review as semantic_review
+from governova_semantic import review_result as semantic_review_result
 from rich.console import Console
 
 console = Console()
@@ -147,6 +148,9 @@ def _run_semantic(scannable: list[Path], fmt: Fmt, root: Path) -> int:
         return 0  # json output is the reliable-tier machine contract
     index = load_active_index(start=root)
     count = 0
+    reviewed = 0
+    unavailable: ReviewResult | None = None
+
     for p in scannable:
         try:
             code = p.read_text(encoding="utf-8")
@@ -156,7 +160,18 @@ def _run_semantic(scannable: list[Path], fmt: Fmt, root: Path) -> int:
             rel = p.resolve().relative_to(root.resolve()).as_posix()
         except ValueError:
             rel = p.as_posix()
-        for f in semantic_review(code, index=index):
+
+        result = semantic_review_result(code, index=index)
+        if result.outcome is Outcome.UNAVAILABLE:
+            # Stop at the first failure. Every remaining file would fail the same way,
+            # and hammering a dead endpoint once per file is neither informative nor
+            # polite to whoever operates it.
+            unavailable = result
+            break
+        if result.ran:
+            reviewed += 1
+
+        for f in result.findings:
             if fmt is Fmt.github:
                 print(
                     f"::warning file={rel},line={f.line or 1}::"
@@ -168,13 +183,48 @@ def _run_semantic(scannable: list[Path], fmt: Fmt, root: Path) -> int:
                     f"  [magenta]semantic[/] [bold]{f.standard}[/] {loc} — {f.message}"
                 )
             count += 1
-    if fmt is not Fmt.github:
-        console.print(
-            f"[dim]{count} advisory semantic finding(s)[/]"
-            if count
-            else "[dim]semantic tier: no findings[/]"
-        )
+
+    _report_semantic_outcome(fmt, reviewed=reviewed, findings=count, unavailable=unavailable)
     return count
+
+
+def _report_semantic_outcome(
+    fmt: Fmt, *, reviewed: int, findings: int, unavailable: ReviewResult | None
+) -> None:
+    """Say what happened, always — including when nothing did.
+
+    This is the whole fix for the defect that made the tier's inertness invisible.
+    Previously the `github` format emitted warnings and nothing else, so a run against
+    an unreachable endpoint and a run that found nothing produced byte-identical
+    output: an env block followed by silence. A green build was not evidence the tier
+    had run, and for two releases it had not.
+
+    The build result is still never affected. An advisory tier that fails a build over
+    a typo'd secret is a worse product (REQ-008) — but saying so out loud costs nothing.
+    """
+    if unavailable is not None:
+        message = (
+            f"semantic tier DID NOT RUN — {unavailable.detail}. "
+            f"Advisory only, so this build is unaffected; the ~93% of standards this "
+            f"tier reaches were not checked."
+        )
+        if fmt is Fmt.github:
+            # A notice annotation, so it is visible in the checks UI and not only in
+            # a log nobody opens until something has already gone wrong.
+            print(f"::notice::{message}")
+        else:
+            console.print(f"[yellow]{message}[/]")
+        return
+
+    summary = (
+        f"semantic tier: reviewed {reviewed} file(s), {findings} advisory finding(s)"
+        if reviewed
+        else "semantic tier: no file matched a standard, so nothing was reviewed"
+    )
+    if fmt is Fmt.github:
+        print(f"::notice::{summary}")
+    else:
+        console.print(f"[dim]{summary}[/]")
 
 
 @app.command()

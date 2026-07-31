@@ -39,6 +39,7 @@ def _fake_index(path: Path, *, marker: str) -> Path:
 
 
 def test_target_root_never_raises_in_a_plain_directory(tmp_path: Path) -> None:
+    # Verifies REQ-001 — the engine governs a repository holding no source tree.
     """The defect: a directory with no constitution/ was an error, not a target."""
     assert resolve_target_root(tmp_path) == tmp_path.resolve()
 

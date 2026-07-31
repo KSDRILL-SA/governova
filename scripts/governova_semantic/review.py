@@ -113,6 +113,8 @@ def review(
     try:
         content = send(cfg, messages)
     except SemanticUnavailableError:
-        return []  # degrade gracefully — the reliable tier is unaffected
+        # REQ-008 — an advisory tier leaves the build result unchanged, so an
+        # unreachable endpoint degrades to no findings rather than to a failure.
+        return []
     allowed = {s.id.upper() for s in grounded}
     return parse_findings(content, allowed)

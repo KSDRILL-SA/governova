@@ -55,6 +55,7 @@ def test_probe_standards_are_unique() -> None:
 
 
 def test_a_probe_that_raises_is_unknown_never_satisfied() -> None:
+    # Verifies REQ-002 — a check that cannot determine an answer reports unknown.
     from governova_evidence import Probe, ProbeResult
 
     def explode(_: Path) -> ProbeResult:

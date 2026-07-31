@@ -64,6 +64,7 @@ def _lines(root: Path) -> list[str]:
 
 
 def test_records_chain_to_their_predecessor(tmp_path: Path) -> None:
+    # Verifies REQ-005 — each record links to its predecessor by hash.
     _seed(tmp_path, 3)
     records = read_records(tmp_path)
     assert [r.seq for r in records] == [1, 2, 3]
@@ -357,6 +358,7 @@ def test_an_unapproved_submission_lowers_compliance(tmp_path: Path) -> None:
 
 
 def test_a_refused_l4_attempt_is_penalised(tmp_path: Path) -> None:
+    # Verifies REQ-003 — a non-human L4 approval is refused and recorded.
     """Correctly blocked, but the score must not read as clean."""
     _run_to_submission(tmp_path)
     with pytest.raises(RelayViolationError):

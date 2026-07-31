@@ -82,6 +82,7 @@ def test_phases_consistent(index):
 
 
 def test_checksum_is_deterministic(index):
+    # Verifies REQ-004 — unchanged source yields a byte-identical index.
     assert compute_checksum(index) == compute_checksum(index)
 
 

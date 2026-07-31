@@ -163,7 +163,7 @@ def _declared_licence(dist: Distribution) -> str:
     return ""
 
 
-def installed_packages(exceptions: set[str] | None = None) -> LicenceReport:
+def installed_packages(exceptions: set[str] | None = None) -> LicenceReport:  # REQ-007
     """Licence-classify every installed distribution.
 
     `exceptions` names packages with a recorded L4 exception; they are reported

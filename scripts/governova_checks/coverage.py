@@ -43,6 +43,8 @@ def domain_anti_patterns(index: CompiledIndex | None = None) -> set[str]:
 def validate_rules(index: CompiledIndex | None = None) -> list[str]:
     """Anti-pattern ids referenced by rules that exist in no layer of the constitution.
 
+    Implements REQ-006 — the rule set cannot drift from the corpus it enforces.
+
     An empty list means the rule set is fully grounded. Core and domain
     anti-patterns are both legitimate bindings — a rule may enforce either.
     """

@@ -177,7 +177,7 @@ def append(
 
 
 def verify(root: Path) -> ChainVerification:
-    """Walk the chain and report every integrity failure found.
+    """Walk the chain and report every integrity failure found. Implements REQ-005.
 
     Detects the four ways a trail is falsified: a record edited after the fact
     (its own hash no longer matches), a link rewritten to point elsewhere, a

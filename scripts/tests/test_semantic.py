@@ -72,6 +72,7 @@ def test_review_with_mock_transport_keeps_only_grounded():
 
 
 def test_review_degrades_on_transport_error():
+    # Verifies REQ-008 — an advisory tier leaves the build result unchanged.
     from governova_semantic.client import SemanticUnavailableError
 
     std = next(s for c in INDEX.constitutions for s in c.standards)

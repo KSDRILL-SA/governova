@@ -313,7 +313,7 @@ def resolve_repo_root(start: Path | None = None) -> Path:
 
 
 def resolve_target_root(start: Path | None = None) -> Path:
-    """Locate the **repository being governed**.
+    """Locate the **repository being governed**. Implements REQ-001.
 
     Prefers the git working-tree root so paths in findings are stable wherever
     the command was invoked from; falls back to the working directory. Never

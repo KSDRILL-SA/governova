@@ -102,6 +102,41 @@ def test_roadmap_json_is_parseable(tmp_path):
     assert payload["totals"]["items"] == len(payload["items"])
 
 
+def test_convert_proposes_without_writing(tmp_path):
+    (tmp_path / "pyproject.toml").write_text('[project]\nname = "acme"\n', encoding="utf-8")
+    (tmp_path / ".gitignore").write_text("build/\n", encoding="utf-8")
+    result = runner.invoke(app, ["convert", str(tmp_path)])
+    assert result.exit_code == 0
+    assert "Nothing was written" in result.stdout
+    assert ".env" not in (tmp_path / ".gitignore").read_text(encoding="utf-8")
+
+
+def test_convert_apply_writes_only_the_safe_ones(tmp_path):
+    (tmp_path / "pyproject.toml").write_text('[project]\nname = "acme"\n', encoding="utf-8")
+    (tmp_path / ".gitignore").write_text("build/\n", encoding="utf-8")
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "client.py").write_text(
+        'import os\n\nAPI_URL = "https://api.acme-prod.com"\n', encoding="utf-8"
+    )
+
+    result = runner.invoke(app, ["convert", str(tmp_path), "--apply"])
+    assert result.exit_code == 0
+    # Structural fix applied...
+    assert ".env" in (tmp_path / ".gitignore").read_text(encoding="utf-8")
+    # ...and the untested code left exactly as it was (S1.101).
+    assert (src / "client.py").read_text(encoding="utf-8") == (
+        'import os\n\nAPI_URL = "https://api.acme-prod.com"\n'
+    )
+    assert "S1.101" in result.stdout
+
+
+def test_convert_rejects_an_unknown_converter(tmp_path):
+    (tmp_path / "pyproject.toml").write_text('[project]\nname = "acme"\n', encoding="utf-8")
+    result = runner.invoke(app, ["convert", str(tmp_path), "--converter", "nope"])
+    assert result.exit_code == 2
+
+
 def test_roadmap_is_read_only(tmp_path):
     (tmp_path / "pyproject.toml").write_text('[project]\nname = "acme"\n', encoding="utf-8")
     (tmp_path / "svc.py").write_text("# TODO: tidy this up\n", encoding="utf-8")

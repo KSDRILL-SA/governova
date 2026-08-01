@@ -213,9 +213,59 @@ every item traces to a probe that actually fired.
 
 ---
 
-## Stage 2 — Safe conversion
+## Stage 2 — Safe conversion · **built, measured, awaiting L4 merge**
 
 **Ships:** Scan, Learn & Rewrite — proposed diffs, never applied without review.
+`governova convert [PATH] [--apply] [--converter NAME]`.
+
+> **Almost all of this stage is refusal machinery and only a little of it is
+> transformation**, which is the correct proportion for the one stage that can break a
+> working system.
+>
+> **`S1.101` has no override.** A code conversion whose files carry no
+> conventionally-named test is refused with the reason, and there is no flag that skips it
+> — a test asserts `apply()`'s signature stays `(root, conversion)`, because adding a
+> `force=` later would be a one-line change that silently removes the guarantee.
+>
+> **`S8.83` is mechanised, not restated.** One conversion is one file and one change, and
+> it carries the exact text it replaced — so reverting writes back a string the object is
+> holding rather than re-deriving anything. `apply` re-reads the file first and refuses if
+> it no longer matches what was proposed, because a diff reviewed against content that has
+> since moved is not the diff being applied.
+>
+> ### The test a converter has to pass — and what it rejected
+>
+> **A converter must fix the thing, not the check.** That one rule rejected most of the
+> obvious candidates, and the rejections are worth more than the survivors:
+>
+> | Candidate | Rejected because |
+> |---|---|
+> | Create `governance/decisions/` with a template ADR | Makes the `S1.85` probe pass while documenting no decision — gaming the metric |
+> | Add missing headings to a thin README | Makes `S1.84` pass while documenting nothing |
+> | Strip `console.log` | Removes output somebody may rely on — not behaviour-preserving |
+> | Money `float` → `Decimal` | Changes arithmetic semantics; exactly the class this stage says not to start with |
+> | **Add the missing index the schema analyser flagged** | **The plan names this, but the analyser has no missing-index finding** — it reports `no-primary-key`, `fan-trap`, `dangling-foreign-key`. There is nothing to convert from. Recorded rather than invented. |
+>
+> **Two converters survived**, and `register_converter` is the extension point so a
+> house-specific conversion is an addition rather than an edit — the same line `AP-S1.107a`
+> draws for readers and rules:
+>
+> - **`gitignore-env`** (`S8.25`) — append `.env` to `.gitignore`. Additive, no runtime
+>   behaviour, and a test asserts the probe that produced the finding stops reporting it
+>   afterwards. That test is what separates a real conversion from one that silences a check.
+> - **`env-sourced-urls`** (`S1.105`) — `NAME = "https://…"` becomes
+>   `NAME = os.environ.get("NAME", "https://…")`. **Behaviour-preserving by construction**:
+>   the literal survives as the default, so an unset variable produces exactly the previous
+>   value. `os.environ["NAME"]` would raise on a machine that has not set it — a working
+>   system broken by a governance tool. It **refuses a file that does not already import
+>   `os`**, because inserting an import means guessing where it goes and whether the name is
+>   shadowed.
+>
+> **One bug, found by reading the diff it produced.** The assignment pattern ended `\s*$`,
+> and `\s` matches newlines — so it swallowed the blank line after the assignment and
+> deleted whitespace it had no business touching. A diff larger than its change gives a
+> reviewer something extra to explain, which is the opposite of what this stage is for. A
+> test now pins that exactly one line differs.
 
 The two guarantees are already law and must be mechanised here, not restated:
 
@@ -231,6 +281,11 @@ the one most likely to change behaviour.
 **Exit criteria:** every proposed change is a reviewable diff · nothing applies without
 explicit confirmation · a proposal against untested code is refused with the reason ·
 each applied change is individually revertible.
+
+**All four met.** Every conversion carries a unified diff; `--apply` is required and a test
+asserts proposing leaves the target byte-identical; the `S1.101` refusal is exercised end
+to end, including that the file is untouched by the attempt; and `apply`/`revert` round-trip
+to the original exactly, with staleness refused in both directions.
 
 ---
 

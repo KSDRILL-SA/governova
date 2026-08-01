@@ -56,9 +56,10 @@ from governova_onboard.detect import Detection, detect
 # reading is a baseline that changes nothing, so the cap is a feature.
 DEFAULT_TOP = 12
 
-# Example paths carried per finding group, so a reader can open one without the
-# report becoming a file listing.
-_EXAMPLES = 3
+# Example paths shown per finding group, so a reader can open one without the
+# report becoming a file listing. **A display cap only** — `FindingGroup.files`
+# carries every file, because the roadmap measures blast radius from it.
+EXAMPLE_FILES = 3
 
 
 @dataclass(frozen=True)
@@ -91,6 +92,12 @@ class FindingGroup:
     reports effort, not risk. Grouping by anti-pattern is what makes the top of
     the list readable, and the count is retained because forty occurrences and
     one occurrence are genuinely different situations.
+
+    **`files` holds every file, not a sample.** It was briefly capped at three
+    for display, which was wrong in a way that inverted the product: the roadmap
+    derives both blast radius and effort from how many files a finding touches,
+    so a truncated list understated exactly the widespread findings that should
+    rank highest. Capping is a rendering concern and belongs in the renderer.
     """
 
     anti_pattern: str
@@ -103,6 +110,11 @@ class FindingGroup:
     @property
     def blocking(self) -> bool:
         return self.confidence == "high"
+
+    @property
+    def reach(self) -> int:
+        """Distinct files carrying this finding."""
+        return len(self.files)
 
 
 @dataclass(frozen=True)
@@ -230,11 +242,7 @@ def _group_findings(root: Path, findings: list[Finding]) -> tuple[FindingGroup, 
             message=members[0].message,
             confidence=members[0].confidence,
             count=len(members),
-            files=tuple(
-                sorted({_relative(root, m.file) for m in members if m.file is not None})[
-                    :_EXAMPLES
-                ]
-            ),
+            files=tuple(sorted({_relative(root, m.file) for m in members if m.file is not None})),
         )
         for anti_pattern, members in buckets.items()
     ]

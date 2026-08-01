@@ -46,7 +46,9 @@ from governova_onboard.detect import (
     detect,
 )
 from governova_onboard.propose import ProfileExistsError, accept, render_profile
-from governova_onboard.render import to_json
+from governova_onboard.render import roadmap_to_json, to_json
+from governova_onboard.roadmap import Item, Kind, Protection, Roadmap
+from governova_onboard.roadmap import build as build_roadmap
 
 # `render_profile` is deliberately not named `render`: `governova_onboard.render`
 # is a module in this package, and importing it binds that name on the package,
@@ -60,12 +62,18 @@ __all__ = [
     "ConstitutionGap",
     "Detection",
     "FindingGroup",
+    "Item",
+    "Kind",
     "ProfileExistsError",
+    "Protection",
+    "Roadmap",
     "Signal",
     "accept",
     "assess",
+    "build_roadmap",
     "detect",
     "proposed_profile",
     "render_profile",
+    "roadmap_to_json",
     "to_json",
 ]

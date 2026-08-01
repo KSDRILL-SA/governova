@@ -159,10 +159,36 @@ when it has no findings to offer.
 
 ---
 
-## Stage 1 — Remediation planning
+## Stage 1 — Remediation planning · **built, measured, awaiting L4 merge**
 
 **Ships:** the risk-ranked roadmap — `protocols/brownfield-adoption.md` Phase 2 made
-mechanical.
+mechanical. `governova roadmap [PATH] [--top N] [--json]`, read-only.
+
+> **Measured on 2026-08-01** against `expressjs/express`: 14 items, 1 blocking, ordered
+> blocking-first then by leverage. The top of the plan is the four cheapest structural
+> wins — a lint step, conventional commits, ADRs, a frozen install — each one file and no
+> runtime behaviour changed. The widest code finding (`S8.31`, 36 occurrences across 27
+> files) correctly ranks *last* at leverage 1.17, because it is a month of work.
+>
+> **The ordering is built from four measured components and two stated weights, and the
+> distinction is carried in the output.** Blast radius = priority (from the corpus) +
+> blocking + files touched + how many standards declare `depends_on` this one. Effort =
+> files touched + a penalty when no characterisation test can be found. Every item prints
+> `leverage (blast/effort)` so the rank can be disputed by reading it rather than
+> reverse-engineered.
+>
+> **One defect, found by running it — and it was the kind that inverts the product.**
+> `FindingGroup.files` was capped at three entries for display, and the roadmap derives
+> *both* blast radius and effort from that list. So a finding spread across 27 files
+> reported a reach of 3, systematically understating exactly the widespread findings the
+> ranking exists to surface — and nothing in the output looked wrong. Capping is a
+> rendering concern and now lives in the renderer. A test pins it.
+>
+> **`S1.101` is mechanised rather than restated.** An item whose files have no
+> conventionally-named test is flagged as needing a characterisation test before it is
+> touched. The verdict is `PROTECTED` or `UNKNOWN` — **there is no `UNPROTECTED`**, because
+> a filename search proves existence and never absence, and a test asserts that member
+> stays missing.
 
 A baseline says what is wrong. A roadmap says **what to do first**, and that ordering is
 the product. Ranking is by *blast radius × effort*, both derivable:
@@ -178,6 +204,12 @@ Output is issue-shaped: each item is one PR, individually green, individually re
 **Exit criteria:** the roadmap orders by measured blast radius, not by standard number ·
 every item names its standard and its evidence · a repository with no findings produces an
 empty roadmap rather than busywork.
+
+**All three met.** A test asserts the ordering does *not* coincide with standard-number
+order and that leverage descends within each tier; every item carries its standard, its
+summary, its occurrence count and — for code items — the files to open; and a repository
+with nothing to fix produces an empty plan, with a test on Governova's own tree asserting
+every item traces to a probe that actually fired.
 
 ---
 

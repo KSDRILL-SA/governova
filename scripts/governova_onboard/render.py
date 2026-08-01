@@ -17,8 +17,9 @@ import json
 
 from rich.table import Table
 
-from governova_onboard.baseline import DEFAULT_TOP, Baseline
+from governova_onboard.baseline import DEFAULT_TOP, EXAMPLE_FILES, Baseline
 from governova_onboard.detect import DIMENSIONS
+from governova_onboard.roadmap import Kind, Protection, Roadmap
 
 _VERDICT_MARK = {"satisfied": "[green]✓[/]", "violated": "[red]✗[/]", "unknown": "[yellow]?[/]"}
 
@@ -91,12 +92,24 @@ def heatmap_table(baseline: Baseline) -> Table:
 
 
 def findings_table(baseline: Baseline, *, top: int = DEFAULT_TOP) -> Table:
-    """The top finding groups, blocking first."""
-    table = Table("", "Anti-pattern", "Standard", "Count", "Where", box=None, pad_edge=False)
+    """The top finding groups, blocking first.
+
+    File lists are capped here rather than upstream: the cap is a property of a
+    table a human reads, not of the finding.
+    """
+    table = Table(
+        "", "Anti-pattern", "Standard", "Count", "Files", "Where",
+        box=None, pad_edge=False,
+    )
     for group in baseline.groups[:top]:
         mark = "[red]blocking[/]" if group.blocking else "[yellow]advisory[/]"
-        where = ", ".join(group.files) if group.files else "—"
-        table.add_row(mark, group.anti_pattern, group.standard, str(group.count), f"[dim]{where}[/]")
+        shown = list(group.files[:EXAMPLE_FILES])
+        if group.reach > EXAMPLE_FILES:
+            shown.append(f"+{group.reach - EXAMPLE_FILES} more")
+        table.add_row(
+            mark, group.anti_pattern, group.standard, str(group.count),
+            str(group.reach), f"[dim]{', '.join(shown) if shown else '—'}[/]",
+        )
     return table
 
 
@@ -116,6 +129,86 @@ def probe_table(baseline: Baseline) -> Table:
             _VERDICT_MARK[str(result.verdict)], result.standard, f"[dim]{result.evidence}[/]"
         )
     return table
+
+
+def roadmap_table(roadmap: Roadmap, *, top: int | None = None) -> Table:
+    """The ordered plan, with the components its ordering was built from.
+
+    Every column except `#` is a measured input to the sort. They are shown so a
+    reader can dispute the order by reading it, rather than having to
+    reverse-engineer the arithmetic from the rank.
+    """
+    items = roadmap.items if top is None else roadmap.items[:top]
+    table = Table(box=None, pad_edge=False)
+    table.add_column("", no_wrap=True)
+    table.add_column("Standard", no_wrap=True)
+    # Titles are long and vary wildly. Left to wrap, one item takes eight rows
+    # and the plan stops being scannable, which defeats the point of ranking it.
+    # The console falls back to 80 columns when stdout is not a terminal, so the
+    # whole table is built to fit that rather than to look good only when wide.
+    table.add_column("What", no_wrap=True, max_width=26, overflow="ellipsis")
+    table.add_column("Occ", no_wrap=True, justify="right")
+    table.add_column("Files", no_wrap=True, justify="right")
+    table.add_column("Test", no_wrap=True, justify="right")
+    # Blast and effort collapse into one column rather than three. The ordering
+    # still has to be auditable from the table — that is the whole argument for
+    # showing components at all — and `5 (20/4)` carries both inputs and the
+    # quotient in the space one of them would have taken.
+    table.add_column("Leverage", no_wrap=True, justify="right")
+
+    for item in items:
+        mark = (
+            "[red]block[/]"
+            if item.blocking
+            else ("[cyan]struct[/]" if item.kind is Kind.STRUCTURAL else "[yellow]advis[/]")
+        )
+        tests = (
+            "[green]ok[/]"
+            if item.protection is Protection.PROTECTED and item.protected_by
+            else ("[dim]n/a[/]" if item.kind is Kind.STRUCTURAL else "[yellow]?[/]")
+        )
+        table.add_row(
+            mark, item.standard, item.title,
+            str(item.occurrences), str(item.reach), tests,
+            f"{item.leverage:g} ({item.blast}/{item.effort})",
+        )
+    return table
+
+
+def roadmap_to_json(roadmap: Roadmap) -> str:
+    """The whole plan, machine-readable — issue-shaped, one item per PR."""
+    return json.dumps(
+        {
+            "items": [
+                {
+                    "rank": position,
+                    "kind": str(item.kind),
+                    "standard": item.standard,
+                    "title": item.title,
+                    "anti_pattern": item.anti_pattern,
+                    "summary": item.summary,
+                    "occurrences": item.occurrences,
+                    "files": list(item.files),
+                    "blocking": item.blocking,
+                    "priority": str(item.priority),
+                    "dependents": item.dependents,
+                    "protection": str(item.protection),
+                    "protected_by": list(item.protected_by),
+                    "needs_characterisation_test": item.needs_characterisation_test,
+                    "blast": item.blast,
+                    "effort": item.effort,
+                    "leverage": item.leverage,
+                }
+                for position, item in enumerate(roadmap.items, start=1)
+            ],
+            "totals": {
+                "items": len(roadmap),
+                "blocking": len(roadmap.blocking_items),
+                "needing_characterisation_tests": len(roadmap.needing_tests),
+            },
+        },
+        indent=2,
+    )
 
 
 def to_json(baseline: Baseline, *, top: int | None = None) -> str:
@@ -202,6 +295,8 @@ __all__ = [
     "heatmap_table",
     "probe_table",
     "profile_table",
+    "roadmap_table",
+    "roadmap_to_json",
     "score_table",
     "structural_table",
     "to_json",

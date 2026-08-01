@@ -82,3 +82,29 @@ def test_onboard_rejects_a_path_that_is_not_a_directory(tmp_path):
     target.write_text("x\n", encoding="utf-8")
     result = runner.invoke(app, ["onboard", str(target)])
     assert result.exit_code == 2
+
+
+def test_roadmap_runs_and_ranks(tmp_path):
+    (tmp_path / "pyproject.toml").write_text('[project]\nname = "acme"\n', encoding="utf-8")
+    (tmp_path / "svc.py").write_text("# TODO: tidy this up\n", encoding="utf-8")
+    result = runner.invoke(app, ["roadmap", str(tmp_path)])
+    assert result.exit_code == 0
+    assert "Remediation roadmap" in result.stdout
+    assert "Leverage" in result.stdout
+
+
+def test_roadmap_json_is_parseable(tmp_path):
+    (tmp_path / "pyproject.toml").write_text('[project]\nname = "acme"\n', encoding="utf-8")
+    result = runner.invoke(app, ["roadmap", str(tmp_path), "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert "items" in payload
+    assert payload["totals"]["items"] == len(payload["items"])
+
+
+def test_roadmap_is_read_only(tmp_path):
+    (tmp_path / "pyproject.toml").write_text('[project]\nname = "acme"\n', encoding="utf-8")
+    (tmp_path / "svc.py").write_text("# TODO: tidy this up\n", encoding="utf-8")
+    before = {p.name for p in tmp_path.rglob("*")}
+    runner.invoke(app, ["roadmap", str(tmp_path)])
+    assert {p.name for p in tmp_path.rglob("*")} == before

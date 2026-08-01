@@ -71,3 +71,32 @@ ignore_missing_imports = true
 minversion = "8.0"
 addopts = "-ra --strict-markers --strict-config"
 testpaths = ["scripts/tests", "platform/engine/tests"]
+
+# S7.25 — "Minimum coverage thresholds enforced by CI … Python/FastAPI
+# (pytest-cov): 80% line coverage. Dropping below these thresholds fails the
+# build." The structural probe for that standard reported this repository as
+# violating it, which was true: coverage was measured by nobody and gated by
+# nothing.
+#
+# 80 is the number the standard sets, not a number chosen to be comfortable.
+# Engine coverage measures 81% at the time of writing, so the headroom is one
+# point — which is what a floor is supposed to feel like.
+[tool.coverage.run]
+source = ["scripts"]
+omit = [
+    # Test code inflates the figure toward 100% and says nothing about whether
+    # the engine is covered. Measuring it would make the gate meaningless.
+    "*/tests/*",
+    # A standalone maintainer script and the wheel build hook — neither is
+    # engine code reached by the unit suite.
+    "*/validate-integrity.py",
+]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = false
+exclude_also = [
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+]

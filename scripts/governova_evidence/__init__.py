@@ -119,7 +119,20 @@ def _workflow_commands(root: Path) -> str | None:
 
 
 def _find_command(root: Path, tools: str) -> re.Match[str] | None:
-    """Find an invocation of any tool in the `tools` alternation."""
+    """Find an invocation of any tool in the `tools` alternation.
+
+    **Every alternative must begin with a word character.** The pattern is
+    wrapped in `\\b…\\b`, and a word boundary never matches before a leading `-`
+    — a space and a hyphen are both non-word characters, so there is no boundary
+    between them. That makes this unable to find a command-line *flag*, silently:
+    the search simply returns None and the probe reports a violation the
+    repository does not have.
+
+    Existing callers are safe because each alternative starts with a tool name
+    (`uv sync`, `pnpm install … --frozen-lockfile`), with any flag in the middle.
+    A pattern that needs to match a flag directly should search
+    `_workflow_commands` itself, as `_probe_coverage_gate` does.
+    """
     commands = _workflow_commands(root)
     if commands is None:
         return None
@@ -268,6 +281,66 @@ def _probe_tests_in_ci(root: Path) -> ProbeResult:
     if m:
         return _ok(sid, f"CI runs tests on PRs: '{m.group(0).strip()[:70]}'")
     return _bad(sid, "no test step found in any CI workflow")
+
+
+# Coverage-threshold declarations, in the forms the tools S7.25 names actually use.
+# A *measured* coverage number is not a gate — the standard is specifically that
+# dropping below the threshold **fails the build**, so only the enforcing forms
+# count here. `--cov` alone does not.
+_COVERAGE_GATE = (
+    r"--cov-fail-under|fail_under|coverageThreshold|--check-coverage|"
+    r"thresholds?\.(?:lines|statements)|minimum_coverage"
+)
+
+# Files a coverage threshold is conventionally declared in, when it is not on the
+# command line. Bounded to the roots the tools read.
+_COVERAGE_CONFIGS: tuple[str, ...] = (
+    "pyproject.toml", "setup.cfg", ".coveragerc", "tox.ini",
+    "package.json", "jest.config.js", "jest.config.ts",
+    "vitest.config.js", "vitest.config.ts", "vite.config.js", "vite.config.ts",
+)
+
+
+def _probe_coverage_gate(root: Path) -> ProbeResult:
+    """S7.25 — a minimum coverage threshold is enforced by CI.
+
+    The standard's own wording is the rubric: *"Dropping below these thresholds
+    fails the build."* So measuring coverage is not satisfying it — `--cov` with
+    no `--cov-fail-under` produces a number nobody is held to, which is the exact
+    situation the standard exists to name.
+
+    The subject is borrowed from `S7.6` rather than re-derived: a repository whose
+    CI runs no tests has no coverage to gate, and reporting that as a violation
+    would be answering a question nobody asked.
+    """
+    sid = "S7.25"
+    text = _workflow_text(root)
+    if text is None:
+        return _unknown(sid, "no CI workflows found")
+    if not _find_command(root, r"pytest|jest|vitest|go\s+test|cargo\s+test|mvn\s+test|npm\s+test"):
+        return _unknown(sid, "CI runs no tests, so there is no coverage to gate")
+
+    # Searched directly rather than through `_find_command`, which wraps its
+    # pattern in `\b…\b`. A word boundary never matches before a leading `-`,
+    # because a space and a hyphen are both non-word characters — so
+    # `_find_command` cannot match a command-line *flag* at all, and every form
+    # here that matters is a flag.
+    commands = _workflow_commands(root)
+    in_ci = (
+        re.search(rf"^.*(?:{_COVERAGE_GATE}).*$", commands, re.I | re.M) if commands else None
+    )
+    if in_ci:
+        return _ok(sid, f"CI enforces a coverage threshold: '{in_ci.group(0).strip()[:70]}'")
+
+    for name in _COVERAGE_CONFIGS:
+        content = _read(root / name)
+        if content is None:
+            continue
+        match = re.search(rf"^.*(?:{_COVERAGE_GATE}).*$", content, re.I | re.M)
+        if match:
+            return _ok(sid, f"{name} declares a coverage threshold: '{match.group(0).strip()[:60]}'")
+
+    return _bad(sid, "tests run in CI but no coverage threshold fails the build")
 
 
 def _probe_env_hygiene(root: Path) -> ProbeResult:
@@ -679,6 +752,7 @@ PROBES: tuple[Probe, ...] = (
     Probe("S1.85", "ADRs document significant decisions", _probe_adrs),
     Probe("S1.98", "Reproducible installs — lockfile + frozen CI", _probe_frozen_install),
     Probe("S7.6", "Tests run on every PR", _probe_tests_in_ci),
+    Probe("S7.25", "A coverage threshold fails the build", _probe_coverage_gate),
     Probe("S8.25", "Environment configuration hygiene", _probe_env_hygiene),
     Probe("S8.84", "Lockfile behind a CI vulnerability gate", _probe_cve_gate),
     Probe("S8.85", "Licence allowlist + SBOM", _probe_licence_gate),

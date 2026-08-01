@@ -317,11 +317,40 @@ def test_suppression_scanning_stays_linear_on_a_hostile_line():
 
     A negative lookahead spanning the rest of the line would reintroduce exactly the
     cost `MAX_LINE_LENGTH` exists to bound, on a gate that runs in other people's CI.
+
+    **The budget is deliberately loose, and that is what makes it a real test.**
+    The property being guarded differs by *orders of magnitude*: a linear scan of
+    this line costs ~4ms, and catastrophic backtracking would not finish a single
+    iteration inside the whole budget. A tight budget does not discriminate those
+    two any better — it just adds a second failure mode, where a slow machine
+    looks like a broken regex.
+
+    The original form ran 200 iterations against 2.0s and measured 0.91s here, so
+    it had roughly twice the margin it needed. Under `--cov` — which traces every
+    line and is now how CI runs the suite — it tipped over and failed a build
+    where nothing was wrong. It was measuring the machine, not the regex.
     """
     import time
 
     hostile = "# type: ignore " + ("#" * 3000)
+    scan_text(hostile, file="a.py")  # warm the compiled patterns
+
     start = time.perf_counter()
-    for _ in range(200):
+    for _ in range(20):
         scan_text(hostile, file="a.py")
-    assert time.perf_counter() - start < 2.0
+    elapsed = time.perf_counter() - start
+    assert elapsed < 5.0, f"20 hostile scans took {elapsed:.2f}s — suspect backtracking"
+
+
+def test_a_line_past_the_cap_costs_nothing_to_reject():
+    """`MAX_LINE_LENGTH` is the actual bound, so it is asserted directly.
+
+    A minified bundle or a base64 blob on one line is the realistic hostile input,
+    and the guarantee is that it is declined rather than scanned. Timing the
+    length check is stable in a way that timing a regex is not: rejecting is
+    O(1) whatever the machine.
+    """
+    from governova_checks.rules import MAX_LINE_LENGTH
+
+    over_the_cap = "# type: ignore " + ("#" * (MAX_LINE_LENGTH * 4))
+    assert scan_text(over_the_cap, file="a.py") == []

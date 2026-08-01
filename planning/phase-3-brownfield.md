@@ -300,6 +300,12 @@ designing anything.
 
 > **This stage depends on the semantic tier, which is inert by default (ADR-008).** See §5
 > below. Do not start it until that decision is made and the evaluation harness exists.
+>
+> **Still gated as of 2026-08-01.** The harness exists and has been run again; the tier
+> measures **53% worst-run precision against a 90% bar**. Building the Mapping Engine on a
+> tier that fails its own gate would ship the *false satisfied* the whole corpus forbids —
+> a wrong mapping of an organisation's standard onto the index is worse than no mapping,
+> because it is the one they will quote back.
 
 ---
 
@@ -344,16 +350,54 @@ incidental token, and the standards the code actually violated were never submit
 Backends were being scored on standards they were never shown. The figures that stood here
 have been removed rather than annotated — a stale number in a plan gets quoted.
 
-**Latest measurement** — `gpt-oss:120b-cloud`, 17 fixtures, 10 required findings, 3 runs,
-worst run governs. Figures are **after** `#191`:
+**Latest measurement** — `gpt-oss:120b-cloud`, 17 fixtures, 10 required findings.
+**Re-measured 2026-08-01 at 5 runs per condition**, because 3 runs could not separate an
+8-point change from noise: the baseline's own three runs ranged 45%–56%.
 
-| | before `#191` | after `#191` |
-|---|---|---|
-| worst-run precision | 33% | **47%** |
-| worst-run recall | 90% | **90% — held** |
-| false positives per run | 11 / 11 / 18 | 9 / 10 / 7 |
+| Condition | worst-run precision | recall | spread | verdict |
+|---|---|---|---|---|
+| Baseline (5 runs) | 45% | 90% | 45–60% | — |
+| **H1** — excerpt framing (5 runs) | 50% | **80%** | 50–56% | **REJECTED** |
+| **H2** — confidence filter (5 runs) | **53%** | **90% — held** | 53–75% | **KEPT** |
+| H2 confirmation (5 more runs) | **53%** | **90%** | 53–69% | floor reproduces |
 
-**Still FAIL. 47% is not close to 90%.**
+**Still FAIL. 53% is not close to 90%. ADR-008 stands and Stages 3–4 stay gated.**
+
+### H1 — "tell it the snippet is an excerpt" — rejected, and the rejection is the result
+
+The handoff's first-priority hypothesis: state that the snippet is an excerpt and that a
+called function may be assumed to do what its name says. It was aimed at
+`clean-ownership-checked-before-read`, which calls
+`documents.get_for_owner(document_id, owner_id=user.id)`.
+
+**It cost 10 points of recall — 90% → 80% — and bought no reliable precision.** Worst-run
+precision rose 45% → 50%, but mean precision *fell* 53% → 50%, and the spreads overlap
+heavily. Telling the model to assume unseen code behaves correctly made it stop reporting a
+violation it had been catching.
+
+This is precisely the failure the standing criterion names: **a restraint fix that buys
+precision by finding less has moved the problem, not solved it.** Worst-run precision is
+the headline the verdict uses, so it improved on the number a careless reading would have
+quoted while the tier got worse.
+
+It was also aimed at the wrong target. In the baseline run
+`clean-ownership-checked-before-read` came back **correct**, and the dominant false
+positive was `S1.105` — 5 of 7 — firing on ordinary literals: `max_length: int = 80` in a
+`slugify` helper, `status_code=503` in a translated error. Both are *named* values, which
+`AP-S1.105a` explicitly exempts ("instead of named configuration"). The statement's "or
+that carry meaning" clause invites the model to flag every literal, and the exemption sits
+at the end of a long sentence where it is not carrying weight.
+
+### H2 — ask for a confidence, discard what is not `high` — kept
+
+The ungrounded-citation filter's idea applied to certainty rather than identity. **Worst-run
+precision 45% → 53% with recall held at 90%, and the 53% floor reproduced exactly across a
+second five runs.**
+
+An absent or unrecognised confidence is **kept, not dropped**: a backend that ignores the
+field would otherwise report nothing while looking like a clean review — the failure
+`Outcome.UNPARSEABLE` exists to prevent — and keeping is the only direction that cannot
+cost recall.
 
 `#191` sent each standard's anti-pattern description as an explicit *report only when*
 clause, on the theory that statements like "never inlined as literals in code" are
@@ -410,17 +454,33 @@ The harness is built and has done its job: `#138` is now a decision backed by nu
 rather than intuition, and **any** backend — local or hosted — is gated behind a
 measurable bar, so the next endpoint retirement is survivable.
 
-Experiments remaining, in cost order — the first is now much narrower than it looked:
+Experiments remaining, after the 2026-08-01 round. **Two of the three the last handoff
+listed have now been run**, and the results are in the table above — H1 (excerpt framing)
+was rejected for costing recall, H2 (confidence filtering) was kept for +8 points of
+worst-run precision at no recall cost.
 
-1. **Give `S1.105` and `S2.53` a stopping condition in the submitted catalogue.** They cause
-   most of the deficit, and both read as unconditional prohibitions. This is a
-   prompt-construction change, not a corpus change — the standards are correctly written for
-   human readers. **One run of 1.9 minutes to find out.**
-2. **Submit fewer standards per review** — eight structural standards on one snippet invites
-   eight opinions. Scope by `applies_to` and language, or review in smaller grounded batches.
+What is left, in cost order:
+
+1. **Submit fewer standards per review.** Untested and now the cheapest remaining lever:
+   eight structural standards on one snippet invites eight opinions. Scope by `applies_to`
+   and language, or review in smaller grounded batches. The measured evidence points here —
+   `S1.105` alone caused 5 of 7 false positives in the baseline, and it is submitted against
+   every snippet regardless of whether the code has any configuration in it.
+2. **Sharpen how `S1.105` reaches the model.** Its statement says values "that carry
+   meaning" must be named, which invites a finding against every literal; the exemption
+   ("instead of named configuration") sits at the end of the anti-pattern sentence where it
+   is not carrying weight. **This is prompt construction, not a corpus change** — the
+   statement is correct for a human applying judgement. Reordering the catalogue entry so
+   the exemption leads is one run to find out.
 3. **Only then** a tuned local model, which is what `#138` is actually about — and note that
-   this repository has **no evidence either way** about a competent local coder model, since
-   the 7b could not be run here.
+   this repository still has **no evidence either way** about a competent local coder model,
+   since the 7b could not be run here.
+
+**A note on method that cost real time and should not be re-learned.** Three runs cannot
+separate an 8-point change from noise on this backend: the baseline's own three runs ranged
+45%–56%, which is wider than any single prompt change has ever moved the number.
+**Measure at five runs, per condition, and change one thing at a time.** H1 looked like a
+5-point precision *gain* on the worst run while silently costing 10 points of recall.
 
 **The bar stands.** It was unreachable by construction before `#181` — at four required
 findings the only reachable precisions were 100%, 80%, 67%, 57% and 50%, so 90% silently

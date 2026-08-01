@@ -53,6 +53,59 @@ def test_parse_drops_hallucinated_standards():
     assert len(out) == 1 and out[0].standard == "S2.34" and out[0].line == 5
 
 
+def test_parse_drops_findings_the_model_is_unsure_about():
+    """The ungrounded-citation filter, applied to certainty instead of identity.
+
+    Measured on `gpt-oss:120b-cloud`, 5 runs per condition: worst-run precision
+    45% → 53% with recall held at 90%, and the 53% floor reproduced across a
+    second five runs. The verdict uses the worst run, so the floor is the number
+    that moved.
+    """
+    content = json.dumps(
+        {
+            "findings": [
+                {"standard": "S2.34", "message": "money as float", "confidence": "high"},
+                {"standard": "S2.34", "message": "arguable", "confidence": "medium"},
+                {"standard": "S2.34", "message": "a stretch", "confidence": "low"},
+            ]
+        }
+    )
+    out = parse_findings(content, allowed_ids={"S2.34"})
+    assert [f.message for f in out] == ["money as float"]
+
+
+def test_parse_keeps_a_finding_that_carries_no_confidence():
+    """A backend that ignores the field must not be silently emptied.
+
+    Dropping unmarked findings would turn any endpoint that does not implement
+    the schema into a tier reporting a clean review it never performed — the
+    exact failure `Outcome.UNPARSEABLE` exists to prevent. Keeping is also the
+    only direction that cannot cost recall.
+    """
+    content = json.dumps({"findings": [{"standard": "S2.34", "message": "no confidence field"}]})
+    assert len(parse_findings(content, allowed_ids={"S2.34"})) == 1
+
+    unrecognised = json.dumps(
+        {"findings": [{"standard": "S2.34", "message": "x", "confidence": "probably"}]}
+    )
+    assert len(parse_findings(unrecognised, allowed_ids={"S2.34"})) == 1
+
+
+def test_the_prompt_asks_for_the_confidence_it_filters_on():
+    """Filtering on a field the model was never asked for would drop nothing.
+
+    Cheap, and it is the setup check rather than the result check — the class of
+    gate that has repeatedly paid for itself here.
+    """
+    from governova_semantic.review import build_messages
+
+    std = next(s for c in INDEX.constitutions for s in c.standards)
+    system = build_messages("x = 1", [std])[0]["content"]
+    assert "confidence" in system
+    for level in ("high", "medium", "low"):
+        assert level in system
+
+
 def test_parse_handles_code_fenced_json():
     content = (
         "```json\n" + json.dumps({"findings": [{"standard": "S2.1", "message": "x"}]}) + "\n```"

@@ -209,7 +209,8 @@ def build_messages(code: str, standards: list[Standard]) -> list[dict[str, str]]
         "You are a constitutional code reviewer. You are given a set of governance "
         "standards and a code snippet. Identify only genuine violations of the listed "
         "standards. Respond with strict JSON: "
-        '{"findings":[{"standard":"S<c>.<n>","line":<int or null>,"message":"<why>"}]}. '
+        '{"findings":[{"standard":"S<c>.<n>","line":<int or null>,"message":"<why>",'
+        '"confidence":"high|medium|low"}]}. '
         "Cite only standards from the provided list. If there are no violations, return "
         '{"findings":[]}. Do not invent standards or wrap the JSON in prose.'
         "\n\n"
@@ -218,6 +219,13 @@ def build_messages(code: str, standards: list[Standard]) -> list[dict[str, str]]
         "report nothing for it. A missed violation costs little; a wrong one destroys "
         "trust in every other finding you make. Returning an empty list is a correct and "
         "expected answer for well-written code."
+        "\n\n"
+        "Set confidence honestly, because it is used rather than displayed. Use 'high' "
+        "only when the code plainly does the thing the standard's 'Report only when' "
+        "clause describes and you would defend the finding to the author. Use 'medium' "
+        "when the standard arguably applies but a reasonable reviewer could disagree. Use "
+        "'low' when it is a stretch. Anything below 'high' is discarded, so a finding you "
+        "are unsure about costs you nothing to mark honestly."
     )
     user = f"Standards:\n{catalogue}\n\nCode:\n{code}"
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
@@ -246,8 +254,24 @@ def payload(content: str) -> dict[str, Any] | None:
     return data if isinstance(data, dict) else None
 
 
+DISCARDED_CONFIDENCE = frozenset({"medium", "low"})
+"""Confidence levels dropped before a finding is reported.
+
+The same idea as the ungrounded-citation filter, applied to certainty rather than
+to identity: the model is asked how sure it is, and anything it does not call
+`high` is discarded. A marginal finding costs more than a missed one, because it
+is the one that teaches a reader to discount the rest.
+
+**An absent or unrecognised confidence is kept, not dropped.** A backend that
+ignores the field would otherwise report nothing at all while looking like a
+clean review — the precise failure `Outcome.UNPARSEABLE` exists to prevent, and
+silently emptying the tier is worse than not filtering it. Keeping is also the
+direction that cannot cost recall.
+"""
+
+
 def parse_findings(content: str, allowed_ids: set[str]) -> list[SemanticFinding]:
-    """Parse the model's JSON and keep only citations of allowed (real) standards."""
+    """Parse the model's JSON, keeping only grounded, high-confidence findings."""
     data = payload(content)
     if data is None:
         return []
@@ -258,6 +282,8 @@ def parse_findings(content: str, allowed_ids: set[str]) -> list[SemanticFinding]
             continue
         std = str(item.get("standard", "")).strip().upper()
         if std not in allowed_ids:  # anti-hallucination: only grounded, real standards
+            continue
+        if str(item.get("confidence", "")).strip().lower() in DISCARDED_CONFIDENCE:
             continue
         line = item.get("line")
         line = int(line) if isinstance(line, (int, float)) else None

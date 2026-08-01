@@ -71,10 +71,49 @@ writing anything:
 
 ---
 
-## Stage 0 — Arrival
+## Stage 0 — Arrival · **built, measured, awaiting L4 merge**
 
 **Ships:** `governova onboard` — the read-only baseline. **Nothing else can start until
 this is merged.**
+
+> **Measured on 2026-08-01** against three third-party repositories of three different
+> stacks, none of which Governova had seen: `pallets/click` (python), `expressjs/express`
+> (node), `spf13/cobra` (go).
+>
+> | Repository | Stack | Source files | Blocking | Advisory | Baseline score |
+> |---|---|---|---|---|---|
+> | `click` | python | 32 | **0** | 53 | 0/100 |
+> | `express` | node | 54 | **1** | 42 | 0/100 |
+> | `cobra` | go | 19 | **0** | 7 | 79/100 |
+>
+> **Zero blocking-tier false positives.** The single blocking finding is real:
+> `examples/web-service/index.js:102` runs `res.send({ error: err.message })` inside an
+> error-handling middleware express ships for people to copy, which is exactly what S2.18
+> forbids.
+>
+> Two defects were found by the first run rather than by review, and both are recorded
+> because the *finding* is more durable than the fix:
+>
+> 1. **`DEFAULT_IGNORES` knew `tests/` and not `test/`.** 20 of express's original 21
+>    blocking findings were error-handling fixtures in `test/`, singular — the dominant
+>    convention across Node, Go and Ruby. The gap was invisible for as long as the engine
+>    only ever scanned its own source tree, because Governova keeps its tests in
+>    `scripts/tests/`. Fixed here, with `__tests__/`, `spec/` and `specs/` alongside.
+> 2. **The rule cites the wrong anti-pattern.** `AP-S2.18a` is *"raw database error
+>    message returned in the API response"*; `AP-S2.18b` is *"`error.message` or
+>    `error.stack` sent directly to the client"*. The regex implements 2.18b and is
+>    labelled 2.18a, so the one true finding above is reported under a description
+>    mentioning a database that is not there. Raised separately — the swap is
+>    count-neutral for enforcement coverage but it changes the covered-anti-pattern set,
+>    which is a deliberate change rather than a drive-by one.
+>
+> **One thing the baseline cannot currently say honestly, and it is not an engine bug.**
+> The §18.1 violation-rate factor is a count with no notion of density: 34 advisory
+> findings zero the factor whether the repository has 30 files or 30,000. On first contact
+> it is usually the *only* assessable factor, so `click` — a mature, careful library —
+> baselines at 0/100 (F). The report now states how many factors the headline rests on,
+> which is presentation and L3's to change. **The model itself is `C0 §8` and belongs to
+> L4**, so it was left alone and raised instead.
 
 This is Scan & Learn, and it is the mode most adopters will only ever use.
 
@@ -107,6 +146,16 @@ Never write it silently.
 different stacks · **zero blocking-tier false positives** · profile written only on
 explicit acceptance · a repository with nothing detectable produces a *useful* report
 saying so, not an empty one.
+
+**All four met.** Three repositories, three stacks, zero blocking false positives (table
+above). `assess()` writes nothing at all — a test snapshots the directory before and after
+to hold that — and `--accept` is the only path that touches disk, refusing to overwrite an
+existing profile. A repository containing one text file reports every dimension it probed
+and what each absence means, rather than an empty table.
+
+**What made the empty-repository case worth building first:** it is the one where the
+report has nothing to boast about, so it is the one that shows whether the tool is honest
+when it has no findings to offer.
 
 ---
 

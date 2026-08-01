@@ -21,6 +21,7 @@ from governova_compile.schema import CompiledIndex, IntegrityIssue, Severity
 from governova_compile.writer import (
     load_active_index,
     load_index,
+    resolve_index_path,
     verify_checksum,
     write_index,
 )
@@ -28,6 +29,7 @@ from governova_console import console as shared_console
 from governova_validate.checks import ALL_CHECKS
 from governova_validate.links import check_links
 from rich.table import Table
+from rich.text import Text
 
 app = typer.Typer(
     add_completion=False,
@@ -39,6 +41,13 @@ app = typer.Typer(
 console = shared_console()
 
 _ERROR_SEVERITIES = {Severity.SEV0, Severity.SEV1, Severity.SEV2}
+
+# Mirrors `governova_onboard.baseline.DEFAULT_TOP`. Duplicated rather than
+# imported because typer evaluates option defaults at decoration time, and
+# importing the onboarding package there would pull the whole analysis stack into
+# every `governova --help`. A test asserts the two stay equal, so the duplication
+# cannot drift silently.
+DEFAULT_ONBOARD_TOP = 12
 
 
 def _root(repo_root: Path | None) -> Path:
@@ -55,6 +64,28 @@ def _root(repo_root: Path | None) -> Path:
         return resolve_repo_root()
     except FileNotFoundError:
         return resolve_target_root()
+
+
+def _onboard_index_path(root: Path) -> Path:
+    """Which constitution should judge a repository somewhere else on disk.
+
+    Every other command runs *inside* the tree it governs, so walking upward from
+    the target always finds an index or falls through to the bundled copy.
+    `onboard` is the first command whose whole purpose is to point at a directory
+    elsewhere, and it is the one that exposed the gap: run from a Governova
+    source checkout — where nothing is installed and so nothing is bundled —
+    against a stranger's repository, the upward walk from the *target* finds
+    nothing and the command dies before it scans a single file.
+
+    So the target is asked first, because a repository carrying its own amended
+    corpus must be judged by that corpus rather than by ours. Only when the
+    target has none does this fall back to the invocation's own context, which
+    is what `resolve_index_path` already does for every other command.
+    """
+    try:
+        return resolve_index_path(start=root)
+    except FileNotFoundError:
+        return resolve_index_path()
 
 
 def _load(root: Path) -> CompiledIndex:
@@ -1177,6 +1208,157 @@ def schema(
         )
     if certain and strict:
         raise typer.Exit(code=1)
+
+
+@app.command()
+def onboard(
+    path: Annotated[
+        Path | None,
+        typer.Argument(help="The repository to onboard. Omitted = the one you are standing in."),
+    ] = None,
+    accept_profile: Annotated[
+        bool,
+        typer.Option(
+            "--accept",
+            help="Write the proposed profile to governance/project.toml. Never overwrites.",
+        ),
+    ] = False,
+    show_probes: Annotated[
+        bool, typer.Option("--probes", help="Also list every structural probe and its verdict.")
+    ] = False,
+    top: Annotated[
+        int, typer.Option("--top", help="How many finding groups to show.")
+    ] = DEFAULT_ONBOARD_TOP,
+    as_json: Annotated[
+        bool, typer.Option("--json", help="Emit the whole baseline as JSON instead.")
+    ] = False,
+) -> None:
+    """Baseline a repository Governova has never seen. Read-only unless --accept.
+
+    Scan & Learn: what this repository is, what it scores today, where the gaps
+    sit, and what to look at first. Nothing is written and nothing is applied.
+    """
+    from governova_onboard import ProfileExistsError, assess, render_profile
+    from governova_onboard import accept as write_profile
+    from governova_onboard.render import (
+        findings_table,
+        heatmap_table,
+        probe_table,
+        profile_table,
+        score_table,
+        structural_table,
+        to_json,
+    )
+
+    root = (path or resolve_target_root()).resolve()
+    if not root.is_dir():
+        console.print(f"[bold red]error:[/] {root} is not a directory.")
+        raise typer.Exit(code=2)
+
+    try:
+        index_path = _onboard_index_path(root)
+    except FileNotFoundError as exc:
+        console.print(f"[bold red]error:[/] {exc}")
+        raise typer.Exit(code=2) from exc
+    index = load_index(index_path)
+    baseline = assess(root, index)
+
+    if as_json:
+        console.print_json(to_json(baseline, top=None))
+        return
+
+    console.print(f"\n[bold]Onboarding[/] {root}")
+    # Which corpus judged this repository is part of the result. Two runs that
+    # disagree because they loaded different constitutions would otherwise look
+    # like the repository changed.
+    console.print(
+        f"[dim]judged against {index_path} — "
+        f"{len(index.constitutions)} constitution(s)[/]\n"
+    )
+    console.print("[bold]What this repository is[/]")
+    console.print(profile_table(baseline))
+
+    assessed = len(baseline.score.assessed_factors)
+    console.print(
+        f"\n[bold]Baseline score:[/] {baseline.score.score}/100  [{baseline.score.grade}]"
+    )
+    # The headline is the only line some readers take away, so what it rests on
+    # belongs beside it. On first contact most factors need governance records the
+    # repository does not have yet, and a score drawn from one factor out of five
+    # is a different claim from one drawn from all of them.
+    console.print(
+        f"[dim]drawn from {assessed} of 5 factors ({baseline.score.assessed_weight}% of "
+        f"factor weight) — the rest need governance instrumentation this repository "
+        f"does not have yet[/]"
+    )
+    console.print(score_table(baseline))
+
+    console.print("\n[bold]Gap heatmap[/] — against the proposed profile")
+    console.print(heatmap_table(baseline))
+    console.print(
+        f"[dim]{baseline.unknown} of {baseline.applicable} applicable standard(s) are "
+        f"undetermined. On first contact that is the expected shape: undetermined means "
+        f"nobody has looked yet, and it is never counted as satisfied.[/]"
+    )
+
+    if baseline.groups:
+        shown = min(top, len(baseline.groups))
+        console.print(
+            f"\n[bold]Top findings[/] — {shown} of {len(baseline.groups)} group(s), "
+            f"blocking first"
+        )
+        console.print(findings_table(baseline, top=top))
+
+    # Probe violations count toward the heatmap's `violated` column, so they are
+    # printed whenever there are any. Omitting them left the report showing a
+    # violated standard it could not account for.
+    if baseline.violated_probes:
+        console.print("\n[bold]Structural findings[/] — repository facts, not lines")
+        console.print(structural_table(baseline))
+
+    if baseline.clean:
+        console.print(
+            "\n[green]No deterministic findings.[/] [dim]That is not a clean bill of "
+            "health — see the undetermined column above.[/]"
+        )
+
+    if show_probes:
+        console.print("\n[bold]Structural probes[/]")
+        console.print(probe_table(baseline))
+
+    if baseline.provisional:
+        console.print("\n[yellow]These numbers are provisional:[/]")
+        for reason in baseline.provisional:
+            console.print(f"  [yellow]•[/] {reason}")
+
+    proposal = render_profile(
+        baseline.detection,
+        domains=tuple(d.id for d in index.domains),
+        source=root.as_posix(),
+    )
+    if not accept_profile:
+        console.print(
+            "\n[bold]Proposed profile[/] [dim](nothing written — review, then re-run "
+            "with --accept)[/]"
+        )
+        # Printed as text, never as markup. Rich reads `[project]` as a style tag
+        # and deletes it, which would offer the reviewer TOML that cannot parse.
+        console.print(Text(proposal, style="dim"))
+        return
+
+    try:
+        written = write_profile(root, proposal)
+    except ProfileExistsError as exc:
+        console.print(f"\n[bold red]error:[/] {exc}")
+        raise typer.Exit(code=1) from exc
+    except OSError as exc:
+        console.print(f"\n[bold red]error:[/] could not write the profile: {exc}")
+        raise typer.Exit(code=2) from exc
+    console.print(f"\n[green]✓[/] profile written to {written.relative_to(root).as_posix()}")
+    console.print(
+        "[dim]Review it — the domain and phase lines are commented out because no scan "
+        "can settle them, and both change which standards apply.[/]"
+    )
 
 
 if __name__ == "__main__":

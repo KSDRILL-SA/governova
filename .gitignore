@@ -47,3 +47,12 @@ planning/SDLC&DBLC/
 # expression that not committing the sources exists to avoid.
 planning/extracted/
 *.corpus.json
+
+# Coverage artefacts. `.coverage` is a binary SQLite database rewritten by every
+# run, and CI now runs coverage on every build (S7.25) — committing it would put
+# a churning 68KB blob in every diff. It was committed once, by a `git add -A`
+# immediately after a coverage run, which is exactly how this file gets in.
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml

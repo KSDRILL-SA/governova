@@ -38,6 +38,14 @@ from governova_onboard.baseline import (
     assess,
     proposed_profile,
 )
+from governova_onboard.convert import (
+    Conversion,
+    ConversionRefusedError,
+    ConversionStaleError,
+    propose_conversions,
+    register_converter,
+    registered_converters,
+)
 from governova_onboard.detect import (
     DIMENSIONS,
     UNDERIVABLE,
@@ -60,6 +68,9 @@ __all__ = [
     "UNDERIVABLE",
     "Baseline",
     "ConstitutionGap",
+    "Conversion",
+    "ConversionRefusedError",
+    "ConversionStaleError",
     "Detection",
     "FindingGroup",
     "Item",
@@ -72,7 +83,10 @@ __all__ = [
     "assess",
     "build_roadmap",
     "detect",
+    "propose_conversions",
     "proposed_profile",
+    "register_converter",
+    "registered_converters",
     "render_profile",
     "roadmap_to_json",
     "to_json",

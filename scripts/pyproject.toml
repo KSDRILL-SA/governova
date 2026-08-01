@@ -116,6 +116,7 @@ packages = [
     "governova_requirements",
     "governova_schema",
     "governova_console",
+    "governova_onboard",
 ]
 
 [tool.mypy]
@@ -146,4 +147,5 @@ files = [
     "governova_requirements",
     "governova_schema",
     "governova_console",
+    "governova_onboard",
 ]

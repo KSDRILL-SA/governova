@@ -24,9 +24,34 @@ SKIP_DIRS: frozenset[str] = frozenset(
 )
 
 # Path globs skipped by default: test code, fixtures, and the rule set itself.
+#
+# The directory list covers the conventions in common use, not just the one this
+# repository happens to follow. It originally knew `tests/` and nothing else,
+# which was invisible for as long as the engine only ever scanned its own source
+# tree — Governova keeps its tests in `scripts/tests/`.
+#
+# The first run of `governova onboard` against a third-party repository found it
+# immediately: 20 of express's 21 blocking findings were error-handling fixtures
+# in `test/`, singular, which is the dominant convention across Node, Go and Ruby.
+# Every one was code written deliberately to exercise the behaviour the rule
+# looks for. That is precisely what this list exists to skip, so the gap was in
+# the list rather than in the rules, and a governance tool whose first report
+# about a healthy repository is twenty false accusations does not get a second
+# reading.
+#
+# `fnmatch`'s `*` spans `/`, so the bare form anchors a top-level directory and
+# the `*/`-prefixed form matches it at any depth.
 DEFAULT_IGNORES: tuple[str, ...] = (
     "*/tests/*",
     "tests/*",
+    "*/test/*",
+    "test/*",
+    "*/__tests__/*",
+    "__tests__/*",
+    "*/spec/*",
+    "spec/*",
+    "*/specs/*",
+    "specs/*",
     "*/test_*",
     "test_*",
     "*_test.*",

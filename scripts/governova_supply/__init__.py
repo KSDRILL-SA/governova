@@ -158,8 +158,12 @@ def _declared_licence(dist: Distribution) -> str:
         if value and len(value) <= 60:
             return str(value)
     for classifier in meta.get_all("Classifier") or []:
-        if classifier.startswith("License ::"):
-            return classifier.split(" :: ")[-1]
+        # `get_all` is typed as returning `Any` values, so the element is coerced
+        # rather than assumed — a classifier that is not a string would otherwise
+        # reach the licence allowlist as one.
+        text = str(classifier)
+        if text.startswith("License ::"):
+            return text.split(" :: ")[-1]
     return ""
 
 

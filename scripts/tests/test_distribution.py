@@ -260,3 +260,37 @@ def test_governova_governs_itself_from_source_not_from_a_release() -> None:
         resolve_repo_root() / ".github" / "workflows" / "enforce.yml"
     ).read_text(encoding="utf-8")
     assert "version: source" in workflow
+
+
+def test_mypy_strictness_is_declared_where_ci_actually_reads_it() -> None:
+    """The config CI uses is `scripts/pyproject.toml`, not the root one.
+
+    `mypy` reads the configuration in its working directory, and CI runs
+    `working-directory: scripts`. The root `pyproject.toml` had declared
+    `strict = true` since it was written and CI never ran under it, so the
+    repository declared strict typing, enforced ordinary typing, and stayed
+    green — the same shape as a semantic tier reaching nothing while every build
+    passed. Enabling it surfaced four real errors.
+
+    This asserts the setting lives in the file that governs the run rather than
+    the file that reads well, which is the cheap setup check rather than the
+    expensive result check.
+    """
+    root = resolve_repo_root()
+    for manifest in (root / "pyproject.toml", root / "scripts" / "pyproject.toml"):
+        config = tomllib.loads(manifest.read_text(encoding="utf-8"))
+        assert config["tool"]["mypy"]["strict"] is True, manifest
+
+
+def test_the_type_check_still_runs_from_scripts() -> None:
+    """The assertion above is only meaningful while this stays true.
+
+    If CI ever stops setting `working-directory: scripts`, the config it reads
+    changes and the guarantee moves with it. Pinning both halves means the pair
+    cannot drift apart silently.
+    """
+    workflow = (resolve_repo_root() / ".github" / "workflows" / "validate.yml").read_text(
+        encoding="utf-8"
+    )
+    assert "working-directory: scripts" in workflow
+    assert "uv run mypy" in workflow

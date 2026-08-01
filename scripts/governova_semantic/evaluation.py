@@ -35,12 +35,12 @@ from datetime import UTC, datetime
 from governova_compile.schema import CompiledIndex, Standard
 from governova_compile.writer import load_active_index
 
+from governova_semantic.client import Transport
 from governova_semantic.config import SemanticConfig, from_env
 from governova_semantic.fixtures import FIXTURES, Fixture
 from governova_semantic.review import (
     Outcome,
     ReviewResult,
-    Transport,
     relevant_standards,
     review_result,
 )

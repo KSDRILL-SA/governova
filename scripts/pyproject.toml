@@ -121,6 +121,16 @@ packages = [
 
 [tool.mypy]
 python_version = "3.12"
+# The root `pyproject.toml` has declared `strict = true` since it was written, and
+# CI never ran under it: `mypy` reads the config in its working directory, CI runs
+# `working-directory: scripts`, and this file is the one it finds. So the repository
+# declared strict typing, enforced ordinary typing, and stayed green — the same
+# shape as a semantic tier that reached nothing while every build passed.
+#
+# Enabled here, where CI actually reads it. The four errors it surfaced are fixed
+# in the same change; a declaration whose enforcement is switched off is worse than
+# no declaration, because it is believed.
+strict = true
 ignore_missing_imports = true
 files = [
     "governova_checks",

@@ -1361,5 +1361,80 @@ def onboard(
     )
 
 
+@app.command()
+def roadmap(
+    path: Annotated[
+        Path | None,
+        typer.Argument(help="The repository to plan for. Omitted = the one you are standing in."),
+    ] = None,
+    top: Annotated[
+        int | None, typer.Option("--top", help="Show only the first N items.")
+    ] = None,
+    as_json: Annotated[
+        bool, typer.Option("--json", help="Emit the whole plan as JSON instead.")
+    ] = False,
+) -> None:
+    """What to fix first, ordered by impact per unit of work. Read-only.
+
+    A baseline says what is wrong; this says what to do about it, in what order.
+    Each item is one PR — individually green, individually revertible (S8.83).
+    """
+    from governova_onboard import assess, build_roadmap, roadmap_to_json
+    from governova_onboard.render import roadmap_table
+
+    root = (path or resolve_target_root()).resolve()
+    if not root.is_dir():
+        console.print(f"[bold red]error:[/] {root} is not a directory.")
+        raise typer.Exit(code=2)
+
+    try:
+        index_path = _onboard_index_path(root)
+    except FileNotFoundError as exc:
+        console.print(f"[bold red]error:[/] {exc}")
+        raise typer.Exit(code=2) from exc
+
+    index = load_index(index_path)
+    plan = build_roadmap(assess(root, index), index)
+
+    if as_json:
+        console.print_json(roadmap_to_json(plan))
+        return
+
+    console.print(f"\n[bold]Remediation roadmap[/] {root}\n")
+    if not plan:
+        # An empty plan is a real result. Manufacturing work to look busy on a
+        # clean repository is the first lie a tool can tell about it.
+        console.print(
+            "[green]No deterministic findings — nothing to plan.[/]\n"
+            "[dim]That is not a clean bill of health: run `governova onboard` to see how "
+            "much is undetermined rather than clean.[/]"
+        )
+        return
+
+    console.print(roadmap_table(plan, top=top))
+    console.print(
+        f"\n[dim]{len(plan)} item(s) · {len(plan.blocking_items)} blocking. "
+        f"Ordered blocking-first, then by leverage (blast ÷ effort). The components are "
+        f"measured; the weights are a stated convention — dispute the order by reading "
+        f"the columns, not by trusting the rank.[/]"
+    )
+
+    needing = plan.needing_tests
+    if needing:
+        console.print(
+            f"\n[yellow]{len(needing)} item(s) need a characterisation test first (S1.101):[/]"
+        )
+        for item in needing[: top or len(needing)]:
+            console.print(
+                f"  [yellow]•[/] {item.standard} — no conventionally-named test found for "
+                f"{', '.join(item.files[:2])}"
+            )
+        console.print(
+            "[dim]'No test found' is not 'no test exists' — a filename search cannot prove "
+            "absence. It means nobody has shown the behaviour is pinned, which is exactly "
+            "what S1.101 asks for before a brownfield refactor.[/]"
+        )
+
+
 if __name__ == "__main__":
     app()

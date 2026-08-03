@@ -1362,6 +1362,91 @@ def onboard(
 
 
 @app.command()
+def convert(
+    path: Annotated[
+        Path | None,
+        typer.Argument(help="The repository to convert. Omitted = the one you are standing in."),
+    ] = None,
+    apply_changes: Annotated[
+        bool,
+        typer.Option("--apply", help="Write the safe conversions. Without this, nothing changes."),
+    ] = False,
+    converter: Annotated[
+        str | None, typer.Option("--converter", help="Run only this converter.")
+    ] = None,
+) -> None:
+    """Propose behaviour-preserving fixes as reviewable diffs. Applies nothing by default.
+
+    Scan, Learn & Rewrite. A conversion against code with no characterisation
+    test is refused (S1.101) and there is no flag that overrides it.
+    """
+    from governova_onboard import assess, propose_conversions
+    from governova_onboard.convert import ConversionRefusedError, ConversionStaleError
+    from governova_onboard.convert import apply as apply_conversion
+
+    root = (path or resolve_target_root()).resolve()
+    if not root.is_dir():
+        console.print(f"[bold red]error:[/] {root} is not a directory.")
+        raise typer.Exit(code=2)
+
+    try:
+        index = load_index(_onboard_index_path(root))
+    except FileNotFoundError as exc:
+        console.print(f"[bold red]error:[/] {exc}")
+        raise typer.Exit(code=2) from exc
+
+    try:
+        conversions = propose_conversions(root, assess(root, index), only=converter)
+    except KeyError as exc:
+        console.print(f"[bold red]error:[/] {exc}")
+        raise typer.Exit(code=2) from exc
+
+    if not conversions:
+        console.print(
+            "\n[green]Nothing to convert.[/] [dim]The converter set is deliberately narrow — "
+            "only changes that preserve behaviour and fix the standard rather than the "
+            "check. Run `governova roadmap` for what still needs a human.[/]"
+        )
+        return
+
+    safe = [c for c in conversions if c.applicable]
+    refused = [c for c in conversions if not c.applicable]
+
+    console.print(f"\n[bold]Proposed conversions[/] {root}\n")
+    for conversion in conversions:
+        mark = "[green]ready[/]" if conversion.applicable else "[yellow]refused[/]"
+        console.print(f"{mark} [bold]{conversion.path}[/] — {conversion.standard}")
+        console.print(f"[dim]{conversion.rationale}[/]")
+        # Printed as text: a diff is full of markup-like brackets, and rich would
+        # eat them.
+        console.print(Text(conversion.diff, style="dim"))
+        if conversion.refusal:
+            console.print(f"[yellow]refused:[/] {conversion.refusal}\n")
+
+    if not apply_changes:
+        console.print(
+            f"[dim]{len(safe)} ready · {len(refused)} refused. Nothing was written — "
+            f"re-run with --apply.[/]"
+        )
+        return
+
+    applied = 0
+    for conversion in safe:
+        try:
+            apply_conversion(root, conversion)
+        except (ConversionRefusedError, ConversionStaleError) as exc:
+            console.print(f"[yellow]skipped[/] {conversion.path}: {exc}")
+            continue
+        applied += 1
+        console.print(f"[green]✓[/] {conversion.path}")
+
+    console.print(
+        f"\n[dim]{applied} change(s) written, each to one file and each individually "
+        f"revertible (S8.83). {len(refused)} refused and left alone.[/]"
+    )
+
+
+@app.command()
 def roadmap(
     path: Annotated[
         Path | None,

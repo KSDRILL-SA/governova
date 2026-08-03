@@ -401,22 +401,40 @@ def test_an_unless_clause_never_widens_what_a_rule_detects():
 
 
 def test_suppression_scanning_stays_linear_on_a_hostile_line():
-    """`unless` is a second regex rather than a lookahead so this cannot backtrack.
-
-    A negative lookahead spanning the rest of the line would reintroduce exactly the
-    cost `MAX_LINE_LENGTH` exists to bound, on a gate that runs in other people's CI.
+    """A coarse smoke test against catastrophic backtracking. Nothing finer.
 
     **The budget is deliberately loose, and that is what makes it a real test.**
     The property being guarded differs by *orders of magnitude*: a linear scan of
     this line costs ~4ms, and catastrophic backtracking would not finish a single
-    iteration inside the whole budget. A tight budget does not discriminate those
-    two any better — it just adds a second failure mode, where a slow machine
-    looks like a broken regex.
+    iteration inside the whole budget. Measured, against `'a'*L + '!'`:
 
-    The original form ran 200 iterations against 2.0s and measured 0.91s here, so
-    it had roughly twice the margin it needed. Under `--cov` — which traces every
-    line and is now how CI runs the suite — it tipped over and failed a build
-    where nothing was wrong. It was measuring the machine, not the regex.
+        14-char line     2.201 ms       11x the median rule
+        18-char line    70.010 ms      355x
+        22-char line   740.539 ms     3756x
+
+    At 25 characters it did not complete one scan in 300 seconds. A tight budget
+    does not discriminate that any better — it just adds a second failure mode,
+    where a slow machine looks like a broken regex. The original form ran 200
+    iterations against 2.0s and measured 0.91s here; under `--cov`, which is how
+    CI runs the suite, it tipped over and failed a build where nothing was wrong.
+
+    **What this test does NOT guard, despite what it used to claim.** It said it
+    existed because a negative lookahead spanning the rest of the line would
+    reintroduce the cost `MAX_LINE_LENGTH` bounds. It cannot see that. Swapping the
+    suppression rule for each design and running this assertion unchanged:
+
+        linear, two regexes (current)      0.989s   PASS
+        rest-of-line negative lookahead    1.066s   PASS
+        nested-quantifier lookahead        0.989s   PASS
+
+    The gate runs 40 rules over every line, so one rule's cost is diluted to
+    nothing here. Nor is that design forbidden: `AP-D-FINTECH.6b` ships
+    `^(?=.*(?:price|amount|…))`, precisely the shape. The repository's real
+    discipline is to *bound* the scan — `AP-S13.1a` and `AP-S13.7a` use `.{0,300}`
+    and `.{0,200}` — not to avoid lookaheads. See #219.
+
+    Per-rule cost is guarded by `test_no_rule_costs_wildly_more_than_the_others`,
+    which is where the dilution does not apply.
     """
     import time
 
@@ -428,6 +446,82 @@ def test_suppression_scanning_stays_linear_on_a_hostile_line():
         scan_text(hostile, file="a.py")
     elapsed = time.perf_counter() - start
     assert elapsed < 5.0, f"20 hostile scans took {elapsed:.2f}s — suspect backtracking"
+
+
+def test_no_rule_costs_wildly_more_than_the_others():
+    """One pathological rule, measured where the other 39 cannot dilute it.
+
+    The ceiling is a **ratio to the median rule**, not a duration, so it does not
+    measure the machine: a slow runner moves every rule and the median with it.
+
+    The threshold sits between two reachable scores, which is the only thing that
+    makes it a threshold. Worst-case cost at `MAX_LINE_LENGTH` over hostile,
+    money-word and filler lines:
+
+        median rule          3.943 ms / 20 scans
+        AP-D-FINTECH.6b     34.169 ms   8.7x   <- the most expensive real rule
+        AP-D-FINTECH.1a     27.493 ms   7.0x
+        AP-S1.105a          19.636 ms   5.0x
+
+    against 355x for a nested-quantifier rule on an 18-character line, climbing
+    without bound. 25x is comfortably clear of the real spread and orders below
+    the failure it exists to catch.
+
+    `AP-D-FINTECH.6b` is not a defect at 1.7ms per 4000-character scan. It is the
+    headroom the ceiling is set against.
+
+    **The short line is measured first, and that ordering is load-bearing.** An
+    exponential rule does not fail the full-length pass, it *hangs* it — a first
+    draft of this test timed out at 300s instead of reporting, which burns a CI job
+    rather than naming the rule. The same rule is 166ms on a 60-character line
+    against 17.7us for the worst real one, so the cheap pass catches it in
+    milliseconds and the expensive pass never runs.
+    """
+    import statistics
+    import time
+
+    from governova_checks.rules import MAX_LINE_LENGTH, RULES
+
+    def worst_ratio(lines: list[str]) -> tuple[str, float, float]:
+        costs: dict[str, float] = {}
+        for rule in RULES:
+            worst = 0.0
+            for line in lines:
+                rule.pattern.search(line)  # warm the compiled pattern
+                start = time.perf_counter()
+                for _ in range(20):
+                    match = rule.pattern.search(line)
+                    if match and rule.unless is not None:
+                        rule.unless.search(line)
+                worst = max(worst, time.perf_counter() - start)
+            costs[rule.anti_pattern] = worst
+        median = statistics.median(costs.values())
+        assert median > 0, "timer resolution too coarse to compare rules"
+        ap, cost = max(costs.items(), key=lambda kv: kv[1])
+        return ap, cost, cost / median
+
+    # Pass 1 — short adversarial lines. Cheap, and exponential blowup is already
+    # thousands of times the median here, so a pathological rule is named rather
+    # than left to hang the pass below.
+    short = [("ab " * 40)[:60], ("a" * 40 + "!")[:60], "# type: ignore " + "#" * 45]
+    ap, cost, ratio = worst_ratio(short)
+    assert ratio < 25.0, (
+        f"{ap} costs {ratio:.1f}x the median rule on a 60-character line "
+        f"({cost * 1e6:.0f}us per 20 scans) — suspect a nested quantifier"
+    )
+
+    # Pass 2 — full-length lines. Catches a rule that is costly but not explosive,
+    # which the short pass cannot see.
+    probes = (
+        "# type: ignore " + "#" * MAX_LINE_LENGTH,
+        "price amount balance total " * (MAX_LINE_LENGTH // 27),
+        "x" * MAX_LINE_LENGTH,
+    )
+    ap, cost, ratio = worst_ratio([p[:MAX_LINE_LENGTH] for p in probes])
+    assert ratio < 25.0, (
+        f"{ap} costs {ratio:.1f}x the median rule at MAX_LINE_LENGTH "
+        f"({cost * 1000:.1f}ms per 20 scans) — suspect an unbounded quantifier"
+    )
 
 
 def test_a_line_past_the_cap_costs_nothing_to_reject():

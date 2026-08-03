@@ -22,7 +22,7 @@ That refusal is the most important behaviour in this module.
 
 from __future__ import annotations
 
-from governova_schema.model import Confidence, Finding, Schema, Table, Unknown
+from governova_schema.model import Column, Confidence, Finding, Schema, Table, Unknown
 
 # Columns whose presence implies the row is a version of something over time. A table
 # with these and no temporal component in its key cannot hold two versions of one entity.
@@ -102,7 +102,9 @@ def check_referential_integrity(schema: Schema) -> list[Finding]:
     return findings
 
 
-def _check_target_column(schema: Schema, table: Table, column, target: Table) -> list[Finding]:
+def _check_target_column(
+    schema: Schema, table: Table, column: Column, target: Table
+) -> list[Finding]:
     if column.references_column is None:
         return []  # target column not named — the dialect resolves it to the PK
     referenced = target.column(column.references_column)

@@ -15,7 +15,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from governova_schema.checks import analyse
-from governova_schema.model import Confidence
+from governova_schema.model import Confidence, Finding
 
 # Each C14 standard that a mechanical check answers, and the finding code answering it.
 #
@@ -56,7 +56,7 @@ def _verdicts(root: Path) -> list[tuple[str, str, str]]:
         reason = f"{len(schema_files)} schema file(s) found but no entity could be read"
         return [(sid, "unknown", reason) for sid in sorted(MECHANICAL_STANDARDS)]
 
-    by_code: dict[str, list] = {}
+    by_code: dict[str, list[Finding]] = {}
     for finding in findings:
         by_code.setdefault(finding.code, []).append(finding)
 

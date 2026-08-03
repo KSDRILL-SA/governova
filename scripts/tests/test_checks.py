@@ -191,11 +191,99 @@ def test_c13_rules_do_not_fire_in_test_fixtures():
     )
 
 
+def test_internal_error_detail_reaching_the_client_is_blocking():
+    """The positive case for `AP-S2.18b` — the shape express ships as an example."""
+    findings = scan_text("app.use(function (err, req, res, next) { res.send({ error: err.message }); });")
+    hit = [f for f in findings if f.standard == "S2.18"]
+    assert len(hit) == 1
+    assert hit[0].anti_pattern == "AP-S2.18b"
+    assert hit[0].blocking
+
+
+def test_a_translated_error_response_does_not_fire():
+    """The negative case, and the one that matters.
+
+    A handler that logs the internal detail and returns a uniform, non-revealing
+    shape is doing exactly what `S2.18` asks. A rule that flags it punishes the
+    compliant form as hard as the leaking one, which removes any reason to
+    comply.
+    """
+    compliant = (
+        'logger.error("lookup failed", err);\n'
+        'res.status(503).json({ error: "Account lookup is unavailable.", code: "UNAVAILABLE" });\n'
+    )
+    assert [f for f in scan_text(compliant) if f.standard == "S2.18"] == []
+
+
 def test_every_rule_binds_a_real_anti_pattern():
     # Verifies REQ-006 — no rule may bind an anti-pattern outside the corpus.
     # The governance guarantee: no rule may reference an anti-pattern that does
     # not exist in the compiled constitution.
     assert validate_rules() == []
+
+
+# Every rule whose standard carries more than one anti-pattern, pinned to the
+# sibling it cites. Twenty-one rules sit on that surface, and *existing* is all
+# `validate_rules` can check — `AP-S2.18a` existed, so it passed while the rule
+# beneath it implemented `AP-S2.18b`.
+#
+# Which sibling a rule cites is what a report shows an adopter, so a change here
+# has to be deliberate rather than incidental. This pin is the record of that
+# choice, and one entry is deliberately a record of a **known defect** rather
+# than a blessing — see the S2.34 note below.
+_CITED_SIBLING: dict[str, str] = {
+    "S1.48": "AP-S1.48b",
+    "S1.57": "AP-S1.57b",
+    "S1.67": "AP-S1.67b",
+    "S2.14": "AP-S2.14a",
+    "S2.16": "AP-S2.16b",
+    "S2.17": "AP-S2.17a",
+    "S2.18": "AP-S2.18b",
+    "S2.28": "AP-S2.28f",
+    "S2.35": "AP-S2.35a",
+    "S2.52": "AP-S2.52a",
+    "S2.54": "AP-S2.54b",
+    "S3.14": "AP-S3.14a",
+    "S3.21": "AP-S3.21a",
+    "S3.3": "AP-S3.3a",
+    "S4.19": "AP-S4.19a",
+    "S5.21": "AP-S5.21a",
+}
+
+
+def test_a_rule_cites_the_sibling_anti_pattern_it_actually_implements():
+    """A standard's anti-patterns are not interchangeable, and the id is what is shown.
+
+    `validate_rules` proves a cited anti-pattern *exists*. It cannot prove the
+    right one was cited, and that gap let `AP-S2.18a` — "raw **database** error
+    message returned in the API response" — sit on a rule matching any
+    `error.message` reaching a client. The finding was true; only its label was
+    false, which is why review passed it. Onboarding `expressjs/express` then
+    described its one blocking finding as a database error with no database in
+    sight.
+    """
+    cited = {r.standard: r.anti_pattern for r in RULES if r.standard in _CITED_SIBLING}
+    assert cited == _CITED_SIBLING
+
+
+def test_the_known_s234_miscitation_is_still_recorded_not_forgotten():
+    """`S2.34` is *"All Financial Data Writes Are Idempotent"*.
+
+    Its two anti-patterns are a missing disbursement check and a missing
+    idempotency key. The rule citing it matches `double price` / `float amount`
+    — money represented as a float, which is **`S5.28`**, a different standard in
+    a different constitution.
+
+    It is not silently re-cited here because `S5.28` carries **no anti-pattern**
+    for a rule to bind to, and the standing rule is *amend the standard first,
+    law before check, never the reverse*. Amending the corpus is `C0 §8` and
+    belongs to L4, so this asserts the defect is still exactly where it was
+    rather than pretending it is fixed. **When `AP-S5.28a` is ratified, re-cite
+    the rule and delete this test.**
+    """
+    rule = next(r for r in RULES if r.standard == "S2.34")
+    assert rule.anti_pattern == "AP-S2.34a"
+    assert rule.confidence == "high", "still blocking builds under the wrong citation"
 
 
 def test_rule_coverage_floor():

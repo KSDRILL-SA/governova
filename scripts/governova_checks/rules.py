@@ -217,7 +217,22 @@ RULES: list[Rule] = [
         "high",
     ),
     Rule(
-        "AP-S2.18a",
+        # `AP-S2.18b`, not `AP-S2.18a`. S2.18 carries two anti-patterns and this
+        # pattern implements the second one verbatim:
+        #
+        #   AP-S2.18a — Raw *database* error message returned in the API response.
+        #   AP-S2.18b — `error.message` or `error.stack` sent directly to the client.
+        #
+        # Nothing here is database-specific, so the rule was filed under the wrong
+        # one of its own standard's anti-patterns. The standard was right, which is
+        # why it survived review: the finding is true and only its label was false.
+        #
+        # That label is what the report shows an adopter. Onboarding `expressjs/express`
+        # produced exactly one blocking finding — `res.send({ error: err.message })` —
+        # and described it as a raw database error returned to the client, with no
+        # database anywhere near the line. A first report that misdescribes its one
+        # true finding is how a reader learns to discount the rest.
+        "AP-S2.18b",
         "S2.18",
         re.compile(
             r"\b(?:res\.(?:send|json)|return)\b[^;\n]*\b(?:e|err|error|ex)\.(?:stack|message|getMessage\(\))",

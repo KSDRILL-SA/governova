@@ -260,6 +260,69 @@ def test_tests_in_ci_unknown_without_pull_request_trigger(tmp_path: Path) -> Non
     assert _probe(tmp_path, "S7.6")[0] is Verdict.UNKNOWN
 
 
+# ─── S7.25 — the coverage threshold ──────────────────────────────────────────
+
+
+def test_coverage_gate_satisfied_from_the_command_line(tmp_path: Path) -> None:
+    _workflow(
+        tmp_path,
+        "on:\n  pull_request:\njobs:\n  a:\n    steps:\n"
+        "      - run: pytest -q --cov --cov-fail-under=80\n",
+    )
+    assert _probe(tmp_path, "S7.25")[0] is Verdict.SATISFIED
+
+
+def test_coverage_gate_satisfied_from_configuration(tmp_path: Path) -> None:
+    """The threshold is as real in `pyproject.toml` as it is on the command line."""
+    _workflow(tmp_path, "on:\n  pull_request:\njobs:\n  a:\n    steps:\n      - run: pytest -q\n")
+    (tmp_path / "pyproject.toml").write_text(
+        "[tool.coverage.report]\nfail_under = 80\n", encoding="utf-8"
+    )
+    assert _probe(tmp_path, "S7.25")[0] is Verdict.SATISFIED
+
+
+def test_measuring_coverage_without_a_threshold_is_a_violation(tmp_path: Path) -> None:
+    """The distinction the standard turns on, and the one worth testing.
+
+    `--cov` produces a number. `S7.25` is specifically *"dropping below these
+    thresholds fails the build"*, so a measured percentage nobody is held to is
+    exactly the situation the standard exists to name — and it is the situation
+    this repository was in when the probe was written.
+    """
+    _workflow(
+        tmp_path,
+        "on:\n  pull_request:\njobs:\n  a:\n    steps:\n      - run: pytest -q --cov=src\n",
+    )
+    verdict, evidence = _probe(tmp_path, "S7.25")
+    assert verdict is Verdict.VIOLATED
+    assert "no coverage threshold" in evidence
+
+
+def test_coverage_gate_unknown_without_ci(tmp_path: Path) -> None:
+    assert _probe(tmp_path, "S7.25")[0] is Verdict.UNKNOWN
+
+
+def test_coverage_gate_unknown_when_ci_runs_no_tests(tmp_path: Path) -> None:
+    """A repository whose CI runs no tests has no coverage to gate.
+
+    Reporting that as a violation would answer a question nobody asked, and it
+    would double-count the failure `S7.6` already reports.
+    """
+    _workflow(tmp_path, "on:\n  pull_request:\njobs:\n  a:\n    steps:\n      - run: make build\n")
+    verdict, evidence = _probe(tmp_path, "S7.25")
+    assert verdict is Verdict.UNKNOWN
+    assert "no tests" in evidence
+
+
+def test_this_repository_gates_its_own_coverage(tmp_path: Path) -> None:
+    """The probe found this repository violating, and the violation was real.
+
+    Coverage was measured by nobody and gated by nothing. The threshold is now
+    `fail_under = 80` — the number `S7.25` sets, not a comfortable one.
+    """
+    assert _probe(resolve_repo_root(), "S7.25")[0] is Verdict.SATISFIED
+
+
 # ─── S1.71 — pre-commit hooks ────────────────────────────────────────────────
 
 

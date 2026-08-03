@@ -31,7 +31,7 @@ jobs:
         working-directory: scripts
         run: uv run mypy
 
-      # The engine is the authoritative integrity gate — it parses all 613
+      # The engine is the authoritative integrity gate — it parses all 670
       # standards into the compiled index and validates them structurally.
 
       - name: Engine — verify committed index is current (drift check)
@@ -46,8 +46,11 @@ jobs:
       - name: Engine — structural integrity
         run: uv run governova-validate
 
-      - name: Engine — unit tests
-        run: uv run pytest scripts/tests/ -q
+      # S7.25 — the threshold is what makes this a gate rather than a number.
+      # `fail_under = 80` lives in the root `pyproject.toml` so this command and a
+      # local run cannot disagree about what passing means.
+      - name: Engine — unit tests + coverage gate (S7.25)
+        run: uv run pytest scripts/tests/ -q --cov --cov-report=term
 
       # Secondary cross-check: the regex validator confirms every S{C}.{N}
       # reference across the repo resolves (defence in depth).

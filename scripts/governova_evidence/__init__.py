@@ -166,8 +166,13 @@ _FROZEN_TOOLS = (
 #
 # The rule this list exists under: change the standard first, then the probe.
 # Never the reverse.
+# The type is a *named* group because `_probe_maintenance_classification` reads it
+# back to classify the change. It was non-capturing once, and that probe's
+# `match.group(1)` raised `IndexError` on every subject it matched — so the probe
+# never returned a verdict at all. A named group cannot be silently re-indexed by a
+# later edit the way a numbered one can.
 _CONVENTIONAL = re.compile(
-    r"^(?:feat|fix|chore|docs|refactor|test|style|perf|ci|govern|decision)"
+    r"^(?P<type>feat|fix|chore|docs|refactor|test|style|perf|ci|govern|decision)"
     r"(?:\([^)]+\))?!?:\s+\S"
 )
 
@@ -408,11 +413,15 @@ _DEBT_REGISTER_CANDIDATES = (
 # Commit types mapped to the canon's four maintenance classes. Derived from the type
 # `S1.19` already requires rather than from a second field a human must fill in — a
 # second field is a second thing that drifts.
+#
+# Every key must be a type `_CONVENTIONAL` actually accepts, or it is unreachable and
+# the map has quietly drifted from the standard. `build` was such a key: `S1.19` does
+# not permit it, so no subject could ever carry it here. `test_every_maintenance_key_is_a_type_the_standard_permits`
+# now holds the two in agreement.
 _MAINTENANCE_CLASS: dict[str, str] = {
     "fix": "corrective",
     "ci": "adaptive",
     "chore": "adaptive",
-    "build": "adaptive",
     "feat": "perfective",
     "perf": "perfective",
     "style": "perfective",
@@ -464,7 +473,7 @@ def _probe_maintenance_classification(root: Path) -> ProbeResult:
     unclassified = 0
     for subject in subjects:
         match = _CONVENTIONAL.match(subject)
-        klass = _MAINTENANCE_CLASS.get(match.group(1).lower()) if match else None
+        klass = _MAINTENANCE_CLASS.get(match.group("type").lower()) if match else None
         if klass is None:
             unclassified += 1
         else:

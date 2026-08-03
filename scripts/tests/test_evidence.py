@@ -227,6 +227,61 @@ def test_conventional_commits_unknown_without_git(tmp_path: Path) -> None:
     assert "git" in evidence or "no commits" in evidence
 
 
+# ─── S13.4 — maintenance classification ──────────────────────────────────────
+
+
+def test_maintenance_classification_satisfied(tmp_path: Path) -> None:
+    """A verdict at all is the point: this probe raised `IndexError` on every match.
+
+    `_CONVENTIONAL` held its type in a non-capturing group while the probe read
+    `match.group(1)`, so any subject that matched raised and any subject that did not
+    was counted unclassified. The probe could not reach `satisfied` by any input, and
+    the error surfaced as `undetermined` — which is the correct thing to do with an
+    error, and is exactly why it went unnoticed for so long.
+    """
+    _git_repo(tmp_path, ["fix: correct a thing", "feat: add a thing", "refactor: tidy up"])
+    verdict, evidence = _probe(tmp_path, "S13.4")
+    assert verdict is Verdict.SATISFIED
+    assert "corrective 1" in evidence
+    assert "perfective 1" in evidence
+    assert "preventive 1" in evidence
+
+
+def test_maintenance_classification_violated(tmp_path: Path) -> None:
+    """The negative case: a type outside the standard is unclassifiable, not adaptive."""
+    _git_repo(tmp_path, ["feat: a real one", "harden: security review of the engine"])
+    verdict, evidence = _probe(tmp_path, "S13.4")
+    assert verdict is Verdict.VIOLATED
+    assert "1/2" in evidence
+
+
+def test_maintenance_classification_unknown_without_git(tmp_path: Path) -> None:
+    verdict, evidence = _probe(tmp_path, "S13.4")
+    assert verdict is Verdict.UNKNOWN
+    assert "git" in evidence or "no commits" in evidence
+
+
+def test_every_maintenance_key_is_a_type_the_standard_permits() -> None:
+    """The map and the pattern must not drift apart.
+
+    A key `_CONVENTIONAL` never matches is unreachable: the class it names can never
+    be assigned, and nothing fails to say so. `build` was such a key — `S1.19` does not
+    permit that type — and it sat there classifying nothing.
+    """
+    from governova_evidence import _CONVENTIONAL, _MAINTENANCE_CLASS
+
+    unreachable = [k for k in _MAINTENANCE_CLASS if not _CONVENTIONAL.match(f"{k}: a subject")]
+    assert unreachable == [], f"maintenance classes no rule can reach: {unreachable}"
+
+
+def test_the_conventional_pattern_exposes_the_type_it_matched() -> None:
+    """The probe reads the type back by name, so the group must exist and be named."""
+    from governova_evidence import _CONVENTIONAL
+
+    assert _CONVENTIONAL.groupindex.get("type") is not None, "the type group must stay named"
+    assert _CONVENTIONAL.match("fix(auth)!: drop the check").group("type") == "fix"
+
+
 # ─── S1.70 / S7.6 — CI enforcement ───────────────────────────────────────────
 
 

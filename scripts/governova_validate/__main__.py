@@ -12,22 +12,18 @@ from typing import Annotated
 
 import typer
 from governova_compile.discovery import resolve_repo_root
-from governova_compile.schema import CompiledIndex, IntegrityIssue, Severity
-from governova_compile.writer import load_index, verify_checksum
+from governova_compile.schema import CompiledIndex, IntegrityIssue
+from governova_compile.writer import load_index
 from governova_console import console as shared_console
 from rich.table import Table
 
-from governova_validate.checks import ALL_CHECKS
-from governova_validate.declared import check_declared_anti_patterns
-from governova_validate.links import check_links
+from governova_validate.run import ERROR_SEVERITIES, run_validation
 
 app = typer.Typer(
     add_completion=False,
     help="Validate the compiled Governova constitutional index.",
 )
 console = shared_console()
-
-_ERROR_SEVERITIES = {Severity.SEV0, Severity.SEV1, Severity.SEV2}
 
 
 @app.command()
@@ -60,39 +56,16 @@ def main(
 
     index = load_index(index_file)
 
-    issues: list[IntegrityIssue] = []
+    run = run_validation(
+        root,
+        index,
+        index_path=str(index_file.relative_to(root)),
+        skip_links=skip_links,
+    )
 
-    if not verify_checksum(index):
-        issues.append(
-            IntegrityIssue(
-                severity=Severity.SEV1,
-                code="checksum-mismatch",
-                message=(
-                    "Stored checksum does not match the index body. "
-                    "The index may have been edited by hand — re-run governova-compile."
-                ),
-                source_path=str(index_file.relative_to(root)),
-            )
-        )
+    _report(index, run.errors, run.warnings, run.links_checked, strict)
 
-    for check in ALL_CHECKS:
-        issues.extend(check(index))
-
-    # Needs the source tree, not only the index — it exists to catch the case where
-    # the two disagree, which an index-only check cannot see by construction.
-    issues.extend(check_declared_anti_patterns(root, index))
-
-    links_checked = 0
-    if not skip_links:
-        link_issues, links_checked = check_links(root)
-        issues.extend(link_issues)
-
-    errors = [i for i in issues if i.severity in _ERROR_SEVERITIES]
-    warnings = [i for i in issues if i.severity == Severity.SEV3]
-
-    _report(index, errors, warnings, links_checked, strict)
-
-    if errors or (strict and warnings):
+    if run.failed(strict=strict):
         raise typer.Exit(code=2)
 
 
@@ -120,7 +93,7 @@ def _report(
         table.add_column("Location", style="dim")
         table.add_column("Message")
         for issue in (*errors, *warnings):
-            colour = "red" if issue.severity in _ERROR_SEVERITIES else "yellow"
+            colour = "red" if issue.severity in ERROR_SEVERITIES else "yellow"
             loc = issue.source_path or "—"
             if issue.source_line:
                 loc += f":{issue.source_line}"

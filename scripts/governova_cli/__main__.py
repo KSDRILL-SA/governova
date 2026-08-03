@@ -17,18 +17,16 @@ from typing import Annotated, Any
 import typer
 from governova_compile.compiler import compile_index
 from governova_compile.discovery import resolve_repo_root, resolve_target_root
-from governova_compile.schema import CompiledIndex, IntegrityIssue, Severity
+from governova_compile.schema import CompiledIndex, IntegrityIssue
 from governova_compile.writer import (
     load_active_index,
     load_index,
     resolve_index_path,
-    verify_checksum,
     write_index,
 )
 from governova_console import console as shared_console
 from governova_validate.checks import ALL_CHECKS
-from governova_validate.declared import check_declared_anti_patterns
-from governova_validate.links import check_links
+from governova_validate.run import ERROR_SEVERITIES, run_validation
 from rich.table import Table
 from rich.text import Text
 
@@ -40,8 +38,6 @@ app = typer.Typer(
 
 
 console = shared_console()
-
-_ERROR_SEVERITIES = {Severity.SEV0, Severity.SEV1, Severity.SEV2}
 
 # Mirrors `governova_onboard.baseline.DEFAULT_TOP`. Duplicated rather than
 # imported because typer evaluates option defaults at decoration time, and
@@ -208,26 +204,8 @@ def validate(
     """Run all integrity checks against the compiled index."""
     root = _root(repo_root)
     index = _load(root)
-    issues: list[IntegrityIssue] = []
-    if not verify_checksum(index):
-        issues.append(
-            IntegrityIssue(
-                severity=Severity.SEV1,
-                code="checksum-mismatch",
-                message="Stored checksum does not match the index — re-run governova compile.",
-                source_path="compiled/constitution.json",
-            )
-        )
-    for check in ALL_CHECKS:
-        issues.extend(check(index))
-    # Needs the source tree, not only the index — it exists to catch the case where
-    # the two disagree, which an index-only check cannot see by construction.
-    issues.extend(check_declared_anti_patterns(root, index))
-    if not skip_links:
-        link_issues, _ = check_links(root)
-        issues.extend(link_issues)
-    errors = [i for i in issues if i.severity in _ERROR_SEVERITIES]
-    warnings = [i for i in issues if i.severity == Severity.SEV3]
+    run = run_validation(root, index, skip_links=skip_links)
+    errors, warnings = run.errors, run.warnings
     console.print(
         f"standards={len(_all_standards(index))} errors={len(errors)} warnings={len(warnings)}"
     )
@@ -236,7 +214,7 @@ def validate(
         if i.source_line:
             loc += f":{i.source_line}"
         console.print(f"  [{i.severity.value}] {i.code} {loc} — {i.message}")
-    if errors or (strict and warnings):
+    if run.failed(strict=strict):
         console.print("[bold red]integrity FAILED[/]")
         raise typer.Exit(code=2)
     console.print("[bold green]integrity OK[/]")
@@ -286,10 +264,12 @@ def score(
     with_ap = sum(1 for s in standards if s.anti_patterns)
     with_rationale = sum(1 for s in standards if (s.rationale or "").strip())
 
+    # Index-only, deliberately: this scores the constitution itself, so link and
+    # source-tree findings are out of scope and must not move the number.
     issues: list[IntegrityIssue] = []
     for c in ALL_CHECKS:
         issues.extend(c(index))
-    errors = [i for i in issues if i.severity in _ERROR_SEVERITIES]
+    errors = [i for i in issues if i.severity in ERROR_SEVERITIES]
 
     ap_cov = with_ap / n
     rat_cov = with_rationale / n

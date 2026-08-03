@@ -9,6 +9,7 @@ from governova_compile.compiler import compile_index
 from governova_compile.discovery import CONSTITUTION_REGISTRY, resolve_repo_root
 from governova_compile.schema import (
     MAX_GROUNDED_IN_CHARS,
+    AntiPattern,
     CompiledIndex,
     Constitution,
     DocumentHeader,
@@ -22,6 +23,7 @@ from governova_validate.checks import (
     check_phases,
     check_references,
 )
+from governova_validate.declared import check_declared_anti_patterns
 from governova_validate.links import check_links
 
 # The live per-constitution standard counts. 618 after the 2026-06-22 ratification
@@ -206,3 +208,122 @@ def test_standards_deliberately_left_uncited_stay_uncited(index):
     by_id = {s.id: s for c in index.constitutions for s in c.standards}
     for sid in ("S1.105", "S7.25"):
         assert by_id[sid].grounded_in == [], f"{sid} gained an unverified citation"
+
+
+# ─── Declared anti-patterns must reach the compiled index (#216) ─────────────
+
+
+def _index_with_anti_pattern(*ap_ids: str) -> CompiledIndex:
+    """A one-standard index carrying exactly `ap_ids` as S5.28's anti-patterns."""
+    standard = Standard(
+        id="S5.28",
+        title="T",
+        constitution_id="C05",
+        priority=Priority.STANDARD,
+        applies_to="All",
+        statement="s",
+        rationale="r",
+        anti_patterns=[
+            AntiPattern(id=ap, description="d", parent_standard_id="S5.28") for ap in ap_ids
+        ],
+        source_path="p",
+        source_line=1,
+    )
+    return CompiledIndex(
+        compiled_at=datetime(2026, 8, 3, tzinfo=UTC),
+        checksum="x",
+        constitutions=[
+            Constitution(
+                id="C05",
+                number=5,
+                name="Test",
+                header=DocumentHeader(document="C5 — Test"),
+                path="p",
+                standards=[standard],
+            )
+        ],
+    )
+
+
+def _constitution_tree(tmp_path, body: str):
+    (tmp_path / "constitution").mkdir()
+    (tmp_path / "constitution" / "C05.md").write_text(body, encoding="utf-8")
+    return tmp_path
+
+
+def test_a_declared_anti_pattern_absent_from_the_index_is_reported(tmp_path):
+    """The defect that hid eleven of these, six of them Critical.
+
+    A summary table says the repository governs the failure mode. The compiler
+    never saw it, so no rule can cite it and nothing enforces it.
+    """
+    root = _constitution_tree(
+        tmp_path,
+        "| `AP-S5.28a` | `Float` column type for monetary values | S5.28 | Critical |\n",
+    )
+    issues = check_declared_anti_patterns(root, _index_with_anti_pattern())
+    assert len(issues) == 1
+    assert issues[0].code == "declared-anti-pattern-uncompiled"
+    assert "AP-S5.28a" in issues[0].message
+    assert issues[0].source_line == 1
+
+
+def test_a_declared_anti_pattern_present_in_the_index_is_silent(tmp_path):
+    """The negative case: a constitution doing exactly what a constitution is for.
+
+    This is the test that matters. A check firing on a correct repository would
+    be worse than no check, because 361 warnings is already where a real finding
+    goes to hide.
+    """
+    root = _constitution_tree(
+        tmp_path,
+        "| `AP-S5.28a` | `Float` column type for monetary values | S5.28 | Critical |\n",
+    )
+    assert check_declared_anti_patterns(root, _index_with_anti_pattern("AP-S5.28a")) == []
+
+
+def test_an_anti_pattern_named_in_prose_is_not_a_declaration(tmp_path):
+    """Only a table row declares. The pattern is anchored at the row start."""
+    root = _constitution_tree(
+        tmp_path,
+        "See `AP-S5.28a` for the monetary column rule, and | AP-S5.28a | mid-sentence.\n",
+    )
+    assert check_declared_anti_patterns(root, _index_with_anti_pattern()) == []
+
+
+def test_a_table_inside_a_fenced_example_is_not_a_declaration(tmp_path):
+    """A constitution teaching what a table looks like is not declaring one."""
+    root = _constitution_tree(
+        tmp_path,
+        "```markdown\n| `AP-S5.28a` | an illustration | S5.28 | Critical |\n```\n",
+    )
+    assert check_declared_anti_patterns(root, _index_with_anti_pattern()) == []
+
+
+def test_the_check_is_silent_when_there_is_no_constitution_to_read(tmp_path):
+    """A consumer repository has no `constitution/` tree. Silence, not a crash."""
+    assert check_declared_anti_patterns(tmp_path, _index_with_anti_pattern()) == []
+
+
+def test_the_outstanding_orphans_are_exactly_the_eleven_on_record(repo_root, index):
+    """Pins #216 so the backlog cannot grow quietly, and shrinks as L4 gives them homes.
+
+    When an orphan is given an `**Anti-Patterns:**` block in its constitution body
+    this fails, and the fix is to strike it from this list — never to widen the list.
+    """
+    outstanding = {
+        i.message.split()[0] for i in check_declared_anti_patterns(repo_root, index)
+    }
+    assert outstanding == {
+        "AP-S2.55a",
+        "AP-S5.28a",
+        "AP-S7.21a",
+        "AP-S7.38a",
+        "AP-S8.18a",
+        "AP-S9.20a",
+        "AP-S10.9a",
+        "AP-S10.10a",
+        "AP-S10.11a",
+        "AP-S10.13a",
+        "AP-S10.14a",
+    }

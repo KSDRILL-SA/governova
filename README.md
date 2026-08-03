@@ -21,6 +21,12 @@
 
 ---
 
+> **Continuing work on Governova itself?** Read [`START-HERE.md`](START-HERE.md) first —
+> current state, the remaining work order, the standing rules, and the traps that cost
+> the last engineer an hour each.
+
+---
+
 **Governova** is the world's first AI development governance platform —
 the constitutional layer between AI capability and enterprise trust.
 

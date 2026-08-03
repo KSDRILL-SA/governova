@@ -496,6 +496,8 @@ def _stub_urlopen(responses):
         item = responses[min(calls["n"] - 1, len(responses) - 1)]
         if isinstance(item, int):
             raise urllib.error.HTTPError("https://endpoint.example/v1", item, "err", {}, None)
+        if isinstance(item, BaseException):
+            raise item
 
         payload = json.dumps(item).encode("utf-8")
 
@@ -557,3 +559,65 @@ def test_a_definitive_answer_is_not_retried(monkeypatch):
         with pytest.raises(SemanticUnavailableError):
             _post(ACTIVE, {}, {})
         assert calls["n"] == 1, f"HTTP {status} must fail on the first attempt"
+
+
+def test_a_timeout_is_retried_even_though_it_carries_no_status(monkeypatch):
+    """A `502` got three attempts and a timeout got one, on the same endpoint.
+
+    Retrying was decided by HTTP status, and a timeout has none, so it matched nothing
+    and failed on the first attempt. Measured: 14 consecutive single-run evaluations lost
+    to `semantic endpoint unreachable (TimeoutError)` while direct probes of that same
+    endpoint were still answering 200. A timeout is not a verdict — the endpoint said
+    nothing, so nothing has been ruled out.
+    """
+    from governova_semantic.client import _post
+
+    body = {"choices": [{"message": {"content": "{}"}}]}
+    calls = _patched(monkeypatch, [TimeoutError("timed out"), body])
+    assert _post(ACTIVE, {}, {}) == body
+    assert calls["n"] == 2, "a timeout should have been retried"
+
+
+def test_a_connect_timeout_wrapped_in_urlerror_is_also_retried(monkeypatch):
+    """`urlopen` reports a read timeout bare and a connect timeout wrapped."""
+    import urllib.error
+
+    from governova_semantic.client import _post
+
+    body = {"choices": [{"message": {"content": "{}"}}]}
+    wrapped = urllib.error.URLError(TimeoutError("timed out"))
+    calls = _patched(monkeypatch, [wrapped, body])
+    assert _post(ACTIVE, {}, {}) == body
+    assert calls["n"] == 2, "both spellings of a timeout must be retried"
+
+
+def test_a_status_less_failure_that_is_not_a_timeout_still_fails_fast(monkeypatch):
+    """The negative case, and the one that keeps the retry narrow.
+
+    A refused connection, a DNS failure and a malformed body are answers. Retrying them
+    wastes a build and rules nothing out, so only a timeout earns another attempt.
+    """
+    import urllib.error
+
+    from governova_semantic.client import SemanticUnavailableError, _post
+
+    for failure in (
+        urllib.error.URLError(ConnectionRefusedError("refused")),
+        OSError("dns"),
+        ValueError("malformed body"),
+    ):
+        calls = _patched(monkeypatch, [failure])
+        with pytest.raises(SemanticUnavailableError):
+            _post(ACTIVE, {}, {})
+        assert calls["n"] == 1, f"{failure!r} must fail on the first attempt"
+
+
+def test_a_timeout_outage_still_fails_and_keeps_its_diagnosis(monkeypatch):
+    """A retry must never turn an outage into silence, timeouts included."""
+    from governova_semantic.client import MAX_ATTEMPTS, SemanticUnavailableError, _post
+
+    calls = _patched(monkeypatch, [TimeoutError("timed out")])
+    with pytest.raises(SemanticUnavailableError) as excinfo:
+        _post(ACTIVE, {}, {})
+    assert "TimeoutError" in str(excinfo.value), "the cause must survive every retry"
+    assert calls["n"] == MAX_ATTEMPTS, "retries stay bounded, so an outage fails promptly"

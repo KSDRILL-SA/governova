@@ -33,6 +33,56 @@ def test_validate_passes():
     assert "integrity OK" in result.stdout
 
 
+def test_both_validate_entry_points_report_the_same_findings():
+    """`governova validate` and `governova-validate` must not drift apart.
+
+    They were two independent copies of the run — checksum, `ALL_CHECKS`, links,
+    the error/warning split — sharing the check functions but not the wiring. Adding
+    a check to one did nothing to the other and nothing said so. #218 added
+    `check_declared_anti_patterns`, wired it into one, and the other went on printing
+    `warnings=350`, which looks exactly like a check that ran and found nothing.
+
+    Both now call `run_validation`, so this compares the two renderings of one run.
+    """
+    import re
+
+    from governova_compile.discovery import resolve_repo_root
+    from governova_compile.writer import load_active_index
+    from governova_validate.run import run_validation
+
+    cli = runner.invoke(app, ["validate"])
+    assert cli.exit_code == 0
+    reported = re.search(r"errors=(\d+) warnings=(\d+)", cli.stdout)
+    assert reported is not None, f"unparseable validate output: {cli.stdout!r}"
+
+    root = resolve_repo_root()
+    run = run_validation(root, load_active_index(start=root))
+    assert (len(run.errors), len(run.warnings)) == (
+        int(reported.group(1)),
+        int(reported.group(2)),
+    )
+
+
+def test_the_health_score_stays_index_only():
+    """`score` grades the constitution, so link and source-tree findings are out of scope.
+
+    It is the one caller that must *not* use `run_validation`: folding those in would
+    move a published number by widening what it measures rather than by anything
+    changing in the constitution.
+    """
+    from governova_compile.discovery import resolve_repo_root
+    from governova_compile.writer import load_active_index
+    from governova_validate.run import run_validation
+
+    root = resolve_repo_root()
+    full = run_validation(root, load_active_index(start=root))
+    assert full.warnings, "expected the full run to carry warnings the score ignores"
+
+    result = runner.invoke(app, ["score"])
+    assert result.exit_code == 0
+    assert "Constitution Health Score" in result.stdout
+
+
 def test_score_runs():
     result = runner.invoke(app, ["score"])
     assert result.exit_code == 0

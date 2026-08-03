@@ -34,9 +34,22 @@ class SemanticUnavailableError(RuntimeError):
     four indistinguishably is what made this defect invisible for two releases.
     """
 
-    def __init__(self, message: str, *, status: int | None = None) -> None:
+    def __init__(
+        self, message: str, *, status: int | None = None, transient: bool = False
+    ) -> None:
         super().__init__(message)
         self.status = status
+        self.transient = transient
+
+    @property
+    def retryable(self) -> bool:
+        """Whether trying again could plausibly produce a different answer.
+
+        A status says so by being in `TRANSIENT_STATUSES`. A failure with no status
+        has to say so itself: `transient` exists because a timeout is not a verdict,
+        and there is no status code to express that.
+        """
+        return self.transient or self.status in TRANSIENT_STATUSES
 
 
 TRANSIENT_STATUSES: frozenset[int] = frozenset({429, 500, 502, 503, 504})
@@ -50,6 +63,13 @@ Found while measuring a hosted backend: a single evaluation makes tens of sequen
 calls, and the provider returned an isolated `502` partway through more than once. The
 harness correctly refused to report a partial score, so the measurement could not be
 taken at all — a retry is the difference between measurable and not.
+
+**Statuses are not the whole story, and this list alone left half the gap open.** The
+same backend also times out, which arrives with no status at all and so matched nothing
+here. A `502` got three attempts and a timeout got one, on the same endpoint, in the
+same evaluation. Measured: 14 consecutive single-run evaluations lost to
+`semantic endpoint unreachable (TimeoutError)` while direct probes of that endpoint were
+still answering `200`. See `SemanticUnavailableError.retryable`.
 """
 
 MAX_ATTEMPTS = 3
@@ -74,8 +94,7 @@ def _post(config: SemanticConfig, headers: dict[str, str], payload: dict[str, An
         try:
             return _post_once(config, headers, payload)
         except SemanticUnavailableError as exc:
-            retryable = exc.status in TRANSIENT_STATUSES
-            if not retryable or attempt == MAX_ATTEMPTS:
+            if not exc.retryable or attempt == MAX_ATTEMPTS:
                 raise
             time.sleep(BACKOFF_SECONDS ** (attempt - 1) * BACKOFF_SECONDS)
     raise AssertionError("unreachable")  # pragma: no cover - the loop always returns or raises
@@ -105,8 +124,17 @@ def _post_once(config: SemanticConfig, headers: dict[str, str], payload: dict[st
     except (urllib.error.URLError, OSError, ValueError) as exc:
         # No status to report — DNS, TLS, timeout, or a malformed body. The exception
         # type is the most that can be said without echoing the request.
+        #
+        # A timeout is retried, and it is the only status-less failure that is. It is
+        # not an answer: the endpoint said nothing, so nothing has been ruled out. DNS
+        # failure, refused connection and a malformed body are answers, and repeating
+        # them wastes a build. `urlopen` reports a read timeout as `TimeoutError` and a
+        # connect timeout as `URLError` wrapping one, so both spellings are checked.
+        timed_out = isinstance(exc, TimeoutError) or isinstance(
+            getattr(exc, "reason", None), TimeoutError
+        )
         raise SemanticUnavailableError(
-            f"semantic endpoint unreachable ({type(exc).__name__})"
+            f"semantic endpoint unreachable ({type(exc).__name__})", transient=timed_out
         ) from exc
 
 

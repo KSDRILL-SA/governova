@@ -227,6 +227,34 @@ def test_conventional_commits_unknown_without_git(tmp_path: Path) -> None:
     assert "git" in evidence or "no commits" in evidence
 
 
+def test_a_short_history_is_not_described_as_a_window(tmp_path: Path) -> None:
+    """Disclosure must not become its own falsehood.
+
+    A repository with three commits has no history outside the frame, so claiming
+    the verdict covers "the last 50" would invent an exclusion that does not exist.
+    """
+    _git_repo(tmp_path, ["feat: one", "fix: two", "docs: three"])
+    _, evidence = _probe(tmp_path, "S1.19")
+    assert "all 3 commit(s) in history" in evidence
+    assert "not inspected" not in evidence
+
+
+def test_a_full_window_declares_what_it_did_not_read() -> None:
+    """The frame is stated whenever the window could be hiding something.
+
+    `50/50 conventional` was true while a non-conforming commit sat at index 53.
+    True, and leaving the reader with a false impression — which is what #213 is.
+    """
+    from governova_evidence import _CONVENTIONAL_WINDOW, _MAINTENANCE_WINDOW, _window_note
+
+    note = _window_note(_CONVENTIONAL_WINDOW, _CONVENTIONAL_WINDOW)
+    assert "the last 50" in note
+    assert "earlier history is not inspected" in note
+    # The two windows differ on purpose, and that difference is why one probe can
+    # report 100% conventional while the other names the commit that is not.
+    assert _CONVENTIONAL_WINDOW != _MAINTENANCE_WINDOW
+
+
 # ─── S13.4 — maintenance classification ──────────────────────────────────────
 
 

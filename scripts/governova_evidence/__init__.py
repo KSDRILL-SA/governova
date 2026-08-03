@@ -177,12 +177,39 @@ _CONVENTIONAL = re.compile(
 )
 
 
+# How far back each history probe looks. These differ, deliberately and visibly:
+# S1.19 asks whether current practice conforms, S13.4 profiles a longer stretch to
+# get a meaningful class mix. Because they differ, the same repository can satisfy
+# one and violate the other on the strength of a single old commit — which is
+# exactly what happens here today, and what `_window_note` exists to disclose.
+#
+# **Do not widen a window to change a verdict.** Widening S1.19 to 100 would flip it
+# back to violated by redefining the measurement rather than by anything changing in
+# the repository. See #213.
+_CONVENTIONAL_WINDOW = 50
+_MAINTENANCE_WINDOW = 100
+
+
+def _window_note(seen: int, window: int) -> str:
+    """Disclose the frame a verdict was reached in, when there is history outside it.
+
+    A probe that reports `50/50 conventional` while a non-conforming commit sits at
+    index 53 has told the truth and left the reader with a false impression. Silence
+    about the frame is only honest when the frame holds everything: if fewer commits
+    came back than the window allows, the whole history was inspected and there is
+    nothing outside it to declare.
+    """
+    if seen < window:
+        return f" (all {seen} commit(s) in history)"
+    return f" (the last {window}; earlier history is not inspected)"
+
+
 def _probe_conventional_commits(root: Path) -> ProbeResult:
     """S1.19 — commit subjects follow `{type}({scope}): {description}`."""
     sid = "S1.19"
     try:
         result = subprocess.run(
-            ["git", "log", "-n", "50", "--no-merges", "--format=%s"],
+            ["git", "log", "-n", str(_CONVENTIONAL_WINDOW), "--no-merges", "--format=%s"],
             cwd=root,
             capture_output=True,
             text=True,
@@ -199,9 +226,10 @@ def _probe_conventional_commits(root: Path) -> ProbeResult:
     bad = [s for s in subjects if not _CONVENTIONAL.match(s)]
     conforming = len(subjects) - len(bad)
     pct = round(100 * conforming / len(subjects))
+    frame = _window_note(len(subjects), _CONVENTIONAL_WINDOW)
     if not bad:
-        return _ok(sid, f"{conforming}/{len(subjects)} recent commits conventional (100%)")
-    return _bad(sid, f"{pct}% conventional; first non-conforming: '{bad[0][:60]}'")
+        return _ok(sid, f"{conforming}/{len(subjects)} commits conventional (100%){frame}")
+    return _bad(sid, f"{pct}% conventional{frame}; first non-conforming: '{bad[0][:60]}'")
 
 
 def _probe_lint_in_ci(root: Path) -> ProbeResult:
@@ -455,7 +483,7 @@ def _probe_maintenance_classification(root: Path) -> ProbeResult:
     sid = "S13.4"
     try:
         result = subprocess.run(
-            ["git", "log", "-n", "100", "--no-merges", "--format=%s"],
+            ["git", "log", "-n", str(_MAINTENANCE_WINDOW), "--no-merges", "--format=%s"],
             cwd=root,
             capture_output=True,
             text=True,
@@ -480,13 +508,14 @@ def _probe_maintenance_classification(root: Path) -> ProbeResult:
             profile[klass] = profile.get(klass, 0) + 1
 
     mix = " · ".join(f"{k} {v}" for k, v in sorted(profile.items())) or "none"
+    frame = _window_note(len(subjects), _MAINTENANCE_WINDOW)
     if unclassified:
         return _bad(
             sid,
-            f"{unclassified}/{len(subjects)} recent commits carry no classifiable type; "
+            f"{unclassified}/{len(subjects)} commits carry no classifiable type{frame}; "
             f"profile so far: {mix}",
         )
-    return _ok(sid, f"{len(subjects)} recent commits classified — {mix}")
+    return _ok(sid, f"{len(subjects)} commits classified{frame} — {mix}")
 
 
 # ─── C9 Part 9 — Project Governance ──────────────────────────────────────────

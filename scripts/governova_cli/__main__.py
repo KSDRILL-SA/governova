@@ -27,6 +27,7 @@ from governova_compile.writer import (
 )
 from governova_console import console as shared_console
 from governova_validate.checks import ALL_CHECKS
+from governova_validate.declared import check_declared_anti_patterns
 from governova_validate.links import check_links
 from rich.table import Table
 from rich.text import Text
@@ -219,6 +220,9 @@ def validate(
         )
     for check in ALL_CHECKS:
         issues.extend(check(index))
+    # Needs the source tree, not only the index — it exists to catch the case where
+    # the two disagree, which an index-only check cannot see by construction.
+    issues.extend(check_declared_anti_patterns(root, index))
     if not skip_links:
         link_issues, _ = check_links(root)
         issues.extend(link_issues)

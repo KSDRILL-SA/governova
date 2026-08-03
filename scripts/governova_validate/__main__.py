@@ -18,6 +18,7 @@ from governova_console import console as shared_console
 from rich.table import Table
 
 from governova_validate.checks import ALL_CHECKS
+from governova_validate.declared import check_declared_anti_patterns
 from governova_validate.links import check_links
 
 app = typer.Typer(
@@ -76,6 +77,10 @@ def main(
 
     for check in ALL_CHECKS:
         issues.extend(check(index))
+
+    # Needs the source tree, not only the index — it exists to catch the case where
+    # the two disagree, which an index-only check cannot see by construction.
+    issues.extend(check_declared_anti_patterns(root, index))
 
     links_checked = 0
     if not skip_links:

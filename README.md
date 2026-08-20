@@ -6,15 +6,15 @@
 [![Governova Score](https://img.shields.io/badge/Governova_Score-78%2F100_(C)-yellow)](docs/vision/master.md)
 [![Status](https://img.shields.io/badge/Status-LOCKED-red)](docs/vision/master.md)
 [![Version](https://img.shields.io/badge/Version-v2.0-blue)](docs/vision/master.md)
-[![Constitutions](https://img.shields.io/badge/Constitutions-11-purple)](constitution/core/)
-[![Standards](https://img.shields.io/badge/Standards-618-green)](constitution/indexes/standards-index.md)
+[![Constitutions](https://img.shields.io/badge/Constitutions-15-purple)](constitution/core/)
+[![Standards](https://img.shields.io/badge/Standards-670-green)](constitution/indexes/standards-index.md)
 [![Phases](https://img.shields.io/badge/Phases-4-teal)](framework/phase-model.md)
 [![Locked](https://img.shields.io/badge/Locked-2026--05--22-orange)](docs/vision/master.md)
 
 > **On that score.** Governova scores itself with the same engine it ships, over
 > all five factors at full weight — and currently scores **78 (C)**, below its own
 > Certified bar of 85. It was 100 while three of the five factors were unassessed;
-> instrumenting them lowered it. The gap is constitutional coverage: 36 of 544
+> instrumenting them lowered it. The gap is constitutional coverage: 61 of 596
 > applicable standards are *evidenced*, and undemonstrated compliance is
 > deliberately uncounted. A governance product that grades itself generously is
 > the one number nobody should trust.
@@ -50,11 +50,17 @@ documentation for every file ever built.
 | Layer | Folder | Description |
 |-------|--------|-------------|
 | 1 — Framework | `framework/` | Universal primitives: format, phases, severity, permissions, hierarchy, amendments |
-| 2 — Core | `constitution/core/` | 11 constitutions across 4 phases — universal standards as principles |
+| 2 — Core | `constitution/core/` | 15 constitutions across 4 phases — universal standards as principles |
 | 3 — Implementation | `constitution/implementation/` | Stack-specific bindings of core standards |
 | 4 — Domains | `constitution/domains/` | Industry-specific extensions |
 
-**618 live standards** across 11 constitutions (594 locked baseline + ratified C0 §8 amendments).
+**670 live standards** and 498 anti-patterns across 15 constitutions (the 594 locked baseline,
+plus ratified C0 §8 amendments and the four constitutions ratified since — C11 Requirements
+Engineering, C12 System Modelling, C13 Software Evolution, C14 Data Design).
+
+> Every count on this page is `compiled/constitution.json`, which the engine regenerates and
+> `governova compile --check` gates on. Regenerate before editing: `governova stats`,
+> `governova validate`, `governova govscore`.
 
 ## Quick start
 

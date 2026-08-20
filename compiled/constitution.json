@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-08-20T22:23:18.635870Z",
-  "source_commit_sha": "245eaad",
-  "checksum": "sha256:53c976dc50450a38627388931a29eade2954cf1af1e0b8c447d0a38009b4f2a7",
+  "compiled_at": "2026-08-20T22:56:57.315119Z",
+  "source_commit_sha": "edf90d2",
+  "checksum": "sha256:096f42d4540fd83127e55f68122a056c08928cce85d33a36f81ef00d21d311ee",
   "framework": [
     {
       "id": "format-specification",
@@ -16470,7 +16470,13 @@
           "enforced_by": [],
           "statement": "Preview deployments are generated for every PR on both stacks. Next.js: Vercel preview URL. Angular: Vercel preview URL for frontend + Railway staging for API PRs. E2E tests run against preview deployments.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.4a",
+              "description": "E2E tests run against localhost or a shared staging box rather than the PR's own preview deployment — they then pass against a build nobody is merging, and the artefact that reaches production was never exercised.",
+              "parent_standard_id": "S8.4"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
@@ -16489,12 +16495,18 @@
           "enforced_by": [],
           "statement": "Three environments — Development (local Docker Compose), Staging (auto-deployed from main merge), Production (manually promoted from staging). Code never goes directly from development to production.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.5a",
+              "description": "Code promoted from a developer's machine straight to production, skipping staging — the first environment that resembles production is then production itself.",
+              "parent_standard_id": "S8.5"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 120
+          "source_line": 123
         },
         {
           "id": "S8.6",
@@ -16508,12 +16520,18 @@
           "enforced_by": [],
           "statement": "Zero-downtime deploys on all production deployments. Vercel: atomic deployment with instant rollover. Railway: rolling restart with minimum 1 healthy replica before killing old container.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.6a",
+              "description": "The old container stopped before a replacement is serving traffic — a deploy window becomes an outage window, and every deploy carries a reason to defer deploying.",
+              "parent_standard_id": "S8.6"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 122
+          "source_line": 128
         },
         {
           "id": "S8.7",
@@ -16527,12 +16545,18 @@
           "enforced_by": [],
           "statement": "Production deployment rollback available in under 5 minutes via one action. Vercel: one-click rollback to previous deployment. Railway: redeploy previous build. Rollback procedures are tested in staging quarterly.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.7a",
+              "description": "A rollback procedure that has never been executed — an untested rollback is a plan, not a capability, and it is discovered to be neither during the incident it was written for.",
+              "parent_standard_id": "S8.7"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 124
+          "source_line": 133
         },
         {
           "id": "S8.8",
@@ -16546,12 +16570,18 @@
           "enforced_by": [],
           "statement": "ChromaDB on Railway as a separate service with persistent volume. No public port exposed — FastAPI accesses ChromaDB via Railway internal networking only (FundsLink).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.8a",
+              "description": "ChromaDB reachable on a public port — an unauthenticated vector store holding embedded source content becomes a data-exfiltration surface that no application-layer control covers.",
+              "parent_standard_id": "S8.8"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 126
+          "source_line": 138
         },
         {
           "id": "S8.9",
@@ -16592,7 +16622,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 134
+          "source_line": 149
         },
         {
           "id": "S8.10",
@@ -16629,7 +16659,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 155
+          "source_line": 170
         },
         {
           "id": "S8.11",
@@ -16674,7 +16704,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 176
+          "source_line": 191
         },
         {
           "id": "S8.12",
@@ -16711,7 +16741,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 197
+          "source_line": 212
         },
         {
           "id": "S8.13",
@@ -16725,12 +16755,18 @@
           "enforced_by": [],
           "statement": "Dependency caching in CI: TypeScript `~/.npm` cached keyed on `package-lock.json` hash. Python `~/.cache/pip` cached keyed on `requirements.txt` hash. Uncached CI runs are 3× slower.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.13a",
+              "description": "A cache keyed on the branch name or a fixed string rather than the lockfile hash — it never invalidates when dependencies change, so CI installs a stale tree and the failure it produces is attributed to the code.",
+              "parent_standard_id": "S8.13"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 220
+          "source_line": 235
         },
         {
           "id": "S8.14",
@@ -16744,12 +16780,18 @@
           "enforced_by": [],
           "statement": "Prisma migrations validated in CI: `prisma migrate diff` runs on every PR that changes `schema.prisma`. Detects missing migration files before merge.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.14a",
+              "description": "A pull request changing `schema.prisma` with no corresponding migration file — the schema and the database diverge silently, and the divergence surfaces on the deploy rather than in review.",
+              "parent_standard_id": "S8.14"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 222
+          "source_line": 240
         },
         {
           "id": "S8.15",
@@ -16763,12 +16805,18 @@
           "enforced_by": [],
           "statement": "Build artefacts use Docker layer caching with GitHub Container Registry as cache source — unchanged layers (dependencies, base image) reuse cache, reducing build time from 5+ minutes to under 1 minute.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.15a",
+              "description": "`COPY . .` placed before the dependency install step — every source change invalidates the dependency layer, so no build ever reuses a cache however it is configured.",
+              "parent_standard_id": "S8.15"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 224
+          "source_line": 245
         },
         {
           "id": "S8.16",
@@ -16782,7 +16830,13 @@
           "enforced_by": [],
           "statement": "Angular stack CI deploy is orchestrated: (1) trigger Railway FastAPI deploy and wait for health check, (2) only if FastAPI succeeds, trigger Vercel Angular deploy. FastAPI deploy failure skips Angular deploy — per S6.29.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.16a",
+              "description": "Frontend and API deployed in parallel — a frontend that ships while its API deploy is failing serves a version of the application whose backend does not exist.",
+              "parent_standard_id": "S8.16"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S6.29",
@@ -16792,7 +16846,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 226
+          "source_line": 250
         },
         {
           "id": "S8.17",
@@ -16828,7 +16882,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 234
+          "source_line": 261
         },
         {
           "id": "S8.18",
@@ -16853,7 +16907,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 257
+          "source_line": 284
         },
         {
           "id": "S8.19",
@@ -16867,12 +16921,18 @@
           "enforced_by": [],
           "statement": "Multi-stage Docker builds for production images: `build` stage (dependencies + compilation), `production` stage (runtime only — no build tools, no dev dependencies). Production image size target: under 200MB.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.19a",
+              "description": "Compilers, package managers and dev dependencies shipped in the production image — every one is an exploit primitive available to anyone who reaches the container, and none of them is needed to run the application.",
+              "parent_standard_id": "S8.19"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 262
+          "source_line": 289
         },
         {
           "id": "S8.20",
@@ -16886,12 +16946,18 @@
           "enforced_by": [],
           "statement": "`.dockerignore` excludes: `node_modules/`, `.git/`, `.env*`, test files, `__pycache__/`, coverage reports. Build context must be minimal.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.20a",
+              "description": "A build context that includes `.git/` or an environment file — the secret is then baked into an image layer, where deleting it in a later layer does not remove it and anyone who pulls the image can read it.",
+              "parent_standard_id": "S8.20"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 264
+          "source_line": 294
         },
         {
           "id": "S8.21",
@@ -16905,12 +16971,18 @@
           "enforced_by": [],
           "statement": "Docker Compose PostgreSQL container uses a named volume for data persistence across `docker-compose down` calls. Test database uses a separate, ephemeral volume.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.21a",
+              "description": "An anonymous volume for PostgreSQL data — `docker-compose down` discards the developer's database, and the loss looks like a bug in the application rather than a missing volume name.",
+              "parent_standard_id": "S8.21"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 266
+          "source_line": 299
         },
         {
           "id": "S8.22",
@@ -16924,12 +16996,18 @@
           "enforced_by": [],
           "statement": "Health checks defined for all Docker Compose services — dependent services wait for health check success before starting. No `depends_on` without a `condition: service_healthy`.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.22a",
+              "description": "`depends_on` with no `condition: service_healthy` — the dependant starts when the container *exists*, not when the service answers, so the stack fails on a cold start and succeeds on a warm one.",
+              "parent_standard_id": "S8.22"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 268
+          "source_line": 304
         },
         {
           "id": "S8.23",
@@ -16943,12 +17021,18 @@
           "enforced_by": [],
           "statement": "Hot reload enabled in Docker Compose development configuration: `volumes: ['.:/app']` with `command: uvicorn app.main:app --reload` (FastAPI) or `next dev` (Next.js).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.23a",
+              "description": "A development compose file that requires an image rebuild to observe a source change — the edit-run loop lengthens until developers stop using the container and test against something production does not resemble.",
+              "parent_standard_id": "S8.23"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 270
+          "source_line": 309
         },
         {
           "id": "S8.24",
@@ -16989,7 +17073,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 278
+          "source_line": 320
         },
         {
           "id": "S8.25",
@@ -17003,12 +17087,18 @@
           "enforced_by": [],
           "statement": "`.env.example` is committed to version control with all required variable names and descriptions but no values. `.env` is in `.gitignore` and never committed.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.25a",
+              "description": "An example environment file carrying real values — it is committed precisely because it looks like documentation, which is what makes it the least examined place a credential can sit.",
+              "parent_standard_id": "S8.25"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 301
+          "source_line": 343
         },
         {
           "id": "S8.26",
@@ -17022,12 +17112,18 @@
           "enforced_by": [],
           "statement": "Environment variables are validated at application startup using Zod (TypeScript) or Pydantic Settings (Python). Application refuses to start if required variables are missing or invalid.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.26a",
+              "description": "An application that starts with a required variable missing and fails later at the point of use — the failure surfaces as a request error in production rather than as a refusal to boot in staging.",
+              "parent_standard_id": "S8.26"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 303
+          "source_line": 348
         },
         {
           "id": "S8.27",
@@ -17041,12 +17137,18 @@
           "enforced_by": [],
           "statement": "Production secrets are stored in Vercel Environment Variables (Next.js/Angular frontend) and Railway Secrets (FastAPI). Never in application code, never in git history.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.27a",
+              "description": "A production secret committed to version control — history cannot be effectively rewritten, so the repository must be treated as permanently compromised and the credential rotated rather than deleted.",
+              "parent_standard_id": "S8.27"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 305
+          "source_line": 353
         },
         {
           "id": "S8.28",
@@ -17060,12 +17162,18 @@
           "enforced_by": [],
           "statement": "Database URLs use connection string format with password URL-encoded. PgBouncer connection pooler URL for production PostgreSQL (Railway). Direct URL for migrations only.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.28a",
+              "description": "Application traffic pointed at the direct database URL instead of the pooler — connections are exhausted under ordinary load, and the outage reads as a database capacity problem rather than a configuration one.",
+              "parent_standard_id": "S8.28"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 307
+          "source_line": 358
         },
         {
           "id": "S8.29",
@@ -17079,12 +17187,18 @@
           "enforced_by": [],
           "statement": "Feature flags stored in the `FeatureFlag` PostgreSQL table — not in environment variables. Environment variables govern infrastructure behaviour; feature flags govern application behaviour.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.29a",
+              "description": "A feature flag held in an environment variable — turning a feature off then requires a redeploy, which is the one thing a flag exists to avoid during an incident.",
+              "parent_standard_id": "S8.29"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 309
+          "source_line": 363
         },
         {
           "id": "S8.30",
@@ -17098,12 +17212,18 @@
           "enforced_by": [],
           "statement": "All environment variables are documented in the system context file with their purpose and the service that consumes them. A new environment variable without documentation is a code review block.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.30a",
+              "description": "An environment variable introduced without documenting what consumes it — nobody can later determine whether it is still read, so it is never removed and never safely changed.",
+              "parent_standard_id": "S8.30"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 311
+          "source_line": 368
         },
         {
           "id": "S8.31",
@@ -17144,7 +17264,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 319
+          "source_line": 379
         },
         {
           "id": "S8.32",
@@ -17193,7 +17313,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 343
+          "source_line": 403
         },
         {
           "id": "S8.33",
@@ -17212,7 +17332,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 366
+          "source_line": 426
         },
         {
           "id": "S8.34",
@@ -17231,7 +17351,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 368
+          "source_line": 428
         },
         {
           "id": "S8.35",
@@ -17250,7 +17370,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 370
+          "source_line": 430
         },
         {
           "id": "S8.36",
@@ -17274,7 +17394,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 372
+          "source_line": 432
         },
         {
           "id": "S8.37",
@@ -17293,7 +17413,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 374
+          "source_line": 434
         },
         {
           "id": "S8.38",
@@ -17312,7 +17432,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 376
+          "source_line": 436
         },
         {
           "id": "S8.39",
@@ -17331,7 +17451,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 378
+          "source_line": 438
         },
         {
           "id": "S8.40",
@@ -17350,7 +17470,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 380
+          "source_line": 440
         },
         {
           "id": "S8.41",
@@ -17369,7 +17489,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 386
+          "source_line": 446
         },
         {
           "id": "S8.42",
@@ -17388,7 +17508,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 388
+          "source_line": 448
         },
         {
           "id": "S8.43",
@@ -17407,7 +17527,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 390
+          "source_line": 450
         },
         {
           "id": "S8.44",
@@ -17426,7 +17546,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 392
+          "source_line": 452
         },
         {
           "id": "S8.45",
@@ -17445,7 +17565,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 394
+          "source_line": 454
         },
         {
           "id": "S8.46",
@@ -17464,7 +17584,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 396
+          "source_line": 456
         },
         {
           "id": "S8.47",
@@ -17483,7 +17603,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 404
+          "source_line": 464
         },
         {
           "id": "S8.48",
@@ -17524,7 +17644,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 415
+          "source_line": 475
         },
         {
           "id": "S8.49",
@@ -17543,7 +17663,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 438
+          "source_line": 498
         },
         {
           "id": "S8.50",
@@ -17562,7 +17682,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 440
+          "source_line": 500
         },
         {
           "id": "S8.51",
@@ -17586,7 +17706,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 442
+          "source_line": 502
         },
         {
           "id": "S8.52",
@@ -17605,7 +17725,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 444
+          "source_line": 504
         },
         {
           "id": "S8.53",
@@ -17624,7 +17744,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 446
+          "source_line": 506
         },
         {
           "id": "S8.54",
@@ -17643,7 +17763,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 448
+          "source_line": 508
         },
         {
           "id": "S8.55",
@@ -17662,7 +17782,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 454
+          "source_line": 514
         },
         {
           "id": "S8.56",
@@ -17681,7 +17801,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 456
+          "source_line": 516
         },
         {
           "id": "S8.57",
@@ -17700,7 +17820,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 458
+          "source_line": 518
         },
         {
           "id": "S8.58",
@@ -17719,7 +17839,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 460
+          "source_line": 520
         },
         {
           "id": "S8.59",
@@ -17738,7 +17858,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 462
+          "source_line": 522
         },
         {
           "id": "S8.60",
@@ -17757,7 +17877,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 464
+          "source_line": 524
         },
         {
           "id": "S8.61",
@@ -17776,7 +17896,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 472
+          "source_line": 532
         },
         {
           "id": "S8.62",
@@ -17795,7 +17915,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 474
+          "source_line": 534
         },
         {
           "id": "S8.63",
@@ -17814,7 +17934,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 476
+          "source_line": 536
         },
         {
           "id": "S8.64",
@@ -17833,7 +17953,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 478
+          "source_line": 538
         },
         {
           "id": "S8.65",
@@ -17852,7 +17972,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 480
+          "source_line": 540
         },
         {
           "id": "S8.66",
@@ -17871,7 +17991,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 482
+          "source_line": 542
         },
         {
           "id": "S8.67",
@@ -17890,7 +18010,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 488
+          "source_line": 548
         },
         {
           "id": "S8.68",
@@ -17909,7 +18029,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 490
+          "source_line": 550
         },
         {
           "id": "S8.69",
@@ -17928,7 +18048,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 492
+          "source_line": 552
         },
         {
           "id": "S8.70",
@@ -17952,7 +18072,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 494
+          "source_line": 554
         },
         {
           "id": "S8.71",
@@ -17971,7 +18091,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 496
+          "source_line": 556
         },
         {
           "id": "S8.72",
@@ -17990,7 +18110,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 498
+          "source_line": 558
         },
         {
           "id": "S8.73",
@@ -18009,7 +18129,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 504
+          "source_line": 564
         },
         {
           "id": "S8.74",
@@ -18028,7 +18148,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 506
+          "source_line": 566
         },
         {
           "id": "S8.75",
@@ -18047,7 +18167,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 508
+          "source_line": 568
         },
         {
           "id": "S8.76",
@@ -18066,7 +18186,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 510
+          "source_line": 570
         },
         {
           "id": "S8.77",
@@ -18098,7 +18218,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 518
+          "source_line": 578
         },
         {
           "id": "S8.78",
@@ -18117,7 +18237,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 541
+          "source_line": 601
         },
         {
           "id": "S8.79",
@@ -18136,7 +18256,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 543
+          "source_line": 603
         },
         {
           "id": "S8.80",
@@ -18155,7 +18275,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 545
+          "source_line": 605
         },
         {
           "id": "S8.81",
@@ -18174,7 +18294,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 547
+          "source_line": 607
         },
         {
           "id": "S8.82",
@@ -18193,7 +18313,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 549
+          "source_line": 609
         },
         {
           "id": "S8.83",
@@ -18212,7 +18332,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 555
+          "source_line": 615
         },
         {
           "id": "S8.84",
@@ -18231,7 +18351,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 557
+          "source_line": 617
         },
         {
           "id": "S8.85",
@@ -18250,7 +18370,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 559
+          "source_line": 619
         },
         {
           "id": "S8.86",
@@ -18269,7 +18389,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 561
+          "source_line": 621
         },
         {
           "id": "S8.87",
@@ -18288,7 +18408,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 563
+          "source_line": 623
         }
       ]
     },
@@ -24376,7 +24496,7 @@
   },
   "integrity": {
     "standards_extracted": 670,
-    "anti_patterns_extracted": 508,
+    "anti_patterns_extracted": 528,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

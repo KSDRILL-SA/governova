@@ -266,6 +266,70 @@ def test_a_rule_cites_the_sibling_anti_pattern_it_actually_implements():
     assert cited == _CITED_SIBLING
 
 
+def test_playwright_css_class_locator_is_flagged():
+    findings = scan_text("await page.locator('.submit-button').click();")
+    assert any(f.anti_pattern == "AP-S7.21a" for f in findings)
+    # The Python binding is the same call and the same violation.
+    assert any(
+        f.anti_pattern == "AP-S7.21a"
+        for f in scan_text('page.locator(".submit-button").click()')
+    )
+
+
+def test_a_stable_playwright_locator_is_not_flagged():
+    """The negative case, and the reason the rule is not `\\.locator\\(`.
+
+    S7.21 forbids the class-selector form — *"never `page.locator('.some-class')`"*.
+    A `data-testid` attribute selector is the stable alternative the standard exists
+    to steer people towards, and an id selector does not break on a styling
+    refactor either. A rule matching every `.locator(` would flag the fix as
+    hard as the defect and grade against a rubric wider than the standard it cites.
+    """
+    for stable in (
+        "await page.locator('[data-testid=\"submit\"]').click();",
+        "await page.locator('#submit').click();",
+        "await page.getByRole('button', { name: 'Submit' }).click();",
+    ):
+        assert not any(f.anti_pattern == "AP-S7.21a" for f in scan_text(stable)), stable
+
+
+def test_float_compared_against_money_in_a_test_is_flagged():
+    findings = scan_text(
+        "assert invoice.amount == 10.50", file="tests/test_billing.py"
+    )
+    assert any(f.anti_pattern == "AP-S7.38a" for f in findings)
+    assert all(f.confidence == "medium" for f in findings if f.anti_pattern == "AP-S7.38a")
+
+
+def test_float_money_rule_is_scoped_to_tests_and_to_money():
+    """Three negatives, and each is a different way this rule could be wrong.
+
+    1. **Outside a test** the rule must not fire at all. `S7.38` is about tests;
+       production money-as-float is `S5.28`, a different standard with its own rule.
+    2. **A non-monetary float in a test is exactly what `TEST_PATHS` exists to
+       protect.** That predicate is a `path_exclude` on every other rule in the
+       module because fixtures legitimately hold floats — a timeout, a ratio, a
+       coordinate. Only the ones standing for money are forbidden.
+    3. **`totalCount`, `feedback` and `taxonomy` are not money**, and a word list
+       wrapped in `\\w*` would swallow all three.
+    """
+    assert not any(
+        f.anti_pattern == "AP-S7.38a"
+        for f in scan_text("price = 10.50", file="src/billing/service.py")
+    )
+    for benign in (
+        "assert elapsed < 2.5",
+        "assert ratio == 0.75",
+        "assert totalCount == 3.0",
+        "assert feedback.score == 4.5",
+        "assert taxonomy.depth == 1.5",
+    ):
+        assert not any(
+            f.anti_pattern == "AP-S7.38a"
+            for f in scan_text(benign, file="tests/test_thing.py")
+        ), benign
+
+
 def test_money_as_float_cites_the_standard_it_implements():
     """Replaces the pin that recorded this as a known, unfixable defect.
 

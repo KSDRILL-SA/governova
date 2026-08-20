@@ -407,6 +407,54 @@ RULES: list[Rule] = [
         "Cypress detected. S7.17: Cypress is not an approved test stack for this organisation.",
         "medium",
     ),
+    # S7.21 forbids the *class-selector* form specifically — "never
+    # `page.locator('.some-class')`" — not `.locator()` as such. A
+    # `page.locator('[data-testid=…]')` is a stable selector and is not what breaks
+    # on a styling refactor, so the rule matches the quote-then-dot shape and
+    # nothing wider. Matching every `.locator(` would grade against a rubric wider
+    # than the standard it cites.
+    #
+    # Deliberately not scoped to TypeScript: Playwright's Python binding uses the
+    # identical `page.locator(".foo")` call, and the standard is about the selector,
+    # not the language.
+    Rule(
+        "AP-S7.21a",
+        "S7.21",
+        re.compile(r"""\.locator\s*\(\s*['"`]\s*\."""),
+        "CSS class selector in a Playwright locator. S7.21: use getByRole()/getByLabel().",
+        "medium",
+    ),
+    # S7.38 — the one rule in this module that fires *only* inside test files.
+    # `TEST_PATHS` is a `path_exclude` everywhere else precisely because fixtures
+    # legitimately hold floats; this standard is the stated exception. A float in a
+    # test is fine until the value it stands for is money.
+    #
+    # Scans are bounded (`.{0,80}`) rather than greedy, matching `AP-S13.1a` and
+    # `AP-S13.7a`: this engine runs as a blocking gate inside other people's CI.
+    #
+    # **`total`, `fee` and `tax` are deliberately absent from the word list.**
+    # `\w*total\w*` matches `totalCount` and `totalPages`, `fee` matches `feedback`
+    # and `coffee`, `tax` matches `taxonomy`. The sibling rule `AP-S5.28a` can afford
+    # `total` because a `double`/`float` type declaration disambiguates it; this one
+    # has no such anchor. Prefer reporting less and being right.
+    #
+    # Confidence is medium, and that is a *detection* judgement rather than a
+    # severity one. S7.38 is Critical, but a heuristic that cannot be trusted to be
+    # right must not block somebody's build. A Critical standard with a fuzzy
+    # detector warns.
+    Rule(
+        "AP-S7.38a",
+        "S7.38",
+        re.compile(
+            r"\b(?:assert\w*|expect|should)\b.{0,80}"
+            r"\b\w*(?:price|amount|balance|currency|salary|invoice|refund|payment|subtotal|money|cost)\w*\b"
+            r".{0,80}\b\d+\.\d+",
+            re.I,
+        ),
+        "Float literal compared against a monetary value in a test. S7.38: expect Decimal.",
+        "medium",
+        path_include=TEST_PATHS,
+    ),
     Rule(
         "AP-S1.49a",
         "S1.49",

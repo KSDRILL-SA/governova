@@ -116,14 +116,29 @@ The Angular frontend deploys as a separate Vercel project from the FastAPI backe
 ### S8.4–S8.8 — Additional Platform Standards
 
 > **S8.4** — Preview deployments are generated for every PR on both stacks. Next.js: Vercel preview URL. Angular: Vercel preview URL for frontend + Railway staging for API PRs. E2E tests run against preview deployments.
+>
+> **Anti-Patterns:**
+> - `AP-S8.4a` — E2E tests run against localhost or a shared staging box rather than the PR's own preview deployment — they then pass against a build nobody is merging, and the artefact that reaches production was never exercised.
 
 > **S8.5** — Three environments — Development (local Docker Compose), Staging (auto-deployed from main merge), Production (manually promoted from staging). Code never goes directly from development to production.
+>
+> **Anti-Patterns:**
+> - `AP-S8.5a` — Code promoted from a developer's machine straight to production, skipping staging — the first environment that resembles production is then production itself.
 
 > **S8.6** — Zero-downtime deploys on all production deployments. Vercel: atomic deployment with instant rollover. Railway: rolling restart with minimum 1 healthy replica before killing old container.
+>
+> **Anti-Patterns:**
+> - `AP-S8.6a` — The old container stopped before a replacement is serving traffic — a deploy window becomes an outage window, and every deploy carries a reason to defer deploying.
 
 > **S8.7** — Production deployment rollback available in under 5 minutes via one action. Vercel: one-click rollback to previous deployment. Railway: redeploy previous build. Rollback procedures are tested in staging quarterly.
+>
+> **Anti-Patterns:**
+> - `AP-S8.7a` — A rollback procedure that has never been executed — an untested rollback is a plan, not a capability, and it is discovered to be neither during the incident it was written for.
 
 > **S8.8** — ChromaDB on Railway as a separate service with persistent volume. No public port exposed — FastAPI accesses ChromaDB via Railway internal networking only (FundsLink).
+>
+> **Anti-Patterns:**
+> - `AP-S8.8a` — ChromaDB reachable on a public port — an unauthenticated vector store holding embedded source content becomes a data-exfiltration surface that no application-layer control covers.
 
 ---
 
@@ -218,12 +233,24 @@ Production deployments are triggered via GitHub Actions `workflow_dispatch` with
 ### S8.13–S8.16 — Additional CI/CD Standards
 
 > **S8.13** — Dependency caching in CI: TypeScript `~/.npm` cached keyed on `package-lock.json` hash. Python `~/.cache/pip` cached keyed on `requirements.txt` hash. Uncached CI runs are 3× slower.
+>
+> **Anti-Patterns:**
+> - `AP-S8.13a` — A cache keyed on the branch name or a fixed string rather than the lockfile hash — it never invalidates when dependencies change, so CI installs a stale tree and the failure it produces is attributed to the code.
 
 > **S8.14** — Prisma migrations validated in CI: `prisma migrate diff` runs on every PR that changes `schema.prisma`. Detects missing migration files before merge.
+>
+> **Anti-Patterns:**
+> - `AP-S8.14a` — A pull request changing `schema.prisma` with no corresponding migration file — the schema and the database diverge silently, and the divergence surfaces on the deploy rather than in review.
 
 > **S8.15** — Build artefacts use Docker layer caching with GitHub Container Registry as cache source — unchanged layers (dependencies, base image) reuse cache, reducing build time from 5+ minutes to under 1 minute.
+>
+> **Anti-Patterns:**
+> - `AP-S8.15a` — `COPY . .` placed before the dependency install step — every source change invalidates the dependency layer, so no build ever reuses a cache however it is configured.
 
 > **S8.16** — Angular stack CI deploy is orchestrated: (1) trigger Railway FastAPI deploy and wait for health check, (2) only if FastAPI succeeds, trigger Vercel Angular deploy. FastAPI deploy failure skips Angular deploy — per S6.29.
+>
+> **Anti-Patterns:**
+> - `AP-S8.16a` — Frontend and API deployed in parallel — a frontend that ships while its API deploy is failing serves a version of the application whose backend does not exist.
 
 ---
 
@@ -260,14 +287,29 @@ Every system runs locally with `docker-compose up` as a single command. The `doc
 > - `AP-S8.18a` — Docker images using `latest` — the same Dockerfile produces a different image on a different day, so a build that passes CI and the build that reaches production are not demonstrably the same artefact.
 
 > **S8.19** — Multi-stage Docker builds for production images: `build` stage (dependencies + compilation), `production` stage (runtime only — no build tools, no dev dependencies). Production image size target: under 200MB.
+>
+> **Anti-Patterns:**
+> - `AP-S8.19a` — Compilers, package managers and dev dependencies shipped in the production image — every one is an exploit primitive available to anyone who reaches the container, and none of them is needed to run the application.
 
 > **S8.20** — `.dockerignore` excludes: `node_modules/`, `.git/`, `.env*`, test files, `__pycache__/`, coverage reports. Build context must be minimal.
+>
+> **Anti-Patterns:**
+> - `AP-S8.20a` — A build context that includes `.git/` or an environment file — the secret is then baked into an image layer, where deleting it in a later layer does not remove it and anyone who pulls the image can read it.
 
 > **S8.21** — Docker Compose PostgreSQL container uses a named volume for data persistence across `docker-compose down` calls. Test database uses a separate, ephemeral volume.
+>
+> **Anti-Patterns:**
+> - `AP-S8.21a` — An anonymous volume for PostgreSQL data — `docker-compose down` discards the developer's database, and the loss looks like a bug in the application rather than a missing volume name.
 
 > **S8.22** — Health checks defined for all Docker Compose services — dependent services wait for health check success before starting. No `depends_on` without a `condition: service_healthy`.
+>
+> **Anti-Patterns:**
+> - `AP-S8.22a` — `depends_on` with no `condition: service_healthy` — the dependant starts when the container *exists*, not when the service answers, so the stack fails on a cold start and succeeds on a warm one.
 
 > **S8.23** — Hot reload enabled in Docker Compose development configuration: `volumes: ['.:/app']` with `command: uvicorn app.main:app --reload` (FastAPI) or `next dev` (Next.js).
+>
+> **Anti-Patterns:**
+> - `AP-S8.23a` — A development compose file that requires an image rebuild to observe a source change — the edit-run loop lengthens until developers stop using the container and test against something production does not resemble.
 
 ---
 
@@ -299,16 +341,34 @@ Every system has three isolated environments with separate databases, secrets, a
 ### S8.25–S8.30 — Environment Configuration Standards
 
 > **S8.25** — `.env.example` is committed to version control with all required variable names and descriptions but no values. `.env` is in `.gitignore` and never committed.
+>
+> **Anti-Patterns:**
+> - `AP-S8.25a` — An example environment file carrying real values — it is committed precisely because it looks like documentation, which is what makes it the least examined place a credential can sit.
 
 > **S8.26** — Environment variables are validated at application startup using Zod (TypeScript) or Pydantic Settings (Python). Application refuses to start if required variables are missing or invalid.
+>
+> **Anti-Patterns:**
+> - `AP-S8.26a` — An application that starts with a required variable missing and fails later at the point of use — the failure surfaces as a request error in production rather than as a refusal to boot in staging.
 
 > **S8.27** — Production secrets are stored in Vercel Environment Variables (Next.js/Angular frontend) and Railway Secrets (FastAPI). Never in application code, never in git history.
+>
+> **Anti-Patterns:**
+> - `AP-S8.27a` — A production secret committed to version control — history cannot be effectively rewritten, so the repository must be treated as permanently compromised and the credential rotated rather than deleted.
 
 > **S8.28** — Database URLs use connection string format with password URL-encoded. PgBouncer connection pooler URL for production PostgreSQL (Railway). Direct URL for migrations only.
+>
+> **Anti-Patterns:**
+> - `AP-S8.28a` — Application traffic pointed at the direct database URL instead of the pooler — connections are exhausted under ordinary load, and the outage reads as a database capacity problem rather than a configuration one.
 
 > **S8.29** — Feature flags stored in the `FeatureFlag` PostgreSQL table — not in environment variables. Environment variables govern infrastructure behaviour; feature flags govern application behaviour.
+>
+> **Anti-Patterns:**
+> - `AP-S8.29a` — A feature flag held in an environment variable — turning a feature off then requires a redeploy, which is the one thing a flag exists to avoid during an incident.
 
 > **S8.30** — All environment variables are documented in the system context file with their purpose and the service that consumes them. A new environment variable without documentation is a code review block.
+>
+> **Anti-Patterns:**
+> - `AP-S8.30a` — An environment variable introduced without documenting what consumes it — nobody can later determine whether it is still read, so it is never removed and never safely changed.
 
 ---
 

@@ -7,7 +7,11 @@ from pathlib import Path
 
 import pytest
 from governova_compile.compiler import compile_index
-from governova_compile.discovery import DOMAIN_BY_SLUG, DOMAIN_REGISTRY, find_domain_constitutions
+from governova_compile.discovery import (
+    DOMAIN_BY_SLUG,
+    DOMAIN_REGISTRY,
+    find_domain_constitutions,
+)
 from governova_compile.parsers import parse_domain_constitution
 from governova_compile.schema import (
     AntiPattern,
@@ -18,7 +22,11 @@ from governova_compile.schema import (
     Reference,
     Standard,
 )
-from governova_validate.checks import check_anti_patterns, check_domain_extensions, check_references
+from governova_validate.checks import (
+    check_anti_patterns,
+    check_domain_extensions,
+    check_references,
+)
 from pydantic import ValidationError
 
 DOMAIN_DOC = """\

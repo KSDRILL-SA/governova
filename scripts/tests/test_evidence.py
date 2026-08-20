@@ -14,7 +14,13 @@ from pathlib import Path
 from governova_checks.rules import scan_text
 from governova_compile.discovery import resolve_repo_root
 from governova_compile.writer import load_index
-from governova_evidence import PROBES, Verdict, probed_standards, run_probes, satisfied_standards
+from governova_evidence import (
+    PROBES,
+    Verdict,
+    probed_standards,
+    run_probes,
+    satisfied_standards,
+)
 
 
 def _probe(root: Path, standard: str) -> tuple[Verdict, str]:
@@ -245,7 +251,11 @@ def test_a_full_window_declares_what_it_did_not_read() -> None:
     `50/50 conventional` was true while a non-conforming commit sat at index 53.
     True, and leaving the reader with a false impression — which is what #213 is.
     """
-    from governova_evidence import _CONVENTIONAL_WINDOW, _MAINTENANCE_WINDOW, _window_note
+    from governova_evidence import (
+        _CONVENTIONAL_WINDOW,
+        _MAINTENANCE_WINDOW,
+        _window_note,
+    )
 
     note = _window_note(_CONVENTIONAL_WINDOW, _CONVENTIONAL_WINDOW)
     assert "the last 50" in note

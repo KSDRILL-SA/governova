@@ -7,7 +7,11 @@ can read. Inactive without configuration; advisory and best-effort.
 
 from __future__ import annotations
 
-from governova_semantic.client import SemanticUnavailableError, Transport, default_transport
+from governova_semantic.client import (
+    SemanticUnavailableError,
+    Transport,
+    default_transport,
+)
 from governova_semantic.config import SemanticConfig, from_env
 
 _MAX_CHARS = 6000  # keep prompts bounded; the head of a file is enough to summarise it

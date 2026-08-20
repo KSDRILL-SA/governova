@@ -357,18 +357,59 @@ def parse_blockquote_standards(
     """Extract abbreviated standards written in blockquote shorthand.
 
     These appear under range headings (`### S8.4–S8.8 — ...`) or directly under
-    Part headings. Each is `> **S{C}.{N}** — {statement}`. They carry an ID and
-    a statement; priority/rationale/anti-patterns are not separately declared.
-    Inline `S{C}.{N}` mentions in the statement become cross-references so the
-    reference graph stays complete.
+    Part headings. Each is `> **S{C}.{N}** — {statement}`. Inline `S{C}.{N}`
+    mentions in the statement become cross-references so the reference graph
+    stays complete.
+
+    A standard may continue the same blockquote with the labelled blocks the
+    full `###` form uses, and `**Anti-Patterns:**` is read from there:
+
+        > **S7.21** — Playwright tests use `page.getByRole()` — never
+        > `page.locator('.some-class')`.
+        >
+        > **Anti-Patterns:**
+        > - `AP-S7.21a` — CSS class selectors break on every styling refactor.
+
+    Continuation stops at the next blockquote standard or the first line that
+    leaves the quote, so one abbreviated standard can never absorb the next
+    one's anti-patterns. The block is de-quoted and handed to the *same*
+    `parse_labeled_blocks` the `###` form uses, because two parsers for one
+    format is how the two copies of `validate` drifted.
+
+    **This shorthand previously discarded anti-patterns unconditionally**, which
+    is not the same as none being declared: 227 of 670 standards are written
+    this way, and no markdown placed near them was ever read.
     """
     standards: list[Standard] = []
-    for lineno, line in enumerate(text.splitlines(), start=1):
+    lines = text.splitlines()
+    index = 0
+    while index < len(lines):
+        line = lines[index]
         m = BLOCKQUOTE_STANDARD.match(line.strip())
         if not m:
+            index += 1
             continue
+        lineno = index + 1
         sid = m.group("id")
         statement = m.group("text").strip()
+
+        continuation: list[str] = []
+        cursor = index + 1
+        while cursor < len(lines):
+            quoted = lines[cursor].strip()
+            if not quoted.startswith(">"):
+                break
+            if BLOCKQUOTE_STANDARD.match(quoted):
+                break
+            continuation.append(quoted[1:].lstrip(" "))
+            cursor += 1
+
+        blocks = parse_labeled_blocks(continuation)
+        anti_patterns = parse_anti_patterns(
+            blocks.get("anti-patterns", "") or blocks.get("anti_patterns", ""), sid
+        )
+        index = cursor
+
         cross = [
             Reference(standard_id=ref)
             for ref in dict.fromkeys(STANDARD_ID.findall(statement))
@@ -387,7 +428,7 @@ def parse_blockquote_standards(
                 enforced_by=[],
                 statement=statement,
                 rationale="",
-                anti_patterns=[],
+                anti_patterns=anti_patterns,
                 cross_references=cross,
                 abbreviated=True,
                 source_path=path,

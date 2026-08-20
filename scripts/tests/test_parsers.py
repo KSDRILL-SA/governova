@@ -163,6 +163,76 @@ def test_blockquote_standards_extracted():
     assert any(r.standard_id == "S9.1" for r in s2.cross_references)
 
 
+ABBREVIATED_WITH_ANTI_PATTERNS = """\
+### S7.21–S7.24 — Additional E2E Standards
+
+> **S7.21** — Playwright tests use `page.getByRole()` — never `page.locator('.css')`.
+>
+> **Anti-Patterns:**
+> - `AP-S7.21a` — CSS class selectors break on every styling refactor.
+
+> **S7.22** — E2E specs run against a seeded database.
+
+> **S7.23** — Flaky specs are quarantined, not retried.
+>
+> **Anti-Patterns:**
+> - `AP-S7.23a` — A retry loop around a flaky spec hides the race it is racing.
+> - `AP-S7.23b` — Deleting the assertion rather than the flake.
+"""
+
+
+def _abbreviated(text):
+    return {
+        s.id: s
+        for s in parse_blockquote_standards(
+            text,
+            constitution_id="C07",
+            phase=Phase.QUALITY_RELIABILITY,
+            phase_label="Phase 2",
+            path="x.md",
+        )
+    }
+
+
+def test_abbreviated_standard_carries_a_declared_anti_pattern():
+    """The positive case: shorthand used to discard these unconditionally."""
+    std = _abbreviated(ABBREVIATED_WITH_ANTI_PATTERNS)["S7.21"]
+    assert std.abbreviated
+    assert [ap.id for ap in std.anti_patterns] == ["AP-S7.21a"]
+    assert std.anti_patterns[0].parent_standard_id == "S7.21"
+    assert "styling refactor" in std.anti_patterns[0].description
+
+
+def test_abbreviated_standard_declaring_none_still_has_none():
+    """The negative case, and the one that matters.
+
+    A standard doing exactly what a standard is for — stating a rule and stopping —
+    must not acquire anti-patterns from the block that follows it. `S7.22` sits
+    between two standards that do declare them, which is the arrangement that
+    catches a continuation scan running past its own quote.
+    """
+    parsed = _abbreviated(ABBREVIATED_WITH_ANTI_PATTERNS)
+    assert parsed["S7.22"].anti_patterns == []
+    # And the standard after it keeps its own, both of them.
+    assert [ap.id for ap in parsed["S7.23"].anti_patterns] == [
+        "AP-S7.23a",
+        "AP-S7.23b",
+    ]
+
+
+def test_abbreviated_anti_patterns_stop_at_the_next_standard():
+    """Two standards in one unbroken quote, only the first declaring."""
+    text = (
+        "> **S8.18** — Docker images use specific version tags.\n"
+        "> **Anti-Patterns:**\n"
+        "> - `AP-S8.18a` — `latest` produces non-reproducible builds.\n"
+        "> **S8.19** — Images run as a non-root user.\n"
+    )
+    parsed = _abbreviated(text)
+    assert [ap.id for ap in parsed["S8.18"].anti_patterns] == ["AP-S8.18a"]
+    assert parsed["S8.19"].anti_patterns == []
+
+
 def test_parse_grounded_in_reads_one_citation_per_line():
     block = "- Sommerville, *Software Engineering* 10e — ch. 4\n- Coronel & Rob — ch. 3"
     assert parse_grounded_in(block) == [

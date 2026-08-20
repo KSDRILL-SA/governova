@@ -638,17 +638,42 @@ The complete per-project four-layer documentation of every file. The output that
 
 ### 19.1 Subscription tiers
 
-| Tier | Price | Projects | Key Features |
-|------|-------|----------|--------------|
-| **Free** | $0 / forever | 1 | Core standards, 3 critical anti-pattern alerts, community support |
-| **Pro** | $9/mo · $89/yr | 3 | All standards, relay tracking, `.cursorrules` gen, amendment log |
-| **Pro+** | $19/mo · $189/yr | Unlimited | 2 seats, custom constitutions, API, CI/CD, analytics, team mode |
-| **Max** | $39/mo · $389/yr | Unlimited | 5 seats, MCP server, white-label, SLA, enterprise mode |
+> **Revised by `ADR-010` (2026-08-20).** The tier *prices* stand. What each tier *buys* was
+> redefined, because the original table gated the local engine and `governova` v0.2.0 shipped
+> to PyPI under MIT with every deterministic capability included — all 42 rules, the Score, the
+> Board Report, the System Bible and the MCP server. **MIT cannot be revoked for what is
+> already distributed**, so a Free tier limited to "3 critical anti-pattern alerts", and an
+> MCP server sold at Max, describe a product that can no longer be built from here.
 
-Annual billing ~20% discount.
+**The paid boundary is "needs a server we run", never "is valuable."**
 
-### 19.2 Protection model
-Premium features require a live API call to the license server, which returns feature flags based on a validated JWT and tier. Protection: short-lived JWTs (24h, auto-refresh), machine ID binding, concurrent session detection, server-side feature gating. A self-hosted fork gets none of the Score, Network, Certification, or live Bible — the value lives in the service, not the extension bundle.
+| | |
+|---|---|
+| **Free forever — MIT, offline, unlimited projects** | Every deterministic rule and probe · Governova Score · Board-Level Governance Report · System Bible · CLI · MCP server · CI/CD gate · PR Guardian · `onboard` / `roadmap` / `convert` · the whole compiled constitution |
+| **Governova Cloud — paid** | Intelligence Gateway (metered AI by effort tier) · Intelligence Network (§15.1) · hosted dashboard, history and trend · organisations, teams, seats, SSO · Certification programme (§18.2) · temporal governance feeds (§15.2) |
+
+| Tier | Price | Seats | Cloud entitlement |
+|------|-------|-------|-------------------|
+| **Free** | $0 / forever | 1 | The complete local engine. No Cloud credits. |
+| **Pro** | $9/mo · $89/yr | 1 | Gateway credits at Low/Medium effort · hosted history · dashboard |
+| **Pro+** | $19/mo · $189/yr | 2 | Team mode · High effort · org management · API access |
+| **Max** | $39/mo · $389/yr | 5 | Enterprise mode · Max effort · SSO · white-label · SLA |
+
+Annual billing ~20% discount. **Seats are the billed unit; projects are never counted.**
+
+### 19.2 Why there is no licence server
+
+The previous model — feature flags from a licence server, machine-ID binding, concurrent-session
+detection — is **retired by `ADR-010`**, and not only because the engine is MIT and cannot be
+bound. It would punish the ordinary case (one engineer, a laptop and CI) to deter a copy that
+`pip download` already permits, and it would make every deterministic result depend on a network
+call that can fail.
+
+**The engine must work perfectly with the Cloud unreachable.** That property is the product's
+central claim: a governance tool nobody can independently verify is a governance tool nobody
+should trust. Paid value lives in capabilities a laptop genuinely cannot provide — metered
+inference, cross-project learning, hosted history, organisations — so it needs no gate to
+protect it.
 
 ### 19.3 Certification programme
 Annual fee separate from subscription. Three tiers. Renewal requires an active subscription. Revenue independent of subscription churn.

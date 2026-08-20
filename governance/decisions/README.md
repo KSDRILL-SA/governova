@@ -19,6 +19,7 @@ Restructure / migration records use a descriptive `RESTRUCTURE-{version}.md` nam
 - ADR-007: Lifecycle completeness — govern the whole SDLC
 - ADR-008: The semantic tier has no default endpoint
 - ADR-009: Map/Adapt and Always-On Learning are deferred, and the bar is not amended
+- ADR-010: Governova Cloud — the paid boundary, the stack, and the Intelligence Gateway
 - RESTRUCTURE-v2.0: The Governova v2.0 four-layer restructure instruction
   (executed record of the migration that produced this structure)
 

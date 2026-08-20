@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-08-20T19:35:03.476548Z",
-  "source_commit_sha": "58d785b",
-  "checksum": "sha256:5fc20391730b2d397801dff086011f426548584f7db2775157c6043e4804fbca",
+  "compiled_at": "2026-08-20T21:02:06.710384Z",
+  "source_commit_sha": "ac15195",
+  "checksum": "sha256:24a930797b6a9ce61dd2677e529b73fc7f97a500dac508ef01493f6cf88d2778",
   "framework": [
     {
       "id": "format-specification",
@@ -24319,6 +24319,12 @@
       "name": "Map/Adapt and Always-On Learning Are Deferred, and the Bar Is Not Amended",
       "status": "ACCEPTED",
       "path": "governance/decisions/ADR-009-map-adapt-deferred.md"
+    },
+    {
+      "id": "ADR-010",
+      "name": "Governova Cloud: the paid boundary, the stack, and the Intelligence Gateway",
+      "status": "ACCEPTED",
+      "path": "governance/decisions/ADR-010-governova-cloud.md"
     }
   ],
   "hierarchy": [

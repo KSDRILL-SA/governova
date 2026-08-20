@@ -31,7 +31,7 @@ def test_scan_text_flags_wildcard_cors():
 
 def test_scan_text_flags_money_as_double():
     findings = scan_text("double totalPrice = 10.0;")
-    assert any(f.anti_pattern == "AP-S2.34a" for f in findings)
+    assert any(f.anti_pattern == "AP-S5.28a" for f in findings)
 
 
 def test_scan_text_clean_code_has_no_findings():
@@ -266,24 +266,26 @@ def test_a_rule_cites_the_sibling_anti_pattern_it_actually_implements():
     assert cited == _CITED_SIBLING
 
 
-def test_the_known_s234_miscitation_is_still_recorded_not_forgotten():
-    """`S2.34` is *"All Financial Data Writes Are Idempotent"*.
+def test_money_as_float_cites_the_standard_it_implements():
+    """Replaces the pin that recorded this as a known, unfixable defect.
 
-    Its two anti-patterns are a missing disbursement check and a missing
-    idempotency key. The rule citing it matches `double price` / `float amount`
-    — money represented as a float, which is **`S5.28`**, a different standard in
-    a different constitution.
+    The rule matching `double price` / `float amount` cited `S2.34` — *All
+    Financial Data Writes Are Idempotent*, whose anti-patterns are a missing
+    disbursement check and a missing idempotency key. Neither is about float.
+    The finding was true and its label was false, which is exactly why review
+    passed it for as long as it did.
 
-    It is not silently re-cited here because `S5.28` carries **no anti-pattern**
-    for a rule to bind to, and the standing rule is *amend the standard first,
-    law before check, never the reverse*. Amending the corpus is `C0 §8` and
-    belongs to L4, so this asserts the defect is still exactly where it was
-    rather than pretending it is fixed. **When `AP-S5.28a` is ratified, re-cite
-    the rule and delete this test.**
+    It could not be re-cited earlier because `S5.28` carried no anti-pattern to
+    bind to — not because none was written, but because `S5.28` is blockquote
+    shorthand and the compiler discarded anti-patterns for all 227 standards in
+    that form. `AP-S5.28a` was declared in C05's summary table the whole time.
+    The engine learned to read it, the constitution gave it a home, and only then
+    was this a one-line change. **Law before check, never the reverse.**
     """
-    rule = next(r for r in RULES if r.standard == "S2.34")
-    assert rule.anti_pattern == "AP-S2.34a"
-    assert rule.confidence == "high", "still blocking builds under the wrong citation"
+    rule = next(r for r in RULES if r.anti_pattern == "AP-S5.28a")
+    assert rule.standard == "S5.28"
+    assert rule.confidence == "high", "it blocks builds, and now under the right citation"
+    assert not any(r.standard == "S2.34" for r in RULES), "nothing cites S2.34 any more"
 
 
 def test_rule_coverage_floor():

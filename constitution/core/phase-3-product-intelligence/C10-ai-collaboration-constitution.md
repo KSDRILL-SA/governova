@@ -273,14 +273,26 @@ The ability to approve irreversible or high-consequence decisions must rest with
 | **L4 — Approve** | Human-only | AI cannot approve | Constitutional amendments, production deploys, security decisions, stack assignments |
 
 > **S10.9** — L1 proposals require no citation — they are generating options. L2 recommendations must cite the specific standard ID that supports the recommendation (`S2.7`, `S3.14`, etc.). An L2 recommendation without a standard citation is an L1 proposal dressed as a recommendation.
+>
+> **Anti-Patterns:**
+> - `AP-S10.9a` — L2 recommendation made without citing a standard ID — an uncited recommendation carries the authority of the constitution while resting on nothing that can be checked against it.
 
 > **S10.10** — L3 implementation requires: the design is documented in `CONSTITUTION-INDEX.md`, the design was approved by a human (L4), and the implementation follows the layer build order (S4.79). A Cursor session that starts implementing without an approved design is L1 masquerading as L3.
+>
+> **Anti-Patterns:**
+> - `AP-S10.10a` — L3 implementation started without approved documented design — the approval gate is skipped rather than refused, so the first review of the design happens against code already written to it.
 
 > **S10.11** — Security decisions (auth strategy, token storage, role definitions, CORS configuration) are always L4 — human approval required regardless of how clear the AI's recommendation is.
+>
+> **Anti-Patterns:**
+> - `AP-S10.11a` — Auth/security architecture decided without Founder L4 approval — the clarity of a recommendation is not evidence for it, and a security decision taken without an accountable human is unowned at exactly the point where ownership matters most.
 
 > **S10.12** — Database schema changes are always L4 — schema changes require human review of the migration, the rollback plan, and the backward compatibility assessment (S5.59–S5.64).
 
 > **S10.13** — AI recommendations that contradict a constitutional standard are flagged, not silently complied with. The AI states: "This recommendation conflicts with `S3.14` (access token in Angular memory). Following the recommendation would require a constitutional amendment per C0 §8."
+>
+> **Anti-Patterns:**
+> - `AP-S10.13a` — AI silently complies with a constitutional violation instead of flagging it — compliance without objection is indistinguishable from the standard having been checked and found satisfied, which is the one failure a governance layer must never produce.
 
 > **S10.14** — When AI detects a potential constitutional violation in existing code, it flags the violation and the violated standard — it does not silently work around the violation by generating compliant wrappers that obscure the underlying problem.
 

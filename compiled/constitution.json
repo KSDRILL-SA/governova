@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-07-31T15:57:48.090372Z",
-  "source_commit_sha": "19c0969",
-  "checksum": "sha256:1fe12c3ee8abfc1334009bb260fb7db2b97b04f61869e0c767bbc138272c3c93",
+  "compiled_at": "2026-08-20T16:28:24.901062Z",
+  "source_commit_sha": "799fd41",
+  "checksum": "sha256:1985cd59632ae0c6b5368726b9d1edc46496ececb93126d0cb11a5a952107e65",
   "framework": [
     {
       "id": "format-specification",
@@ -12754,7 +12754,13 @@
           "enforced_by": [],
           "statement": "Decimal columns for all monetary values — never `Float`. `Decimal` preserves precision; `Float` introduces rounding errors on financial calculations.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.28a",
+              "description": "`Float` column type for monetary values — binary floating point cannot represent most decimal fractions exactly, so the error is present from the first write and compounds across every subsequent calculation.",
+              "parent_standard_id": "S5.28"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
@@ -12778,7 +12784,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 663
+          "source_line": 666
         },
         {
           "id": "S5.30",
@@ -12797,7 +12803,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 665
+          "source_line": 668
         },
         {
           "id": "S5.31",
@@ -12816,7 +12822,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 667
+          "source_line": 670
         },
         {
           "id": "S5.32",
@@ -12835,7 +12841,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 669
+          "source_line": 672
         },
         {
           "id": "S5.33",
@@ -12885,7 +12891,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 679
+          "source_line": 682
         },
         {
           "id": "S5.34",
@@ -12909,7 +12915,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 702
+          "source_line": 705
         },
         {
           "id": "S5.35",
@@ -12928,7 +12934,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 704
+          "source_line": 707
         },
         {
           "id": "S5.36",
@@ -12947,7 +12953,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 706
+          "source_line": 709
         },
         {
           "id": "S5.37",
@@ -12966,7 +12972,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 708
+          "source_line": 711
         },
         {
           "id": "S5.38",
@@ -12990,7 +12996,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 710
+          "source_line": 713
         },
         {
           "id": "S5.39",
@@ -13009,7 +13015,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 712
+          "source_line": 715
         },
         {
           "id": "S5.40",
@@ -13028,7 +13034,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 714
+          "source_line": 717
         },
         {
           "id": "S5.41",
@@ -13047,7 +13053,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 716
+          "source_line": 719
         },
         {
           "id": "S5.42",
@@ -13066,7 +13072,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 718
+          "source_line": 721
         },
         {
           "id": "S5.43",
@@ -13090,7 +13096,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 720
+          "source_line": 723
         },
         {
           "id": "S5.44",
@@ -13109,7 +13115,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 722
+          "source_line": 725
         },
         {
           "id": "S5.45",
@@ -13151,7 +13157,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 732
+          "source_line": 735
         },
         {
           "id": "S5.46",
@@ -13170,7 +13176,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 755
+          "source_line": 758
         },
         {
           "id": "S5.47",
@@ -13189,7 +13195,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 757
+          "source_line": 760
         },
         {
           "id": "S5.48",
@@ -13208,7 +13214,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 759
+          "source_line": 762
         },
         {
           "id": "S5.49",
@@ -13227,7 +13233,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 761
+          "source_line": 764
         },
         {
           "id": "S5.50",
@@ -13246,7 +13252,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 763
+          "source_line": 766
         },
         {
           "id": "S5.51",
@@ -13265,7 +13271,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 765
+          "source_line": 768
         },
         {
           "id": "S5.52",
@@ -13284,7 +13290,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 767
+          "source_line": 770
         },
         {
           "id": "S5.53",
@@ -13329,7 +13335,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 775
+          "source_line": 778
         },
         {
           "id": "S5.54",
@@ -13348,7 +13354,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 798
+          "source_line": 801
         },
         {
           "id": "S5.55",
@@ -13367,7 +13373,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 800
+          "source_line": 803
         },
         {
           "id": "S5.56",
@@ -13386,7 +13392,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 802
+          "source_line": 805
         },
         {
           "id": "S5.57",
@@ -13405,7 +13411,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 804
+          "source_line": 807
         },
         {
           "id": "S5.58",
@@ -13424,7 +13430,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 806
+          "source_line": 809
         },
         {
           "id": "S5.59",
@@ -13463,7 +13469,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 814
+          "source_line": 817
         },
         {
           "id": "S5.60",
@@ -13482,7 +13488,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 837
+          "source_line": 840
         },
         {
           "id": "S5.61",
@@ -13501,7 +13507,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 839
+          "source_line": 842
         },
         {
           "id": "S5.62",
@@ -13520,7 +13526,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 841
+          "source_line": 844
         },
         {
           "id": "S5.63",
@@ -13539,7 +13545,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 843
+          "source_line": 846
         },
         {
           "id": "S5.64",
@@ -13558,7 +13564,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 845
+          "source_line": 848
         },
         {
           "id": "S5.65",
@@ -13607,7 +13613,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 853
+          "source_line": 856
         }
       ]
     },
@@ -15772,7 +15778,13 @@
           "enforced_by": [],
           "statement": "Playwright tests use the `page.getByRole()` and `page.getByLabel()` locators — never `page.locator('.some-class')`. CSS class selectors break on every styling refactor.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.21a",
+              "description": "Playwright `page.locator('.css-class')` — the test asserts on styling rather than on behaviour, so a purely visual refactor fails it and a genuine behavioural regression can pass it.",
+              "parent_standard_id": "S7.21"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
@@ -15796,7 +15808,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 512
+          "source_line": 515
         },
         {
           "id": "S7.23",
@@ -15815,7 +15827,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 514
+          "source_line": 517
         },
         {
           "id": "S7.24",
@@ -15834,7 +15846,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 516
+          "source_line": 519
         },
         {
           "id": "S7.25",
@@ -15875,7 +15887,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 524
+          "source_line": 527
         },
         {
           "id": "S7.26",
@@ -15894,7 +15906,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 547
+          "source_line": 550
         },
         {
           "id": "S7.27",
@@ -15913,7 +15925,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 549
+          "source_line": 552
         },
         {
           "id": "S7.28",
@@ -15932,7 +15944,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 551
+          "source_line": 554
         },
         {
           "id": "S7.29",
@@ -15951,7 +15963,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 553
+          "source_line": 556
         },
         {
           "id": "S7.30",
@@ -15970,7 +15982,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 555
+          "source_line": 558
         },
         {
           "id": "S7.31",
@@ -16012,7 +16024,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 563
+          "source_line": 566
         },
         {
           "id": "S7.32",
@@ -16057,7 +16069,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 584
+          "source_line": 587
         },
         {
           "id": "S7.33",
@@ -16076,7 +16088,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 607
+          "source_line": 610
         },
         {
           "id": "S7.34",
@@ -16095,7 +16107,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 609
+          "source_line": 612
         },
         {
           "id": "S7.35",
@@ -16114,7 +16126,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 611
+          "source_line": 614
         },
         {
           "id": "S7.36",
@@ -16133,7 +16145,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 613
+          "source_line": 616
         },
         {
           "id": "S7.37",
@@ -16152,7 +16164,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 615
+          "source_line": 618
         },
         {
           "id": "S7.38",
@@ -16166,12 +16178,18 @@
           "enforced_by": [],
           "statement": "Financial calculation tests use `Decimal` for all expected values — not floats. Tests that compare float financial results are incorrect.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.38a",
+              "description": "Float comparison in financial calculation tests — the assertion either tolerates a rounding error that a ledger does not, or fails on a value that is arithmetically correct. Neither outcome tells the truth about the calculation.",
+              "parent_standard_id": "S7.38"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 617
+          "source_line": 620
         },
         {
           "id": "S7.39",
@@ -16217,7 +16235,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 625
+          "source_line": 631
         },
         {
           "id": "S7.40",
@@ -16236,7 +16254,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 648
+          "source_line": 654
         },
         {
           "id": "S7.41",
@@ -16255,7 +16273,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 650
+          "source_line": 656
         },
         {
           "id": "S7.42",
@@ -16274,7 +16292,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 652
+          "source_line": 658
         },
         {
           "id": "S7.43",
@@ -16293,7 +16311,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 654
+          "source_line": 660
         }
       ]
     },
@@ -16824,7 +16842,13 @@
           "enforced_by": [],
           "statement": "Docker images use specific version tags — never `latest`. `node:20.11-alpine`, `python:3.12-slim`. `latest` produces non-reproducible builds.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.18a",
+              "description": "Docker images using `latest` — the same Dockerfile produces a different image on a different day, so a build that passes CI and the build that reaches production are not demonstrably the same artefact.",
+              "parent_standard_id": "S8.18"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
@@ -16848,7 +16872,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 259
+          "source_line": 262
         },
         {
           "id": "S8.20",
@@ -16867,7 +16891,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 261
+          "source_line": 264
         },
         {
           "id": "S8.21",
@@ -16886,7 +16910,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 263
+          "source_line": 266
         },
         {
           "id": "S8.22",
@@ -16905,7 +16929,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 265
+          "source_line": 268
         },
         {
           "id": "S8.23",
@@ -16924,7 +16948,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 267
+          "source_line": 270
         },
         {
           "id": "S8.24",
@@ -16965,7 +16989,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 275
+          "source_line": 278
         },
         {
           "id": "S8.25",
@@ -16984,7 +17008,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 298
+          "source_line": 301
         },
         {
           "id": "S8.26",
@@ -17003,7 +17027,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 300
+          "source_line": 303
         },
         {
           "id": "S8.27",
@@ -17022,7 +17046,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 302
+          "source_line": 305
         },
         {
           "id": "S8.28",
@@ -17041,7 +17065,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 304
+          "source_line": 307
         },
         {
           "id": "S8.29",
@@ -17060,7 +17084,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 306
+          "source_line": 309
         },
         {
           "id": "S8.30",
@@ -17079,7 +17103,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 308
+          "source_line": 311
         },
         {
           "id": "S8.31",
@@ -17120,7 +17144,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 316
+          "source_line": 319
         },
         {
           "id": "S8.32",
@@ -17169,7 +17193,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 340
+          "source_line": 343
         },
         {
           "id": "S8.33",
@@ -17188,7 +17212,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 363
+          "source_line": 366
         },
         {
           "id": "S8.34",
@@ -17207,7 +17231,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 365
+          "source_line": 368
         },
         {
           "id": "S8.35",
@@ -17226,7 +17250,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 367
+          "source_line": 370
         },
         {
           "id": "S8.36",
@@ -17250,7 +17274,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 369
+          "source_line": 372
         },
         {
           "id": "S8.37",
@@ -17269,7 +17293,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 371
+          "source_line": 374
         },
         {
           "id": "S8.38",
@@ -17288,7 +17312,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 373
+          "source_line": 376
         },
         {
           "id": "S8.39",
@@ -17307,7 +17331,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 375
+          "source_line": 378
         },
         {
           "id": "S8.40",
@@ -17326,7 +17350,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 377
+          "source_line": 380
         },
         {
           "id": "S8.41",
@@ -17345,7 +17369,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 383
+          "source_line": 386
         },
         {
           "id": "S8.42",
@@ -17364,7 +17388,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 385
+          "source_line": 388
         },
         {
           "id": "S8.43",
@@ -17383,7 +17407,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 387
+          "source_line": 390
         },
         {
           "id": "S8.44",
@@ -17402,7 +17426,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 389
+          "source_line": 392
         },
         {
           "id": "S8.45",
@@ -17421,7 +17445,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 391
+          "source_line": 394
         },
         {
           "id": "S8.46",
@@ -17440,7 +17464,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 393
+          "source_line": 396
         },
         {
           "id": "S8.47",
@@ -17459,7 +17483,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 401
+          "source_line": 404
         },
         {
           "id": "S8.48",
@@ -17500,7 +17524,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 412
+          "source_line": 415
         },
         {
           "id": "S8.49",
@@ -17519,7 +17543,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 435
+          "source_line": 438
         },
         {
           "id": "S8.50",
@@ -17538,7 +17562,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 437
+          "source_line": 440
         },
         {
           "id": "S8.51",
@@ -17562,7 +17586,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 439
+          "source_line": 442
         },
         {
           "id": "S8.52",
@@ -17581,7 +17605,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 441
+          "source_line": 444
         },
         {
           "id": "S8.53",
@@ -17600,7 +17624,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 443
+          "source_line": 446
         },
         {
           "id": "S8.54",
@@ -17619,7 +17643,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 445
+          "source_line": 448
         },
         {
           "id": "S8.55",
@@ -17638,7 +17662,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 451
+          "source_line": 454
         },
         {
           "id": "S8.56",
@@ -17657,7 +17681,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 453
+          "source_line": 456
         },
         {
           "id": "S8.57",
@@ -17676,7 +17700,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 455
+          "source_line": 458
         },
         {
           "id": "S8.58",
@@ -17695,7 +17719,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 457
+          "source_line": 460
         },
         {
           "id": "S8.59",
@@ -17714,7 +17738,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 459
+          "source_line": 462
         },
         {
           "id": "S8.60",
@@ -17733,7 +17757,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 461
+          "source_line": 464
         },
         {
           "id": "S8.61",
@@ -17752,7 +17776,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 469
+          "source_line": 472
         },
         {
           "id": "S8.62",
@@ -17771,7 +17795,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 471
+          "source_line": 474
         },
         {
           "id": "S8.63",
@@ -17790,7 +17814,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 473
+          "source_line": 476
         },
         {
           "id": "S8.64",
@@ -17809,7 +17833,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 475
+          "source_line": 478
         },
         {
           "id": "S8.65",
@@ -17828,7 +17852,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 477
+          "source_line": 480
         },
         {
           "id": "S8.66",
@@ -17847,7 +17871,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 479
+          "source_line": 482
         },
         {
           "id": "S8.67",
@@ -17866,7 +17890,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 485
+          "source_line": 488
         },
         {
           "id": "S8.68",
@@ -17885,7 +17909,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 487
+          "source_line": 490
         },
         {
           "id": "S8.69",
@@ -17904,7 +17928,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 489
+          "source_line": 492
         },
         {
           "id": "S8.70",
@@ -17928,7 +17952,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 491
+          "source_line": 494
         },
         {
           "id": "S8.71",
@@ -17947,7 +17971,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 493
+          "source_line": 496
         },
         {
           "id": "S8.72",
@@ -17966,7 +17990,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 495
+          "source_line": 498
         },
         {
           "id": "S8.73",
@@ -17985,7 +18009,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 501
+          "source_line": 504
         },
         {
           "id": "S8.74",
@@ -18004,7 +18028,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 503
+          "source_line": 506
         },
         {
           "id": "S8.75",
@@ -18023,7 +18047,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 505
+          "source_line": 508
         },
         {
           "id": "S8.76",
@@ -18042,7 +18066,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 507
+          "source_line": 510
         },
         {
           "id": "S8.77",
@@ -18074,7 +18098,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 515
+          "source_line": 518
         },
         {
           "id": "S8.78",
@@ -18093,7 +18117,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 538
+          "source_line": 541
         },
         {
           "id": "S8.79",
@@ -18112,7 +18136,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 540
+          "source_line": 543
         },
         {
           "id": "S8.80",
@@ -18131,7 +18155,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 542
+          "source_line": 545
         },
         {
           "id": "S8.81",
@@ -18150,7 +18174,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 544
+          "source_line": 547
         },
         {
           "id": "S8.82",
@@ -18169,7 +18193,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 546
+          "source_line": 549
         },
         {
           "id": "S8.83",
@@ -18188,7 +18212,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 552
+          "source_line": 555
         },
         {
           "id": "S8.84",
@@ -18207,7 +18231,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 554
+          "source_line": 557
         },
         {
           "id": "S8.85",
@@ -18226,7 +18250,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 556
+          "source_line": 559
         },
         {
           "id": "S8.86",
@@ -18245,7 +18269,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 558
+          "source_line": 561
         },
         {
           "id": "S8.87",
@@ -18264,7 +18288,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 560
+          "source_line": 563
         }
       ]
     },
@@ -18921,7 +18945,13 @@
           "enforced_by": [],
           "statement": "MVP does not include v2 features in a disabled/hidden state. Features that are not ready are not deployed — not deployed and hidden. Ship only what is done.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.20a",
+              "description": "v2 features deployed but hidden in v1 — unfinished code still ships, still carries its dependencies and still presents its attack surface, while being excluded from the review and testing that shipping is supposed to earn.",
+              "parent_standard_id": "S9.20"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
@@ -18945,7 +18975,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 365
+          "source_line": 368
         },
         {
           "id": "S9.22",
@@ -18964,7 +18994,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 367
+          "source_line": 370
         },
         {
           "id": "S9.23",
@@ -18983,7 +19013,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 369
+          "source_line": 372
         },
         {
           "id": "S9.24",
@@ -19002,7 +19032,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 371
+          "source_line": 374
         },
         {
           "id": "S9.25",
@@ -19021,7 +19051,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 373
+          "source_line": 376
         },
         {
           "id": "S9.26",
@@ -19040,7 +19070,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 379
+          "source_line": 382
         },
         {
           "id": "S9.27",
@@ -19059,7 +19089,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 381
+          "source_line": 384
         },
         {
           "id": "S9.28",
@@ -19078,7 +19108,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 383
+          "source_line": 386
         },
         {
           "id": "S9.29",
@@ -19097,7 +19127,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 385
+          "source_line": 388
         },
         {
           "id": "S9.30",
@@ -19116,7 +19146,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 387
+          "source_line": 390
         },
         {
           "id": "S9.31",
@@ -19150,7 +19180,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 427
+          "source_line": 430
         },
         {
           "id": "S9.32",
@@ -19184,7 +19214,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 457
+          "source_line": 460
         },
         {
           "id": "S9.33",
@@ -19218,7 +19248,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 490
+          "source_line": 493
         }
       ]
     },
@@ -19579,7 +19609,13 @@
           "enforced_by": [],
           "statement": "L1 proposals require no citation — they are generating options. L2 recommendations must cite the specific standard ID that supports the recommendation (`S2.7`, `S3.14`, etc.). An L2 recommendation without a standard citation is an L1 proposal dressed as a recommendation.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.9a",
+              "description": "L2 recommendation made without citing a standard ID — an uncited recommendation carries the authority of the constitution while resting on nothing that can be checked against it.",
+              "parent_standard_id": "S10.9"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S2.7",
@@ -19607,7 +19643,13 @@
           "enforced_by": [],
           "statement": "L3 implementation requires: the design is documented in `CONSTITUTION-INDEX.md`, the design was approved by a human (L4), and the implementation follows the layer build order (S4.79). A Cursor session that starts implementing without an approved design is L1 masquerading as L3.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.10a",
+              "description": "L3 implementation started without approved documented design — the approval gate is skipped rather than refused, so the first review of the design happens against code already written to it.",
+              "parent_standard_id": "S10.10"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S4.79",
@@ -19617,7 +19659,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 277
+          "source_line": 280
         },
         {
           "id": "S10.11",
@@ -19631,12 +19673,18 @@
           "enforced_by": [],
           "statement": "Security decisions (auth strategy, token storage, role definitions, CORS configuration) are always L4 — human approval required regardless of how clear the AI's recommendation is.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.11a",
+              "description": "Auth/security architecture decided without Founder L4 approval — the clarity of a recommendation is not evidence for it, and a security decision taken without an accountable human is unowned at exactly the point where ownership matters most.",
+              "parent_standard_id": "S10.11"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 279
+          "source_line": 285
         },
         {
           "id": "S10.12",
@@ -19664,7 +19712,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 281
+          "source_line": 290
         },
         {
           "id": "S10.13",
@@ -19678,7 +19726,13 @@
           "enforced_by": [],
           "statement": "AI recommendations that contradict a constitutional standard are flagged, not silently complied with. The AI states: \"This recommendation conflicts with `S3.14` (access token in Angular memory). Following the recommendation would require a constitutional amendment per C0 §8.\"",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.13a",
+              "description": "AI silently complies with a constitutional violation instead of flagging it — compliance without objection is indistinguishable from the standard having been checked and found satisfied, which is the one failure a governance layer must never produce.",
+              "parent_standard_id": "S10.13"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S3.14",
@@ -19688,7 +19742,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 283
+          "source_line": 292
         },
         {
           "id": "S10.14",
@@ -19707,7 +19761,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 285
+          "source_line": 297
         },
         {
           "id": "S10.15",
@@ -19760,7 +19814,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 295
+          "source_line": 307
         },
         {
           "id": "S10.16",
@@ -19779,7 +19833,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 338
+          "source_line": 350
         },
         {
           "id": "S10.17",
@@ -19798,7 +19852,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 340
+          "source_line": 352
         },
         {
           "id": "S10.18",
@@ -19822,7 +19876,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 342
+          "source_line": 354
         },
         {
           "id": "S10.19",
@@ -19841,7 +19895,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 344
+          "source_line": 356
         },
         {
           "id": "S10.20",
@@ -19860,7 +19914,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 346
+          "source_line": 358
         },
         {
           "id": "S10.21",
@@ -19893,7 +19947,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 354
+          "source_line": 366
         },
         {
           "id": "S10.22",
@@ -19930,7 +19984,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 378
+          "source_line": 390
         },
         {
           "id": "S10.23",
@@ -19949,7 +20003,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 430
+          "source_line": 442
         },
         {
           "id": "S10.24",
@@ -19968,7 +20022,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 432
+          "source_line": 444
         },
         {
           "id": "S10.25",
@@ -19992,7 +20046,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 434
+          "source_line": 446
         },
         {
           "id": "S10.26",
@@ -20011,7 +20065,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 436
+          "source_line": 448
         },
         {
           "id": "S10.27",
@@ -20052,7 +20106,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 446
+          "source_line": 458
         },
         {
           "id": "S10.28",
@@ -20080,7 +20134,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 472
+          "source_line": 484
         },
         {
           "id": "S10.29",
@@ -20099,7 +20153,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 474
+          "source_line": 486
         },
         {
           "id": "S10.30",
@@ -20118,7 +20172,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 476
+          "source_line": 488
         },
         {
           "id": "S10.31",
@@ -20137,7 +20191,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 478
+          "source_line": 490
         },
         {
           "id": "S10.32",
@@ -20156,7 +20210,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 480
+          "source_line": 492
         },
         {
           "id": "S10.33",
@@ -20175,7 +20229,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 486
+          "source_line": 498
         },
         {
           "id": "S10.34",
@@ -20203,7 +20257,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 488
+          "source_line": 500
         },
         {
           "id": "S10.35",
@@ -20222,7 +20276,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 490
+          "source_line": 502
         },
         {
           "id": "S10.36",
@@ -20241,7 +20295,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 492
+          "source_line": 504
         },
         {
           "id": "S10.37",
@@ -20286,7 +20340,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 500
+          "source_line": 512
         },
         {
           "id": "S10.38",
@@ -20343,7 +20397,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 524
+          "source_line": 536
         },
         {
           "id": "S10.39",
@@ -20382,7 +20436,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 552
+          "source_line": 564
         },
         {
           "id": "S10.40",
@@ -20424,7 +20478,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 582
+          "source_line": 594
         }
       ]
     },
@@ -24299,7 +24353,7 @@
   },
   "integrity": {
     "standards_extracted": 670,
-    "anti_patterns_extracted": 498,
+    "anti_patterns_extracted": 507,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

@@ -508,6 +508,9 @@ axe-core accessibility checks run on every page in the PR CI pipeline via Playwr
 ### S7.21–S7.24 — Additional E2E Standards
 
 > **S7.21** — Playwright tests use the `page.getByRole()` and `page.getByLabel()` locators — never `page.locator('.some-class')`. CSS class selectors break on every styling refactor.
+>
+> **Anti-Patterns:**
+> - `AP-S7.21a` — Playwright `page.locator('.css-class')` — the test asserts on styling rather than on behaviour, so a purely visual refactor fails it and a genuine behavioural regression can pass it.
 
 > **S7.22** — E2E tests run against preview deployments when available — not against localhost in CI. Preview deployment E2E validates the actual deployed artifact.
 
@@ -615,6 +618,9 @@ FastAPI endpoint integration tests use `httpx.AsyncClient(app=app, base_url="htt
 > **S7.37** — LangChain pipeline tests use fixtures with pre-computed embeddings — never call the actual embedding model in unit tests (cost and latency).
 
 > **S7.38** — Financial calculation tests use `Decimal` for all expected values — not floats. Tests that compare float financial results are incorrect.
+>
+> **Anti-Patterns:**
+> - `AP-S7.38a` — Float comparison in financial calculation tests — the assertion either tolerates a rounding error that a ledger does not, or fails on a value that is arithmetically correct. Neither outcome tells the truth about the calculation.
 
 ---
 

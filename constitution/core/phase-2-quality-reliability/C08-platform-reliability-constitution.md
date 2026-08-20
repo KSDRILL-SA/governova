@@ -255,6 +255,9 @@ Every system runs locally with `docker-compose up` as a single command. The `doc
 ### S8.18–S8.23 — Docker Standards
 
 > **S8.18** — Docker images use specific version tags — never `latest`. `node:20.11-alpine`, `python:3.12-slim`. `latest` produces non-reproducible builds.
+>
+> **Anti-Patterns:**
+> - `AP-S8.18a` — Docker images using `latest` — the same Dockerfile produces a different image on a different day, so a build that passes CI and the build that reaches production are not demonstrably the same artefact.
 
 > **S8.19** — Multi-stage Docker builds for production images: `build` stage (dependencies + compilation), `production` stage (runtime only — no build tools, no dev dependencies). Production image size target: under 200MB.
 

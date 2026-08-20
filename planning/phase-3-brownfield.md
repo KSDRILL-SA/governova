@@ -3,8 +3,8 @@
 | Attribute | Value |
 |-----------|-------|
 | **Decision** | `governance/decisions/ADR-005-platform-architecture.md` — workstream C |
-| **Status** | Planned — ready to implement |
-| **Sequenced** | After Phase 2 (ADR-007, complete), before Phase 4 (workstream D — Cloud) |
+| **Status** | **Closed as scoped.** Stages 0–2 shipped in v0.2.0 · Stages 3–4 deferred by `ADR-009` |
+| **Sequenced** | After Phase 2 (ADR-007, complete). **Next is Phase 4 — workstream D, the Cloud** |
 | **Paired protocols** | `protocols/brownfield-adoption.md` · `protocols/practice-to-standard.md` |
 
 > Read ADR-005 workstream C first. It carries the decision; this document carries the work.
@@ -289,7 +289,17 @@ to the original exactly, with staleness refused in both directions.
 
 ---
 
-## Stage 3 — Map / Adapt · **semantic-gated**
+## Stage 3 — Map / Adapt · **DEFERRED by `ADR-009`**
+
+> **Settled on 2026-08-20. Do not re-derive this.** The tier measures **53% worst-run
+> precision against a 90% bar**, reproduced across two independent sets of five runs. `ADR-009`
+> declines to amend the bar, because 53% is not *just short* of 90% and a threshold that moves
+> to admit the capability it wants is not a threshold.
+>
+> **Re-entry criteria are in `ADR-009` and are explicit** — a backend at ≥85% worst-run
+> precision with recall held, the tuned local model of `#138` clearing that, or a deliberate
+> re-scope after workstream D. Everything below is preserved as the design to build *when* one
+> of those holds, not as work that is waiting.
 
 **Ships:** mapping an organisation's own standards onto the Governova index.
 
@@ -309,7 +319,11 @@ designing anything.
 
 ---
 
-## Stage 4 — Always-On Learning · **semantic-gated, and consent-gated**
+## Stage 4 — Always-On Learning · **DEFERRED by `ADR-009`**
+
+> Deferred on the same evidence as Stage 3, and additionally still gated on the privacy
+> posture being written. The consent and data-handling requirements below stand whenever it
+> is reopened — they are not softened by the deferral.
 
 **Ships:** periodic re-analysis proposing constitutional amendments.
 

@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-08-20T21:02:06.710384Z",
-  "source_commit_sha": "ac15195",
-  "checksum": "sha256:24a930797b6a9ce61dd2677e529b73fc7f97a500dac508ef01493f6cf88d2778",
+  "compiled_at": "2026-08-20T22:23:18.635870Z",
+  "source_commit_sha": "245eaad",
+  "checksum": "sha256:53c976dc50450a38627388931a29eade2954cf1af1e0b8c447d0a38009b4f2a7",
   "framework": [
     {
       "id": "format-specification",
@@ -24325,6 +24325,12 @@
       "name": "Governova Cloud: the paid boundary, the stack, and the Intelligence Gateway",
       "status": "ACCEPTED",
       "path": "governance/decisions/ADR-010-governova-cloud.md"
+    },
+    {
+      "id": "ADR-011",
+      "name": "The corpus is the product: licence, price ladder, and the gates that unlock each tier",
+      "status": "ACCEPTED",
+      "path": "governance/decisions/ADR-011-corpus-licence-and-pricing.md"
     }
   ],
   "hierarchy": [

@@ -802,30 +802,69 @@ Props that need to pass through more than two component levels are moved to a co
 ### S4.33–S4.45 — Additional State Standards
 
 > **S4.33** — API error responses are always surfaced to the user with an actionable message — never silently swallowed. Error messages use plain language: "Could not load applications — try again" not "Error 500."
+>
+> **Anti-Patterns:**
+> - `AP-S4.33a` — A caught error logged to the console and nowhere else — the interface renders an empty list, so the user concludes there is no data rather than that the request failed, and never retries.
 
 > **S4.34** — Optimistic updates include rollback logic — if the API call fails, the UI reverts to its pre-update state and displays an error.
+>
+> **Anti-Patterns:**
+> - `AP-S4.34a` — An optimistic update with no rollback — the interface shows a change the server rejected, and the user learns on the next page load that work they believed was saved is gone.
 
 > **S4.35** — Data fetched for display is never mutated directly — TanStack Query invalidation or Signal derivation produces new values; mutation of cache data directly is forbidden.
+>
+> **Anti-Patterns:**
+> - `AP-S4.35a` — Cached response objects mutated in place — every other component reading that cache changes without re-rendering, producing a screen whose parts disagree about the same record.
 
 > **S4.36** — Infinite scroll and paginated lists use cursor-based pagination (aligned with S2.39) — offset pagination breaks when items are added or removed between pages.
+>
+> **Anti-Patterns:**
+> - `AP-S4.36a` — Offset pagination over a list that changes — an insert shifts every later page by one, so the reader silently skips a record and sees another twice.
 
 > **S4.37** — Local state that does not need to survive page navigation is component-scoped, not store-scoped — not everything belongs in a global store.
+>
+> **Anti-Patterns:**
+> - `AP-S4.37a` — Transient interface state kept in a global store — an open dropdown becomes application state, unrelated components re-render, and the store stops describing anything meaningful.
 
 > **S4.38** — WebSocket connections are managed in services (Angular) or custom hooks (Next.js), not in components — components subscribe to the stream, they do not own the connection.
+>
+> **Anti-Patterns:**
+> - `AP-S4.38a` — A socket opened inside a component — it reopens on every remount, so moving between two views accumulates connections the server must hold and nobody closes.
 
 > **S4.39** — Derived state is computed, not stored — if a value can be derived from existing state, it is a computed value, not a stored value.
+>
+> **Anti-Patterns:**
+> - `AP-S4.39a` — A derived value stored alongside its source — the two can now disagree, and the defect surfaces as a total that does not match the list it was computed from.
 
 > **S4.40** — Real-time feature state falls back to polling on WebSocket disconnect — fallback prevents silent data staleness.
+>
+> **Anti-Patterns:**
+> - `AP-S4.40a` — A dropped socket with no polling fallback — the interface keeps rendering the last frame it received, so stale data is indistinguishable from data that has not changed.
 
 > **S4.41** — Forms are not server state — form inputs and draft state live in local component state or form libraries, not in TanStack Query or global stores.
+>
+> **Anti-Patterns:**
+> - `AP-S4.41a` — Form inputs held in the server-state cache — a background refetch overwrites what the user is typing mid-sentence, and nothing in the symptom points at the cause.
 
 > **S4.42** — Feature flag state is read from the database via API on session start — never hardcoded in frontend code.
+>
+> **Anti-Patterns:**
+> - `AP-S4.42a` — A feature flag compiled into the bundle — turning the feature off during an incident then needs a build and a deploy, which is the one thing a flag exists to avoid.
 
 > **S4.43** — Dark mode preference is stored in localStorage and applied before first paint — prevents flash of wrong theme.
+>
+> **Anti-Patterns:**
+> - `AP-S4.43a` — Theme applied after hydration — every navigation flashes the wrong theme first, which reads as a broken product rather than a slow one.
 
 > **S4.44** — URL state (filters, pagination, sort) is encoded in query parameters — enables deep linking and browser back/forward navigation to work correctly.
+>
+> **Anti-Patterns:**
+> - `AP-S4.44a` — Filters and sort held only in memory — the view cannot be linked to or reloaded, and the browser back button discards the user's work instead of returning to it.
 
 > **S4.45** — State resets on route navigation unless explicitly preserved — stale state from a previous route contaminating a new route is a code review block.
+>
+> **Anti-Patterns:**
+> - `AP-S4.45a` — State carried across a route change unintentionally — one record's data renders under another record's heading, a correctness failure users are more likely to believe than to report.
 
 ---
 
@@ -899,10 +938,19 @@ Client-side form validation provides immediate user feedback (UX). Server-side v
 ### S4.49–S4.51 — Additional Form Standards
 
 > **S4.49** — Form errors display inline, adjacent to the field that caused them — not as a modal or toast. Toast is reserved for async operation feedback (save success, delete confirmation), not form validation.
+>
+> **Anti-Patterns:**
+> - `AP-S4.49a` — Validation errors shown in a toast — the message disappears on a timer while the field that caused it stays unmarked, so the user is told something is wrong and not where.
 
 > **S4.50** — Multi-step forms preserve completed step data on back navigation — users never lose work by clicking back.
+>
+> **Anti-Patterns:**
+> - `AP-S4.50a` — A multi-step form that discards completed steps on back navigation — the back button becomes unusable, and users answer the same questions twice to reach the one they wanted to change.
 
 > **S4.51** — Form submission disables the submit button and shows a loading indicator during the API call — prevents double-submission.
+>
+> **Anti-Patterns:**
+> - `AP-S4.51a` — A submit button that stays live during the request — an impatient second click creates a duplicate record, and on a payment path it charges twice.
 
 ---
 
@@ -1018,12 +1066,24 @@ Angular unit tests use Vitest with `@analogjs/vitest-angular`. Karma and Jasmine
 ### S4.57–S4.60 — Additional Angular Standards
 
 > **S4.57** — The `async` pipe is used in templates to subscribe to Observables — manual subscriptions in `ngOnInit` that are not unsubscribed are a memory leak.
+>
+> **Anti-Patterns:**
+> - `AP-S4.57a` — A manual subscription in `ngOnInit` with no teardown — the component unmounts and the subscription does not, so navigating repeatedly leaks one listener per visit.
 
 > **S4.58** — Angular CLI generates all components, services, and guards — no hand-crafted Angular boilerplate.
+>
+> **Anti-Patterns:**
+> - `AP-S4.58a` — Hand-written Angular boilerplate — the file layout, selectors and registration drift from what the tooling expects, and every later generator command produces a second convention alongside the first.
 
 > **S4.59** — Environment files (`environment.ts`, `environment.prod.ts`) reference only variable names, not values — actual values come from Railway Secrets via build configuration.
+>
+> **Anti-Patterns:**
+> - `AP-S4.59a` — A real value in an environment file — it is committed, it is in the bundle, and it is readable by anyone who opens the served JavaScript.
 
 > **S4.60** — `ngFor` always uses a `trackBy` function — prevents full re-render of list items on data update.
+>
+> **Anti-Patterns:**
+> - `AP-S4.60a` — `ngFor` without `trackBy` — the whole list re-renders on any change, discarding focus, scroll position and in-progress input inside the rows.
 
 ---
 
@@ -1055,10 +1115,19 @@ shadcn/ui is the Next.js component library. Buttons, forms, dialogs, dropdowns, 
 ### S4.62–S4.64 — Additional MVP Realism Standards
 
 > **S4.62** — Admin dashboards are Group 3 features — not built before the primary user workflow is complete and shipped.
+>
+> **Anti-Patterns:**
+> - `AP-S4.62a` — An admin dashboard built before the workflow it administers — effort goes into observing a product that does not yet do anything worth observing.
 
 > **S4.63** — Animation libraries (Framer Motion, GSAP) are deferred to v2 unless the animation is core to the primary user workflow — no animation in v1 that is not directly tied to a user-facing functional interaction.
+>
+> **Anti-Patterns:**
+> - `AP-S4.63a` — An animation library added in v1 for decoration — a bundle-size and accessibility cost is taken on before the primary workflow that justifies it exists.
 
 > **S4.64** — Frontend internationalisation (i18n) is not implemented in v1 for any system — the user base is English-speaking South African users; i18n is a v2 feature when the user base has been confirmed.
+>
+> **Anti-Patterns:**
+> - `AP-S4.64a` — Internationalisation scaffolding built before a non-English user base is confirmed — every string in the product pays the indirection cost for an audience nobody has evidence of.
 
 ---
 
@@ -1111,12 +1180,24 @@ React error boundaries wrap every page/route and every major async feature area 
 ### S4.67–S4.70 — Additional Observability Standards
 
 > **S4.67** — Vercel Analytics is enabled on all Next.js deployments — Core Web Vitals (LCP, CLS, FID) are tracked per deployment and reviewed post-deploy.
+>
+> **Anti-Patterns:**
+> - `AP-S4.67a` — Front-end performance measured only on a developer's machine — a fast laptop on a fast network is the one environment in which the regression cannot be observed.
 
 > **S4.68** — `X-Request-ID` header is attached to every frontend API call — enables correlation between frontend Sentry errors and backend log entries for the same request.
+>
+> **Anti-Patterns:**
+> - `AP-S4.68a` — API calls sent without a correlation identifier — a front-end error and the back-end log entry that explains it cannot be joined, so each is diagnosed alone and neither is conclusive.
 
 > **S4.69** — Performance budget: Lighthouse performance score ≥ 80 on mobile in CI — a score below 80 is a build warning, below 70 is a build failure.
+>
+> **Anti-Patterns:**
+> - `AP-S4.69a` — No performance budget in CI — the page degrades by a little on most merges, no single one is responsible, and the regression is only noticed once it is large.
 
 > **S4.70** — Real-time features log connection and disconnection events to Sentry with user context — enables diagnosing WebSocket reliability issues in production.
+>
+> **Anti-Patterns:**
+> - `AP-S4.70a` — Connection lifecycle events unlogged — real-time reliability can only be assessed from user reports, which arrive as "it sometimes does not update" and cannot be reproduced.
 
 ---
 
@@ -1150,18 +1231,39 @@ Within each sprint, frontend features are built in group order: Group 1 (core pr
 ### S4.72–S4.78 — Group-Build Standards
 
 > **S4.72** — Each feature group has one designated owner who signs off on the group's completion before the next group begins.
+>
+> **Anti-Patterns:**
+> - `AP-S4.72a` — A feature group with no named owner — completion is declared by whoever stops working on it, and the sign-off that was meant to gate the next group never happens.
 
 > **S4.73** — Group completion criteria: all standards pass, all tests pass, CI green, PR merged to main, preview deployment functional.
+>
+> **Anti-Patterns:**
+> - `AP-S4.73a` — A group called complete against an informal impression — "done" then means something different each sprint, and the criteria are recalled after the fact to fit what shipped.
 
 > **S4.74** — Group 1 features ship before any Group 2 feature is started within the same sprint.
+>
+> **Anti-Patterns:**
+> - `AP-S4.74a` — Group 2 started before Group 1 ships — two half-finished groups exist where one working one was promised, and neither can be released.
 
 > **S4.75** — Cross-group dependencies are documented in the feature proposal — if Group 2 depends on Group 1 data, this is explicit and tracked.
+>
+> **Anti-Patterns:**
+> - `AP-S4.75a` — An undocumented cross-group dependency — the blocking relationship is discovered at integration, when both groups are built and one of them is wrong.
 
 > **S4.76** — A group that slips (incomplete at sprint end) is moved to the next sprint as Group 1 priority — partial groups are never shipped.
+>
+> **Anti-Patterns:**
+> - `AP-S4.76a` — A partial group shipped to close a sprint — the incomplete half reaches users as a feature that half-works, which is harder to withdraw than one that never shipped.
 
 > **S4.77** — Group retrospective: after each group ships, 30 minutes reviewing what the group revealed about the next group's requirements — not a process ceremony, a design input.
+>
+> **Anti-Patterns:**
+> - `AP-S4.77a` — Skipping the retrospective because the group shipped cleanly — the group that went well is the one carrying the design insight the next group needs.
 
 > **S4.78** — Group build history is tracked in the system context file (`system-contexts/{system}-context.md`) — current group, completed groups, next group, open issues per group.
+>
+> **Anti-Patterns:**
+> - `AP-S4.78a` — Group history left untracked — nobody can say what was built, in what order, or why, so the next engineer re-derives the sequence from commit archaeology.
 
 ---
 
@@ -1223,8 +1325,14 @@ A single `feat: add scholarship application form` commit containing 800 lines of
 ### S4.81–S4.82 — Additional Layer Build Standards
 
 > **S4.81** — TypeScript interfaces and Zod schemas defined in the first layer commit are never changed without updating the service and component layers in the same PR — interface changes cascade downward, never upward.
+>
+> **Anti-Patterns:**
+> - `AP-S4.81a` — An interface changed without updating the service and component layers in the same pull request — the layers below compile against a shape that no longer exists, and the break surfaces at runtime.
 
 > **S4.82** — The layer build order applies to bug fixes as well as features — a bug fix that touches all four layers follows the same layer sequence in separate commits.
+>
+> **Anti-Patterns:**
+> - `AP-S4.82a` — A bug fix that touches every layer in one commit — the change cannot be reviewed layer by layer or reverted in part, so a fix for one layer is rolled back along with three that were correct.
 
 ---
 

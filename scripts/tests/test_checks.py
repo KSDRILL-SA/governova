@@ -395,14 +395,14 @@ def test_domain_coverage_is_reported_separately_from_core():
     # plus the nine orphans given `**Anti-Patterns:**` blocks once the abbreviated
     # form could carry them, plus `AP-S10.8b` — the L4 amendment boundary, which
     # reached the index by being re-parented off a stale row naming `S10.14` —
-    # plus **all 87 of C08**, which the ceiling programme closed entirely. It was
-    # the corpus's largest gap at 72 bare standards and is now complete.
+    # plus **all of C08 and all of C04**, closed by the ceiling programme. C08 was
+    # the corpus's largest gap at 72 bare standards; C04 was the next at 36.
     #
     # The denominator keeps *growing*, which lowers enforcement coverage rather
     # than flattering it. That is the honest direction: writing more of the law
     # down does not enforce it, and this figure should never move because a
     # denominator was trimmed.
-    assert cov["total_anti_patterns"] == 582, "core denominator changed unexpectedly"
+    assert cov["total_anti_patterns"] == 618, "core denominator changed unexpectedly"
     assert cov["domain_total_anti_patterns"] > 0
     assert all(ap.startswith("AP-D-") for ap in cov["domain_covered"])
     assert not any(ap.startswith("AP-D-") for ap in cov["covered"])

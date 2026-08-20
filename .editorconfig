@@ -1,0 +1,45 @@
+# S1.73 — "TypeScript and TSX files: 100-character line length. Python files:
+# 88-character line length (Ruff/Black standard). Both configured in the tool
+# configuration files — never manually managed."
+#
+# The Python half lives in `pyproject.toml`, where Ruff reads it. The TypeScript
+# half had no home at all: this repository carries no Prettier config, no ESLint
+# config, and no `printWidth` anywhere, so 100 existed only as a sentence in the
+# constitution. This file is that home.
+#
+# **Why EditorConfig and not Prettier.** The hand-written TypeScript surface is
+# five files and 485 lines, all of it the IDE extension. Adding a Node toolchain,
+# a dev-dependency and a CI job to govern that is disproportionate, and a
+# formatter nobody runs would repeat the defect rather than fix it. EditorConfig
+# is read natively by VS Code, Cursor, JetBrains and Vim, needs no install, and
+# is the lightest thing that makes the number authoritative where the work happens.
+#
+# **This configures; it does not enforce.** Eleven lines in the extension exceed
+# 100 today. They are deliberately not hand-wrapped, because S1.73's own closing
+# clause is *never manually managed* — they should be fixed by a formatter reading
+# this file, not by a person counting columns. If the TypeScript surface grows to
+# warrant Prettier, it inherits these values rather than contradicting them.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+
+[*.{ts,tsx,mts,cts}]
+indent_size = 2
+max_line_length = 100
+
+[*.py]
+indent_size = 4
+max_line_length = 88
+
+[*.{json,yml,yaml,toml}]
+indent_size = 2
+
+[*.md]
+# Trailing whitespace is significant in Markdown — two spaces is a line break.
+trim_trailing_whitespace = false

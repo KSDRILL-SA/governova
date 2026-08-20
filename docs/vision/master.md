@@ -638,28 +638,51 @@ The complete per-project four-layer documentation of every file. The output that
 
 ### 19.1 Subscription tiers
 
-> **Revised by `ADR-010` (2026-08-20).** The tier *prices* stand. What each tier *buys* was
-> redefined, because the original table gated the local engine and `governova` v0.2.0 shipped
-> to PyPI under MIT with every deterministic capability included — all 42 rules, the Score, the
-> Board Report, the System Bible and the MCP server. **MIT cannot be revoked for what is
-> already distributed**, so a Free tier limited to "3 critical anti-pattern alerts", and an
-> MCP server sold at Max, describe a product that can no longer be built from here.
+> **Replaced by `ADR-011` (2026-08-21), which amends `ADR-010` §1.** The original table gated
+> the *engine* and priced tiers for capabilities that do not exist. Two things changed. The
+> **corpus** — not the engine — is the licensed product. And the **price points are set from a
+> single R200 anchor**, with Enterprise and Certification withheld until published gates are met.
 
-**The paid boundary is "needs a server we run", never "is valuable."**
+**The engine is free. The corpus is the product.**
 
 | | |
 |---|---|
-| **Free forever — MIT, offline, unlimited projects** | Every deterministic rule and probe · Governova Score · Board-Level Governance Report · System Bible · CLI · MCP server · CI/CD gate · PR Guardian · `onboard` / `roadmap` / `convert` · the whole compiled constitution |
-| **Governova Cloud — paid** | Intelligence Gateway (metered AI by effort tier) · Intelligence Network (§15.1) · hosted dashboard, history and trend · organisations, teams, seats, SSO · Certification programme (§18.2) · temporal governance feeds (§15.2) |
+| **Free forever — MIT, offline** | Every deterministic rule and probe · Governova Score · Board-Level Governance Report · System Bible · CLI · MCP server · CI/CD gate · PR Guardian · `onboard` / `roadmap` / `convert` · **a core corpus of ~120 universal standards** |
+| **Subscription** | The full 670-standard corpus · domain packs · amendments as they ratify · Intelligence Gateway credits · hosted dashboard, history and trend · organisations, teams, seats |
+| **Gated until earned (§19.3)** | SSO · SLA · Mapping Engine · Certification programme (§18.2) · Intelligence Network (§15.1) |
 
-| Tier | Price | Seats | Cloud entitlement |
-|------|-------|-------|-------------------|
-| **Free** | $0 / forever | 1 | The complete local engine. No Cloud credits. |
-| **Pro** | $9/mo · $89/yr | 1 | Gateway credits at Low/Medium effort · hosted history · dashboard |
-| **Pro+** | $19/mo · $189/yr | 2 | Team mode · High effort · org management · API access |
-| **Max** | $39/mo · $389/yr | 5 | Enterprise mode · Max effort · SSO · white-label · SLA |
+Prices are **set per market, not converted** — each is a round number in its own currency.
 
-Annual billing ~20% discount. **Seats are the billed unit; projects are never counted.**
+| Tier | USD /mo | ZAR /mo | Seats | Credits /mo |
+|------|---------|---------|-------|-------------|
+| **Free** | $0 | R0 | 1 | 100 once |
+| **Starter** — students, developers between roles | $6 | R99 | 1 | 400 |
+| **Pro** — *the anchor* | $12 | **R200** | 1 | 800 |
+| **Pro+** | $25 | R400 | 3 | 1,800 |
+| **Team** | $29/seat | R500/seat | min 5 | 1,200/seat |
+
+Annual billing is two months free. **Seats are the billed unit; projects are never counted.**
+
+**One price, growing value.** These figures do not rise between stages — what rises is what they
+buy. Today R200 is the full corpus and the complete engine; when the Intelligence Gateway ships,
+credits switch on at no extra cost, on the same subscription.
+
+### 19.3 What is not for sale yet
+
+Business ($99/seat), Enterprise (from $30,000/yr) and Certification ($2,500–$25,000/yr) are
+**withheld until every gate below is met** — each a figure this project's own tooling reports:
+
+| Gate | Today |
+|---|---|
+| Governova scores ≥ 85 on itself | 78 |
+| Enforcement coverage ≥ 25% | 7.5% |
+| Semantic tier clears `ADR-009`, or ships labelled advisory | 53% against a 90% bar |
+| SOC 2 Type I | none |
+| One named reference customer in production | none |
+
+**Certification opens when Governova scores 85 on itself.** That sentence is true, checkable in
+this repository, and unavailable to any competitor — selling a certification we would currently
+fail is the one thing that would end this company.
 
 ### 19.2 Why there is no licence server
 

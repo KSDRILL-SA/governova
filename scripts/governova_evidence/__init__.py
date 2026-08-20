@@ -554,17 +554,32 @@ def _first_existing(root: Path, candidates: tuple[str, ...]) -> tuple[str, str] 
 
 
 def _table_rows(text: str) -> list[list[str]]:
-    """Body rows of the first markdown table, header and separator dropped."""
+    """Body rows of the **first** markdown table, header and separator dropped.
+
+    The first table is the one the caller read a header out of, so reading rows
+    from anywhere else compares cells against the wrong column names.
+
+    **An earlier form cleared on every separator and returned the *last* table.**
+    A register holding open risks above and a "closed" table below therefore
+    reported only the closed rows — so a page whose open risks named nobody could
+    still pass, which is the false `satisfied` this whole module exists to refuse.
+    Scanning stops at the first line that is not a body row.
+    """
     rows: list[list[str]] = []
     seen_separator = False
     for line in text.splitlines():
         if _HEADER_SEP.match(line):
+            if seen_separator:
+                break  # a second table begins; the first one is complete
             seen_separator = True
             rows.clear()  # everything before the separator was the header
             continue
+        if not seen_separator:
+            continue  # header row and any preceding prose
         match = _TABLE_ROW.match(line)
-        if match and seen_separator:
-            rows.append([cell.strip() for cell in match.group(1).split("|")])
+        if not match:
+            break  # blank line, heading, or prose — the first table has ended
+        rows.append([cell.strip() for cell in match.group(1).split("|")])
     return rows
 
 

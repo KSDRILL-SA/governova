@@ -83,6 +83,50 @@ def test_s931_absent_register_is_unknown(tmp_path) -> None:
     assert _probe_risk_ownership(tmp_path).verdict is Verdict.UNKNOWN
 
 
+# A real register has more than one table — open risks above, closed below. That
+# shape is what exposed the defect these two cover, and it is the ordinary shape,
+# not a contrived one.
+_TWO_TABLES = (
+    "## Open\n\n"
+    "| Risk | Owner | Mitigation |\n"
+    "|---|---|---|\n"
+    "| Vendor outage | the platform team | failover |\n"
+    "| Key rotation | unassigned | scheduled |\n"
+    "\n## Closed\n\n"
+    "| Risk | Owner | Closed |\n"
+    "|---|---|---|\n"
+    "| Old advisory | Thandi M | 2026-08-20 |\n"
+)
+
+
+def test_s931_unowned_open_risks_are_not_excused_by_a_clean_closed_table(tmp_path) -> None:
+    """The negative case, and the reason `_table_rows` reads the *first* table.
+
+    An earlier form cleared its accumulator on every separator and so returned the
+    **last** table. On a register shaped like the one above, it read one tidy closed
+    row, reported `satisfied`, and never saw that both open risks named nobody.
+
+    That is a false `satisfied` — the single failure this module exists to refuse —
+    and it is invisible, because the probe reports a verdict either way.
+    """
+    from governova_evidence import Verdict, _probe_risk_ownership
+
+    (tmp_path / "RISKS.md").write_text(_TWO_TABLES, encoding="utf-8")
+    result = _probe_risk_ownership(tmp_path)
+    assert result.verdict is Verdict.VIOLATED
+    assert "2/2" in result.evidence, result.evidence
+
+
+def test_table_rows_reads_the_first_table_not_the_last() -> None:
+    """Stated directly, because the probe above can only observe it indirectly."""
+    from governova_evidence import _table_rows
+
+    rows = _table_rows(_TWO_TABLES)
+    assert len(rows) == 2, rows
+    assert rows[0][0] == "Vendor outage"
+    assert all("Old advisory" not in cell for row in rows for cell in row)
+
+
 def test_s932_an_estimate_with_no_actual_is_never_falsified(tmp_path) -> None:
     from governova_evidence import Verdict, _probe_estimate_calibration
 

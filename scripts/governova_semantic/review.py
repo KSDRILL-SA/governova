@@ -18,7 +18,11 @@ from typing import Any
 from governova_compile.schema import CompiledIndex, Standard
 from governova_compile.writer import load_active_index
 
-from governova_semantic.client import SemanticUnavailableError, Transport, default_transport
+from governova_semantic.client import (
+    SemanticUnavailableError,
+    Transport,
+    default_transport,
+)
 from governova_semantic.config import SemanticConfig, from_env
 
 _WORD = re.compile(r"[a-z]{4,}")

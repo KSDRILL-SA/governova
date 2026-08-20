@@ -109,7 +109,11 @@ def _check_drift(root: Path) -> None:
     can read it without running the generator, which only works if CI proves the
     committed copy still matches its source.
     """
-    from governova_codegen.python_types import _BANNER, _strip_leading_docstring, generated_files
+    from governova_codegen.python_types import (
+        _BANNER,
+        _strip_leading_docstring,
+        generated_files,
+    )
 
     types_py_root = root / "platform" / "shared" / "types-py"
     expected = dict(generated_files(types_py_root))

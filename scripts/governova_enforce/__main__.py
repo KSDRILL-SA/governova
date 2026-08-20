@@ -22,7 +22,13 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
-from governova_checks import DEFAULT_IGNORES, Finding, changed_files, is_ignored, scan_paths
+from governova_checks import (
+    DEFAULT_IGNORES,
+    Finding,
+    changed_files,
+    is_ignored,
+    scan_paths,
+)
 from governova_compile.discovery import resolve_target_root
 from governova_compile.writer import load_active_index
 from governova_console import configure_stdout

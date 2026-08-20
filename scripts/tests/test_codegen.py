@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from governova_codegen.python_types import _strip_leading_docstring, generate_python_types
+from governova_codegen.python_types import (
+    _strip_leading_docstring,
+    generate_python_types,
+)
 
 SCHEMA = '''"""Original module docstring to be replaced."""
 

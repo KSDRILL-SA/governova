@@ -5,7 +5,14 @@ from __future__ import annotations
 import json
 
 from governova_report import build_report, to_json, to_markdown
-from governova_report.model import AMBER, GREEN, RED, AreaStatus, BoardReport, GovernanceEvents
+from governova_report.model import (
+    AMBER,
+    GREEN,
+    RED,
+    AreaStatus,
+    BoardReport,
+    GovernanceEvents,
+)
 from governova_score.model import Factor, finalize
 
 

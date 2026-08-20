@@ -28,7 +28,12 @@ from governova_compile.writer import load_index
 from governova_onboard import assess, build_roadmap
 from governova_onboard.baseline import EXAMPLE_FILES, FindingGroup
 from governova_onboard.render import roadmap_table, roadmap_to_json
-from governova_onboard.roadmap import Item, Kind, Protection, find_characterisation_tests
+from governova_onboard.roadmap import (
+    Item,
+    Kind,
+    Protection,
+    find_characterisation_tests,
+)
 
 
 @pytest.fixture(scope="module")

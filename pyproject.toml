@@ -22,7 +22,16 @@ members = [
 package = false
 
 [tool.ruff]
-line-length = 100
+# S1.73 — "Python files: 88-character line length (Ruff/Black standard). Both
+# configured in the tool configuration files — never manually managed." This file
+# declared 100, which is the TypeScript half of that standard applied to Python.
+#
+# It is not only a declaration. `E501` is ignored below and `ruff format` is not
+# run in CI, so the obvious expectation is that this value governs nothing — but
+# `I001` (import sorting) uses it to decide when an import line must wrap, and
+# lowering it to 88 produced ten real `ruff check` failures across nine files.
+# The setting was load-bearing in a way nobody had noticed.
+line-length = 88
 target-version = "py312"
 extend-exclude = ["compiled", "platform/shared/types-ts", ".venv"]
 
@@ -40,7 +49,14 @@ select = [
     "C4",   # flake8-comprehensions
 ]
 ignore = [
-    "E501",     # line too long (formatter handles)
+    # Line length is declared above and not enforced here. Measured on this tree:
+    # 794 lines exceed 88 and 115 already exceed the 100 that was declared before
+    # it — so E501 has never been holding anything. Turning it on is a real
+    # decision with a measured blast radius, not a tidy-up, and it is not folded
+    # into a one-line config correction. `ruff format` must not be run repo-wide
+    # to achieve it either: CI runs `ruff check` only, and a reformat would rewrite
+    # the tree under a gate that never asked for it.
+    "E501",     # line too long — see above; enforcing this is a separate decision
     "RUF001",   # ambiguous unicode (em-dash etc. are intentional — they are the source format)
     "RUF002",   # ambiguous unicode in docstrings
     "RUF003",   # ambiguous unicode in comments

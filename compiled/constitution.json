@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-08-20T16:28:24.901062Z",
-  "source_commit_sha": "799fd41",
-  "checksum": "sha256:1985cd59632ae0c6b5368726b9d1edc46496ececb93126d0cb11a5a952107e65",
+  "compiled_at": "2026-08-20T18:06:15.581470Z",
+  "source_commit_sha": "5156cad",
+  "checksum": "sha256:20371ac2d02674c0396a85a1c43da0d10355d242c2de6f4bd1fdbd6faef8eb6c",
   "framework": [
     {
       "id": "format-specification",
@@ -24308,6 +24308,12 @@
       "name": "The Semantic Tier Has No Default Endpoint",
       "status": "ACCEPTED",
       "path": "governance/decisions/ADR-008-semantic-tier-endpoint.md"
+    },
+    {
+      "id": "ADR-009",
+      "name": "Map/Adapt and Always-On Learning Are Deferred, and the Bar Is Not Amended",
+      "status": "ACCEPTED",
+      "path": "governance/decisions/ADR-009-map-adapt-deferred.md"
     }
   ],
   "hierarchy": [

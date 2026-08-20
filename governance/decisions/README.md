@@ -14,8 +14,17 @@ Restructure / migration records use a descriptive `RESTRUCTURE-{version}.md` nam
 - ADR-002: Maphophe stack selection
 - ADR-003: Reserve Bank stack selection
 - ADR-004: SyncUp stack selection
+- ADR-005: Governova platform architecture — the 3-plane model and four workstreams
+- ADR-006: Engine security posture
+- ADR-007: Lifecycle completeness — govern the whole SDLC
+- ADR-008: The semantic tier has no default endpoint
+- ADR-009: Map/Adapt and Always-On Learning are deferred, and the bar is not amended
 - RESTRUCTURE-v2.0: The Governova v2.0 four-layer restructure instruction
   (executed record of the migration that produced this structure)
+
+> This list stopped at ADR-004 while five further records were added, because it is
+> hand-maintained prose and nothing checks it. `governova stats` reports the count the
+> compiled index actually holds — regenerate before trusting this section.
 
 ## Migration
 All ADRs migrated from original `adrs/` folder.

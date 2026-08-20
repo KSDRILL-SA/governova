@@ -518,6 +518,64 @@ def test_suppression_scanning_stays_linear_on_a_hostile_line():
     assert elapsed < 5.0, f"20 hostile scans took {elapsed:.2f}s — suspect backtracking"
 
 
+# The ratio a single rule may cost against the median rule. One number, shared by
+# the ceiling test and the test proving the ceiling still catches something.
+COST_CEILING = 25.0
+
+# Samples taken per (rule, line). The cost of a scan is `true cost + noise`, and
+# scheduler noise is **never negative** — so the minimum of several samples
+# converges on the true cost, while a single sample can only ever be inflated.
+#
+# This is not a tolerance and it does not move the ceiling. It is the standard
+# microbenchmark treatment, and it is here because the previous single-sample form
+# failed roughly three runs in eight under CPU contention:
+#
+#     current, 8 trials under load    3 failures, ratios to 255.8x
+#     min-of-3, same 8 trials         0 failures, 7.3x – 12.7x
+#
+# **255.8x is the finding.** The ceiling is set against 355x for a genuinely
+# exponential rule, so under contention the noise floor climbed into the signal and
+# the gate could no longer tell a pathological rule from a descheduled one. The
+# giveaway was that the rule it accused *changed between runs* — `AP-D-FINTECH.6b`
+# at 255.8x and 40.0x, `AP-S13.7a` at 27.3x. A real pathological rule is the same
+# rule every time.
+#
+# The numerator is a `max` over rules and the denominator a `median` across all of
+# them, so one-sided noise inflates the numerator alone and the median absorbs it.
+# That asymmetry is why a slow machine cancels out and a *busy* one does not.
+_COST_REPEATS = 3
+
+
+def _worst_cost_ratio(rules, lines):
+    """The most expensive rule's cost as a ratio to the median rule's.
+
+    Returns `(anti_pattern, cost_seconds, ratio)`.
+    """
+    import statistics
+    import time
+
+    def cost_once(rule, line: str) -> float:
+        rule.pattern.search(line)  # warm the compiled pattern
+        start = time.perf_counter()
+        for _ in range(20):
+            match = rule.pattern.search(line)
+            if match and rule.unless is not None:
+                rule.unless.search(line)
+        return time.perf_counter() - start
+
+    costs: dict[str, float] = {}
+    for rule in rules:
+        worst = 0.0
+        for line in lines:
+            best = min(cost_once(rule, line) for _ in range(_COST_REPEATS))
+            worst = max(worst, best)
+        costs[rule.anti_pattern] = worst
+    median = statistics.median(costs.values())
+    assert median > 0, "timer resolution too coarse to compare rules"
+    ap, cost = max(costs.items(), key=lambda kv: kv[1])
+    return ap, cost, cost / median
+
+
 def test_no_rule_costs_wildly_more_than_the_others():
     """One pathological rule, measured where the other 39 cannot dilute it.
 
@@ -547,35 +605,14 @@ def test_no_rule_costs_wildly_more_than_the_others():
     against 17.7us for the worst real one, so the cheap pass catches it in
     milliseconds and the expensive pass never runs.
     """
-    import statistics
-    import time
-
     from governova_checks.rules import MAX_LINE_LENGTH, RULES
-
-    def worst_ratio(lines: list[str]) -> tuple[str, float, float]:
-        costs: dict[str, float] = {}
-        for rule in RULES:
-            worst = 0.0
-            for line in lines:
-                rule.pattern.search(line)  # warm the compiled pattern
-                start = time.perf_counter()
-                for _ in range(20):
-                    match = rule.pattern.search(line)
-                    if match and rule.unless is not None:
-                        rule.unless.search(line)
-                worst = max(worst, time.perf_counter() - start)
-            costs[rule.anti_pattern] = worst
-        median = statistics.median(costs.values())
-        assert median > 0, "timer resolution too coarse to compare rules"
-        ap, cost = max(costs.items(), key=lambda kv: kv[1])
-        return ap, cost, cost / median
 
     # Pass 1 — short adversarial lines. Cheap, and exponential blowup is already
     # thousands of times the median here, so a pathological rule is named rather
     # than left to hang the pass below.
     short = [("ab " * 40)[:60], ("a" * 40 + "!")[:60], "# type: ignore " + "#" * 45]
-    ap, cost, ratio = worst_ratio(short)
-    assert ratio < 25.0, (
+    ap, cost, ratio = _worst_cost_ratio(RULES, short)
+    assert ratio < COST_CEILING, (
         f"{ap} costs {ratio:.1f}x the median rule on a 60-character line "
         f"({cost * 1e6:.0f}us per 20 scans) — suspect a nested quantifier"
     )
@@ -587,10 +624,55 @@ def test_no_rule_costs_wildly_more_than_the_others():
         "price amount balance total " * (MAX_LINE_LENGTH // 27),
         "x" * MAX_LINE_LENGTH,
     )
-    ap, cost, ratio = worst_ratio([p[:MAX_LINE_LENGTH] for p in probes])
-    assert ratio < 25.0, (
+    ap, cost, ratio = _worst_cost_ratio(RULES, [p[:MAX_LINE_LENGTH] for p in probes])
+    assert ratio < COST_CEILING, (
         f"{ap} costs {ratio:.1f}x the median rule at MAX_LINE_LENGTH "
         f"({cost * 1000:.1f}ms per 20 scans) — suspect an unbounded quantifier"
+    )
+
+
+def test_the_cost_ceiling_still_catches_a_pathological_rule():
+    """The gate must be shown to **fail**, not only to pass.
+
+    A ceiling that has only ever been observed passing has not been shown to be a
+    ceiling. `(a+)+b` against a run of `a` with no `b` is the textbook catastrophic
+    backtrack — the shape the ratio exists to name.
+
+    **The run length is 12 on purpose.** The cost is `2**n`, so this is bounded at
+    roughly four thousand steps: unmistakable and effectively instant. The committed
+    probes above contain a 40-character run, and this rule against *that* does not
+    report at all — it runs past 600 seconds. Building the negative case is
+    therefore not a matter of splicing the rule into the existing probes, and a
+    first attempt that did exactly that had to be killed.
+
+    Measured separation on this machine, min-of-repeats, both sides:
+
+        the 40 real rules      6.5x  –  14.8x
+        ceiling                        25.0x
+        `(a+)+b` on 12 a's           2,646.9x     in 0.04s
+
+    Three orders of magnitude, so the ceiling sits between two reachable scores
+    with enormous margin on both sides — which is the only thing that makes it a
+    threshold rather than a number.
+    """
+    import re
+    from dataclasses import replace
+
+    from governova_checks.rules import RULES
+
+    pathological = replace(
+        RULES[0],
+        anti_pattern="AP-SYNTHETIC",
+        pattern=re.compile(r"(a+)+b"),
+        unless=None,
+        path_include=None,
+        path_exclude=None,
+    )
+    ap, _cost, ratio = _worst_cost_ratio([*RULES, pathological], ["a" * 12])
+    assert ap == "AP-SYNTHETIC", "the synthetic rule should be the most expensive by far"
+    assert ratio >= COST_CEILING, (
+        f"a catastrophically backtracking rule measured only {ratio:.1f}x the median "
+        f"— the ceiling can no longer detect what it exists for"
     )
 
 

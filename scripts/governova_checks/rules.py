@@ -207,13 +207,13 @@ RULES: list[Rule] = [
         "high",
     ),
     Rule(
-        "AP-S2.34a",
-        "S2.34",
+        "AP-S5.28a",
+        "S5.28",
         re.compile(
             r"\b(?:double|float)\s+\w*(?:price|amount|balance|total|cost|fee|money|currency)\w*",
             re.I,
         ),
-        "Monetary value as float/double. S2.34: money uses BigDecimal/Decimal.",
+        "Monetary value as float/double. S5.28: money uses Decimal, never Float.",
         "high",
     ),
     Rule(

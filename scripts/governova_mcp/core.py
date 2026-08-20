@@ -1,6 +1,6 @@
 """Pure, MCP-agnostic query logic over the compiled constitutional index.
 
-Kept separate from the FastMCP wiring so every tool is unit-testable without an
+Kept separate from the server wiring so every tool is unit-testable without an
 MCP client. Loads `compiled/constitution.json` (the index of record) once.
 """
 

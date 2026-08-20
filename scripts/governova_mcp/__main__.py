@@ -1,4 +1,4 @@
-"""`governova-mcp` — FastMCP server exposing the constitution as live tools.
+"""`governova-mcp` — an MCP server exposing the constitution as live tools.
 
 Run over stdio (the standard MCP transport):
     governova-mcp
@@ -13,11 +13,15 @@ from __future__ import annotations
 
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+# `mcp` 2.0 removed `mcp.server.fastmcp`. `MCPServer` is its replacement and keeps
+# the same `tool()` decorator and the same `run()` defaulting to stdio, so the
+# migration is a rename at this surface — which is only true because the tool
+# bodies live in `core` and none of them ever touched the server object.
+from mcp.server.mcpserver import MCPServer
 
 from governova_mcp import core
 
-mcp = FastMCP("governova")
+mcp = MCPServer("governova")
 
 
 @mcp.tool()

@@ -7,5 +7,5 @@ static files. This is the most defensible surface (GOVERNOVA-STRATEGY §3): the
 constitution becomes a living, queryable system.
 
 The tool logic lives in pure functions (see `core`) so it is unit-testable without
-an MCP client; `__main__` wraps them as FastMCP tools.
+an MCP client; `__main__` wraps them as `MCPServer` tools.
 """

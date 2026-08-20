@@ -33,12 +33,17 @@ dependencies = [
     # PYSEC-2026-3483, fixed in 1.28.1. A lower bound that permits a known-
     # vulnerable release is a lower bound that will eventually resolve to one.
     #
-    # Capped below 2.0 because that major removes `mcp.server.fastmcp`, which the
-    # MCP surface is built on — an unbounded floor resolved straight to 2.0.0 and
-    # broke the server. Taking the security patch and the API migration in one
-    # step would have coupled an urgent fix to a discretionary rewrite. The 2.x
-    # migration is tracked separately.
-    "mcp>=1.28.1,<2",
+    # The `<2` cap is lifted. It was correct when it was added — 2.0 removes
+    # `mcp.server.fastmcp`, and taking a security patch and an API migration in
+    # one step would have coupled an urgent fix to a discretionary rewrite. The
+    # migration is done now, so the cap has stopped protecting the server and
+    # started blocking 2.x security patches, which is the opposite of its purpose.
+    #
+    # The new floor is 2.0.0 rather than a range spanning both majors: the surface
+    # imports `mcp.server.mcpserver`, which does not exist in 1.x, so a resolver
+    # permitted to choose 1.x would produce an ImportError at startup rather than
+    # a resolution failure at install time.
+    "mcp>=2.0.0",
 ]
 
 [project.urls]

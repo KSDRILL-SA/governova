@@ -74,6 +74,22 @@ jobs:
       - name: Structural integrity
         run: uv run governova-validate
 
+      # S8.84, and the one gate `verify` used to omit. The advisory database moves
+      # without this repository moving, so a tag cut during a red Supply Chain week
+      # would otherwise publish a lockfile that Governova blocks in the CI of every
+      # project it governs. `main` being green when the commit was merged is not
+      # evidence about the day it ships.
+      #
+      # Copied from `supply-chain.yml` rather than shared as a composite action: at
+      # two call sites the indirection would hide what a release actually checks,
+      # and what a release checks should be readable in one file.
+      - name: Audit dependencies for known vulnerabilities (S8.84)
+        run: |
+          set -euo pipefail
+          uv export --frozen --all-packages --no-emit-workspace --no-hashes \
+            --format requirements-txt > /tmp/reqs.txt
+          uvx pip-audit --requirement /tmp/reqs.txt --strict --progress-spinner off
+
       - name: Dependency licences (S8.85)
         run: uv run governova licences --sbom sbom.cyclonedx.json
 

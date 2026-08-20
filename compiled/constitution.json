@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-08-20T22:56:57.315119Z",
-  "source_commit_sha": "edf90d2",
-  "checksum": "sha256:096f42d4540fd83127e55f68122a056c08928cce85d33a36f81ef00d21d311ee",
+  "compiled_at": "2026-08-20T23:14:19.157382Z",
+  "source_commit_sha": "d431841",
+  "checksum": "sha256:56185f11c56aaff2de4cd516a53dd468ec799b1fadfc6f089b329b6beb98f4c2",
   "framework": [
     {
       "id": "format-specification",
@@ -16442,7 +16442,13 @@
           ],
           "statement": "The Angular frontend deploys as a separate Vercel project from the FastAPI backend. Angular is a static SPA build — Vercel serves it correctly. The two deployments coordinate via `S6.29` (FastAPI first). `environment.prod.ts` points to the Railway FastAPI URL.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.3a",
+              "description": "Frontend and API deployed as one unit — a change to either forces a redeploy of both, so a CSS fix carries the risk profile of a backend release and the two can never be rolled back independently.",
+              "parent_standard_id": "S8.3"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S8.2",
@@ -16481,7 +16487,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 118
+          "source_line": 121
         },
         {
           "id": "S8.5",
@@ -16506,7 +16512,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 123
+          "source_line": 126
         },
         {
           "id": "S8.6",
@@ -16531,7 +16537,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 128
+          "source_line": 131
         },
         {
           "id": "S8.7",
@@ -16556,7 +16562,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 133
+          "source_line": 136
         },
         {
           "id": "S8.8",
@@ -16581,7 +16587,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 138
+          "source_line": 141
         },
         {
           "id": "S8.9",
@@ -16622,7 +16628,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 149
+          "source_line": 152
         },
         {
           "id": "S8.10",
@@ -16659,7 +16665,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 170
+          "source_line": 173
         },
         {
           "id": "S8.11",
@@ -16704,7 +16710,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 191
+          "source_line": 194
         },
         {
           "id": "S8.12",
@@ -16741,7 +16747,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 212
+          "source_line": 215
         },
         {
           "id": "S8.13",
@@ -16766,7 +16772,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 235
+          "source_line": 238
         },
         {
           "id": "S8.14",
@@ -16791,7 +16797,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 240
+          "source_line": 243
         },
         {
           "id": "S8.15",
@@ -16816,7 +16822,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 245
+          "source_line": 248
         },
         {
           "id": "S8.16",
@@ -16846,7 +16852,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 250
+          "source_line": 253
         },
         {
           "id": "S8.17",
@@ -16882,7 +16888,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 261
+          "source_line": 264
         },
         {
           "id": "S8.18",
@@ -16907,7 +16913,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 284
+          "source_line": 287
         },
         {
           "id": "S8.19",
@@ -16932,7 +16938,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 289
+          "source_line": 292
         },
         {
           "id": "S8.20",
@@ -16957,7 +16963,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 294
+          "source_line": 297
         },
         {
           "id": "S8.21",
@@ -16982,7 +16988,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 299
+          "source_line": 302
         },
         {
           "id": "S8.22",
@@ -17007,7 +17013,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 304
+          "source_line": 307
         },
         {
           "id": "S8.23",
@@ -17032,7 +17038,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 309
+          "source_line": 312
         },
         {
           "id": "S8.24",
@@ -17073,7 +17079,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 320
+          "source_line": 323
         },
         {
           "id": "S8.25",
@@ -17098,7 +17104,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 343
+          "source_line": 346
         },
         {
           "id": "S8.26",
@@ -17123,7 +17129,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 348
+          "source_line": 351
         },
         {
           "id": "S8.27",
@@ -17148,7 +17154,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 353
+          "source_line": 356
         },
         {
           "id": "S8.28",
@@ -17173,7 +17179,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 358
+          "source_line": 361
         },
         {
           "id": "S8.29",
@@ -17198,7 +17204,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 363
+          "source_line": 366
         },
         {
           "id": "S8.30",
@@ -17223,7 +17229,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 368
+          "source_line": 371
         },
         {
           "id": "S8.31",
@@ -17264,7 +17270,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 379
+          "source_line": 382
         },
         {
           "id": "S8.32",
@@ -17313,7 +17319,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 403
+          "source_line": 406
         },
         {
           "id": "S8.33",
@@ -17327,12 +17333,18 @@
           "enforced_by": [],
           "statement": "Better Stack monitors the `/health` endpoint of every production service every 60 seconds. Three consecutive health check failures trigger a SEV0 alert to the incident commander.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.33a",
+              "description": "An outage first reported by a user — monitoring that nobody configured is indistinguishable from monitoring that is passing, and the difference is only ever discovered during an incident.",
+              "parent_standard_id": "S8.33"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 426
+          "source_line": 429
         },
         {
           "id": "S8.34",
@@ -17346,12 +17358,18 @@
           "enforced_by": [],
           "statement": "`/health` endpoint returns: `{ status: \"ok\"|\"degraded\", database: \"connected\"|\"error\", version: \"...\", uptime: seconds }`. A degraded database triggers the SEV0 alert even if the application is running.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.34a",
+              "description": "A `/health` endpoint that returns `200` without checking its dependencies — it reports the web server is up, which was never in question, while the database it needs is unreachable.",
+              "parent_standard_id": "S8.34"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 428
+          "source_line": 434
         },
         {
           "id": "S8.35",
@@ -17365,12 +17383,18 @@
           "enforced_by": [],
           "statement": "Alert thresholds: error rate >1% on any endpoint → SEV1 evaluation. p95 latency >500ms → warning. p95 latency >2s on critical endpoints sustained 5 minutes → SEV2. Memory above 90% for 5 minutes → SEV1. CPU above 85% for 5 minutes → SEV2.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.35a",
+              "description": "Thresholds set where they will never fire — an alert calibrated to avoid waking anyone is an alert that will not wake anyone during the outage it exists for.",
+              "parent_standard_id": "S8.35"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 430
+          "source_line": 439
         },
         {
           "id": "S8.36",
@@ -17384,7 +17408,13 @@
           "enforced_by": [],
           "statement": "Railway Metrics alerts for Angular stack: FastAPI CPU, memory, and database connection pool utilisation — per threshold table in S8.35.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.36a",
+              "description": "Connection-pool utilisation unmonitored — pool exhaustion presents as slow requests rather than errors, so it is diagnosed as a database capacity problem and answered by scaling the wrong thing.",
+              "parent_standard_id": "S8.36"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S8.35",
@@ -17394,7 +17424,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 432
+          "source_line": 444
         },
         {
           "id": "S8.37",
@@ -17408,12 +17438,18 @@
           "enforced_by": [],
           "statement": "Vercel Analytics enabled on all Next.js and Angular frontends — Core Web Vitals (LCP, CLS, FID) tracked per deployment.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.37a",
+              "description": "Front-end performance measured only on a developer's machine — a fast laptop on a fast network is the one environment in which the regression cannot be observed.",
+              "parent_standard_id": "S8.37"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 434
+          "source_line": 449
         },
         {
           "id": "S8.38",
@@ -17427,12 +17463,18 @@
           "enforced_by": [],
           "statement": "Alert delivery chain is tested monthly: SEV0/SEV1 alerts via email AND WhatsApp to Maluleke Kurhula Success. SEV2 and below: email only, reviewed during working hours.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.38a",
+              "description": "An alert route that has never delivered a test alert — a silent channel and a quiet month look identical, and which one it was is learned from the incident.",
+              "parent_standard_id": "S8.38"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 436
+          "source_line": 454
         },
         {
           "id": "S8.39",
@@ -17446,12 +17488,18 @@
           "enforced_by": [],
           "statement": "Log retention: ERROR level logs retained 90 days. INFO level logs retained 30 days. DEBUG level logs not stored in production.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.39a",
+              "description": "Retention shorter than the time it takes to notice the problem — the post-mortem opens with the evidence already expired, so the cause is inferred rather than established.",
+              "parent_standard_id": "S8.39"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 438
+          "source_line": 459
         },
         {
           "id": "S8.40",
@@ -17465,12 +17513,18 @@
           "enforced_by": [],
           "statement": "Dashboard: Better Stack creates a status page per system showing uptime, incident history, and current status. URL is public and linked from the system's README.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.40a",
+              "description": "No public status page — every affected user contacts support individually to ask the same question, during the window when there is least capacity to answer it.",
+              "parent_standard_id": "S8.40"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 440
+          "source_line": 464
         },
         {
           "id": "S8.41",
@@ -17484,12 +17538,18 @@
           "enforced_by": [],
           "statement": "Secret scanning enabled on all repositories via GitHub Advanced Security — any accidental commit of secrets is detected and alerts the owner immediately.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.41a",
+              "description": "Secret scanning left disabled — a committed credential is then found by whoever is looking for one, and the repository's history cannot be rewritten to take it back.",
+              "parent_standard_id": "S8.41"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 446
+          "source_line": 473
         },
         {
           "id": "S8.42",
@@ -17503,12 +17563,18 @@
           "enforced_by": [],
           "statement": "Dependencies scanned with `npm audit` (TypeScript) and `safety` (Python) in CI — known vulnerabilities block merge.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.42a",
+              "description": "A dependency scan that runs only on change — the advisory database moves without this repository moving, so an untouched project is reported clean for as long as nobody touches it.",
+              "parent_standard_id": "S8.42"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 448
+          "source_line": 478
         },
         {
           "id": "S8.43",
@@ -17522,12 +17588,18 @@
           "enforced_by": [],
           "statement": "Docker images scanned for vulnerabilities in CI before push to registry.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.43a",
+              "description": "Images scanned after they are pushed, or not at all — the vulnerable artefact is already in the registry and already pullable while the finding is being triaged.",
+              "parent_standard_id": "S8.43"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 450
+          "source_line": 483
         },
         {
           "id": "S8.44",
@@ -17541,12 +17613,18 @@
           "enforced_by": [],
           "statement": "All production secrets rotated at minimum quarterly — documented rotation schedule in the system context file.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.44a",
+              "description": "A credential that has never been rotated — its blast radius is every person who has held it since it was issued, and nobody can now enumerate that list.",
+              "parent_standard_id": "S8.44"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 452
+          "source_line": 488
         },
         {
           "id": "S8.45",
@@ -17560,12 +17638,18 @@
           "enforced_by": [],
           "statement": "SSH access to Railway and Vercel uses organisation SSO — no personal access tokens with admin scope committed anywhere.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.45a",
+              "description": "An admin-scoped personal access token used for automation — it outlives the person's access, cannot be revoked by removing them from the organisation, and is attributed to them long after they have left.",
+              "parent_standard_id": "S8.45"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 454
+          "source_line": 493
         },
         {
           "id": "S8.46",
@@ -17579,12 +17663,18 @@
           "enforced_by": [],
           "statement": "Production database access is through the application only — no direct developer access to production PostgreSQL in normal operations. Emergency access requires documented justification and is audited.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.46a",
+              "description": "Routine direct access to the production database — every constraint, audit trail and validation the application enforces is bypassed, and the write that caused the incident has no record of who made it.",
+              "parent_standard_id": "S8.46"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 456
+          "source_line": 498
         },
         {
           "id": "S8.47",
@@ -17596,14 +17686,20 @@
           "phase_label": null,
           "depends_on": [],
           "enforced_by": [],
-          "statement": "| Severity | Definition | Response SLA | Resolution SLA | Communication |\n|----------|-----------|--------------|----------------|---------------|\n| **SEV0** | Complete platform outage, data loss, auth system down, financial transaction failure (Reserve Bank) | 15 minutes | 2 hours | Immediate — public + user |\n| **SEV1** | Major feature failure >50% users, AI matching down (FundsLink), payment endpoint failing, database degraded | 30 minutes | 4 hours | Status page update |\n| **SEV2** | Partial feature degradation, performance >500ms p95, RAG pipeline slow, non-critical background jobs failing | 2 hours | 24 hours | Internal only |\n| **SEV3** | Minor issue, no user impact, UI cosmetic bug, slow background job, documentation drift | Next sprint | 1 week | GitHub Issue only |\n\n---",
+          "statement": "| Severity | Definition | Response SLA | Resolution SLA | Communication |\n|----------|-----------|--------------|----------------|---------------|\n| **SEV0** | Complete platform outage, data loss, auth system down, financial transaction failure (Reserve Bank) | 15 minutes | 2 hours | Immediate — public + user |\n| **SEV1** | Major feature failure >50% users, AI matching down (FundsLink), payment endpoint failing, database degraded | 30 minutes | 4 hours | Status page update |\n| **SEV2** | Partial feature degradation, performance >500ms p95, RAG pipeline slow, non-critical background jobs failing | 2 hours | 24 hours | Internal only |\n| **SEV3** | Minor issue, no user impact, UI cosmetic bug, slow background job, documentation drift | Next sprint | 1 week | GitHub Issue only |\n\n**Anti-Patterns:**\n- `AP-S8.47a` — An incident whose severity is assigned after the response rather than before it — the classification then describes how the response went instead of governing it, and every incident is retroactively the severity that makes the SLA look met.\n\n---",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.47a",
+              "description": "An incident whose severity is assigned after the response rather than before it — the classification then describes how the response went instead of governing it, and every incident is retroactively the severity that makes the SLA look met.",
+              "parent_standard_id": "S8.47"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 464
+          "source_line": 509
         },
         {
           "id": "S8.48",
@@ -17644,7 +17740,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 475
+          "source_line": 523
         },
         {
           "id": "S8.49",
@@ -17658,12 +17754,18 @@
           "enforced_by": [],
           "statement": "SEV0 response priority: (1) restore service first — rollback, failover, hotfix, whatever works fastest. (2) Document what was done. (3) Investigate root cause after service is restored. Never delay a rollback to investigate.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.49a",
+              "description": "Diagnosis attempted before service is restored — the outage is extended by exactly the length of the investigation, and the evidence being gathered survives the rollback anyway.",
+              "parent_standard_id": "S8.49"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 498
+          "source_line": 546
         },
         {
           "id": "S8.50",
@@ -17677,12 +17779,18 @@
           "enforced_by": [],
           "statement": "Reserve Bank financial incidents are automatically SEV0 regardless of user impact scale: any incident involving incorrect balances, failed deposits, interest miscalculation, or transaction duplication. `DEPOSITS_ENABLED` and `WITHDRAWALS_ENABLED` feature flags set to `false` as the first action. No financial operations resume until data integrity is verified.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.50a",
+              "description": "A balance discrepancy triaged by how many users it touched — money incidents compound while they are being sized, and one wrong balance is evidence the mechanism is wrong for all of them.",
+              "parent_standard_id": "S8.50"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 500
+          "source_line": 551
         },
         {
           "id": "S8.51",
@@ -17696,7 +17804,13 @@
           "enforced_by": [],
           "statement": "FundsLink AI incidents: when LangChain/ChromaDB AI matching fails, the circuit breaker triggers (S2.47) and users see a static \"AI matching temporarily unavailable — apply manually\" screen. This is SEV2, not SEV0.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.51a",
+              "description": "An AI-tier failure that blocks the manual path behind it — a degraded optional feature is escalated into a full outage by a fallback that was never built.",
+              "parent_standard_id": "S8.51"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S2.47",
@@ -17706,7 +17820,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 502
+          "source_line": 556
         },
         {
           "id": "S8.52",
@@ -17720,12 +17834,18 @@
           "enforced_by": [],
           "statement": "SEV0 and SEV1 incidents: GitHub Issue opened within 10 minutes, tagged `incident` and `sev0`/`sev1`. Issue title format: `[SEV0] Platform outage — auth service down`.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.52a",
+              "description": "An incident coordinated entirely in chat — there is no artefact to hand to the post-mortem, and the timeline has to be reconstructed from memory by the people least able to recall it accurately.",
+              "parent_standard_id": "S8.52"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 504
+          "source_line": 561
         },
         {
           "id": "S8.53",
@@ -17739,12 +17859,18 @@
           "enforced_by": [],
           "statement": "Incident Commander assigned within 15 minutes for SEV0/SEV1 — single point of coordination who makes all decisions and owns communication. Not necessarily the technical responder.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.53a",
+              "description": "No named commander — the person best placed to fix the problem is also answering status questions, so both jobs are done badly and neither has an owner.",
+              "parent_standard_id": "S8.53"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 506
+          "source_line": 566
         },
         {
           "id": "S8.54",
@@ -17758,12 +17884,18 @@
           "enforced_by": [],
           "statement": "Incident status updates every 30 minutes during active SEV0/SEV1 on the GitHub Issue. \"Still investigating\" is acceptable — silence is not.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.54a",
+              "description": "Silence held until there is something conclusive to report — stakeholders read no news as no progress and begin interrupting the responders to ask, which is the cost the update exists to avoid.",
+              "parent_standard_id": "S8.54"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 508
+          "source_line": 571
         },
         {
           "id": "S8.55",
@@ -17777,12 +17909,18 @@
           "enforced_by": [],
           "statement": "Sentry error rate alert: >1% error rate on any endpoint over a 5-minute window triggers SEV1 evaluation. New unique issue on auth, financial, or data integrity path triggers SEV1 immediately.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.55a",
+              "description": "Error alerting on volume alone — a *new* fault on an auth or money path is severe on its first occurrence, and a rate threshold cannot fire until it has already happened repeatedly.",
+              "parent_standard_id": "S8.55"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 514
+          "source_line": 580
         },
         {
           "id": "S8.56",
@@ -17796,12 +17934,18 @@
           "enforced_by": [],
           "statement": "Better Stack: three consecutive `/health` failures → SEV0 alert to incident commander. Next.js: monitors `Vercel URL/api/health`. FastAPI: monitors `Railway URL/health`.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.56a",
+              "description": "Alerting on a single failed check — one timeout is noise, and a channel that cries wolf is muted long before the outage it was meant to catch.",
+              "parent_standard_id": "S8.56"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 516
+          "source_line": 585
         },
         {
           "id": "S8.57",
@@ -17815,12 +17959,18 @@
           "enforced_by": [],
           "statement": "Railway metrics: CPU >85% for 5 minutes → SEV2 alert. Memory >90% for 5 minutes → SEV1 alert (memory leak). DB connection pool >80% → SEV2 warning. Service restart detected → SEV1 alert.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.57a",
+              "description": "Silent restarts — a process that crashes and is restarted by the platform looks healthy from outside, so a crash loop is observed only as intermittent errors nobody can reproduce.",
+              "parent_standard_id": "S8.57"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 518
+          "source_line": 590
         },
         {
           "id": "S8.58",
@@ -17834,12 +17984,18 @@
           "enforced_by": [],
           "statement": "Vercel deploy failures on main branch trigger immediate GitHub notification and email. Treated as SEV2 — previous deployment remains live.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.58a",
+              "description": "A failed deploy that notifies nobody — because the previous deployment is still serving, the failure is invisible, and the next several merges pile up behind a pipeline everyone believes is green.",
+              "parent_standard_id": "S8.58"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 520
+          "source_line": 595
         },
         {
           "id": "S8.59",
@@ -17853,12 +18009,18 @@
           "enforced_by": [],
           "statement": "Latency degradation: p95 >2s on any critical endpoint sustained 5 minutes → SEV2. Financial endpoints: p95 >1s → SEV2.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.59a",
+              "description": "Latency judged on the mean — the average hides the tail entirely, and the tail is the set of users actually experiencing the outage.",
+              "parent_standard_id": "S8.59"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 522
+          "source_line": 600
         },
         {
           "id": "S8.60",
@@ -17872,12 +18034,18 @@
           "enforced_by": [],
           "statement": "SEV0/SEV1 alerts delivered via email AND WhatsApp to Maluleke Kurhula Success 24/7. Alert delivery chain tested monthly.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.60a",
+              "description": "A single delivery channel for SEV0 — the one failure mode that matters is the channel itself being down, and email alone cannot report that it did not arrive.",
+              "parent_standard_id": "S8.60"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 524
+          "source_line": 605
         },
         {
           "id": "S8.61",
@@ -17891,12 +18059,18 @@
           "enforced_by": [],
           "statement": "A runbook exists for every SEV0 and SEV1 scenario identified in the Common Failure Register (C0 §13). Runbooks are in `runbooks/` and referenced from the GitHub incident issue.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.61a",
+              "description": "A known failure mode with no runbook — it was foreseeable enough to register and will still be improvised, by whoever is on call, at the hour it happens.",
+              "parent_standard_id": "S8.61"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 532
+          "source_line": 616
         },
         {
           "id": "S8.62",
@@ -17910,12 +18084,18 @@
           "enforced_by": [],
           "statement": "Runbook format: Title, Severity, Trigger condition, First 5 actions (numbered, executable without thinking), Escalation path, Resolution criteria, Post-mortem trigger.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.62a",
+              "description": "A runbook written as prose rather than numbered actions — it has to be *comprehended* before it can be followed, at the moment its reader is least able to comprehend anything.",
+              "parent_standard_id": "S8.62"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 534
+          "source_line": 621
         },
         {
           "id": "S8.63",
@@ -17929,12 +18109,18 @@
           "enforced_by": [],
           "statement": "Runbooks are tested in staging quarterly — a test incident is simulated, the runbook is followed, and gaps are corrected. An untested runbook is an unreliable runbook.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.63a",
+              "description": "A runbook whose commands nobody has run — it drifts silently as the system changes, and its first execution is the incident it was written for.",
+              "parent_standard_id": "S8.63"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 536
+          "source_line": 626
         },
         {
           "id": "S8.64",
@@ -17948,12 +18134,18 @@
           "enforced_by": [],
           "statement": "`runbooks/SEV0-response-runbook.md` is the first-read document at the start of every SEV0. It is the generic template. System-specific runbooks (financial-freeze, ai-degradation) extend it.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.64a",
+              "description": "No single entry point for a SEV0 — the first minutes are spent deciding which document applies, which is the one decision nobody should be making under pressure.",
+              "parent_standard_id": "S8.64"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 538
+          "source_line": 631
         },
         {
           "id": "S8.65",
@@ -17967,12 +18159,18 @@
           "enforced_by": [],
           "statement": "Runbook execution is logged in the GitHub incident issue: each step completed is checked off with a timestamp. This produces a timeline for the post-mortem.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.65a",
+              "description": "Steps performed without being recorded — a second responder cannot tell what has already been tried, and repeats it.",
+              "parent_standard_id": "S8.65"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 540
+          "source_line": 636
         },
         {
           "id": "S8.66",
@@ -17986,12 +18184,18 @@
           "enforced_by": [],
           "statement": "New runbooks are created within one sprint of any incident where the responder had to improvise. The improvised solution becomes the documented runbook.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.66a",
+              "description": "An improvised recovery never written down — the same incident costs the same improvisation next time, and the knowledge leaves with the person who happened to be on call.",
+              "parent_standard_id": "S8.66"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 542
+          "source_line": 641
         },
         {
           "id": "S8.67",
@@ -18005,12 +18209,18 @@
           "enforced_by": [],
           "statement": "Every production deployment must be rollbackable within 5 minutes. Rollback capability is tested as part of quarterly staging exercises.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.67a",
+              "description": "A deployment with no rollback path — the only remaining recovery is a forward fix written under incident pressure, which is the worst condition in which to write anything.",
+              "parent_standard_id": "S8.67"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 548
+          "source_line": 650
         },
         {
           "id": "S8.68",
@@ -18024,12 +18234,18 @@
           "enforced_by": [],
           "statement": "Next.js rollback: Vercel dashboard one-click rollback to previous deployment — instant, zero downtime.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.68a",
+              "description": "Reverting the commit and redeploying instead of rolling back — a full build and deploy cycle is spent reaching a state that was already sitting there ready to serve.",
+              "parent_standard_id": "S8.68"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 550
+          "source_line": 655
         },
         {
           "id": "S8.69",
@@ -18043,12 +18259,18 @@
           "enforced_by": [],
           "statement": "FastAPI rollback: Railway dashboard redeploy previous build. If the deployment introduced a schema migration, follow `runbooks/database-migration-runbook.md` for the migration rollback sequence.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.69a",
+              "description": "Application code rolled back while its migration stays applied — the old code meets a schema it was never written against, so the rollback produces a second, less familiar outage.",
+              "parent_standard_id": "S8.69"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 552
+          "source_line": 660
         },
         {
           "id": "S8.70",
@@ -18062,7 +18284,13 @@
           "enforced_by": [],
           "statement": "Database migration rollback: never run a destructive migration in production without first testing the rollback in staging. `prisma migrate resolve --rolled-back <migration_name>` for failed migrations. Column deletion is never part of a same-deployment migration (S5.61).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.70a",
+              "description": "A destructive migration whose rollback has never been rehearsed — dropping a column is not reversible by re-running anything, and the data it held is gone before anyone establishes whether it was needed.",
+              "parent_standard_id": "S8.70"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S5.61",
@@ -18072,7 +18300,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 554
+          "source_line": 665
         },
         {
           "id": "S8.71",
@@ -18086,12 +18314,18 @@
           "enforced_by": [],
           "statement": "Rollback triggers: Sentry error rate spike >5% within 5 minutes of deploy. p95 latency >3x baseline within 5 minutes of deploy. Any SEV0/SEV1 detected within 15 minutes of deploy.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.71a",
+              "description": "Rollback left to judgement in the moment — without a pre-agreed trigger the decision becomes a negotiation about whether the deploy is really at fault, and it is had while users are affected.",
+              "parent_standard_id": "S8.71"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 556
+          "source_line": 670
         },
         {
           "id": "S8.72",
@@ -18105,12 +18339,18 @@
           "enforced_by": [],
           "statement": "Post-rollback: the deployment is not re-attempted until the root cause is identified and fixed. A \"roll forward\" (fix deployed immediately after rollback) follows the same CI/staging/production pipeline as any deployment.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.72a",
+              "description": "The same deployment retried in the hope the failure was transient — it reproduces the outage deliberately, and a fix rushed straight to production bypasses the pipeline that would have caught it.",
+              "parent_standard_id": "S8.72"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 558
+          "source_line": 675
         },
         {
           "id": "S8.73",
@@ -18124,12 +18364,18 @@
           "enforced_by": [],
           "statement": "SEV0 public communication: Better Stack status page updated within 15 minutes of incident declaration. Message format: \"We are experiencing [impact description]. Our team is actively investigating. Next update in 30 minutes.\"",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.73a",
+              "description": "A public outage with no public acknowledgement — users conclude the problem is theirs and start changing their own configuration, which makes their situation worse and the support load larger.",
+              "parent_standard_id": "S8.73"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 564
+          "source_line": 684
         },
         {
           "id": "S8.74",
@@ -18143,12 +18389,18 @@
           "enforced_by": [],
           "statement": "SEV1 communication: Status page updated, internal team notified. No public communication until impact is confirmed.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.74a",
+              "description": "Announcing an impact before it is confirmed — a retracted outage notice costs more credibility than the outage did, and the next real notice is believed less.",
+              "parent_standard_id": "S8.74"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 566
+          "source_line": 689
         },
         {
           "id": "S8.75",
@@ -18162,12 +18414,18 @@
           "enforced_by": [],
           "statement": "Resolution communication: \"The issue has been resolved. [One sentence: what happened and what was fixed]. Post-mortem will be published within 5 business days.\"",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.75a",
+              "description": "An incident closed without a resolution notice — the last thing users were told is that something was broken, so as far as they know it still is.",
+              "parent_standard_id": "S8.75"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 568
+          "source_line": 694
         },
         {
           "id": "S8.76",
@@ -18181,12 +18439,18 @@
           "enforced_by": [],
           "statement": "Never speculate publicly about root cause during an active incident. Communicate what is known — impact, affected systems, next update time — not what is suspected.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.76a",
+              "description": "A cause named publicly before it is established — the correction is read as an evasion, and every subsequent statement in the same incident is discounted.",
+              "parent_standard_id": "S8.76"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 570
+          "source_line": 699
         },
         {
           "id": "S8.77",
@@ -18218,7 +18482,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 578
+          "source_line": 710
         },
         {
           "id": "S8.78",
@@ -18232,12 +18496,18 @@
           "enforced_by": [],
           "statement": "Post-mortem document fields: title, severity, date/time of detection, date/time of resolution, total duration, incident commander, systems affected, impact summary, timeline (minute-by-minute from detection to resolution), root cause analysis (5 Whys), contributing factors, what went well, action items (each with owner and due date).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.78a",
+              "description": "A post-mortem naming a person as the root cause — it stops the analysis one level above the system that let a single mistake reach production, which is the level where the fix actually is.",
+              "parent_standard_id": "S8.78"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 601
+          "source_line": 733
         },
         {
           "id": "S8.79",
@@ -18251,12 +18521,18 @@
           "enforced_by": [],
           "statement": "Action items from post-mortems are GitHub Issues with the `post-mortem-action` label — tracked in the sprint, not deferred indefinitely.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.79a",
+              "description": "Action items that live only in the post-mortem document — nothing scheduled is nothing done, and the same incident recurs with its own remedy already written down.",
+              "parent_standard_id": "S8.79"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 603
+          "source_line": 738
         },
         {
           "id": "S8.80",
@@ -18270,12 +18546,18 @@
           "enforced_by": [],
           "statement": "Every post-mortem adds at least one entry to C0 Common Failure Register (§13) — the register grows with every incident.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.80a",
+              "description": "An incident that teaches the register nothing — the organisation learns per-incident instead of cumulatively, so the next system repeats a failure the last one already paid for.",
+              "parent_standard_id": "S8.80"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 605
+          "source_line": 743
         },
         {
           "id": "S8.81",
@@ -18289,12 +18571,18 @@
           "enforced_by": [],
           "statement": "Post-mortems are published internally to the team — not kept private by the incident commander. Shared knowledge prevents recurrence across systems.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.81a",
+              "description": "A post-mortem kept private — the lesson stays with the one person who least needs it, and treating incidents as embarrassing is what makes the next one slower to report.",
+              "parent_standard_id": "S8.81"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 607
+          "source_line": 748
         },
         {
           "id": "S8.82",
@@ -18308,12 +18596,18 @@
           "enforced_by": [],
           "statement": "Quarterly review includes a review of all post-mortem action items — items that are overdue are escalated. An action item that was never addressed is a systemic risk.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.82a",
+              "description": "Action items never reviewed after the sprint they were filed in — the backlog becomes a record of accepted risk that nobody has agreed to accept.",
+              "parent_standard_id": "S8.82"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 609
+          "source_line": 753
         },
         {
           "id": "S8.83",
@@ -18325,14 +18619,20 @@
           "phase_label": "Phase 2 — Quality & Reliability",
           "depends_on": [],
           "enforced_by": [],
-          "statement": "Every brownfield conversion step is individually reversible with a ready rollback path. A step that cannot be rolled back is not a step — it is a risk. Pairs with `protocols/brownfield-adoption.md`. Anti-pattern `AP-S8.83a`: shipping a non-reversible conversion step with no rollback prepared.",
+          "statement": "Every brownfield conversion step is individually reversible with a ready rollback path. A step that cannot be rolled back is not a step — it is a risk. Pairs with `protocols/brownfield-adoption.md`.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.83a",
+              "description": "Shipping a non-reversible conversion step with no rollback prepared — on first contact with somebody else's repository, an unrecoverable step is the one that ends the adoption.",
+              "parent_standard_id": "S8.83"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 615
+          "source_line": 762
         },
         {
           "id": "S8.84",
@@ -18344,14 +18644,20 @@
           "phase_label": "Phase 2 — Quality & Reliability",
           "depends_on": [],
           "enforced_by": [],
-          "statement": "Dependency installs run behind a committed lockfile and a CI vulnerability (SCA) gate; SEV0/SEV1 dependency CVEs **block merge** (deterministic detection — hard block allowed). Pairs with `protocols/external-governance.md` §2. Anti-pattern `AP-S8.84a`: merging with a known SEV0/SEV1 dependency CVE or no SCA gate.",
+          "statement": "Dependency installs run behind a committed lockfile and a CI vulnerability (SCA) gate; SEV0/SEV1 dependency CVEs **block merge** (deterministic detection — hard block allowed). Pairs with `protocols/external-governance.md` §2.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.84a",
+              "description": "Merging with a known SEV0/SEV1 dependency CVE, or with no SCA gate at all — a gate-shaped log line reports \"clean\" for every advisory it never heard of.",
+              "parent_standard_id": "S8.84"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 617
+          "source_line": 767
         },
         {
           "id": "S8.85",
@@ -18363,14 +18669,20 @@
           "phase_label": "Phase 2 — Quality & Reliability",
           "depends_on": [],
           "enforced_by": [],
-          "statement": "Every dependency's license is checked against an allowlist; unknown/copyleft licenses require a recorded L4 exception. An SBOM is generated for releases. Anti-pattern `AP-S8.85a`: shipping a dependency with an unvetted license or no SBOM.",
+          "statement": "Every dependency's license is checked against an allowlist; unknown/copyleft licenses require a recorded L4 exception. An SBOM is generated for releases.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.85a",
+              "description": "Shipping a dependency with an unvetted licence or no SBOM — the obligation is discovered by the counterparty's legal review, at the point where the cost of complying is highest.",
+              "parent_standard_id": "S8.85"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 619
+          "source_line": 772
         },
         {
           "id": "S8.86",
@@ -18382,14 +18694,20 @@
           "phase_label": "Phase 2 — Quality & Reliability",
           "depends_on": [],
           "enforced_by": [],
-          "statement": "Every critical external vendor has a register entry (what it does, what data it holds, its SLA) and a documented exit/portability plan. Undocumented lock-in requires an L4-acknowledged contingency. Anti-pattern `AP-S8.86a`: depending on a critical vendor with no exit plan.",
+          "statement": "Every critical external vendor has a register entry (what it does, what data it holds, its SLA) and a documented exit/portability plan. Undocumented lock-in requires an L4-acknowledged contingency.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.86a",
+              "description": "Depending on a critical vendor with no exit plan — the plan is then written during the vendor's outage, price change, or discontinuation, which is when it is least possible to write.",
+              "parent_standard_id": "S8.86"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 621
+          "source_line": 777
         },
         {
           "id": "S8.87",
@@ -18401,14 +18719,20 @@
           "phase_label": "Phase 2 — Quality & Reliability",
           "depends_on": [],
           "enforced_by": [],
-          "statement": "The external surface is under continuous temporal governance: framework changelogs, CVE/advisory databases, and dependency releases are monitored; items past their review window are flagged `TEMPORAL-ALERT` / `UNVALIDATED`. Anti-pattern `AP-S8.87a`: treating dependency/framework currency as a one-time check that then rots.",
+          "statement": "The external surface is under continuous temporal governance: framework changelogs, CVE/advisory databases, and dependency releases are monitored; items past their review window are flagged `TEMPORAL-ALERT` / `UNVALIDATED`.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S8.87a",
+              "description": "Treating dependency currency as a one-time check — the dependency surface decays without the repository changing, so a build that was green in July is wrong in August with nothing committed in between.",
+              "parent_standard_id": "S8.87"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C08-platform-reliability-constitution.md",
-          "source_line": 623
+          "source_line": 782
         }
       ]
     },
@@ -24496,7 +24820,7 @@
   },
   "integrity": {
     "standards_extracted": 670,
-    "anti_patterns_extracted": 528,
+    "anti_patterns_extracted": 582,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

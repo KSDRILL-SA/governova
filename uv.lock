@@ -319,7 +319,7 @@ wheels = [
 
 [[package]]
 name = "governova"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "scripts" }
 dependencies = [
     { name = "markdown-it-py" },
@@ -370,7 +370,7 @@ requires-dist = [{ name = "pydantic", specifier = ">=2.9" }]
 
 [[package]]
 name = "governova-workspace"
-version = "0.1.0"
+version = "0.2.0"
 source = { virtual = "." }
 
 [[package]]

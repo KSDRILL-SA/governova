@@ -357,6 +357,9 @@ MVP "done" is defined by the completion of the primary user workflow end-to-end 
 > **S9.19** — Accessibility is part of MVP criteria: axe-core CI gate passing (no critical/serious violations). This is enforced by C7 S7.20 but confirmed here as a product criterion, not just a technical criterion.
 
 > **S9.20** — MVP does not include v2 features in a disabled/hidden state. Features that are not ready are not deployed — not deployed and hidden. Ship only what is done.
+>
+> **Anti-Patterns:**
+> - `AP-S9.20a` — v2 features deployed but hidden in v1 — unfinished code still ships, still carries its dependencies and still presents its attack surface, while being excluded from the review and testing that shipping is supposed to earn.
 
 ---
 

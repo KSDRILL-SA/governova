@@ -305,25 +305,36 @@ def test_the_check_is_silent_when_there_is_no_constitution_to_read(tmp_path):
     assert check_declared_anti_patterns(tmp_path, _index_with_anti_pattern()) == []
 
 
-def test_the_outstanding_orphans_are_exactly_the_eleven_on_record(repo_root, index):
-    """Pins #216 so the backlog cannot grow quietly, and shrinks as L4 gives them homes.
+def test_the_outstanding_orphans_are_exactly_the_two_on_record(repo_root, index):
+    """Pins the backlog so it cannot grow quietly, and shrinks as L4 gives them homes.
 
     When an orphan is given an `**Anti-Patterns:**` block in its constitution body
     this fails, and the fix is to strike it from this list — never to widen the list.
+
+    **Nine were struck when the abbreviated form learned to carry anti-patterns.**
+    They were never a backlog of nine edits: their standards are blockquote
+    shorthand, and the compiler built those with `anti_patterns=[]` hardcoded, so
+    no block placed near them was read. The engine change came first, then the law.
+
+    **The two that remain are a different defect and must not be struck the same
+    way.** Both are declared only in `constitution/indexes/anti-patterns-index.md`,
+    and both are fossils of an earlier numbering:
+
+    - `AP-S2.55a` — *secret committed to version control* — names S2.55, which is
+      now *Brute Force Protection on Auth Endpoints*. The law is **not missing**:
+      `AP-S3.20a` already compiles under *Secrets ... Never Committed to Version
+      Control* and already says it. S3.20's own cross-reference still calls S2.55
+      "(secrets management)", which is the fossil in plain sight.
+    - `AP-S10.14a` — *AI output accepted as constitutional amendment* — names
+      S10.14, which is about not papering over violations with compliant wrappers.
+      The concept belongs to **S10.8**, whose text already reads "AI cannot
+      approve: constitutional amendments".
+
+    Giving either the block its stale row names would write the mis-citation defect
+    of #205 into the constitution itself. Correcting the rows is the remedy, and it
+    is L4.
     """
     outstanding = {
         i.message.split()[0] for i in check_declared_anti_patterns(repo_root, index)
     }
-    assert outstanding == {
-        "AP-S2.55a",
-        "AP-S5.28a",
-        "AP-S7.21a",
-        "AP-S7.38a",
-        "AP-S8.18a",
-        "AP-S9.20a",
-        "AP-S10.9a",
-        "AP-S10.10a",
-        "AP-S10.11a",
-        "AP-S10.13a",
-        "AP-S10.14a",
-    }
+    assert outstanding == {"AP-S2.55a", "AP-S10.14a"}

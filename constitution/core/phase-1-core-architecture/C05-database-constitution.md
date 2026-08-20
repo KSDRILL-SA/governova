@@ -659,6 +659,9 @@ All fields used in WHERE clauses of high-frequency queries have explicit indexes
 > **S5.27** — PostgreSQL enum types for all constrained value sets (status, role, type) — string columns for constrained values allow invalid values at the database level.
 
 > **S5.28** — Decimal columns for all monetary values — never `Float`. `Decimal` preserves precision; `Float` introduces rounding errors on financial calculations.
+>
+> **Anti-Patterns:**
+> - `AP-S5.28a` — `Float` column type for monetary values — binary floating point cannot represent most decimal fractions exactly, so the error is present from the first write and compounds across every subsequent calculation.
 
 > **S5.29** — `NOT NULL` constraints on all required fields — database-level constraints enforce data integrity independently of application-level validation.
 

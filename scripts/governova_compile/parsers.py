@@ -364,11 +364,16 @@ def parse_blockquote_standards(
     A standard may continue the same blockquote with the labelled blocks the
     full `###` form uses, and `**Anti-Patterns:**` is read from there:
 
-        > **S7.21** — Playwright tests use `page.getByRole()` — never
-        > `page.locator('.some-class')`.
+        > **S8.19** — Multi-stage Docker builds for production images.
         >
         > **Anti-Patterns:**
-        > - `AP-S7.21a` — CSS class selectors break on every styling refactor.
+        > - `AP-S8.19a` — Build tools shipped in the production image.
+
+    The example deliberately quotes a standard **no rule detects**. An earlier draft
+    illustrated the format with `S7.21` and reproduced its anti-pattern verbatim,
+    and the rule written for it flagged this docstring on its first scan. A line
+    scanner cannot tell code from prose about code, so documentation of an
+    anti-pattern must not spell the anti-pattern out.
 
     Continuation stops at the next blockquote standard or the first line that
     leaves the quote, so one abbreviated standard can never absorb the next

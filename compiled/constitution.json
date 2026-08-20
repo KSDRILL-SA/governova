@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-08-20T23:37:17.109488Z",
-  "source_commit_sha": "0722f1a",
-  "checksum": "sha256:fe19530e0baaf8c0c84593c970c2468fc707548b7672e5a0313ef4236ae931ba",
+  "compiled_at": "2026-08-20T23:47:30.035605Z",
+  "source_commit_sha": "0ba23a0",
+  "checksum": "sha256:c0f5b7ed5d7be81a392b8da4a0856122ded857f374b5b506934cccda91bdc2b2",
   "framework": [
     {
       "id": "format-specification",
@@ -12932,7 +12932,13 @@
           "enforced_by": [],
           "statement": "Never expose `password_hash`, `reset_token`, `refresh_token`, `deleted_at`, or `internal_notes` fields in any Prisma select query for API responses. These fields are read-only at the database access layer.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.26a",
+              "description": "A `select: *` or an unfiltered model returned straight to an API response — the hash, the reset token and the internal notes travel with it, and the leak is in the response body rather than in any log anyone reviews.",
+              "parent_standard_id": "S5.26"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
@@ -12951,12 +12957,18 @@
           "enforced_by": [],
           "statement": "PostgreSQL enum types for all constrained value sets (status, role, type) — string columns for constrained values allow invalid values at the database level.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.27a",
+              "description": "A constrained value held in a plain string column — the database accepts `activ`, `ACTIVE` and `pending_` alike, so the invalid row is written first and discovered by whatever reads it.",
+              "parent_standard_id": "S5.27"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 659
+          "source_line": 662
         },
         {
           "id": "S5.28",
@@ -12981,7 +12993,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 661
+          "source_line": 667
         },
         {
           "id": "S5.29",
@@ -12995,12 +13007,18 @@
           "enforced_by": [],
           "statement": "`NOT NULL` constraints on all required fields — database-level constraints enforce data integrity independently of application-level validation.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.29a",
+              "description": "A required field left nullable because the application validates it — one code path that skips the validation, one migration, or one manual fix writes the null, and every reader must now handle it forever.",
+              "parent_standard_id": "S5.29"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 666
+          "source_line": 672
         },
         {
           "id": "S5.30",
@@ -13014,12 +13032,18 @@
           "enforced_by": [],
           "statement": "`UNIQUE` constraints on fields that must be unique — `email`, `cuid` alternate keys, slug fields — enforce at the database level, not only in application code.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.30a",
+              "description": "Uniqueness enforced only by a read-then-write in application code — two concurrent requests both read absent and both write, and the duplicate exists before either transaction commits.",
+              "parent_standard_id": "S5.30"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 668
+          "source_line": 677
         },
         {
           "id": "S5.31",
@@ -13033,12 +13057,18 @@
           "enforced_by": [],
           "statement": "`CHECK` constraints on business-rule-constrained fields — `amount > 0` for deposits, `interest_rate BETWEEN 0 AND 1` for rates. Database enforces invariants independently of the application.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.31a",
+              "description": "A business invariant enforced only in the service layer — a negative deposit is one background job, one migration or one console session away, and the database will accept it.",
+              "parent_standard_id": "S5.31"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 670
+          "source_line": 682
         },
         {
           "id": "S5.32",
@@ -13052,12 +13082,18 @@
           "enforced_by": [],
           "statement": "Connection pooling via PgBouncer on Railway — direct database connections from the application are pooled; unbounded direct connections exhaust PostgreSQL's connection limit under load.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.32a",
+              "description": "Unpooled direct connections from the application — each worker holds its own, PostgreSQL's connection limit is reached under ordinary load, and the failure presents as the database being down.",
+              "parent_standard_id": "S5.32"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 672
+          "source_line": 687
         },
         {
           "id": "S5.33",
@@ -13107,7 +13143,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 682
+          "source_line": 700
         },
         {
           "id": "S5.34",
@@ -13121,7 +13157,13 @@
           "enforced_by": [],
           "statement": "Beanie document models include timestamps (`created_at`, `updated_at`) and soft delete (`deleted_at`) on every collection — mirrors the PostgreSQL required fields pattern (S5.10).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.34a",
+              "description": "A collection without `created_at`, `updated_at` and `deleted_at` — the document cannot be aged, audited or soft-deleted, and the only remaining removal is destructive.",
+              "parent_standard_id": "S5.34"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S5.10",
@@ -13131,7 +13173,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 705
+          "source_line": 723
         },
         {
           "id": "S5.35",
@@ -13145,12 +13187,18 @@
           "enforced_by": [],
           "statement": "All Beanie queries include `deleted_at: None` in the filter — soft delete filter applied explicitly (MongoDB has no middleware equivalent to Prisma's).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.35a",
+              "description": "A Beanie query without `deleted_at: None` — MongoDB has no middleware to apply it, so a deleted record reappears in whichever query forgot, and only in that one.",
+              "parent_standard_id": "S5.35"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 707
+          "source_line": 728
         },
         {
           "id": "S5.36",
@@ -13164,12 +13212,18 @@
           "enforced_by": [],
           "statement": "MongoDB collection names are snake_case and plural — `scholarship_contents`, `application_logs`, `ai_reasoning_records`.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.36a",
+              "description": "Collection names that vary in case or number — the same entity is addressed two ways, and a query against the wrong spelling returns empty rather than failing.",
+              "parent_standard_id": "S5.36"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 709
+          "source_line": 733
         },
         {
           "id": "S5.37",
@@ -13183,12 +13237,18 @@
           "enforced_by": [],
           "statement": "MongoDB indexes defined in Beanie model class using `Settings.indexes` — not created ad-hoc or manually in the database.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.37a",
+              "description": "Indexes created by hand against a running database — they exist in production and in nobody's code, so a fresh environment is silently slower and no review ever sees them.",
+              "parent_standard_id": "S5.37"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 711
+          "source_line": 738
         },
         {
           "id": "S5.38",
@@ -13202,7 +13262,13 @@
           "enforced_by": [],
           "statement": "MongoDB documents that reference PostgreSQL entities use `pg_id: str` field storing the PostgreSQL `cuid` — per S5.5.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.38a",
+              "description": "A cross-database reference stored under an ad-hoc field name — nothing can join the two systems generically, and every reconciliation script re-discovers the convention.",
+              "parent_standard_id": "S5.38"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S5.5",
@@ -13212,7 +13278,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 713
+          "source_line": 743
         },
         {
           "id": "S5.39",
@@ -13226,12 +13292,18 @@
           "enforced_by": [],
           "statement": "Beanie schemas validated with Pydantic v2 — the same validation library used for FastAPI request/response models.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.39a",
+              "description": "Document schemas validated ad-hoc rather than through Pydantic — the same shape is described twice, in two dialects, and the two drift without anything reporting it.",
+              "parent_standard_id": "S5.39"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 715
+          "source_line": 748
         },
         {
           "id": "S5.40",
@@ -13245,12 +13317,18 @@
           "enforced_by": [],
           "statement": "Maximum document size awareness — documents larger than 1MB signal a design problem; split into multiple documents or move to object storage.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.40a",
+              "description": "An unbounded document that grows per event — it passes review at a hundred entries and fails in production at the size limit, by which point the design cannot be changed cheaply.",
+              "parent_standard_id": "S5.40"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 717
+          "source_line": 753
         },
         {
           "id": "S5.41",
@@ -13264,12 +13342,18 @@
           "enforced_by": [],
           "statement": "No transactions spanning PostgreSQL and MongoDB in a single operation — if cross-database atomicity is needed, the operation design must be reconsidered.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.41a",
+              "description": "An operation written as though it were atomic across both databases — one side commits and the other does not, leaving a state no single-database rollback can repair.",
+              "parent_standard_id": "S5.41"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 719
+          "source_line": 758
         },
         {
           "id": "S5.42",
@@ -13283,12 +13367,18 @@
           "enforced_by": [],
           "statement": "MongoDB connection string in Railway Secrets — never committed to version control.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.42a",
+              "description": "A connection string committed to version control — the credential is in history permanently, so it must be rotated rather than removed.",
+              "parent_standard_id": "S5.42"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 721
+          "source_line": 763
         },
         {
           "id": "S5.43",
@@ -13302,7 +13392,13 @@
           "enforced_by": [],
           "statement": "MongoDB aggregation pipelines isolated in dedicated service functions with Pydantic result validation — same principle as raw SQL isolation (S5.24).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.43a",
+              "description": "An aggregation pipeline written inline in a handler with an unvalidated result — a pipeline change alters the response shape, and nothing between the database and the caller notices.",
+              "parent_standard_id": "S5.43"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S5.24",
@@ -13312,7 +13408,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 723
+          "source_line": 768
         },
         {
           "id": "S5.44",
@@ -13326,12 +13422,18 @@
           "enforced_by": [],
           "statement": "MongoDB write operations always await confirmation — never fire-and-forget writes to MongoDB from the service layer.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.44a",
+              "description": "Fire-and-forget writes — the caller reports success on a write that was never acknowledged, so the loss is attributed to the user rather than to the write.",
+              "parent_standard_id": "S5.44"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 725
+          "source_line": 773
         },
         {
           "id": "S5.45",
@@ -13373,7 +13475,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 735
+          "source_line": 786
         },
         {
           "id": "S5.46",
@@ -13387,12 +13489,18 @@
           "enforced_by": [],
           "statement": "ChromaDB runs as a separate Railway service with a persistent volume — never co-located with the FastAPI service; volume ensures embedding persistence across restarts.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.46a",
+              "description": "ChromaDB co-located with the service, or without a persistent volume — a restart discards every embedding, and the recovery is a full re-embedding run nobody has budgeted for.",
+              "parent_standard_id": "S5.46"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 758
+          "source_line": 809
         },
         {
           "id": "S5.47",
@@ -13406,12 +13514,18 @@
           "enforced_by": [],
           "statement": "The FastAPI AI service is the only service with write access to ChromaDB — other services are read-only; only the AI embedding pipeline creates or updates embeddings.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.47a",
+              "description": "Write access to the vector store granted to more than the embedding pipeline — two writers with different models produce a collection whose vectors are not comparable to each other.",
+              "parent_standard_id": "S5.47"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 760
+          "source_line": 814
         },
         {
           "id": "S5.48",
@@ -13425,12 +13539,18 @@
           "enforced_by": [],
           "statement": "Similarity threshold minimum 0.7 for matching queries — results below 0.7 cosine similarity are discarded, not returned to the user.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.48a",
+              "description": "Similarity results returned below the threshold — a weak match is presented with the same confidence as a strong one, and a user acting on it has no way to tell them apart.",
+              "parent_standard_id": "S5.48"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 762
+          "source_line": 819
         },
         {
           "id": "S5.49",
@@ -13444,12 +13564,18 @@
           "enforced_by": [],
           "statement": "ChromaDB collections named by content type and version — `scholarship_embeddings_v1`, `eligibility_documents_v1` — versioning enables migration to a new embedding model without downtime.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.49a",
+              "description": "Unversioned collection names — changing the embedding model then means mutating the live collection in place, so queries run against a mixture of two vector spaces.",
+              "parent_standard_id": "S5.49"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 764
+          "source_line": 824
         },
         {
           "id": "S5.50",
@@ -13463,12 +13589,18 @@
           "enforced_by": [],
           "statement": "ChromaDB internal URL only — the ChromaDB Railway service has no public port; only the FastAPI service on the Railway internal network connects to it.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.50a",
+              "description": "A public port on the vector store — an unauthenticated service holding embedded source content becomes an exfiltration surface no application control covers.",
+              "parent_standard_id": "S5.50"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 766
+          "source_line": 829
         },
         {
           "id": "S5.51",
@@ -13482,12 +13614,18 @@
           "enforced_by": [],
           "statement": "Embedding model is locked per collection — changing the embedding model requires a new collection and a re-embedding migration pipeline, not an in-place update.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.51a",
+              "description": "An embedding model changed in place — old and new vectors share a collection, and cosine distance between them is arithmetic without meaning.",
+              "parent_standard_id": "S5.51"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 768
+          "source_line": 834
         },
         {
           "id": "S5.52",
@@ -13501,12 +13639,18 @@
           "enforced_by": [],
           "statement": "ChromaDB reads in the AI service use `max_results` limits — unbounded similarity searches are forbidden.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.52a",
+              "description": "An unbounded similarity search — one query can return the whole collection, and the cost is paid in memory on the service rather than in the database.",
+              "parent_standard_id": "S5.52"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 770
+          "source_line": 839
         },
         {
           "id": "S5.53",
@@ -13551,7 +13695,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 778
+          "source_line": 850
         },
         {
           "id": "S5.54",
@@ -13565,12 +13709,18 @@
           "enforced_by": [],
           "statement": "If a PostgreSQL record is soft-deleted, the corresponding MongoDB documents and ChromaDB embeddings are also soft-deleted in the same logical operation — referential integrity is maintained across database types.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.54a",
+              "description": "A PostgreSQL record soft-deleted without its documents and embeddings — deleted content keeps surfacing through search, which is the one path where the user is certain it was removed.",
+              "parent_standard_id": "S5.54"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 801
+          "source_line": 873
         },
         {
           "id": "S5.55",
@@ -13584,12 +13734,18 @@
           "enforced_by": [],
           "statement": "The cross-database sync operation is idempotent — running it twice produces the same result as running it once; enables safe retry on failure.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.55a",
+              "description": "A sync operation that is not idempotent — a retry after a partial failure duplicates what already succeeded, so the safe response to an error is the one that corrupts.",
+              "parent_standard_id": "S5.55"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 803
+          "source_line": 878
         },
         {
           "id": "S5.56",
@@ -13603,12 +13759,18 @@
           "enforced_by": [],
           "statement": "Cross-database queries (retrieving a MongoDB document and its PostgreSQL entity) are performed as two separate queries joined at the application layer — never attempted through database-level mechanisms.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.56a",
+              "description": "A cross-database join attempted at the database layer — it couples two systems that have no shared transaction, and the coupling is discovered when one of them is unavailable.",
+              "parent_standard_id": "S5.56"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 805
+          "source_line": 883
         },
         {
           "id": "S5.57",
@@ -13622,12 +13784,18 @@
           "enforced_by": [],
           "statement": "Background jobs that sync data between databases are monitored for failure and alert on missed runs (per C8 platform reliability standards).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.57a",
+              "description": "A sync job that fails silently — the divergence grows for as long as nobody looks, and it is found by a user reading data that disagrees with itself.",
+              "parent_standard_id": "S5.57"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 807
+          "source_line": 888
         },
         {
           "id": "S5.58",
@@ -13641,12 +13809,18 @@
           "enforced_by": [],
           "statement": "A reconciliation script exists for each cross-database relationship that can detect and report orphaned records — run quarterly or after incidents.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.58a",
+              "description": "No reconciliation script for a cross-database relationship — orphans cannot be detected, so the question of whether the two sides agree has no answer at all.",
+              "parent_standard_id": "S5.58"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 809
+          "source_line": 893
         },
         {
           "id": "S5.59",
@@ -13671,7 +13845,13 @@
           ],
           "statement": "Database migrations run as the first step of every production deployment, before the new service version starts. The deployment pipeline is: run `prisma migrate deploy` → health check migration success → deploy new service version. If migration fails, deployment stops and does not proceed. A new service version should never start against an unmigrated schema.",
           "rationale": "CF-13 (Common Failure Register): service starts before migration completes, writes occur against old schema, data corruption is possible during the window between service start and migration completion. Migration-first deploy eliminates this window.",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.59a",
+              "description": "A service that starts before its migration completes — writes land against the old schema during the window, and the corruption is written by the healthy new version rather than by the deploy.",
+              "parent_standard_id": "S5.59"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S8.6",
@@ -13685,7 +13865,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 817
+          "source_line": 904
         },
         {
           "id": "S5.60",
@@ -13699,12 +13879,18 @@
           "enforced_by": [],
           "statement": "All migrations are backward-compatible with the previous service version — enables zero-downtime rolling deploys where the old service runs briefly against the new schema.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.60a",
+              "description": "A migration that is not backward-compatible — during a rolling deploy the previous version runs against the new schema, and every request it serves in that window fails.",
+              "parent_standard_id": "S5.60"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 840
+          "source_line": 930
         },
         {
           "id": "S5.61",
@@ -13718,12 +13904,18 @@
           "enforced_by": [],
           "statement": "Never delete a column in the same migration that removes it from the code — deprecate the column first (remove from code, keep in schema), then delete in a subsequent migration after the first migration has deployed successfully.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.61a",
+              "description": "A column removed from the code and dropped in the same migration — the previous version is still serving traffic against it, and the data is gone before anyone establishes it was unused.",
+              "parent_standard_id": "S5.61"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 842
+          "source_line": 935
         },
         {
           "id": "S5.62",
@@ -13737,12 +13929,18 @@
           "enforced_by": [],
           "statement": "Migration files are never edited after they have been committed — a migration that has been run on any environment is immutable. Create a new migration to correct it.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.62a",
+              "description": "A committed migration edited in place — environments that already ran the original and environments that run the edit diverge permanently, and no tool reports which is which.",
+              "parent_standard_id": "S5.62"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 844
+          "source_line": 940
         },
         {
           "id": "S5.63",
@@ -13756,12 +13954,18 @@
           "enforced_by": [],
           "statement": "`prisma migrate diff` runs in CI on every PR that changes `schema.prisma` — detects missing migration files before the PR is merged.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.63a",
+              "description": "A schema change merged with no migration — the divergence surfaces on deploy rather than in review, at the point where the fix is a hotfix.",
+              "parent_standard_id": "S5.63"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 846
+          "source_line": 945
         },
         {
           "id": "S5.64",
@@ -13775,12 +13979,18 @@
           "enforced_by": [],
           "statement": "Staging migration is performed before production migration — staging is the validation environment for the migration plan.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S5.64a",
+              "description": "A migration run first in production — the rehearsal that would have caught it happens on the data that cannot be restored from a rehearsal.",
+              "parent_standard_id": "S5.64"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 848
+          "source_line": 950
         },
         {
           "id": "S5.65",
@@ -13829,7 +14039,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C05-database-constitution.md",
-          "source_line": 856
+          "source_line": 961
         }
       ]
     },
@@ -25036,7 +25246,7 @@
   },
   "integrity": {
     "standards_extracted": 670,
-    "anti_patterns_extracted": 618,
+    "anti_patterns_extracted": 653,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

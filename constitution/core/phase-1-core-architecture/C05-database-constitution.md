@@ -655,8 +655,14 @@ All fields used in WHERE clauses of high-frequency queries have explicit indexes
 ### S5.26–S5.32 — Additional PostgreSQL Standards
 
 > **S5.26** — Never expose `password_hash`, `reset_token`, `refresh_token`, `deleted_at`, or `internal_notes` fields in any Prisma select query for API responses. These fields are read-only at the database access layer.
+>
+> **Anti-Patterns:**
+> - `AP-S5.26a` — A `select: *` or an unfiltered model returned straight to an API response — the hash, the reset token and the internal notes travel with it, and the leak is in the response body rather than in any log anyone reviews.
 
 > **S5.27** — PostgreSQL enum types for all constrained value sets (status, role, type) — string columns for constrained values allow invalid values at the database level.
+>
+> **Anti-Patterns:**
+> - `AP-S5.27a` — A constrained value held in a plain string column — the database accepts `activ`, `ACTIVE` and `pending_` alike, so the invalid row is written first and discovered by whatever reads it.
 
 > **S5.28** — Decimal columns for all monetary values — never `Float`. `Decimal` preserves precision; `Float` introduces rounding errors on financial calculations.
 >
@@ -664,12 +670,24 @@ All fields used in WHERE clauses of high-frequency queries have explicit indexes
 > - `AP-S5.28a` — `Float` column type for monetary values — binary floating point cannot represent most decimal fractions exactly, so the error is present from the first write and compounds across every subsequent calculation.
 
 > **S5.29** — `NOT NULL` constraints on all required fields — database-level constraints enforce data integrity independently of application-level validation.
+>
+> **Anti-Patterns:**
+> - `AP-S5.29a` — A required field left nullable because the application validates it — one code path that skips the validation, one migration, or one manual fix writes the null, and every reader must now handle it forever.
 
 > **S5.30** — `UNIQUE` constraints on fields that must be unique — `email`, `cuid` alternate keys, slug fields — enforce at the database level, not only in application code.
+>
+> **Anti-Patterns:**
+> - `AP-S5.30a` — Uniqueness enforced only by a read-then-write in application code — two concurrent requests both read absent and both write, and the duplicate exists before either transaction commits.
 
 > **S5.31** — `CHECK` constraints on business-rule-constrained fields — `amount > 0` for deposits, `interest_rate BETWEEN 0 AND 1` for rates. Database enforces invariants independently of the application.
+>
+> **Anti-Patterns:**
+> - `AP-S5.31a` — A business invariant enforced only in the service layer — a negative deposit is one background job, one migration or one console session away, and the database will accept it.
 
 > **S5.32** — Connection pooling via PgBouncer on Railway — direct database connections from the application are pooled; unbounded direct connections exhaust PostgreSQL's connection limit under load.
+>
+> **Anti-Patterns:**
+> - `AP-S5.32a` — Unpooled direct connections from the application — each worker holds its own, PostgreSQL's connection limit is reached under ordinary load, and the failure presents as the database being down.
 
 ---
 
@@ -703,26 +721,59 @@ MongoDB stores: AI-generated scholarship reasoning, dynamic content with evolvin
 ### S5.34–S5.44 — MongoDB Operational Standards
 
 > **S5.34** — Beanie document models include timestamps (`created_at`, `updated_at`) and soft delete (`deleted_at`) on every collection — mirrors the PostgreSQL required fields pattern (S5.10).
+>
+> **Anti-Patterns:**
+> - `AP-S5.34a` — A collection without `created_at`, `updated_at` and `deleted_at` — the document cannot be aged, audited or soft-deleted, and the only remaining removal is destructive.
 
 > **S5.35** — All Beanie queries include `deleted_at: None` in the filter — soft delete filter applied explicitly (MongoDB has no middleware equivalent to Prisma's).
+>
+> **Anti-Patterns:**
+> - `AP-S5.35a` — A Beanie query without `deleted_at: None` — MongoDB has no middleware to apply it, so a deleted record reappears in whichever query forgot, and only in that one.
 
 > **S5.36** — MongoDB collection names are snake_case and plural — `scholarship_contents`, `application_logs`, `ai_reasoning_records`.
+>
+> **Anti-Patterns:**
+> - `AP-S5.36a` — Collection names that vary in case or number — the same entity is addressed two ways, and a query against the wrong spelling returns empty rather than failing.
 
 > **S5.37** — MongoDB indexes defined in Beanie model class using `Settings.indexes` — not created ad-hoc or manually in the database.
+>
+> **Anti-Patterns:**
+> - `AP-S5.37a` — Indexes created by hand against a running database — they exist in production and in nobody's code, so a fresh environment is silently slower and no review ever sees them.
 
 > **S5.38** — MongoDB documents that reference PostgreSQL entities use `pg_id: str` field storing the PostgreSQL `cuid` — per S5.5.
+>
+> **Anti-Patterns:**
+> - `AP-S5.38a` — A cross-database reference stored under an ad-hoc field name — nothing can join the two systems generically, and every reconciliation script re-discovers the convention.
 
 > **S5.39** — Beanie schemas validated with Pydantic v2 — the same validation library used for FastAPI request/response models.
+>
+> **Anti-Patterns:**
+> - `AP-S5.39a` — Document schemas validated ad-hoc rather than through Pydantic — the same shape is described twice, in two dialects, and the two drift without anything reporting it.
 
 > **S5.40** — Maximum document size awareness — documents larger than 1MB signal a design problem; split into multiple documents or move to object storage.
+>
+> **Anti-Patterns:**
+> - `AP-S5.40a` — An unbounded document that grows per event — it passes review at a hundred entries and fails in production at the size limit, by which point the design cannot be changed cheaply.
 
 > **S5.41** — No transactions spanning PostgreSQL and MongoDB in a single operation — if cross-database atomicity is needed, the operation design must be reconsidered.
+>
+> **Anti-Patterns:**
+> - `AP-S5.41a` — An operation written as though it were atomic across both databases — one side commits and the other does not, leaving a state no single-database rollback can repair.
 
 > **S5.42** — MongoDB connection string in Railway Secrets — never committed to version control.
+>
+> **Anti-Patterns:**
+> - `AP-S5.42a` — A connection string committed to version control — the credential is in history permanently, so it must be rotated rather than removed.
 
 > **S5.43** — MongoDB aggregation pipelines isolated in dedicated service functions with Pydantic result validation — same principle as raw SQL isolation (S5.24).
+>
+> **Anti-Patterns:**
+> - `AP-S5.43a` — An aggregation pipeline written inline in a handler with an unvalidated result — a pipeline change alters the response shape, and nothing between the database and the caller notices.
 
 > **S5.44** — MongoDB write operations always await confirmation — never fire-and-forget writes to MongoDB from the service layer.
+>
+> **Anti-Patterns:**
+> - `AP-S5.44a` — Fire-and-forget writes — the caller reports success on a write that was never acknowledged, so the loss is attributed to the user rather than to the write.
 
 ---
 
@@ -756,18 +807,39 @@ ChromaDB stores only vector embeddings and their associated semantic metadata (d
 ### S5.46–S5.52 — ChromaDB Operational Standards
 
 > **S5.46** — ChromaDB runs as a separate Railway service with a persistent volume — never co-located with the FastAPI service; volume ensures embedding persistence across restarts.
+>
+> **Anti-Patterns:**
+> - `AP-S5.46a` — ChromaDB co-located with the service, or without a persistent volume — a restart discards every embedding, and the recovery is a full re-embedding run nobody has budgeted for.
 
 > **S5.47** — The FastAPI AI service is the only service with write access to ChromaDB — other services are read-only; only the AI embedding pipeline creates or updates embeddings.
+>
+> **Anti-Patterns:**
+> - `AP-S5.47a` — Write access to the vector store granted to more than the embedding pipeline — two writers with different models produce a collection whose vectors are not comparable to each other.
 
 > **S5.48** — Similarity threshold minimum 0.7 for matching queries — results below 0.7 cosine similarity are discarded, not returned to the user.
+>
+> **Anti-Patterns:**
+> - `AP-S5.48a` — Similarity results returned below the threshold — a weak match is presented with the same confidence as a strong one, and a user acting on it has no way to tell them apart.
 
 > **S5.49** — ChromaDB collections named by content type and version — `scholarship_embeddings_v1`, `eligibility_documents_v1` — versioning enables migration to a new embedding model without downtime.
+>
+> **Anti-Patterns:**
+> - `AP-S5.49a` — Unversioned collection names — changing the embedding model then means mutating the live collection in place, so queries run against a mixture of two vector spaces.
 
 > **S5.50** — ChromaDB internal URL only — the ChromaDB Railway service has no public port; only the FastAPI service on the Railway internal network connects to it.
+>
+> **Anti-Patterns:**
+> - `AP-S5.50a` — A public port on the vector store — an unauthenticated service holding embedded source content becomes an exfiltration surface no application control covers.
 
 > **S5.51** — Embedding model is locked per collection — changing the embedding model requires a new collection and a re-embedding migration pipeline, not an in-place update.
+>
+> **Anti-Patterns:**
+> - `AP-S5.51a` — An embedding model changed in place — old and new vectors share a collection, and cosine distance between them is arithmetic without meaning.
 
 > **S5.52** — ChromaDB reads in the AI service use `max_results` limits — unbounded similarity searches are forbidden.
+>
+> **Anti-Patterns:**
+> - `AP-S5.52a` — An unbounded similarity search — one query can return the whole collection, and the cost is paid in memory on the service rather than in the database.
 
 ---
 
@@ -799,14 +871,29 @@ Every operation that writes to multiple databases (PostgreSQL + MongoDB, Postgre
 ### S5.54–S5.58 — Additional Cross-Database Standards
 
 > **S5.54** — If a PostgreSQL record is soft-deleted, the corresponding MongoDB documents and ChromaDB embeddings are also soft-deleted in the same logical operation — referential integrity is maintained across database types.
+>
+> **Anti-Patterns:**
+> - `AP-S5.54a` — A PostgreSQL record soft-deleted without its documents and embeddings — deleted content keeps surfacing through search, which is the one path where the user is certain it was removed.
 
 > **S5.55** — The cross-database sync operation is idempotent — running it twice produces the same result as running it once; enables safe retry on failure.
+>
+> **Anti-Patterns:**
+> - `AP-S5.55a` — A sync operation that is not idempotent — a retry after a partial failure duplicates what already succeeded, so the safe response to an error is the one that corrupts.
 
 > **S5.56** — Cross-database queries (retrieving a MongoDB document and its PostgreSQL entity) are performed as two separate queries joined at the application layer — never attempted through database-level mechanisms.
+>
+> **Anti-Patterns:**
+> - `AP-S5.56a` — A cross-database join attempted at the database layer — it couples two systems that have no shared transaction, and the coupling is discovered when one of them is unavailable.
 
 > **S5.57** — Background jobs that sync data between databases are monitored for failure and alert on missed runs (per C8 platform reliability standards).
+>
+> **Anti-Patterns:**
+> - `AP-S5.57a` — A sync job that fails silently — the divergence grows for as long as nobody looks, and it is found by a user reading data that disagrees with itself.
 
 > **S5.58** — A reconciliation script exists for each cross-database relationship that can detect and report orphaned records — run quarterly or after incidents.
+>
+> **Anti-Patterns:**
+> - `AP-S5.58a` — No reconciliation script for a cross-database relationship — orphans cannot be detected, so the question of whether the two sides agree has no answer at all.
 
 ---
 
@@ -831,6 +918,9 @@ Database migrations run as the first step of every production deployment, before
 **Rationale:**
 CF-13 (Common Failure Register): service starts before migration completes, writes occur against old schema, data corruption is possible during the window between service start and migration completion. Migration-first deploy eliminates this window.
 
+**Anti-Patterns:**
+- `AP-S5.59a` — A service that starts before its migration completes — writes land against the old schema during the window, and the corruption is written by the healthy new version rather than by the deploy.
+
 **Cross-References:** `CF-13` (migration timing failure), `S8.6` (zero-downtime deploy), `S8.14` (prisma validate in CI)
 
 ---
@@ -838,14 +928,29 @@ CF-13 (Common Failure Register): service starts before migration completes, writ
 ### S5.60–S5.64 — Additional Migration Standards
 
 > **S5.60** — All migrations are backward-compatible with the previous service version — enables zero-downtime rolling deploys where the old service runs briefly against the new schema.
+>
+> **Anti-Patterns:**
+> - `AP-S5.60a` — A migration that is not backward-compatible — during a rolling deploy the previous version runs against the new schema, and every request it serves in that window fails.
 
 > **S5.61** — Never delete a column in the same migration that removes it from the code — deprecate the column first (remove from code, keep in schema), then delete in a subsequent migration after the first migration has deployed successfully.
+>
+> **Anti-Patterns:**
+> - `AP-S5.61a` — A column removed from the code and dropped in the same migration — the previous version is still serving traffic against it, and the data is gone before anyone establishes it was unused.
 
 > **S5.62** — Migration files are never edited after they have been committed — a migration that has been run on any environment is immutable. Create a new migration to correct it.
+>
+> **Anti-Patterns:**
+> - `AP-S5.62a` — A committed migration edited in place — environments that already ran the original and environments that run the edit diverge permanently, and no tool reports which is which.
 
 > **S5.63** — `prisma migrate diff` runs in CI on every PR that changes `schema.prisma` — detects missing migration files before the PR is merged.
+>
+> **Anti-Patterns:**
+> - `AP-S5.63a` — A schema change merged with no migration — the divergence surfaces on deploy rather than in review, at the point where the fix is a hotfix.
 
 > **S5.64** — Staging migration is performed before production migration — staging is the validation environment for the migration plan.
+>
+> **Anti-Patterns:**
+> - `AP-S5.64a` — A migration run first in production — the rehearsal that would have caught it happens on the data that cannot be restored from a rehearsal.
 
 ---
 

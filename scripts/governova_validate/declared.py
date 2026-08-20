@@ -103,8 +103,16 @@ def check_declared_anti_patterns(
             continue
         implied = ap_id[len("AP-") :].rstrip("abcdefghijklmnopqrstuvwxyz")
         issues.append(
+            # SEV2, promoted from SEV3 once the outstanding list reached zero.
+            #
+            # While eleven orphans stood, this reported a *backlog* — a known debt
+            # being worked down, which is SEV3's job. With none outstanding, a new
+            # one is a **regression**: law was declared in a summary table and
+            # silently failed to compile, between one commit and the next. That is
+            # the failure mode the check was written for, and it deserves the
+            # severity that says so.
             IntegrityIssue(
-                severity=Severity.SEV3,
+                severity=Severity.SEV2,
                 code="declared-anti-pattern-uncompiled",
                 message=(
                     f"{ap_id} is declared in a markdown table but is absent from the "

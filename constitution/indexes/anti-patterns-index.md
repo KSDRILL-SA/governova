@@ -41,7 +41,6 @@
 | `AP-S2.22a` | Unbounded list response without pagination | S2.19 | High | — |
 | `AP-S2.23a` | API boundary without Zod/Pydantic validation | S2.23 | Critical | — |
 | `AP-S2.49a` | CORS wildcard `*` in production | S2.49 | Critical | — |
-| `AP-S2.55a` | Secret committed to version control | S2.55 | Critical | CF-04 |
 
 ---
 
@@ -192,7 +191,7 @@
 | `AP-S10.3a` | Same Claude session for proposal AND adversarial review | S10.3 | High |
 | `AP-S10.6a` | AI session starts with tech question before AI-INSTRUCTIONS.md | S10.6 | High |
 | `AP-S10.8a` | "Claude approved the security decision" | S10.8 | Critical |
-| `AP-S10.14a` | AI output accepted as constitutional amendment | S10.14 | Critical |
+| `AP-S10.8b` | AI output accepted as a constitutional amendment | S10.8 | Critical |
 | `AP-S10.15a` | Claude → Cursor directly, skipping adversarial review | S10.15 | Critical |
 | `AP-S10.21a` | Build session started without CONSTITUTION-INDEX.md | S10.21 | Critical |
 | `AP-S10.27a` | PR merged to main without AI code review documented | S10.27 | High |

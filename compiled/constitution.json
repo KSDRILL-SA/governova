@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-08-20T18:06:15.581470Z",
-  "source_commit_sha": "5156cad",
-  "checksum": "sha256:20371ac2d02674c0396a85a1c43da0d10355d242c2de6f4bd1fdbd6faef8eb6c",
+  "compiled_at": "2026-08-20T19:35:03.476548Z",
+  "source_commit_sha": "58d785b",
+  "checksum": "sha256:5fc20391730b2d397801dff086011f426548584f7db2775157c6043e4804fbca",
   "framework": [
     {
       "id": "format-specification",
@@ -19584,6 +19584,11 @@
               "id": "AP-S10.8a",
               "description": "\"Claude reviewed the security decision and approved it, so we can proceed\" — Claude reviewed and recommended; a human must approve. There is no scenario where Claude's review constitutes approval.",
               "parent_standard_id": "S10.8"
+            },
+            {
+              "id": "AP-S10.8b",
+              "description": "AI output accepted as a constitutional amendment — the standard already names constitutional amendments among the decisions L4 reserves to humans, and an amendment that entered the corpus on an engine's authority cannot be un-ratified by discovering that later.",
+              "parent_standard_id": "S10.8"
             }
           ],
           "cross_references": [
@@ -19629,7 +19634,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 275
+          "source_line": 276
         },
         {
           "id": "S10.10",
@@ -19659,7 +19664,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 280
+          "source_line": 281
         },
         {
           "id": "S10.11",
@@ -19684,7 +19689,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 285
+          "source_line": 286
         },
         {
           "id": "S10.12",
@@ -19712,7 +19717,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 290
+          "source_line": 291
         },
         {
           "id": "S10.13",
@@ -19742,7 +19747,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 292
+          "source_line": 293
         },
         {
           "id": "S10.14",
@@ -19761,7 +19766,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 297
+          "source_line": 298
         },
         {
           "id": "S10.15",
@@ -19814,7 +19819,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 307
+          "source_line": 308
         },
         {
           "id": "S10.16",
@@ -19833,7 +19838,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 350
+          "source_line": 351
         },
         {
           "id": "S10.17",
@@ -19852,7 +19857,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 352
+          "source_line": 353
         },
         {
           "id": "S10.18",
@@ -19876,7 +19881,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 354
+          "source_line": 355
         },
         {
           "id": "S10.19",
@@ -19895,7 +19900,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 356
+          "source_line": 357
         },
         {
           "id": "S10.20",
@@ -19914,7 +19919,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 358
+          "source_line": 359
         },
         {
           "id": "S10.21",
@@ -19947,7 +19952,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 366
+          "source_line": 367
         },
         {
           "id": "S10.22",
@@ -19984,7 +19989,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 390
+          "source_line": 391
         },
         {
           "id": "S10.23",
@@ -20003,7 +20008,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 442
+          "source_line": 443
         },
         {
           "id": "S10.24",
@@ -20022,7 +20027,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 444
+          "source_line": 445
         },
         {
           "id": "S10.25",
@@ -20046,7 +20051,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 446
+          "source_line": 447
         },
         {
           "id": "S10.26",
@@ -20065,7 +20070,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 448
+          "source_line": 449
         },
         {
           "id": "S10.27",
@@ -20106,7 +20111,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 458
+          "source_line": 459
         },
         {
           "id": "S10.28",
@@ -20134,7 +20139,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 484
+          "source_line": 485
         },
         {
           "id": "S10.29",
@@ -20153,7 +20158,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 486
+          "source_line": 487
         },
         {
           "id": "S10.30",
@@ -20172,7 +20177,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 488
+          "source_line": 489
         },
         {
           "id": "S10.31",
@@ -20191,7 +20196,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 490
+          "source_line": 491
         },
         {
           "id": "S10.32",
@@ -20210,7 +20215,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 492
+          "source_line": 493
         },
         {
           "id": "S10.33",
@@ -20229,7 +20234,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 498
+          "source_line": 499
         },
         {
           "id": "S10.34",
@@ -20257,7 +20262,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 500
+          "source_line": 501
         },
         {
           "id": "S10.35",
@@ -20276,7 +20281,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 502
+          "source_line": 503
         },
         {
           "id": "S10.36",
@@ -20295,7 +20300,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 504
+          "source_line": 505
         },
         {
           "id": "S10.37",
@@ -20340,7 +20345,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 512
+          "source_line": 513
         },
         {
           "id": "S10.38",
@@ -20397,7 +20402,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 536
+          "source_line": 537
         },
         {
           "id": "S10.39",
@@ -20436,7 +20441,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 564
+          "source_line": 565
         },
         {
           "id": "S10.40",
@@ -20478,7 +20483,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 594
+          "source_line": 595
         }
       ]
     },
@@ -24359,7 +24364,7 @@
   },
   "integrity": {
     "standards_extracted": 670,
-    "anti_patterns_extracted": 507,
+    "anti_patterns_extracted": 508,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

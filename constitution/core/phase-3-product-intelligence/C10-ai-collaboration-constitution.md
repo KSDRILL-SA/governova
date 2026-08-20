@@ -258,6 +258,7 @@ The ability to approve irreversible or high-consequence decisions must rest with
 
 **Anti-Patterns:**
 - `AP-S10.8a` — "Claude reviewed the security decision and approved it, so we can proceed" — Claude reviewed and recommended; a human must approve. There is no scenario where Claude's review constitutes approval.
+- `AP-S10.8b` — AI output accepted as a constitutional amendment — the standard already names constitutional amendments among the decisions L4 reserves to humans, and an amendment that entered the corpus on an engine's authority cannot be un-ratified by discovering that later.
 
 **Cross-References:** `C0 §8` (amendment protocol — human approval required), `S3.36` (security changes require human review)
 

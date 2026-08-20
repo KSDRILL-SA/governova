@@ -305,36 +305,32 @@ def test_the_check_is_silent_when_there_is_no_constitution_to_read(tmp_path):
     assert check_declared_anti_patterns(tmp_path, _index_with_anti_pattern()) == []
 
 
-def test_the_outstanding_orphans_are_exactly_the_two_on_record(repo_root, index):
-    """Pins the backlog so it cannot grow quietly, and shrinks as L4 gives them homes.
+def test_no_declared_anti_pattern_fails_to_compile(repo_root, index):
+    """The list is empty, and staying empty is now the assertion.
 
-    When an orphan is given an `**Anti-Patterns:**` block in its constitution body
-    this fails, and the fix is to strike it from this list — never to widen the list.
+    It ran at eleven, then two, and is now none. **This must not be relaxed back
+    into a list of known exceptions.** With nothing outstanding, a failure here is a
+    regression — law declared in a summary table that silently failed to reach the
+    compiled index between one commit and the next — which is why the check itself
+    was promoted from SEV3 to SEV2.
 
-    **Nine were struck when the abbreviated form learned to carry anti-patterns.**
-    They were never a backlog of nine edits: their standards are blockquote
-    shorthand, and the compiler built those with `anti_patterns=[]` hardcoded, so
-    no block placed near them was read. The engine change came first, then the law.
+    How the last of them were retired, because the two routes are different and the
+    wrong one writes false law:
 
-    **The two that remain are a different defect and must not be struck the same
-    way.** Both are declared only in `constitution/indexes/anti-patterns-index.md`,
-    and both are fossils of an earlier numbering:
+    - **Nine** had their `**Anti-Patterns:**` block added to their own standard.
+      That was only possible once the compiler learned to read a block on an
+      abbreviated standard; before that the block compiled to nothing.
+    - **Two were never lost law at all.** `AP-S2.55a` and `AP-S10.14a` were declared
+      only in `anti-patterns-index.md` and were fossils of an earlier numbering.
+      `AP-S2.55a` duplicated `AP-S3.20a`, which already compiled and already said
+      the same thing, so its row was deleted. `AP-S10.14a` named a standard about
+      compliant wrappers while describing an L4 boundary, so it became `AP-S10.8b`
+      under the standard whose text already reads *"AI cannot approve:
+      constitutional amendments"*.
 
-    - `AP-S2.55a` — *secret committed to version control* — names S2.55, which is
-      now *Brute Force Protection on Auth Endpoints*. The law is **not missing**:
-      `AP-S3.20a` already compiles under *Secrets ... Never Committed to Version
-      Control* and already says it. S3.20's own cross-reference still calls S2.55
-      "(secrets management)", which is the fossil in plain sight.
-    - `AP-S10.14a` — *AI output accepted as constitutional amendment* — names
-      S10.14, which is about not papering over violations with compliant wrappers.
-      The concept belongs to **S10.8**, whose text already reads "AI cannot
-      approve: constitutional amendments".
-
-    Giving either the block its stale row names would write the mis-citation defect
-    of #205 into the constitution itself. Correcting the rows is the remedy, and it
-    is L4.
+    If a new orphan appears, establish which of those two it is before writing
+    anything. Adding a block to the standard a stale row names is how a
+    mis-citation gets ratified.
     """
-    outstanding = {
-        i.message.split()[0] for i in check_declared_anti_patterns(repo_root, index)
-    }
-    assert outstanding == {"AP-S2.55a", "AP-S10.14a"}
+    assert check_declared_anti_patterns(repo_root, index) == []
+

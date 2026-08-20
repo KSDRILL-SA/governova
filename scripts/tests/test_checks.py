@@ -393,10 +393,14 @@ def test_domain_coverage_is_reported_separately_from_core():
     cov = enforcement_coverage()
     # 446 core anti-patterns, plus C11's twelve ratified under ADR-007 Stage 1,
     # plus the nine orphans given `**Anti-Patterns:**` blocks once the abbreviated
-    # form could carry them. The denominator *grew*, which lowers enforcement
-    # coverage rather than flattering it — nine more anti-patterns exist to be
-    # enforced and none of them has a rule yet.
-    assert cov["total_anti_patterns"] == 507, "core denominator changed unexpectedly"
+    # form could carry them, plus `AP-S10.8b` — the L4 amendment boundary, which
+    # reached the index by being re-parented off a stale row naming `S10.14`.
+    #
+    # The denominator keeps *growing*, which lowers enforcement coverage rather
+    # than flattering it. That is the honest direction: writing more of the law
+    # down does not enforce it, and this figure should never move because a
+    # denominator was trimmed.
+    assert cov["total_anti_patterns"] == 508, "core denominator changed unexpectedly"
     assert cov["domain_total_anti_patterns"] > 0
     assert all(ap.startswith("AP-D-") for ap in cov["domain_covered"])
     assert not any(ap.startswith("AP-D-") for ap in cov["covered"])

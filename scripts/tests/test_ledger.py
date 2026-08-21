@@ -21,6 +21,7 @@ from governova_ledger import (
     Ledger,
     LedgerEntry,
     LedgerError,
+    Written,
     accrue,
     replay,
     to_credits,
@@ -118,7 +119,7 @@ def test_the_enforcer_would_actually_catch_a_float_here() -> None:
 # ─── Criterion 3 · a replay produces exactly one charge ──────────────────────
 
 
-def _webhook(ledger: Ledger, event_id: str, amount: str = "25") -> LedgerEntry:
+def _webhook(ledger: Ledger, event_id: str, amount: str = "25") -> Written:
     """What a payment provider sends. They all retry; that is the point."""
     return ledger.record(
         EntryKind.GRANT, amount, idempotency_key=event_id, occurred_at=_NOW
@@ -133,7 +134,7 @@ def test_a_replayed_webhook_produces_exactly_one_entry() -> None:
     third = _webhook(ledger, "evt_abc123")
 
     assert len(ledger.entries) == 1
-    assert first == again == third
+    assert first.entry == again.entry == third.entry
     assert ledger.balance() == Decimal(25)
 
 
@@ -145,7 +146,7 @@ def test_a_replay_returns_the_original_rather_than_raising() -> None:
     """
     ledger = _ledger()
     original = _webhook(ledger, "evt_1")
-    assert _webhook(ledger, "evt_1") is original
+    assert _webhook(ledger, "evt_1").entry is original.entry
 
 
 def test_a_key_reused_for_different_content_is_refused() -> None:
@@ -306,9 +307,10 @@ def test_the_ledger_and_the_audit_trail_use_one_implementation() -> None:
 def test_credits_accrue_hourly_rather_than_resetting() -> None:
     """`ADR-010` §4 — so a subscriber who works in bursts is not punished."""
     ledger = _ledger()
-    entry = accrue(ledger, monthly_budget=Decimal(720), at=_NOW)
-    assert entry.kind is EntryKind.ACCRUAL
-    assert entry.amount == Decimal(720) / HOURS_PER_MONTH
+    written = accrue(ledger, monthly_budget=Decimal(720), at=_NOW)
+    assert written.created
+    assert written.entry.kind is EntryKind.ACCRUAL
+    assert written.entry.amount == Decimal(720) / HOURS_PER_MONTH
 
 
 def test_an_accrual_job_that_runs_twice_credits_the_hour_once() -> None:
@@ -347,3 +349,112 @@ def test_the_scale_is_fine_enough_for_a_small_review() -> None:
     """Two decimal places would round a Low-tier call to zero or up to a cent."""
     assert CREDIT_SCALE == 10_000
     assert to_minor(Decimal("0.0001")) == 1
+
+
+# ─── What the caller is told ─────────────────────────────────────────────────
+
+
+def test_a_write_says_whether_it_created_the_entry() -> None:
+    """Idempotency in the ledger is not idempotency in the caller.
+
+    `record` returned the entry alone, which left a handler that charges and then
+    sends a receipt unable to tell a first delivery from a retry — so it sends
+    the receipt twice. The ledger is correct and the customer is emailed twice,
+    which is the same defect one layer out.
+    """
+    ledger = _ledger()
+    first = _webhook(ledger, "evt_1")
+    replayed = _webhook(ledger, "evt_1")
+
+    assert first.created is True
+    assert first.replayed is False
+    assert replayed.created is False
+    assert replayed.replayed is True
+
+
+def test_a_handler_can_be_idempotent_because_of_it() -> None:
+    """The property the return type exists to make available."""
+    ledger = _ledger()
+    receipts: list[str] = []
+
+    for _ in range(4):  # the provider delivers the same event four times
+        written = _webhook(ledger, "evt_1")
+        if written.created:
+            receipts.append(written.entry.idempotency_key)
+
+    assert len(ledger.entries) == 1
+    assert receipts == ["evt_1"]
+
+
+def test_an_accrual_that_was_already_credited_says_so() -> None:
+    ledger = _ledger()
+    assert accrue(ledger, monthly_budget=720, at=_NOW).created is True
+    assert accrue(ledger, monthly_budget=720, at=_NOW).created is False
+
+
+# ─── What actually prevents a double charge ──────────────────────────────────
+
+
+def test_the_database_carries_the_idempotency_constraint() -> None:
+    """`S5.30` — uniqueness belongs in the database, not in application code.
+
+    The in-memory index is the fast path and the readable error. It cannot be the
+    guarantee: two deliveries of one webhook arriving at two processes both find
+    no key and both write, and neither sees the other. Only the database does.
+
+    Read from the schema so the constraint cannot be removed while this passes.
+    """
+    from governova_compile.discovery import resolve_repo_root
+
+    schema = (
+        resolve_repo_root() / "platform" / "cloud" / "prisma" / "schema.prisma"
+    ).read_text(encoding="utf-8")
+    block = schema.split("model LedgerEntry {")[1].split("\n}")[0]
+
+    assert "@@unique([organisation_id, idempotency_key])" in block
+    assert "@@unique([organisation_id, seq])" in block
+
+
+def test_the_ledger_table_is_append_only() -> None:
+    """The one model with no `deleted_at` and no `updated_at`, deliberately.
+
+    `S5.34` asks every table for those. A ledger entry that can be soft-deleted
+    is not append-only, and a balance derived from entries that can disappear is
+    not derivable from anything. A movement is reversed by a REFUND entry — which
+    is a fact — rather than by hiding the entry being reversed.
+    """
+    from governova_compile.discovery import resolve_repo_root
+
+    schema = (
+        resolve_repo_root() / "platform" / "cloud" / "prisma" / "schema.prisma"
+    ).read_text(encoding="utf-8")
+    block = schema.split("model LedgerEntry {")[1].split("\n}")[0]
+
+    assert "deleted_at" not in block
+    assert "updated_at" not in block
+    assert "REFUND" in schema, "reversal must remain expressible as an entry"
+
+
+def test_the_amount_column_is_an_integer_not_a_decimal_or_a_float() -> None:
+    """The value hashed and the value stored must be the same bytes.
+
+    A `Decimal` column serialises to a textual form that depends on how it was
+    constructed — `1.0` and `1.00` are equal and do not encode identically, which
+    would give two hashes for one amount and break the chain on a round trip.
+    """
+    from governova_compile.discovery import resolve_repo_root
+
+    schema = (
+        resolve_repo_root() / "platform" / "cloud" / "prisma" / "schema.prisma"
+    ).read_text(encoding="utf-8")
+    block = schema.split("model LedgerEntry {")[1].split("\n}")[0]
+
+    # Declarations only. The doc comments above the column discuss `Decimal` and
+    # `Float` by name, which is the point of them — reading those as column types
+    # would make this test fail for saying the right thing.
+    declarations = "\n".join(
+        line for line in block.splitlines() if not line.strip().startswith("///")
+    )
+    assert "amount_minor    BigInt" in declarations
+    assert "Float" not in declarations
+    assert "Decimal" not in declarations

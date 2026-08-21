@@ -1582,5 +1582,190 @@ def roadmap(
         )
 
 
+# ── Identity ─────────────────────────────────────────────────────────────────
+# Workstream D, Stage 0. These are the only commands in this file that need a
+# network, and the only ones that need `governova[auth]`.
+#
+# Everything else here runs offline, forever, with no account — `ADR-010` §5.1
+# is a prohibition, and `test_identity_isolation.py` asserts it by making these
+# packages unimportable and running the engine anyway. The imports below are
+# therefore *inside* the commands: importing them at module scope would put a
+# keychain library on the import path of `governova score`.
+
+# Where the identity service lives. An operator points this at their own
+# deployment; there is no bundled default that phones somewhere.
+ENV_IDENTITY_URL = "GOVERNOVA_IDENTITY_URL"
+DEFAULT_IDENTITY_URL = "http://localhost:8000"
+
+
+def _identity_url() -> str:
+    import os
+
+    return os.environ.get(ENV_IDENTITY_URL, DEFAULT_IDENTITY_URL).rstrip("/")
+
+
+def _auth_store() -> Any:
+    """The keychain, or a refusal that explains itself.
+
+    Never falls back to a file. See `governova_auth.store` for why that is worth
+    the worse ergonomics.
+    """
+    try:
+        from governova_auth.store import KeychainStore
+    except ModuleNotFoundError as exc:
+        console.print(
+            "[bold red]error:[/] the identity client is not installed."
+        )
+        console.print(
+            "[dim]Install it with `pip install governova[auth]`. Every other "
+            "Governova command works without it.[/]"
+        )
+        raise typer.Exit(code=2) from exc
+    return KeychainStore()
+
+
+@app.command()
+def login(
+    identity_url: Annotated[
+        str | None, typer.Option("--identity-url", help="The identity service to log in to.")
+    ] = None,
+) -> None:
+    """Log in to a Governova Cloud account.
+
+    The only command here that needs a network. The token is kept in the OS
+    keychain and never written to a file.
+    """
+    from governova_auth.device_flow import LoginError, poll, start
+    from governova_auth.store import KeychainUnavailableError
+
+    base = (identity_url or _identity_url()).rstrip("/")
+    store = _auth_store()
+
+    try:
+        pending = start(base)
+    except LoginError as exc:
+        console.print(f"[bold red]login failed:[/] {exc}")
+        raise typer.Exit(code=1) from exc
+
+    console.print("\nTo finish logging in, open this page and enter the code:\n")
+    console.print(f"    [bold cyan]{pending.verification_uri}[/]")
+    console.print(f"    code: [bold]{pending.user_code}[/]\n")
+    console.print("[dim]Waiting for approval — this expires in a few minutes.[/]")
+
+    try:
+        session = poll(base, pending)
+        store.save(session)
+    except KeychainUnavailableError as exc:
+        # The session is discarded rather than written anywhere. Being unable to
+        # store a token safely is a reason not to have one, not a reason to put
+        # it somewhere unsafe.
+        console.print(f"\n[bold red]login failed:[/] {exc}")
+        raise typer.Exit(code=1) from exc
+    except LoginError as exc:
+        console.print(f"\n[bold red]login failed:[/] {exc}")
+        raise typer.Exit(code=1) from exc
+
+    console.print(f"\n[green]✓[/] logged in as [bold]{session.subject}[/]")
+
+
+@app.command()
+def logout(
+    identity_url: Annotated[
+        str | None, typer.Option("--identity-url", help="The identity service to revoke at.")
+    ] = None,
+) -> None:
+    """Log out, and revoke the session at the service.
+
+    The local session is cleared even when the service cannot be reached. A user
+    who is offline still expects logging out to log them out — but the failure to
+    revoke is reported, because a session still live somewhere is something they
+    should know about.
+    """
+    from governova_auth.device_flow import LoginError, revoke
+    from governova_auth.store import KeychainUnavailableError
+
+    store = _auth_store()
+    try:
+        session = store.load()
+    except KeychainUnavailableError as exc:
+        console.print(f"[bold red]error:[/] {exc}")
+        raise typer.Exit(code=1) from exc
+
+    if session is None:
+        console.print("[dim]Not logged in — nothing to do.[/]")
+        return
+
+    revoked = True
+    try:
+        revoke(identity_url or _identity_url(), session.access_token)
+    except LoginError:
+        revoked = False
+
+    store.clear()
+    console.print("[green]✓[/] logged out.")
+    if not revoked:
+        console.print(
+            "[yellow]The service could not be reached, so the session was cleared "
+            "here but not revoked there.[/] [dim]It expires on its own; revoke it "
+            "from the dashboard if that matters.[/]"
+        )
+
+
+@app.command()
+def whoami(
+    identity_url: Annotated[
+        str | None, typer.Option("--identity-url", help="The identity service to ask.")
+    ] = None,
+) -> None:
+    """Show who this machine is logged in as.
+
+    Answered from the stored session, then confirmed with the service when it can
+    be reached — a token revoked elsewhere still looks valid locally, and that is
+    exactly the case worth reporting.
+    """
+    import json
+    import urllib.error
+    import urllib.request
+
+    from governova_auth.store import KeychainUnavailableError
+
+    store = _auth_store()
+    try:
+        session = store.load()
+    except KeychainUnavailableError as exc:
+        console.print(f"[bold red]error:[/] {exc}")
+        raise typer.Exit(code=1) from exc
+
+    if session is None:
+        console.print("[dim]Not logged in.[/] Run `governova login`.")
+        raise typer.Exit(code=1)
+
+    console.print(f"[bold]{session.subject}[/]")
+    console.print(f"[dim]session expires {session.expires_at.isoformat()}[/]")
+
+    base = (identity_url or _identity_url()).rstrip("/")
+    request = urllib.request.Request(  # URL is operator-supplied config
+        f"{base}/api/v1/me",
+        headers={"Authorization": f"Bearer {session.access_token}"},
+        method="GET",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=10) as response:
+            json.loads(response.read().decode("utf-8"))
+        console.print("[green]✓[/] confirmed with the identity service.")
+    except urllib.error.HTTPError as exc:
+        detail = ""
+        try:
+            detail = json.loads(exc.read().decode("utf-8")).get("detail", {}).get("message", "")
+        except (ValueError, OSError):
+            detail = ""
+        console.print(f"[yellow]The service rejected this session:[/] {detail or exc.code}")
+        raise typer.Exit(code=1) from exc
+    except (urllib.error.URLError, OSError, TimeoutError):
+        console.print(
+            "[dim]Could not reach the identity service, so this is the local view only.[/]"
+        )
+
+
 if __name__ == "__main__":
     app()

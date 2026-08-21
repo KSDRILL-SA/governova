@@ -89,6 +89,17 @@ cloud = [
     "pyjwt>=2.9",
     "cryptography>=43.0",
 ]
+# The identity *client* — `governova login`, `logout`, `whoami`. Separate from
+# `cloud` because a client and a service are different things: someone logging
+# in from a laptop needs a keychain, and has no use for a web framework, an ASGI
+# server or a cryptography stack.
+#
+# `keyring` and nothing else. The HTTP calls use `urllib` from the standard
+# library rather than adding a client, because every package added here is one
+# the user did not ask for.
+auth = [
+    "keyring>=25.0",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -142,6 +153,7 @@ packages = [
     "governova_console",
     "governova_onboard",
     "governova_identity",
+    "governova_auth",
     "governova_settings",
 ]
 
@@ -185,5 +197,6 @@ files = [
     "governova_console",
     "governova_onboard",
     "governova_identity",
+    "governova_auth",
     "governova_settings",
 ]

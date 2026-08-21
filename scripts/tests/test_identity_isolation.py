@@ -30,7 +30,7 @@ from pathlib import Path
 import pytest
 
 # Everything the Cloud brings in. None of it may be reachable from engine code.
-CLOUD_ONLY = ("fastapi", "uvicorn", "jwt", "cryptography", "starlette")
+CLOUD_ONLY = ("fastapi", "uvicorn", "jwt", "cryptography", "starlette", "keyring")
 
 # Every surface the engine offers. `#254` names the commands; these are the
 # modules behind them.
@@ -156,6 +156,25 @@ def test_the_identity_package_is_not_reachable_from_the_engine() -> None:
         if "governova_identity" in text:
             offenders.append(name)
     assert not offenders, f"engine module(s) reference the identity package: {offenders}"
+
+
+def test_the_cli_reaches_the_auth_client_only_inside_the_identity_commands() -> None:
+    """`login`, `logout` and `whoami` may use the client. Nothing else may.
+
+    They are the only commands that need a network, and the import sits inside
+    each command body rather than at module scope — importing at the top would
+    put a keychain library on the import path of `governova score`.
+    """
+    import governova_cli.__main__ as cli
+
+    source = Path(cli.__file__).read_text(encoding="utf-8")
+    module_scope = source.split("def login(")[0]
+    for line in module_scope.splitlines():
+        stripped = line.strip()
+        if stripped.startswith(("import ", "from ")) and line[:1] not in {" ", "	"}:
+            assert "governova_auth" not in stripped, (
+                f"the auth client is imported at module scope: {stripped}"
+            )
 
 
 def test_the_identity_service_is_an_extra_not_a_runtime_dependency() -> None:

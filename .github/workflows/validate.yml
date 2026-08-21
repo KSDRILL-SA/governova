@@ -50,7 +50,22 @@ jobs:
       # `fail_under = 80` lives in the root `pyproject.toml` so this command and a
       # local run cannot disagree about what passing means.
       - name: Engine — unit tests + coverage gate (S7.25)
-        run: uv run pytest scripts/tests/ -q --cov --cov-report=term
+        run: uv run pytest scripts/tests/ -q --cov --cov-report=term --cov-report=xml
+
+      # S7.27 — the gate above fails the build on a *total*. It cannot show a
+      # reviewer which added lines are untested, and that is the question review
+      # exists to answer. Without this, the answer depended on whether the author
+      # remembered to mention it.
+      #
+      # `if: always()` because the run worth reading most is the one that failed.
+      - name: Publish the coverage report (S7.27)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml
+          retention-days: 14
+          if-no-files-found: warn
 
       # Secondary cross-check: the regex validator confirms every S{C}.{N}
       # reference across the repo resolves (defence in depth).

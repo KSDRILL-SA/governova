@@ -6,6 +6,7 @@ because `governova schema`, run on our own model, said so.
 
 from __future__ import annotations
 
+import dataclasses
 import datetime as dt
 
 import pytest
@@ -20,9 +21,12 @@ from governova_org import (
     add_to_team,
     assign_seat,
     change_role,
+    members_of,
+    members_of_team,
     release_seat,
     remove_member,
     seats_in_use,
+    teams_of,
 )
 
 _NOW = dt.datetime(2026, 8, 21, tzinfo=dt.UTC)
@@ -213,3 +217,108 @@ def test_a_role_is_not_an_operating_mode() -> None:
     both a billing tier and a permission level.
     """
     assert {r.value for r in MemberRole}.isdisjoint({m.value for m in OperatingMode})
+
+
+# ─── The fan trap, resolved rather than described ────────────────────────────
+
+
+def _ten_by_four() -> tuple[Organisation, list[Membership], list[Team]]:
+    """The shape the analyser warns about: 10 members and 4 teams in one org."""
+    org = _org(seats=10)
+    members = [_member(f"m{i}") for i in range(10)]
+    teams = [Team(id=f"t{i}", organisation_id="org-1", name=f"Team {i}") for i in range(4)]
+    return org, members, teams
+
+
+def test_the_fanning_join_really_does_fan() -> None:
+    """The finding is real, and this is the arithmetic behind it.
+
+    Ten members and four teams joined through their shared organisation produce
+    forty rows. Any COUNT or SUM over that is wrong, and it is wrong quietly —
+    the query succeeds and returns a number.
+    """
+    org, members, teams = _ten_by_four()
+    fanned = [
+        (m, t)
+        for m in members
+        if m.organisation_id == org.id
+        for t in teams
+        if t.organisation_id == org.id
+    ]
+    assert len(fanned) == 40
+    assert len(fanned) != len(members)
+
+
+def test_the_supported_paths_do_not_fan() -> None:
+    """Which is why nothing has to write that join.
+
+    `S14.10` allows a fan trap to be resolved *or* documented. Documenting it
+    leaves the next person to read the note; this makes the trap unreachable
+    through the API they will actually use.
+    """
+    org, members, teams = _ten_by_four()
+    assert len(members_of(org, members)) == 10
+    assert len(teams_of(org, teams)) == 4
+
+
+def test_team_members_are_reached_through_the_bridge_not_the_organisation() -> None:
+    """`Team → TeamMembership → Membership` is the real relationship.
+
+    Reaching the same set through the organisation does not merely fan — it
+    returns every member of the organisation rather than every member of the
+    team, which is a different and wrong answer.
+    """
+    org, members, teams = _ten_by_four()
+    platform = teams[0]
+    links = [add_to_team(platform, members[i]) for i in range(3)]
+
+    on_team = members_of_team(platform, links, members)
+    assert [m.id for m in on_team] == ["m0", "m1", "m2"]
+    assert len(on_team) < len(members_of(org, members))
+
+
+def test_a_removed_team_membership_is_not_counted() -> None:
+    """`S5.22` again — the filter has to be on every path, including this one."""
+    _, members, teams = _ten_by_four()
+    platform = teams[0]
+    links = [
+        add_to_team(platform, members[0]),
+        dataclasses.replace(add_to_team(platform, members[1]), deleted_at=_NOW),
+    ]
+    assert [m.id for m in members_of_team(platform, links, members)] == ["m0"]
+
+
+# ─── The invariant, now held by the database ─────────────────────────────────
+
+
+def test_a_team_membership_carries_the_organisation_the_composite_key_needs() -> None:
+    """The column that makes the two foreign keys composite.
+
+    Both of `TeamMembership`'s references are keyed on `(organisation_id, id)`
+    and share the one column, so a team in organisation A and a membership in
+    organisation B cannot both satisfy them. The invariant is impossible rather
+    than merely checked — a migration, a bulk import or a direct INSERT cannot
+    bypass a foreign key the way they bypass application code.
+    """
+    link = add_to_team(Team(id="t1", organisation_id="org-1", name="Platform"), _member("a"))
+    assert link.organisation_id == "org-1"
+    assert link.team_id == "t1"
+    assert link.membership_id == "a"
+
+
+def test_the_schema_keys_team_membership_on_the_organisation() -> None:
+    """Read from the schema itself, so the code and the database cannot drift.
+
+    If somebody simplifies these back to single-column references, the invariant
+    silently stops being enforced and only this fails.
+    """
+    from governova_compile.discovery import resolve_repo_root
+
+    schema = (
+        resolve_repo_root() / "platform" / "cloud" / "prisma" / "schema.prisma"
+    ).read_text(encoding="utf-8")
+    block = schema.split("model TeamMembership {")[1].split("}")[0]
+
+    assert "fields: [organisation_id, team_id]" in block
+    assert "references: [organisation_id, id]" in block
+    assert "fields: [organisation_id, membership_id]" in block

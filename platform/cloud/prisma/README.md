@@ -63,42 +63,70 @@ instruction.
 
 ---
 
-## The finding that survives, and what is done about it
+---
+
+## The finding that survives, and how it is resolved
 
 ```
 probable fan-trap Organisation — Organisation is the one side of 2 separate
 one-to-many relationships (Membership, Team)
 ```
 
-**This one is real.** An organisation has many memberships and many teams. A query that joins
-both through `Organisation` multiplies them: an organisation with 10 members and 4 teams
-returns 40 rows, and any `COUNT` or `SUM` over that is wrong.
+**This one is real, and the arithmetic is in a test.** An organisation with 10 members and 4
+teams returns **40 rows** from a join through it — `test_the_fanning_join_really_does_fan`
+builds exactly that and asserts the 40. Any `COUNT` or `SUM` over it is wrong, and wrong
+quietly: the query succeeds and returns a number.
 
-`S14.10` — *Fan Traps Are Resolved or Documented*. It cannot be resolved: an organisation
-genuinely has both, and removing either relationship removes a fact the product needs. So it is
-documented, which is the standard's other branch:
+`S14.10` allows *resolved or documented*. The shape cannot be removed — an organisation
+genuinely has both members and teams — so it is resolved where a fan trap actually can be:
+**nothing has to write that join.**
 
-> **Never aggregate members and teams in a single join through `Organisation`.** Count them in
-> separate queries, or reach team members through `Team → TeamMembership → Membership`, which is
-> the real path and does not fan.
+Every question somebody would reach for it to answer is answered by a path that does not fan:
 
-The shape is legitimate. The trap is what happens when somebody joins across it, which is why
-the analyser calls it probable rather than certain.
+| question | path | fans |
+|---|---|---|
+| who is in this organisation | `members_of` | no |
+| what teams does it have | `teams_of` | no |
+| who is on this team | `Team → TeamMembership → Membership`, via `members_of_team` | no |
 
-## The second thing the analyser cannot see
+Reaching team members through `Organisation` does not merely multiply rows — it returns every
+member of the *organisation* rather than every member of the *team*, which is a different and
+wrong answer. That is asserted too.
 
-`TeamMembership` reaches an organisation by two paths — through its team, and through its
-membership. Nothing in the schema stops a team in organisation A from having a member whose
-membership belongs to organisation B.
+Documenting the trap would have left the next person to read the note. This makes it
+unreachable through the API they will actually use.
 
-PostgreSQL cannot express "these two foreign keys must resolve to the same organisation" without
-carrying `organisation_id` through both sides as part of a composite key. That is a real option
-and it was not taken: it denormalises `organisation_id` into two more tables to enforce one
-invariant, and `S14.8` requires denormalisation to be recorded rather than assumed — the cost
-here is higher than the alternative.
+## The second gap, closed in the schema
 
-So it is enforced in `governova_org` as an invariant with a test, and recorded here so the next
-reader finds the reasoning rather than the gap.
+`TeamMembership` reaches an organisation by two paths — through its team and through its
+membership — and nothing stopped a team in organisation A from holding a member of
+organisation B.
+
+**It is now impossible.** `TeamMembership` carries `organisation_id`, and both foreign keys are
+composite on `(organisation_id, id)` **sharing that one column**:
+
+```prisma
+team       Team       @relation(fields: [organisation_id, team_id],       references: [organisation_id, id])
+membership Membership @relation(fields: [organisation_id, membership_id], references: [organisation_id, id])
+```
+
+A row cannot name two different organisations in one column, so the two references cannot
+disagree.
+
+**This was first written as an application check, and that was wrong.** An application
+invariant holds only for code that calls it. A migration, a bulk import, a support script and a
+direct `INSERT` all bypass it, and every one of those is an ordinary thing to do to a
+production database. The cost of the real fix is one column and two composite unique
+constraints — considerably less than the cost of finding out later that it did not hold.
+
+`S14.8` requires a denormalisation to be **recorded, never assumed**. `organisation_id` on
+`TeamMembership` is one: it duplicates a fact reachable through either parent. It is recorded
+here and in the schema, and it exists for a reason the schema states — one shared column is what
+makes the keys composite.
+
+`test_the_schema_keys_team_membership_on_the_organisation` reads the schema file itself, so if
+somebody simplifies these back to single-column references the invariant does not silently stop
+being enforced.
 
 ## What the analyser declines to answer
 

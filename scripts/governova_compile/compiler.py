@@ -53,16 +53,20 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
 
 
-def compile_index(repo_root: Path | None = None) -> CompiledIndex:
-    """Compile the full constitutional database into a CompiledIndex."""
-    root = repo_root or resolve_repo_root()
+# Each gather below reads one registry or directory and returns one list. They
+# were the body of `compile_index`, which made that function a sequence of six
+# unrelated loops with nothing to name the boundaries between them (`S13.6`).
 
-    framework = [
+
+def _gather_framework(root: Path) -> list[FrameworkPrimitive]:
+    return [
         FrameworkPrimitive(id=e.id, title=e.title, summary=e.summary, path=e.relative_path)
         for e in FRAMEWORK_REGISTRY
         if (root / e.relative_path).is_file()
     ]
 
+
+def _gather_constitutions(root: Path) -> list[Constitution]:
     constitutions: list[Constitution] = []
     for entry in CONSTITUTION_REGISTRY:
         path = root / entry.relative_path
@@ -80,7 +84,10 @@ def compile_index(repo_root: Path | None = None) -> CompiledIndex:
                 binds_implementation=entry.binds_implementation,
             )
         )
+    return constitutions
 
+
+def _gather_implementations(root: Path) -> list[Implementation]:
     implementations: list[Implementation] = []
     for impl in IMPLEMENTATION_REGISTRY:
         path = root / impl.relative_path
@@ -95,32 +102,43 @@ def compile_index(repo_root: Path | None = None) -> CompiledIndex:
                 repo_root=root,
             )
         )
+    return implementations
 
-    domains: list[Constitution] = []
-    for domain_entry, dpath in find_domain_constitutions(root):
-        domains.append(
-            parse_domain_constitution(
-                _read(dpath),
-                entry_id=domain_entry.id,
-                name=domain_entry.name,
-                slug=domain_entry.slug,
-                regulatory_basis=list(domain_entry.regulatory_basis),
-                reference_systems=list(domain_entry.reference_systems),
-                path=dpath.relative_to(root).as_posix(),
-            )
+
+def _gather_domains(root: Path) -> list[Constitution]:
+    return [
+        parse_domain_constitution(
+            _read(dpath),
+            entry_id=domain_entry.id,
+            name=domain_entry.name,
+            slug=domain_entry.slug,
+            regulatory_basis=list(domain_entry.regulatory_basis),
+            reference_systems=list(domain_entry.reference_systems),
+            path=dpath.relative_to(root).as_posix(),
         )
+        for domain_entry, dpath in find_domain_constitutions(root)
+    ]
 
-    runbooks: list[Runbook] = []
-    for rpath in find_runbooks(root):
-        rb = parse_runbook(rpath, root)
-        if rb is not None:
-            runbooks.append(rb)
 
-    adrs: list[ADR] = []
-    for apath in find_adrs(root):
-        adr = parse_adr(apath, root)
-        if adr is not None:
-            adrs.append(adr)
+def _gather_runbooks(root: Path) -> list[Runbook]:
+    """Unparseable runbooks are skipped, not fatal — one bad file must not stop a compile."""
+    return [rb for rpath in find_runbooks(root) if (rb := parse_runbook(rpath, root)) is not None]
+
+
+def _gather_adrs(root: Path) -> list[ADR]:
+    return [adr for apath in find_adrs(root) if (adr := parse_adr(apath, root)) is not None]
+
+
+def compile_index(repo_root: Path | None = None) -> CompiledIndex:
+    """Compile the full constitutional database into a CompiledIndex."""
+    root = repo_root or resolve_repo_root()
+
+    framework = _gather_framework(root)
+    constitutions = _gather_constitutions(root)
+    implementations = _gather_implementations(root)
+    domains = _gather_domains(root)
+    runbooks = _gather_runbooks(root)
+    adrs = _gather_adrs(root)
 
     phases: dict[Phase, list[str]] = {}
     for c in constitutions:

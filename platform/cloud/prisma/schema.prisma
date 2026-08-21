@@ -80,6 +80,7 @@ model Organisation {
 
   memberships Membership[]
   teams       Team[]
+  ledger      LedgerEntry[]
 
   @@index([deleted_at])
 }
@@ -182,4 +183,63 @@ model TeamMembership {
   @@index([team_id])
   @@index([membership_id])
   @@index([deleted_at])
+}
+
+/// Why a balance moved. Mirrors `governova_ledger.EntryKind`; the vocabulary is
+/// closed so entries can be summed and reconciled, which a free-text reason
+/// cannot be.
+enum LedgerEntryKind {
+  ACCRUAL
+  CONSUMPTION
+  GRANT
+  REFUND
+  EXPIRY
+}
+
+/// One immutable movement of credit.
+///
+/// **Append-only, and therefore the one model here with no `deleted_at` and no
+/// `updated_at`.** `S5.34` asks every table for those three columns and this
+/// table deliberately carries one: a ledger entry that can be soft-deleted is
+/// not append-only, and a balance derived from entries that can disappear is not
+/// derivable from anything. A movement is reversed by a `REFUND` entry, which is
+/// a fact, rather than by hiding the entry that is being reversed.
+///
+/// **`@@unique([organisation_id, idempotency_key])` is what actually prevents a
+/// double charge.** The application also keeps an index of keys, and that index
+/// is useless under the condition that matters: two deliveries of the same
+/// webhook arriving at two processes both find no key and both write. Only the
+/// database sees both. `S5.30` says exactly this — uniqueness is enforced here,
+/// not in application code — and the ledger was built the other way round first.
+///
+/// Scoped to the organisation rather than global because an idempotency key is
+/// the payment provider's event id, and two organisations' events are unrelated.
+/// A global constraint would make one tenant's key collide with another's.
+model LedgerEntry {
+  id              String          @id @default(uuid())
+  organisation_id String
+  /// Position in this organisation's hash chain. Starts at 1.
+  seq             Int
+  kind            LedgerEntryKind
+  /// Integer ten-thousandths of a credit, unsigned. **Never a float, and never a
+  /// `Decimal` column either** — the value that is hashed and the value that is
+  /// stored must be the same bytes, and a decimal's textual form depends on how
+  /// it was constructed. Direction comes from `kind` (`ADR-011`, `AP-S5.28a`).
+  amount_minor    BigInt
+  idempotency_key String
+  occurred_at     DateTime
+  detail          String          @default("")
+  /// The previous entry's `record_hash`, or 64 zeroes for the first.
+  prev_hash       String
+  record_hash     String
+  created_at      DateTime        @default(now())
+
+  organisation Organisation @relation(fields: [organisation_id], references: [id])
+
+  /// The double-charge constraint. See the note above.
+  @@unique([organisation_id, idempotency_key])
+  /// One entry per position, so a chain cannot fork or repeat a sequence number.
+  @@unique([organisation_id, seq])
+  @@index([organisation_id])
+  @@index([occurred_at])
 }

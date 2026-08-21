@@ -72,6 +72,28 @@ class LedgerError(RuntimeError):
     """A write the ledger refused, with the reason."""
 
 
+@dataclasses.dataclass(frozen=True)
+class Written:
+    """The outcome of a write: the entry, and whether this call created it.
+
+    `record` used to return the entry alone, which made the ledger idempotent and
+    left every caller unable to be. A webhook handler that charges a card and
+    then sends a receipt cannot tell a first delivery from a retry, so it sends
+    the receipt twice — the ledger is correct and the customer is emailed twice,
+    which is the same defect one layer out.
+
+    Returning `created` is the smallest thing that lets a caller be idempotent
+    too, and putting it in the type means they cannot fail to notice it exists.
+    """
+
+    entry: LedgerEntry
+    created: bool
+
+    @property
+    def replayed(self) -> bool:
+        return not self.created
+
+
 def to_minor(amount: Decimal | int | str) -> int:
     """A credit amount as an integer number of ten-thousandths.
 
@@ -218,7 +240,7 @@ class Ledger:
         idempotency_key: str,
         occurred_at: dt.datetime | None = None,
         detail: str = "",
-    ) -> LedgerEntry:
+    ) -> Written:
         """Append one movement, or return the one this key already wrote.
 
         **A replay returns the original entry rather than raising.** The caller
@@ -226,9 +248,22 @@ class Ledger:
         to acknowledge — raising would make it retry again, forever, on a message
         that was already handled.
 
+        **And it says which happened.** Returning the entry alone made the ledger
+        idempotent and left the caller unable to be: a handler that charges and
+        then emails a receipt cannot distinguish a first delivery from a retry, so
+        it emails twice. `Written.created` is the smallest thing that fixes that,
+        and it is in the return type so a caller cannot fail to notice it.
+
         A key reused with *different* content is a different matter and does
         raise: that is not a retry, it is two events that were given the same
         name, and silently returning the first would lose the second.
+
+        **The index consulted here is not what prevents a double charge.** It
+        cannot be: two deliveries of one webhook arriving at two processes both
+        find no key and both write, and neither sees the other. Only the database
+        does, via `@@unique([organisation_id, idempotency_key])` on `LedgerEntry`.
+        This is the fast path and the readable error; that constraint is the
+        guarantee (`S5.30`).
         """
         if not idempotency_key:
             raise LedgerError(
@@ -254,7 +289,7 @@ class Ledger:
                     f"{kind} of {to_credits(minor)}. Two different events cannot share "
                     "a key — one of them would be lost."
                 )
-            return existing
+            return Written(existing, created=False)
 
         seq, prev_hash = next_link(self._entries)
         entry = LedgerEntry(
@@ -270,7 +305,7 @@ class Ledger:
         entry = dataclasses.replace(entry, record_hash=entry.compute_hash())
         self._entries.append(entry)
         self._keys[idempotency_key] = entry
-        return entry
+        return Written(entry, created=True)
 
     def balance(self) -> Decimal:
         """The balance, derived from the entries and nowhere else.
@@ -294,7 +329,7 @@ def accrue(
     monthly_budget: Decimal | int | str,
     hours: int = 1,
     at: dt.datetime | None = None,
-) -> LedgerEntry:
+) -> Written:
     """Hourly accrual against a tier budget (`ADR-010` §4).
 
     Credits accrue rather than resetting monthly, *"so a subscriber who works in

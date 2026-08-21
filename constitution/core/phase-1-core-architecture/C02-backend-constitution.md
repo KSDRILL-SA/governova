@@ -480,6 +480,9 @@ All API endpoints return `Content-Type: application/json`. No endpoint returns p
 HTML, XML, or unstructured data. The response body always follows one of the three
 standard response shapes defined in Part 4.
 
+**Anti-Patterns:**
+- `AP-S2.15a` — An endpoint returning HTML, plain text or an unwrapped value — every client needs a special case for that one route, and generic response handling parses a success out of something that was never a response shape.
+
 ---
 
 ### S2.16 — Sensitive Data Is Never Returned in API Responses
@@ -762,6 +765,9 @@ Every validation schema addresses all applicable categories:
 | Role-based restrictions | Certain fields settable only by certain roles |
 | Unique pre-check | Friendly duplicate check before DB constraint fires |
 | Referential validation | Referenced IDs exist before write is attempted |
+
+**Anti-Patterns:**
+- `AP-S2.25a` — A validation schema that covers only the categories the author thought of — the boundary looks validated, and the category nobody considered is the one an attacker supplies.
 
 ---
 
@@ -1208,6 +1214,9 @@ which fields are returned. Prisma `include` includes only the relations needed. 
 degrades performance, increases network payload, and unnecessarily exposes database content
 in application memory.
 
+**Anti-Patterns:**
+- `AP-S2.37a` — A query that fetches the whole row when the request needs three fields — the payload grows, and database content the endpoint never intended to expose is sitting in application memory where the next serialisation mistake can reach it.
+
 ---
 
 ### S2.38 — Background Jobs Handle Long-Running Operations
@@ -1250,6 +1259,9 @@ definitions — is cached using HTTP cache headers or an external cache. Cache i
 stored in service memory (violates S2.3). Cache TTL is set by change frequency — not
 indefinite. Cache invalidation is explicit and triggered by the service that mutates it.
 
+**Anti-Patterns:**
+- `AP-S2.39a` — Cache held in service memory or given no expiry — each instance answers differently, and a value that changed hours ago is still being served with no way to tell which instance is wrong.
+
 ---
 
 ### S2.40 — Indexes Are Defined at Schema Time
@@ -1267,6 +1279,9 @@ indefinite. Cache invalidation is explicit and triggered by the service that mut
 Database indexes are defined in the Prisma schema when the model is created — not added
 reactively when performance degrades in production. Every foreign key column has an index.
 Every column used in a `WHERE` clause in a common query has an index.
+
+**Anti-Patterns:**
+- `AP-S2.40a` — Indexes added reactively once production slows — the schema was correct at review time and wrong at scale, and the fix is applied under load against the table that is already struggling.
 
 ---
 
@@ -1286,6 +1301,9 @@ All public (unauthenticated) endpoints have rate limiting enabled from the first
 deployment, configured via environment variables. Auth endpoints have stricter limits.
 Rate limit responses return HTTP 429 with the standard error shape and `RATE_LIMIT_EXCEEDED`
 code plus a `Retry-After` header.
+
+**Anti-Patterns:**
+- `AP-S2.41a` — A public endpoint deployed with no rate limit — the first deployment is the one that is exposed, and the limit is added after the traffic that demonstrated the need.
 
 **Cross-References:** `S2.22`, `S2.55`
 
@@ -1381,6 +1399,9 @@ a circuit breaker. The breaker trips after configurable consecutive failures, fa
 without calling the service, and retries after a recovery window. Prevents a failing
 external dependency from cascading failures into KSDRILL SA services.
 
+**Anti-Patterns:**
+- `AP-S2.45a` — An external dependency called on every request with no breaker — the dependency slows rather than fails, requests queue behind it, and one third party takes down services that do not need it.
+
 ---
 
 ### S2.46 — Retry Logic for Transient Failures
@@ -1399,6 +1420,9 @@ Transient failures — network calls, database connections under load — implem
 exponential backoff retry with a maximum retry count. Retry is not applied to
 non-idempotent operations. Financial writes are never retried automatically without
 idempotency key protection.
+
+**Anti-Patterns:**
+- `AP-S2.46a` — Retries applied to a non-idempotent operation, or to a financial write with no idempotency key — the retry that was meant to recover from a timeout performs the operation a second time.
 
 ---
 
@@ -1419,6 +1443,9 @@ in-flight requests within a grace period, commit or roll back open transactions,
 database connections, then exit cleanly. Hard-exit on SIGTERM abandons in-flight
 transactions leaving the database in a partial write state.
 
+**Anti-Patterns:**
+- `AP-S2.47a` — A service that hard-exits on SIGTERM — in-flight transactions are abandoned mid-write, so an ordinary deploy leaves the database in a partial state that no rollback covers.
+
 ---
 
 ### S2.48 — Health Check Endpoints Are Implemented on All Services
@@ -1438,6 +1465,8 @@ Every backend service exposes `GET /health` (public, no auth) returning HTTP 200
 If the database is unreachable, returns HTTP 503. The deployment platform uses this
 endpoint for readiness checks.
 
+**Anti-Patterns:**
+- `AP-S2.48a` — A health endpoint that returns 200 without checking the database — the platform's readiness check passes, traffic is routed to an instance that cannot serve a single request that touches data.
 
 ---
 
@@ -1612,6 +1641,9 @@ general API endpoints. Failed attempts are counted per IP per time window. Progr
 delay applied after three consecutive failures. After ten consecutive failures, IP is
 temporarily blocked. All thresholds are configurable via environment variables.
 
+**Anti-Patterns:**
+- `AP-S2.55a` — Auth endpoints rate-limited the same as general routes — credential stuffing is bounded by the general limit, which is set for legitimate traffic and is far too generous for guessing.
+
 **Cross-References:** `S2.41`, `S3.N`
 
 ---
@@ -1663,6 +1695,9 @@ used. If not, the server generates a UUID4. The ID is included in every log entr
 request duration and in every outgoing call to downstream services. Returned in response
 headers. Enables full request tracing across services.
 
+**Anti-Patterns:**
+- `AP-S2.57a` — A request that receives no correlation identifier — its log lines cannot be gathered, and a fault spanning two services is diagnosed twice from two halves that cannot be joined.
+
 ---
 
 ### S2.58 — Errors Are Reported to the External Observability Platform
@@ -1682,6 +1717,9 @@ configured external observability platform (Sentry for error tracking, Better St
 log aggregation). Configured from day one — not after the first production incident.
 Staging errors are also reported.
 
+**Anti-Patterns:**
+- `AP-S2.58a` — Error reporting configured after the first production incident — the incident that justified it is the one with no telemetry, so the reason for the outage is reconstructed from memory.
+
 ---
 
 ### S2.59 — Response Times Are Measured and Alerted
@@ -1699,6 +1737,9 @@ Staging errors are also reported.
 Response time is measured for every request and included in the structured log as
 `durationMs`. Alerts fire when the P95 response time for any endpoint exceeds two seconds
 for more than one minute.
+
+**Anti-Patterns:**
+- `AP-S2.59a` — Response time neither measured nor alerted — degradation is reported by users rather than by monitoring, which means it is reported late and only by the ones who did not simply leave.
 
 ---
 
@@ -1718,6 +1759,9 @@ For any request exceeding one second total, the number of database queries and i
 durations are logged. Enables instant identification of N+1 problems and missing indexes
 in production. Prisma query logging is at `query` level in staging, `warn`/`error` in
 production.
+
+**Anti-Patterns:**
+- `AP-S2.60a` — A slow request logged without its query count — an N+1 and a missing index present identically, so the investigation starts by reproducing what the log could have stated.
 
 ---
 
@@ -1743,6 +1787,9 @@ The following alert thresholds are active before first production deployment:
 | Health check failures | 2 consecutive failures |
 | Disk usage | >80% |
 
+**Anti-Patterns:**
+- `AP-S2.61a` — First production deployment with no alert thresholds configured — the system is live and unwatched, and the gap is discovered by whichever failure happens to arrive first.
+
 ---
 
 ### S2.62 — Audit Logs Are Written for All Sensitive Operations
@@ -1762,6 +1809,9 @@ Every sensitive operation writes an audit log record: `userId`, `action`
 (JSON). Audit log records are never deleted — the table is append-only. The soft delete
 standard (S2.35) exists partly because hard-deleting a record with audit log entries
 creates an incomplete audit trail.
+
+**Anti-Patterns:**
+- `AP-S2.62a` — A sensitive operation performed with no audit record, or an audit table that permits deletion — the trail is complete only until someone has a reason for it not to be.
 
 **Cross-References:** `S2.35`, `S5.N`
 
@@ -1853,6 +1903,9 @@ matching the domain name. Prefixes are set at router registration in `main.py` �
 hardcoded in individual route decorators. Routes within a router are relative paths
 without the version prefix.
 
+**Anti-Patterns:**
+- `AP-S2.65a` — Prefixes hardcoded into individual route decorators — the version lives in dozens of places, and introducing a second version means editing every route rather than one registration.
+
 ---
 
 ### S2.66 — FastAPI Background Tasks for Post-Response Operations
@@ -1871,6 +1924,9 @@ Operations that occur after the API response is sent — email notifications, au
 writes to external systems, analytics events — use FastAPI's `BackgroundTasks`. The route
 handler adds the background task and returns the response. The task runs after the
 response is sent without blocking the client.
+
+**Anti-Patterns:**
+- `AP-S2.66a` — Post-response work performed inline in the handler — the client waits on an email or an analytics event, so latency is spent on work whose result the caller never receives.
 
 ---
 
@@ -1914,6 +1970,9 @@ service module. AI services may depend on domain services (reading from student 
 scholarship domain) but domain services never depend on AI services. AI capabilities
 can be replaced, upgraded, or disabled without touching any core domain logic.
 
+**Anti-Patterns:**
+- `AP-S2.68a` — A domain service that depends on an intelligence service — the capability that was meant to be replaceable becomes load-bearing, and disabling it takes core domain logic with it.
+
 ---
 
 ### S2.69 — FastAPI Exception Handlers Are Registered Globally
@@ -1932,6 +1991,9 @@ Exception handlers for all custom exception classes and for generic `Exception` 
 registered on the FastAPI application object in `main.py`. Every handler returns the
 standard error response shape (S2.22). No route handler catches raw `Exception` and
 formats its own error response.
+
+**Anti-Patterns:**
+- `AP-S2.69a` — A route handler catching raw `Exception` and formatting its own error — one endpoint's failures come back in a shape nothing else uses, and the global handler that would have caught it never runs.
 
 ---
 
@@ -2010,6 +2072,9 @@ Server Actions are used exclusively for form-based mutations from Server Compone
 Client Components use API routes. All Server Actions validate session and input before
 calling service functions — they are not exempt from the validation boundary.
 
+**Anti-Patterns:**
+- `AP-S2.72a` — A Server Action treated as exempt from the validation boundary — input reaches service functions unvalidated through the one path that looks internal and is reachable from the browser.
+
 ---
 
 ### S2.73 — Next.js API Routes Use the Shared Error Handler
@@ -2029,6 +2094,9 @@ a shared error handler utility that formats them into the standard error shape a
 the appropriate `NextResponse`. The shared handler is used across all route files — no
 route implements its own error formatting.
 
+**Anti-Patterns:**
+- `AP-S2.73a` — A route implementing its own error formatting — error shapes drift per file, and the client's error handling is correct for the routes that were written first.
+
 ---
 
 ### S2.74 — Next.js Middleware Handles Auth at the Edge
@@ -2047,6 +2115,9 @@ Next.js middleware (`middleware.ts`) handles route-level auth checks using NextA
 Middleware confirms the session exists and redirects unauthenticated requests to login.
 Middleware does not check roles or resource ownership — those decisions happen in the
 service layer.
+
+**Anti-Patterns:**
+- `AP-S2.74a` — Middleware deciding roles or resource ownership — an authorisation decision is made at the edge without the data to make it, and the service layer trusts a verdict reached without context.
 
 ---
 
@@ -2152,6 +2223,9 @@ a minimum three-month sunset period. During sunset: the deprecated version conti
 function, every response includes a `Deprecation` header with the sunset date, the OpenAPI
 spec is marked deprecated, and all internal consumers are migrated before the sunset date.
 
+**Anti-Patterns:**
+- `AP-S2.78a` — A version retired without an announced sunset — consumers discover the retirement when their requests start failing, which is the moment they have no time to migrate.
+
 ---
 
 ### S2.79 — v1 and v2 Versions Coexist During Transition
@@ -2171,6 +2245,9 @@ Version routing directs requests to the appropriate handlers. Shared service log
 called by both versions — the service layer is version-agnostic. Only route handlers
 and response serialisation differ between versions.
 
+**Anti-Patterns:**
+- `AP-S2.79a` — Service logic forked per version rather than shared — a fix applied to one version silently leaves the other wrong, and the divergence grows for as long as both are live.
+
 ---
 
 ### S2.80 — New Features Default to the Current Latest Version
@@ -2189,6 +2266,8 @@ New endpoints are always added to the current latest API version. New endpoints 
 added to a deprecated version. If the new feature introduces a breaking change, a new
 version is created. Otherwise, the new endpoint is added to the existing latest version.
 
+**Anti-Patterns:**
+- `AP-S2.80a` — A new endpoint added to a deprecated version — the version that was scheduled to be removed acquires a consumer that did not exist when the sunset was announced.
 
 ---
 

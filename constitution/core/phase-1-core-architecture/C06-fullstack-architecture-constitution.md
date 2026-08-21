@@ -157,6 +157,9 @@ Systems with AI features that natively require Python — LangChain pipelines, R
 **Standard:**
 Internal tools, admin panels, and simple CRUD systems that do not require SEO, financial precision, or Python AI may use either stack. The decision requires an ADR evaluating: team familiarity, existing infrastructure alignment, expected complexity growth, and maintenance cost. The decision is documented and immutable.
 
+**Anti-Patterns:**
+- `AP-S6.5a` — A stack chosen for a simple system without the ADR — team familiarity, infrastructure alignment and expected complexity growth are weighed in someone's head, and the decision that was meant to be immutable has no record to be immutable against.
+
 **Cross-References:** `S6.8` (ADR process), `S6.6` (flexible stack)
 
 ---
@@ -495,6 +498,9 @@ The two stacks do not communicate directly. These standards govern the exception
 
 Per S6.14 — restated here for emphasis. No system in the Next.js stack calls an endpoint in the Angular+FastAPI stack or vice versa. This is an architectural boundary.
 
+**Anti-Patterns:**
+- `AP-S6.25a` — A system calling across the stack boundary directly — the boundary that made the two stacks independently deployable stops existing, and it is removed by a single import rather than by any decision.
+
 ---
 
 ### S6.26–S6.28 — Cross-Stack Communication Standards
@@ -589,6 +595,9 @@ The locked technology choices for both stacks. Deviations require an ADR and a c
 | Deployment | Vercel | C8 |
 | Monitoring | Sentry + Better Stack + Vercel Analytics | C8 |
 
+**Anti-Patterns:**
+- `AP-S6.34a` — A technology substituted for the locked one without an amendment — the locked table still describes what review assumes is running, so the divergence is discovered by whoever next trusts the document.
+
 ---
 
 ### S6.35 — Locked Technology Stack — Angular+FastAPI Systems
@@ -611,6 +620,9 @@ The locked technology choices for both stacks. Deviations require an ADR and a c
 | Deployment (FE) | Vercel | C8 |
 | Deployment (BE) | Railway | C8 |
 | Monitoring | Sentry + Better Stack + Railway Metrics | C8 |
+
+**Anti-Patterns:**
+- `AP-S6.35a` — A technology substituted for the locked one without an amendment — the second answer to an already-solved problem is maintained forever, and no ADR records why it was introduced.
 
 ---
 
@@ -744,6 +756,9 @@ PHASE 1 COMPLETION GATE
 [ ] Coverage gate passing (S7.25)
 [ ] Preview deployment functional and reviewed
 ```
+
+**Anti-Patterns:**
+- `AP-S6.44a` — Phase 2 work begun with items on the completion gate outstanding — the unfinished item is always the unglamorous one, and it is now behind a layer of new work that assumed it was done.
 
 ---
 

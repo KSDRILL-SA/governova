@@ -490,6 +490,9 @@ selection, architecture pattern — is documented in a GitHub Issue or ADR befor
 implemented. "Significant" is defined as: any decision that would require a constitutional
 amendment to reverse.
 
+**Anti-Patterns:**
+- `AP-S1.15a` — A significant decision implemented before it is written down — the reasoning exists only in the head of whoever made it, and reversing it later costs an amendment nobody can argue against a record that was never kept.
+
 **Cross-References:** `S6.5` (ADR process), `S1.85` (ADR standard), `C0 §8` (amendment)
 
 
@@ -1168,6 +1171,9 @@ required approvals received (team: minimum two; solo: solo-dev-overlay protocol 
 and squash commit message written in conventional commit format. Merging without all three
 conditions is a process failure regardless of urgency.
 
+**Anti-Patterns:**
+- `AP-S1.39a` — A merge taken with an unresolved Must Fix, a red check or missing approval because the change was urgent — urgency is exactly the condition under which the gates were designed to hold, so they are waived at the only moment they matter.
+
 **Cross-References:** `S1.22` (squash merge), `S1.75` (approval standard), `S1.23` (post-merge cleanup)
 
 ---
@@ -1526,6 +1532,9 @@ Object shapes are defined using `interface`, not `type`. The `type` keyword is u
 union types, intersection types, utility types, and type aliases for primitives. Consistent
 pattern across all systems — `interface` for objects, `type` for everything else.
 
+**Anti-Patterns:**
+- `AP-S1.51a` — Object shapes declared with `type` instead of `interface` — declaration merging and extension behave differently between the two, and the codebase acquires two conventions for the same thing with no rule for choosing.
+
 ---
 
 ### S1.52 — Zod Schemas Validate All External Data Boundaries
@@ -1590,6 +1599,9 @@ no runtime output.
 `null` means "intentionally absent." `undefined` means "not yet set." Functions that can
 return no value return `undefined`. Optional interface fields use `?`. Fields explicitly
 cleared use `| null`. The two are never interchanged.
+
+**Anti-Patterns:**
+- `AP-S1.54a` — `null` and `undefined` used interchangeably — the distinction between deliberately cleared and never set is erased, so a consumer cannot tell an intentional blank from a value that has not arrived yet.
 
 ---
 
@@ -1752,6 +1764,9 @@ Imports ordered: (1) standard library, (2) third-party packages, (3) local appli
 imports. Each group separated by a blank line. isort is configured and runs as part of
 the pre-commit hook and CI pipeline. Import order is never manually managed.
 
+**Anti-Patterns:**
+- `AP-S1.61a` — Python import order maintained by hand — every author orders differently, the diff on an unrelated change includes an import reshuffle, and review attention is spent on it.
+
 ---
 
 ### S1.62 — Ruff Is the Python Linter and Formatter
@@ -1769,6 +1784,9 @@ the pre-commit hook and CI pipeline. Import order is never manually managed.
 Ruff is the single linting and formatting tool for all Python code. Black, Flake8, and
 Pylint are not used. Ruff configuration lives in `pyproject.toml`. Line length is 88
 characters. All violations block merge.
+
+**Anti-Patterns:**
+- `AP-S1.62a` — A second Python linter or formatter introduced beside the configured one — two tools disagree about the same file, and the last one to run decides, which makes the outcome depend on hook ordering.
 
 ---
 
@@ -1788,6 +1806,8 @@ All public functions, methods, and classes have Google-style docstrings describi
 the function does (not how), parameters, return value, and exceptions raised. Private
 functions (prefixed with `_`) use docstrings when logic is non-obvious.
 
+**Anti-Patterns:**
+- `AP-S1.63a` — A public function with no docstring, or one describing how it works rather than what it does — the caller must read the implementation to use it, and the docstring drifts from the code with nothing reporting it.
 
 ---
 
@@ -1924,6 +1944,9 @@ Unit test files are co-located with the source file they test, named
 `{source-file}.test.ts` or `{source-file}.spec.ts`. Integration and E2E tests live in
 dedicated `__tests__/` or `e2e/` directories at the system root.
 
+**Anti-Patterns:**
+- `AP-S1.69a` — Unit tests filed away from the source they cover — a file is moved or deleted and its tests are left behind, still passing, testing something that no longer exists.
+
 ---
 
 ## Part 12 — Linting & Formatting (`S1.70`–`S1.74`)
@@ -1971,6 +1994,9 @@ Husky and lint-staged run ESLint and Prettier on every staged file before a comm
 allowed. A commit that fails lint or format cannot be created. This prevents violations
 from entering branch history.
 
+**Anti-Patterns:**
+- `AP-S1.71a` — Pre-commit hooks absent or bypassed — violations enter branch history, and cleaning them up later produces a formatting commit that touches everything and hides the change underneath it.
+
 ---
 
 ### S1.72 — Code Review Does Not Address Style
@@ -1991,6 +2017,9 @@ the pre-commit hook or CI lint gate is not configured correctly. Review comments
 reserved for: constitutional violations, architecture decisions, logic errors, test
 coverage gaps, and security concerns.
 
+**Anti-Patterns:**
+- `AP-S1.72a` — A style comment written in review — it costs a round trip on something the tooling should have settled, and it signals the hook or the lint gate is not configured, which is the defect actually worth reporting.
+
 ---
 
 ### S1.73 — Line Length Is 100 Characters for TypeScript, 88 for Python
@@ -2009,6 +2038,9 @@ TypeScript and TSX files: 100-character line length. Python files: 88-character 
 length (Ruff/Black standard). Both configured in the tool configuration files — never
 manually managed.
 
+**Anti-Patterns:**
+- `AP-S1.73a` — Line length maintained by hand rather than by configuration — it holds until the first author who has not memorised the number, and the reflow lands in an unrelated pull request.
+
 ---
 
 ### S1.74 — Import Order Is Enforced Automatically
@@ -2026,6 +2058,9 @@ manually managed.
 TypeScript import order: (1) Node built-ins, (2) external packages, (3) internal packages
 via path aliases, (4) relative imports within the same module. Each group separated by
 a blank line. Configured in ESLint — never manually enforced.
+
+**Anti-Patterns:**
+- `AP-S1.74a` — TypeScript import order enforced by convention rather than by the linter — the ordering is correct in files written by people who remember it, and the exceptions are invisible until someone looks.
 
 ---
 
@@ -2052,6 +2087,9 @@ Reviewers focus on: constitutional compliance, architecture correctness, logic e
 test coverage adequacy, security concerns, and performance implications. Style comments
 are not written. A review comment that cannot be tied to a standard, a logic error, or
 a security concern is not a blocking comment.
+
+**Anti-Patterns:**
+- `AP-S1.75a` — A blocking comment that cannot be tied to a standard, a logic error or a security concern — the author is required to satisfy the reviewer's preference, and review authority stops resting on anything reviewable.
 
 **Cross-References:** `S1.72` (no style comments), `S1.38` (comment categorisation)
 
@@ -2120,6 +2158,9 @@ identifies which constitutions are relevant (from the PR's constitutional compli
 field), reads the relevant standards, and verifies the code against them before reviewing
 logic, architecture, or style.
 
+**Anti-Patterns:**
+- `AP-S1.78a` — Review that starts with logic and never reaches compliance — the violation is approved on its merits, and the standard is discovered only when a check fires against code that already shipped.
+
 **Cross-References:** `S1.25` (constitutions read), `S1.76` (categorisation)
 
 ---
@@ -2139,6 +2180,9 @@ logic, architecture, or style.
 Reviewers who notice existing code problems adjacent to the PR's changes create separate
 GitHub Issues — they do not fix them in the PR being reviewed, and they do not ignore
 them. A review is an opportunity to improve the broader codebase.
+
+**Anti-Patterns:**
+- `AP-S1.79a` — An adjacent problem fixed inside the pull request under review, or noticed and dropped — the first makes the change unreviewable, the second wastes the one moment somebody was looking at that code.
 
 ---
 
@@ -2180,6 +2224,9 @@ review from the original reviewers via the GitHub review request button. Reviewe
 expected to monitor PRs for new commits. A PR with resolved Must Fix items that has not
 been re-requested is a stalled PR.
 
+**Anti-Patterns:**
+- `AP-S1.81a` — Must Fix items resolved without re-requesting review — reviewers do not watch merged-into branches for new commits, so the pull request stalls with everyone believing it is with someone else.
+
 ---
 
 ### S1.82 — Draft PRs Signal Work in Progress
@@ -2198,6 +2245,8 @@ A PR not ready for review is opened as a Draft PR. Draft PRs are not reviewed un
 author converts them to ready. WIP code submitted as a ready PR to "get early feedback"
 wastes reviewer time on code that will change before reaching review-ready state.
 
+**Anti-Patterns:**
+- `AP-S1.82a` — Work in progress opened as a ready pull request to get early feedback — reviewer time is spent on code that is going to change, and the real review arrives when everyone has already read it once.
 
 ---
 
@@ -2250,6 +2299,9 @@ stack and architecture overview (with constitutional references), local developm
 relevant system context file in the constitutional repository. The README is updated in
 any PR that changes setup, architecture, or environment configuration.
 
+**Anti-Patterns:**
+- `AP-S1.84a` — A system with no README, or one that was not updated when setup changed — the documented steps fail on a fresh machine, and the only working knowledge of how to run the system is in one person's shell history.
+
 ---
 
 ### S1.85 — ADRs Document Significant Technical Decisions
@@ -2268,6 +2320,9 @@ Every significant architectural decision not covered by an existing constitution
 is documented in an ADR using `ADR-000-template.md`. ADRs are committed to the `adrs/`
 directory in `governova`. The ADR captures: the decision, the context, the
 options considered, the rationale for the chosen option, and the consequences.
+
+**Anti-Patterns:**
+- `AP-S1.85a` — A significant architectural decision left undocumented because no standard covers it — the gap in the corpus becomes a gap in the record, and the decision is inherited with no way to tell what it was weighed against.
 
 **Cross-References:** `S1.15` (document before implement), `S6.5` (ADR process)
 
@@ -2312,6 +2367,9 @@ AI-assisted development session. This file lists: which constitutions apply, whi
 standards are most critical for the current system, the current build phase and group,
 and any approved deviations. Updated at every sprint boundary. An AI session begun
 without `CONSTITUTION-INDEX.md` present is a non-compliant session.
+
+**Anti-Patterns:**
+- `AP-S1.87a` — A workspace with no index, or one carried over from the previous sprint — the session runs against the wrong standards with full confidence, which is worse than running against none.
 
 **Cross-References:** `S10.4` (CONSTITUTION-INDEX standard), `C10` (AI collaboration)
 
@@ -2362,6 +2420,9 @@ manual RxJS subscriptions for local state are not used in new components. RxJS i
 for: HTTP requests, complex async composition across multiple streams, and interoperability
 with libraries that return Observables.
 
+**Anti-Patterns:**
+- `AP-S1.89a` — `BehaviorSubject` and manual subscriptions used for local state in new components — teardown becomes the author's responsibility on every one of them, and the component that forgets leaks a listener per mount.
+
 ---
 
 ### S1.90 — Reactive Forms Are Used for All Form Implementations
@@ -2403,6 +2464,9 @@ change detection is not used in new components. OnPush combined with Signals and
 Observables with the `async` pipe provides optimal rendering performance and predictable
 change detection cycles.
 
+**Anti-Patterns:**
+- `AP-S1.91a` — A new component left on default change detection — the whole tree is checked on every event, and the cost is invisible in development and unavoidable on the devices this product exists to serve.
+
 ---
 
 ### S1.92 — Angular Services Are Provided at Root Level
@@ -2422,6 +2486,9 @@ there is a specific, documented reason for component-level provision. Root-level
 creates singleton services that are tree-shakeable. Services that maintain state are always
 singletons — component-level provision creates new instances per component and breaks
 shared state.
+
+**Anti-Patterns:**
+- `AP-S1.92a` — A stateful service provided at component level with no documented reason — each component gets its own instance, so shared state silently is not shared and the symptom is data that disagrees with itself.
 
 ---
 
@@ -2448,6 +2515,9 @@ is how they are recovered from.
 If a commit was made directly to `main` (only possible if branch protection was bypassed):
 (1) Do NOT push. (2) `git log --oneline -5` — identify the commit hash. (3) `git reset HEAD~1` — unstage the commit, keeping changes as working directory modifications. (4) Create a proper feature branch. (5) Stage the changes onto the new branch. (6) Commit and push normally. If already pushed to `main`, escalate as a SEV1 incident — do not force-push without team coordination.
 
+**Anti-Patterns:**
+- `AP-S1.93a` — A commit made straight to `main` and then pushed — the recovery stops being local and becomes a shared-history problem, which is why the standard's first instruction is not to push.
+
 **Cross-References:** `S1.17` (main protection), `CF-04`
 
 ---
@@ -2466,6 +2536,9 @@ If a commit was made directly to `main` (only possible if branch protection was 
 **Standard:**
 If commits were pushed to the wrong branch: (1) Create the correct branch from `main`. (2) `git cherry-pick {commit-hash}` — apply commits to the correct branch. (3) Push the correct branch. (4) Delete commits from the wrong branch using `git reset`. (5) If the wrong branch is shared: communicate the reset in the team channel before executing.
 
+**Anti-Patterns:**
+- `AP-S1.94a` — Commits removed from a shared wrong branch with no warning — everyone who pulled the old history now has commits that no longer exist upstream, and each of them resolves it differently.
+
 ---
 
 ### S1.95 — Recovery: Created Branch from Wrong Base
@@ -2481,6 +2554,9 @@ If commits were pushed to the wrong branch: (1) Create the correct branch from `
 
 **Standard:**
 If a feature branch was created from another feature branch instead of `main`: (1) Identify commits belonging only to the new feature. (2) Create a correct branch from `main`. (3) `git cherry-pick` the feature-only commits onto the correct branch. (4) Abandon the incorrectly-based branch — close any open PR, delete the branch, open a new PR from the correct branch.
+
+**Anti-Patterns:**
+- `AP-S1.95a` — A branch left based on another feature branch — its pull request diff carries the parent's commits, so review covers changes twice and merging one branch silently merges part of the other.
 
 ---
 
@@ -2498,6 +2574,9 @@ If a feature branch was created from another feature branch instead of `main`: (
 **Standard:**
 If wrong files were staged before a commit: (1) `git reset HEAD {file}` — unstage specific files without losing changes. (2) `git diff --staged` — verify the staging area contains only intended files. (3) Commit only when staging area is correct. If the commit was already made: `git reset HEAD~1` to unstage, then re-stage correctly.
 
+**Anti-Patterns:**
+- `AP-S1.96a` — A commit made without checking what is staged — unrelated files enter the history, and a later revert of that commit takes changes nobody associated with it.
+
 ---
 
 ### S1.97 — Recovery: Wrong Commit Message Written
@@ -2514,6 +2593,8 @@ If wrong files were staged before a commit: (1) `git reset HEAD {file}` — unst
 **Standard:**
 If the most recent commit message is incorrect: (1) `git commit --amend -m "{correct message}"` — rewrites the most recent commit message. (2) If already pushed: `git push --force-with-lease origin {branch-name}` — force-push only to your own feature branch, never to `main` or a shared branch. `--force-with-lease` is the only acceptable force-push flag. `--force` is prohibited.
 
+**Anti-Patterns:**
+- `AP-S1.97a` — A message corrected by force-pushing without the lease flag — a colleague's commits pushed in the interval are overwritten with no warning, which is the outcome the lease flag exists to refuse.
 
 ---
 

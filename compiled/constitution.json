@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-08-21T00:12:35.871369Z",
-  "source_commit_sha": "e1de458",
-  "checksum": "sha256:82262c0dcbcab4d66d42955a2a73483eb9a995bedc38f5fcc2de84f3c853df22",
+  "compiled_at": "2026-08-21T00:31:02.447342Z",
+  "source_commit_sha": "bcb7458",
+  "checksum": "sha256:1cb68ae50fce3f76a70869290091003fd3606ced5f4a04df73d3c5c7d9adf00f",
   "framework": [
     {
       "id": "format-specification",
@@ -729,7 +729,13 @@
           ],
           "statement": "Every significant technical decision — stack assignment, database choice, library\nselection, architecture pattern — is documented in a GitHub Issue or ADR before it is\nimplemented. \"Significant\" is defined as: any decision that would require a constitutional\namendment to reverse.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.15a",
+              "description": "A significant decision implemented before it is written down — the reasoning exists only in the head of whoever made it, and reversing it later costs an amendment nobody can argue against a record that was never kept.",
+              "parent_standard_id": "S1.15"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S6.5",
@@ -790,7 +796,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 505
+          "source_line": 508
         },
         {
           "id": "S1.17",
@@ -841,7 +847,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 536
+          "source_line": 539
         },
         {
           "id": "S1.18",
@@ -888,7 +894,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 561
+          "source_line": 564
         },
         {
           "id": "S1.19",
@@ -940,7 +946,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 586
+          "source_line": 589
         },
         {
           "id": "S1.20",
@@ -982,7 +988,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 632
+          "source_line": 635
         },
         {
           "id": "S1.21",
@@ -1024,7 +1030,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 655
+          "source_line": 658
         },
         {
           "id": "S1.22",
@@ -1075,7 +1081,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 679
+          "source_line": 682
         },
         {
           "id": "S1.23",
@@ -1122,7 +1128,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 708
+          "source_line": 711
         },
         {
           "id": "S1.24",
@@ -1177,7 +1183,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 733
+          "source_line": 736
         },
         {
           "id": "S1.25",
@@ -1210,7 +1216,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 765
+          "source_line": 768
         },
         {
           "id": "S1.26",
@@ -1248,7 +1254,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 789
+          "source_line": 792
         },
         {
           "id": "S1.27",
@@ -1304,7 +1310,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 824
+          "source_line": 827
         },
         {
           "id": "S1.28",
@@ -1353,7 +1359,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 862
+          "source_line": 865
         },
         {
           "id": "S1.29",
@@ -1400,7 +1406,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 892
+          "source_line": 895
         },
         {
           "id": "S1.30",
@@ -1442,7 +1448,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 925
+          "source_line": 928
         },
         {
           "id": "S1.31",
@@ -1487,7 +1493,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 949
+          "source_line": 952
         },
         {
           "id": "S1.32",
@@ -1542,7 +1548,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 972
+          "source_line": 975
         },
         {
           "id": "S1.33",
@@ -1593,7 +1599,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1006
+          "source_line": 1009
         },
         {
           "id": "S1.34",
@@ -1638,7 +1644,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1031
+          "source_line": 1034
         },
         {
           "id": "S1.35",
@@ -1685,7 +1691,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1055
+          "source_line": 1058
         },
         {
           "id": "S1.36",
@@ -1726,7 +1732,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1080
+          "source_line": 1083
         },
         {
           "id": "S1.37",
@@ -1773,7 +1779,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1103
+          "source_line": 1106
         },
         {
           "id": "S1.38",
@@ -1819,7 +1825,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1128
+          "source_line": 1131
         },
         {
           "id": "S1.39",
@@ -1844,7 +1850,13 @@
           ],
           "statement": "A PR is merged only after: all Must Fix review comments resolved, all CI checks pass,\nrequired approvals received (team: minimum two; solo: solo-dev-overlay protocol satisfied),\nand squash commit message written in conventional commit format. Merging without all three\nconditions is a process failure regardless of urgency.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.39a",
+              "description": "A merge taken with an unresolved Must Fix, a red check or missing approval because the change was urgent — urgency is exactly the condition under which the gates were designed to hold, so they are waived at the only moment they matter.",
+              "parent_standard_id": "S1.39"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S1.22",
@@ -1862,7 +1874,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1154
+          "source_line": 1157
         },
         {
           "id": "S1.40",
@@ -1912,7 +1924,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1175
+          "source_line": 1181
         },
         {
           "id": "S1.41",
@@ -1954,7 +1966,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1207
+          "source_line": 1213
         },
         {
           "id": "S1.42",
@@ -2005,7 +2017,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1231
+          "source_line": 1237
         },
         {
           "id": "S1.43",
@@ -2056,7 +2068,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1255
+          "source_line": 1261
         },
         {
           "id": "S1.44",
@@ -2103,7 +2115,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1280
+          "source_line": 1286
         },
         {
           "id": "S1.45",
@@ -2154,7 +2166,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1311
+          "source_line": 1317
         },
         {
           "id": "S1.46",
@@ -2201,7 +2213,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1370
+          "source_line": 1376
         },
         {
           "id": "S1.47",
@@ -2257,7 +2269,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1404
+          "source_line": 1410
         },
         {
           "id": "S1.48",
@@ -2299,7 +2311,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1440
+          "source_line": 1446
         },
         {
           "id": "S1.49",
@@ -2342,7 +2354,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1465
+          "source_line": 1471
         },
         {
           "id": "S1.50",
@@ -2383,7 +2395,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1490
+          "source_line": 1496
         },
         {
           "id": "S1.51",
@@ -2399,12 +2411,18 @@
           ],
           "statement": "Object shapes are defined using `interface`, not `type`. The `type` keyword is used for:\nunion types, intersection types, utility types, and type aliases for primitives. Consistent\npattern across all systems — `interface` for objects, `type` for everything else.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.51a",
+              "description": "Object shapes declared with `type` instead of `interface` — declaration merging and extension behave differently between the two, and the codebase acquires two conventions for the same thing with no rule for choosing.",
+              "parent_standard_id": "S1.51"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1513
+          "source_line": 1519
         },
         {
           "id": "S1.52",
@@ -2451,7 +2469,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1531
+          "source_line": 1540
         },
         {
           "id": "S1.53",
@@ -2484,7 +2502,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1556
+          "source_line": 1565
         },
         {
           "id": "S1.54",
@@ -2506,12 +2524,18 @@
           ],
           "statement": "`null` means \"intentionally absent.\" `undefined` means \"not yet set.\" Functions that can\nreturn no value return `undefined`. Optional interface fields use `?`. Fields explicitly\ncleared use `| null`. The two are never interchanged.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.54a",
+              "description": "`null` and `undefined` used interchangeably — the distinction between deliberately cleared and never set is erased, so a consumer cannot tell an intentional blank from a value that has not arrived yet.",
+              "parent_standard_id": "S1.54"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1578
+          "source_line": 1587
         },
         {
           "id": "S1.55",
@@ -2538,7 +2562,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1596
+          "source_line": 1608
         },
         {
           "id": "S1.56",
@@ -2566,7 +2590,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1617
+          "source_line": 1629
         },
         {
           "id": "S1.57",
@@ -2608,7 +2632,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1644
+          "source_line": 1656
         },
         {
           "id": "S1.58",
@@ -2655,7 +2679,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1668
+          "source_line": 1680
         },
         {
           "id": "S1.59",
@@ -2701,7 +2725,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1692
+          "source_line": 1704
         },
         {
           "id": "S1.60",
@@ -2738,7 +2762,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1717
+          "source_line": 1729
         },
         {
           "id": "S1.61",
@@ -2755,12 +2779,18 @@
           ],
           "statement": "Imports ordered: (1) standard library, (2) third-party packages, (3) local application\nimports. Each group separated by a blank line. isort is configured and runs as part of\nthe pre-commit hook and CI pipeline. Import order is never manually managed.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.61a",
+              "description": "Python import order maintained by hand — every author orders differently, the diff on an unrelated change includes an import reshuffle, and review attention is spent on it.",
+              "parent_standard_id": "S1.61"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1739
+          "source_line": 1751
         },
         {
           "id": "S1.62",
@@ -2777,12 +2807,18 @@
           ],
           "statement": "Ruff is the single linting and formatting tool for all Python code. Black, Flake8, and\nPylint are not used. Ruff configuration lives in `pyproject.toml`. Line length is 88\ncharacters. All violations block merge.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.62a",
+              "description": "A second Python linter or formatter introduced beside the configured one — two tools disagree about the same file, and the last one to run decides, which makes the outcome depend on hook ordering.",
+              "parent_standard_id": "S1.62"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1757
+          "source_line": 1772
         },
         {
           "id": "S1.63",
@@ -2804,12 +2840,18 @@
           ],
           "statement": "All public functions, methods, and classes have Google-style docstrings describing: what\nthe function does (not how), parameters, return value, and exceptions raised. Private\nfunctions (prefixed with `_`) use docstrings when logic is non-obvious.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.63a",
+              "description": "A public function with no docstring, or one describing how it works rather than what it does — the caller must read the implementation to use it, and the docstring drifts from the code with nothing reporting it.",
+              "parent_standard_id": "S1.63"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1775
+          "source_line": 1793
         },
         {
           "id": "S1.64",
@@ -2837,7 +2879,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1801
+          "source_line": 1821
         },
         {
           "id": "S1.65",
@@ -2869,7 +2911,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1823
+          "source_line": 1843
         },
         {
           "id": "S1.66",
@@ -2902,7 +2944,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1844
+          "source_line": 1864
         },
         {
           "id": "S1.67",
@@ -2935,7 +2977,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1865
+          "source_line": 1885
         },
         {
           "id": "S1.68",
@@ -2973,7 +3015,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1887
+          "source_line": 1907
         },
         {
           "id": "S1.69",
@@ -2995,12 +3037,18 @@
           ],
           "statement": "Unit test files are co-located with the source file they test, named\n`{source-file}.test.ts` or `{source-file}.spec.ts`. Integration and E2E tests live in\ndedicated `__tests__/` or `e2e/` directories at the system root.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.69a",
+              "description": "Unit tests filed away from the source they cover — a file is moved or deleted and its tests are left behind, still passing, testing something that no longer exists.",
+              "parent_standard_id": "S1.69"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1911
+          "source_line": 1931
         },
         {
           "id": "S1.70",
@@ -3028,7 +3076,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1936
+          "source_line": 1959
         },
         {
           "id": "S1.71",
@@ -3050,12 +3098,18 @@
           ],
           "statement": "Husky and lint-staged run ESLint and Prettier on every staged file before a commit is\nallowed. A commit that fails lint or format cannot be created. This prevents violations\nfrom entering branch history.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.71a",
+              "description": "Pre-commit hooks absent or bypassed — violations enter branch history, and cleaning them up later produces a formatting commit that touches everything and hides the change underneath it.",
+              "parent_standard_id": "S1.71"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1958
+          "source_line": 1981
         },
         {
           "id": "S1.72",
@@ -3076,12 +3130,18 @@
           ],
           "statement": "Style comments — indentation, spacing, quote style, line length — are not left in code\nreview. These are resolved by Prettier automatically. A review comment about style signals\nthe pre-commit hook or CI lint gate is not configured correctly. Review comments are\nreserved for: constitutional violations, architecture decisions, logic errors, test\ncoverage gaps, and security concerns.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.72a",
+              "description": "A style comment written in review — it costs a round trip on something the tooling should have settled, and it signals the hook or the lint gate is not configured, which is the defect actually worth reporting.",
+              "parent_standard_id": "S1.72"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1976
+          "source_line": 2002
         },
         {
           "id": "S1.73",
@@ -3107,12 +3167,18 @@
           ],
           "statement": "TypeScript and TSX files: 100-character line length. Python files: 88-character line\nlength (Ruff/Black standard). Both configured in the tool configuration files — never\nmanually managed.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.73a",
+              "description": "Line length maintained by hand rather than by configuration — it holds until the first author who has not memorised the number, and the reflow lands in an unrelated pull request.",
+              "parent_standard_id": "S1.73"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 1996
+          "source_line": 2025
         },
         {
           "id": "S1.74",
@@ -3138,12 +3204,18 @@
           ],
           "statement": "TypeScript import order: (1) Node built-ins, (2) external packages, (3) internal packages\nvia path aliases, (4) relative imports within the same module. Each group separated by\na blank line. Configured in ESLint — never manually enforced.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.74a",
+              "description": "TypeScript import order enforced by convention rather than by the linter — the ordering is correct in files written by people who remember it, and the exceptions are invisible until someone looks.",
+              "parent_standard_id": "S1.74"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2014
+          "source_line": 2046
         },
         {
           "id": "S1.75",
@@ -3164,7 +3236,13 @@
           ],
           "statement": "Reviewers focus on: constitutional compliance, architecture correctness, logic errors,\ntest coverage adequacy, security concerns, and performance implications. Style comments\nare not written. A review comment that cannot be tied to a standard, a logic error, or\na security concern is not a blocking comment.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.75a",
+              "description": "A blocking comment that cannot be tied to a standard, a logic error or a security concern — the author is required to satisfy the reviewer's preference, and review authority stops resting on anything reviewable.",
+              "parent_standard_id": "S1.75"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S1.72",
@@ -3178,7 +3256,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2039
+          "source_line": 2074
         },
         {
           "id": "S1.76",
@@ -3219,7 +3297,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2060
+          "source_line": 2098
         },
         {
           "id": "S1.77",
@@ -3251,7 +3329,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2084
+          "source_line": 2122
         },
         {
           "id": "S1.78",
@@ -3272,7 +3350,13 @@
           ],
           "statement": "The first pass of every code review checks constitutional compliance. The reviewer\nidentifies which constitutions are relevant (from the PR's constitutional compliance\nfield), reads the relevant standards, and verifies the code against them before reviewing\nlogic, architecture, or style.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.78a",
+              "description": "Review that starts with logic and never reaches compliance — the violation is approved on its merits, and the standard is discovered only when a check fires against code that already shipped.",
+              "parent_standard_id": "S1.78"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S1.25",
@@ -3286,7 +3370,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2106
+          "source_line": 2144
         },
         {
           "id": "S1.79",
@@ -3302,12 +3386,18 @@
           ],
           "statement": "Reviewers who notice existing code problems adjacent to the PR's changes create separate\nGitHub Issues — they do not fix them in the PR being reviewed, and they do not ignore\nthem. A review is an opportunity to improve the broader codebase.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.79a",
+              "description": "An adjacent problem fixed inside the pull request under review, or noticed and dropped — the first makes the change unreviewable, the second wastes the one moment somebody was looking at that code.",
+              "parent_standard_id": "S1.79"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2127
+          "source_line": 2168
         },
         {
           "id": "S1.80",
@@ -3334,7 +3424,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2145
+          "source_line": 2189
         },
         {
           "id": "S1.81",
@@ -3355,12 +3445,18 @@
           ],
           "statement": "After all `[Must Fix]` items are resolved and committed, the author explicitly re-requests\nreview from the original reviewers via the GitHub review request button. Reviewers are not\nexpected to monitor PRs for new commits. A PR with resolved Must Fix items that has not\nbeen re-requested is a stalled PR.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.81a",
+              "description": "Must Fix items resolved without re-requesting review — reviewers do not watch merged-into branches for new commits, so the pull request stalls with everyone believing it is with someone else.",
+              "parent_standard_id": "S1.81"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2166
+          "source_line": 2210
         },
         {
           "id": "S1.82",
@@ -3376,12 +3472,18 @@
           ],
           "statement": "A PR not ready for review is opened as a Draft PR. Draft PRs are not reviewed until the\nauthor converts them to ready. WIP code submitted as a ready PR to \"get early feedback\"\nwastes reviewer time on code that will change before reaching review-ready state.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.82a",
+              "description": "Work in progress opened as a ready pull request to get early feedback — reviewer time is spent on code that is going to change, and the real review arrives when everyone has already read it once.",
+              "parent_standard_id": "S1.82"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2185
+          "source_line": 2232
         },
         {
           "id": "S1.83",
@@ -3414,7 +3516,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2212
+          "source_line": 2261
         },
         {
           "id": "S1.84",
@@ -3431,12 +3533,18 @@
           ],
           "statement": "Every KSDRILL SA system has a README at the repository root containing: system purpose,\nstack and architecture overview (with constitutional references), local development setup\n(step-by-step), environment variable list (names only — never values), and links to the\nrelevant system context file in the constitutional repository. The README is updated in\nany PR that changes setup, architecture, or environment configuration.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.84a",
+              "description": "A system with no README, or one that was not updated when setup changed — the documented steps fail on a fresh machine, and the only working knowledge of how to run the system is in one person's shell history.",
+              "parent_standard_id": "S1.84"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2235
+          "source_line": 2284
         },
         {
           "id": "S1.85",
@@ -3458,7 +3566,13 @@
           ],
           "statement": "Every significant architectural decision not covered by an existing constitutional standard\nis documented in an ADR using `ADR-000-template.md`. ADRs are committed to the `adrs/`\ndirectory in `governova`. The ADR captures: the decision, the context, the\noptions considered, the rationale for the chosen option, and the consequences.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.85a",
+              "description": "A significant architectural decision left undocumented because no standard covers it — the gap in the corpus becomes a gap in the record, and the decision is inherited with no way to tell what it was weighed against.",
+              "parent_standard_id": "S1.85"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S1.15",
@@ -3472,7 +3586,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2255
+          "source_line": 2307
         },
         {
           "id": "S1.86",
@@ -3504,7 +3618,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2276
+          "source_line": 2331
         },
         {
           "id": "S1.87",
@@ -3526,7 +3640,13 @@
           ],
           "statement": "Every project workspace contains a `CONSTITUTION-INDEX.md` at the root before the first\nAI-assisted development session. This file lists: which constitutions apply, which\nstandards are most critical for the current system, the current build phase and group,\nand any approved deviations. Updated at every sprint boundary. An AI session begun\nwithout `CONSTITUTION-INDEX.md` present is a non-compliant session.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.87a",
+              "description": "A workspace with no index, or one carried over from the previous sprint — the session runs against the wrong standards with full confidence, which is worse than running against none.",
+              "parent_standard_id": "S1.87"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S10.4",
@@ -3536,7 +3656,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2298
+          "source_line": 2353
         },
         {
           "id": "S1.88",
@@ -3564,7 +3684,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2327
+          "source_line": 2385
         },
         {
           "id": "S1.89",
@@ -3585,12 +3705,18 @@
           ],
           "statement": "Angular Signals are used for local component state management. `BehaviorSubject` and\nmanual RxJS subscriptions for local state are not used in new components. RxJS is retained\nfor: HTTP requests, complex async composition across multiple streams, and interoperability\nwith libraries that return Observables.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.89a",
+              "description": "`BehaviorSubject` and manual subscriptions used for local state in new components — teardown becomes the author's responsibility on every one of them, and the component that forgets leaks a listener per mount.",
+              "parent_standard_id": "S1.89"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2348
+          "source_line": 2406
         },
         {
           "id": "S1.90",
@@ -3618,7 +3744,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2367
+          "source_line": 2428
         },
         {
           "id": "S1.91",
@@ -3644,12 +3770,18 @@
           ],
           "statement": "All Angular components use `ChangeDetectionStrategy.OnPush` as the default. Default\nchange detection is not used in new components. OnPush combined with Signals and\nObservables with the `async` pipe provides optimal rendering performance and predictable\nchange detection cycles.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.91a",
+              "description": "A new component left on default change detection — the whole tree is checked on every event, and the cost is invisible in development and unavoidable on the devices this product exists to serve.",
+              "parent_standard_id": "S1.91"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2389
+          "source_line": 2450
         },
         {
           "id": "S1.92",
@@ -3671,12 +3803,18 @@
           ],
           "statement": "All Angular services use `providedIn: 'root'` in their `@Injectable` decorator unless\nthere is a specific, documented reason for component-level provision. Root-level provision\ncreates singleton services that are tree-shakeable. Services that maintain state are always\nsingletons — component-level provision creates new instances per component and breaks\nshared state.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.92a",
+              "description": "A stateful service provided at component level with no documented reason — each component gets its own instance, so shared state silently is not shared and the symptom is data that disagrees with itself.",
+              "parent_standard_id": "S1.92"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2408
+          "source_line": 2472
         },
         {
           "id": "S1.93",
@@ -3697,7 +3835,13 @@
           ],
           "statement": "If a commit was made directly to `main` (only possible if branch protection was bypassed):\n(1) Do NOT push. (2) `git log --oneline -5` — identify the commit hash. (3) `git reset HEAD~1` — unstage the commit, keeping changes as working directory modifications. (4) Create a proper feature branch. (5) Stage the changes onto the new branch. (6) Commit and push normally. If already pushed to `main`, escalate as a SEV1 incident — do not force-push without team coordination.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.93a",
+              "description": "A commit made straight to `main` and then pushed — the recovery stops being local and becomes a shared-history problem, which is why the standard's first instruction is not to push.",
+              "parent_standard_id": "S1.93"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S1.17",
@@ -3707,7 +3851,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2436
+          "source_line": 2503
         },
         {
           "id": "S1.94",
@@ -3723,12 +3867,18 @@
           ],
           "statement": "If commits were pushed to the wrong branch: (1) Create the correct branch from `main`. (2) `git cherry-pick {commit-hash}` — apply commits to the correct branch. (3) Push the correct branch. (4) Delete commits from the wrong branch using `git reset`. (5) If the wrong branch is shared: communicate the reset in the team channel before executing.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.94a",
+              "description": "Commits removed from a shared wrong branch with no warning — everyone who pulled the old history now has commits that no longer exist upstream, and each of them resolves it differently.",
+              "parent_standard_id": "S1.94"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2455
+          "source_line": 2525
         },
         {
           "id": "S1.95",
@@ -3749,12 +3899,18 @@
           ],
           "statement": "If a feature branch was created from another feature branch instead of `main`: (1) Identify commits belonging only to the new feature. (2) Create a correct branch from `main`. (3) `git cherry-pick` the feature-only commits onto the correct branch. (4) Abandon the incorrectly-based branch — close any open PR, delete the branch, open a new PR from the correct branch.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.95a",
+              "description": "A branch left based on another feature branch — its pull request diff carries the parent's commits, so review covers changes twice and merging one branch silently merges part of the other.",
+              "parent_standard_id": "S1.95"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2471
+          "source_line": 2544
         },
         {
           "id": "S1.96",
@@ -3770,12 +3926,18 @@
           ],
           "statement": "If wrong files were staged before a commit: (1) `git reset HEAD {file}` — unstage specific files without losing changes. (2) `git diff --staged` — verify the staging area contains only intended files. (3) Commit only when staging area is correct. If the commit was already made: `git reset HEAD~1` to unstage, then re-stage correctly.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.96a",
+              "description": "A commit made without checking what is staged — unrelated files enter the history, and a later revert of that commit takes changes nobody associated with it.",
+              "parent_standard_id": "S1.96"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2487
+          "source_line": 2563
         },
         {
           "id": "S1.97",
@@ -3796,12 +3958,18 @@
           ],
           "statement": "If the most recent commit message is incorrect: (1) `git commit --amend -m \"{correct message}\"` — rewrites the most recent commit message. (2) If already pushed: `git push --force-with-lease origin {branch-name}` — force-push only to your own feature branch, never to `main` or a shared branch. `--force-with-lease` is the only acceptable force-push flag. `--force` is prohibited.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S1.97a",
+              "description": "A message corrected by force-pushing without the lease flag — a colleague's commits pushed in the interval are overwritten with no warning, which is the outcome the lease flag exists to refuse.",
+              "parent_standard_id": "S1.97"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2503
+          "source_line": 2582
         },
         {
           "id": "S1.98",
@@ -3847,7 +4015,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2524
+          "source_line": 2605
         },
         {
           "id": "S1.99",
@@ -3893,7 +4061,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2552
+          "source_line": 2633
         },
         {
           "id": "S1.100",
@@ -3927,7 +4095,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2576
+          "source_line": 2657
         },
         {
           "id": "S1.101",
@@ -3963,7 +4131,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2600
+          "source_line": 2681
         },
         {
           "id": "S1.102",
@@ -3995,7 +4163,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2624
+          "source_line": 2705
         },
         {
           "id": "S1.103",
@@ -4035,7 +4203,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2656
+          "source_line": 2737
         },
         {
           "id": "S1.104",
@@ -4076,7 +4244,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2681
+          "source_line": 2762
         },
         {
           "id": "S1.105",
@@ -4114,7 +4282,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2707
+          "source_line": 2788
         },
         {
           "id": "S1.106",
@@ -4149,7 +4317,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2729
+          "source_line": 2810
         },
         {
           "id": "S1.107",
@@ -4184,7 +4352,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-0-foundation/C01-engineering-standards.md",
-          "source_line": 2754
+          "source_line": 2835
         }
       ]
     },
@@ -4910,7 +5078,13 @@
           ],
           "statement": "All API endpoints return `Content-Type: application/json`. No endpoint returns plain text,\nHTML, XML, or unstructured data. The response body always follows one of the three\nstandard response shapes defined in Part 4.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.15a",
+              "description": "An endpoint returning HTML, plain text or an unwrapped value — every client needs a special case for that one route, and generic response handling parses a success out of something that was never a response shape.",
+              "parent_standard_id": "S2.15"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
@@ -4963,7 +5137,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 485
+          "source_line": 488
         },
         {
           "id": "S2.17",
@@ -5002,7 +5176,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 511
+          "source_line": 514
         },
         {
           "id": "S2.18",
@@ -5050,7 +5224,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 534
+          "source_line": 537
         },
         {
           "id": "S2.19",
@@ -5088,7 +5262,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 568
+          "source_line": 571
         },
         {
           "id": "S2.20",
@@ -5130,7 +5304,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 593
+          "source_line": 596
         },
         {
           "id": "S2.21",
@@ -5168,7 +5342,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 618
+          "source_line": 621
         },
         {
           "id": "S2.22",
@@ -5221,7 +5395,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 640
+          "source_line": 643
         },
         {
           "id": "S2.23",
@@ -5277,7 +5451,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 694
+          "source_line": 697
         },
         {
           "id": "S2.24",
@@ -5319,7 +5493,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 720
+          "source_line": 723
         },
         {
           "id": "S2.25",
@@ -5341,12 +5515,18 @@
           ],
           "statement": "Every validation schema addresses all applicable categories:\n\n| Category | What It Validates |\n|----------|-------------------|\n| Required fields | All non-optional fields are present |\n| Format validation | Email format · ISO 8601 dates · positive integer IDs |\n| Business rule validation | Date not in past · amount within allowed range |\n| Ownership validation | Resource belongs to requesting user |\n| Role-based restrictions | Certain fields settable only by certain roles |\n| Unique pre-check | Friendly duplicate check before DB constraint fires |\n| Referential validation | Referenced IDs exist before write is attempted |",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.25a",
+              "description": "A validation schema that covers only the categories the author thought of — the boundary looks validated, and the category nobody considered is the one an attacker supplies.",
+              "parent_standard_id": "S2.25"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 742
+          "source_line": 745
         },
         {
           "id": "S2.26",
@@ -5378,7 +5558,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 768
+          "source_line": 774
         },
         {
           "id": "S2.27",
@@ -5416,7 +5596,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 794
+          "source_line": 800
         },
         {
           "id": "S2.28",
@@ -5483,7 +5663,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 825
+          "source_line": 831
         },
         {
           "id": "S2.29",
@@ -5533,7 +5713,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 989
+          "source_line": 995
         },
         {
           "id": "S2.30",
@@ -5566,7 +5746,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1013
+          "source_line": 1019
         },
         {
           "id": "S2.31",
@@ -5608,7 +5788,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1036
+          "source_line": 1042
         },
         {
           "id": "S2.32",
@@ -5649,7 +5829,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1058
+          "source_line": 1064
         },
         {
           "id": "S2.33",
@@ -5682,7 +5862,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1081
+          "source_line": 1087
         },
         {
           "id": "S2.34",
@@ -5725,7 +5905,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1103
+          "source_line": 1109
         },
         {
           "id": "S2.35",
@@ -5758,7 +5938,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1129
+          "source_line": 1135
         },
         {
           "id": "S2.36",
@@ -5795,7 +5975,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1173
+          "source_line": 1179
         },
         {
           "id": "S2.37",
@@ -5820,12 +6000,18 @@
           ],
           "statement": "Queries fetch only the data required for the request. Prisma `select` specifies exactly\nwhich fields are returned. Prisma `include` includes only the relations needed. Over-fetching\ndegrades performance, increases network payload, and unnecessarily exposes database content\nin application memory.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.37a",
+              "description": "A query that fetches the whole row when the request needs three fields — the payload grows, and database content the endpoint never intended to expose is sitting in application memory where the next serialisation mistake can reach it.",
+              "parent_standard_id": "S2.37"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1194
+          "source_line": 1200
         },
         {
           "id": "S2.38",
@@ -5863,7 +6049,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1213
+          "source_line": 1222
         },
         {
           "id": "S2.39",
@@ -5884,12 +6070,18 @@
           ],
           "statement": "Data read frequently and changed rarely — reference tables, system config, role\ndefinitions — is cached using HTTP cache headers or an external cache. Cache is never\nstored in service memory (violates S2.3). Cache TTL is set by change frequency — not\nindefinite. Cache invalidation is explicit and triggered by the service that mutates it.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.39a",
+              "description": "Cache held in service memory or given no expiry — each instance answers differently, and a value that changed hours ago is still being served with no way to tell which instance is wrong.",
+              "parent_standard_id": "S2.39"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1236
+          "source_line": 1245
         },
         {
           "id": "S2.40",
@@ -5905,12 +6097,18 @@
           ],
           "statement": "Database indexes are defined in the Prisma schema when the model is created — not added\nreactively when performance degrades in production. Every foreign key column has an index.\nEvery column used in a `WHERE` clause in a common query has an index.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.40a",
+              "description": "Indexes added reactively once production slows — the schema was correct at review time and wrong at scale, and the fix is applied under load against the table that is already struggling.",
+              "parent_standard_id": "S2.40"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1255
+          "source_line": 1267
         },
         {
           "id": "S2.41",
@@ -5932,7 +6130,13 @@
           ],
           "statement": "All public (unauthenticated) endpoints have rate limiting enabled from the first\ndeployment, configured via environment variables. Auth endpoints have stricter limits.\nRate limit responses return HTTP 429 with the standard error shape and `RATE_LIMIT_EXCEEDED`\ncode plus a `Retry-After` header.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.41a",
+              "description": "A public endpoint deployed with no rate limit — the first deployment is the one that is exposed, and the limit is added after the traffic that demonstrated the need.",
+              "parent_standard_id": "S2.41"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S2.22",
@@ -5946,7 +6150,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1273
+          "source_line": 1288
         },
         {
           "id": "S2.42",
@@ -5973,7 +6177,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1301
+          "source_line": 1319
         },
         {
           "id": "S2.43",
@@ -6010,7 +6214,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1323
+          "source_line": 1341
         },
         {
           "id": "S2.44",
@@ -6047,7 +6251,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1345
+          "source_line": 1363
         },
         {
           "id": "S2.45",
@@ -6068,12 +6272,18 @@
           ],
           "statement": "Any external service called on every request or handling financial transactions implements\na circuit breaker. The breaker trips after configurable consecutive failures, fast-fails\nwithout calling the service, and retries after a recovery window. Prevents a failing\nexternal dependency from cascading failures into KSDRILL SA services.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.45a",
+              "description": "An external dependency called on every request with no breaker — the dependency slows rather than fails, requests queue behind it, and one third party takes down services that do not need it.",
+              "parent_standard_id": "S2.45"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1367
+          "source_line": 1385
         },
         {
           "id": "S2.46",
@@ -6094,12 +6304,18 @@
           ],
           "statement": "Transient failures — network calls, database connections under load — implement\nexponential backoff retry with a maximum retry count. Retry is not applied to\nnon-idempotent operations. Financial writes are never retried automatically without\nidempotency key protection.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.46a",
+              "description": "Retries applied to a non-idempotent operation, or to a financial write with no idempotency key — the retry that was meant to recover from a timeout performs the operation a second time.",
+              "parent_standard_id": "S2.46"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1386
+          "source_line": 1407
         },
         {
           "id": "S2.47",
@@ -6120,12 +6336,18 @@
           ],
           "statement": "All backend services handle SIGTERM gracefully: stop accepting new requests, complete\nin-flight requests within a grace period, commit or roll back open transactions, close\ndatabase connections, then exit cleanly. Hard-exit on SIGTERM abandons in-flight\ntransactions leaving the database in a partial write state.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.47a",
+              "description": "A service that hard-exits on SIGTERM — in-flight transactions are abandoned mid-write, so an ordinary deploy leaves the database in a partial state that no rollback covers.",
+              "parent_standard_id": "S2.47"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1405
+          "source_line": 1429
         },
         {
           "id": "S2.48",
@@ -6142,12 +6364,18 @@
           ],
           "statement": "Every backend service exposes `GET /health` (public, no auth) returning HTTP 200:\n`{ \"status\": \"healthy\", \"database\": \"connected\", \"timestamp\": \"<ISO 8601>\" }`.\nIf the database is unreachable, returns HTTP 503. The deployment platform uses this\nendpoint for readiness checks.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.48a",
+              "description": "A health endpoint that returns 200 without checking the database — the platform's readiness check passes, traffic is routed to an instance that cannot serve a single request that touches data.",
+              "parent_standard_id": "S2.48"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1424
+          "source_line": 1451
         },
         {
           "id": "S2.49",
@@ -6185,7 +6413,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1450
+          "source_line": 1479
         },
         {
           "id": "S2.50",
@@ -6218,7 +6446,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1472
+          "source_line": 1501
         },
         {
           "id": "S2.51",
@@ -6251,7 +6479,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1507
+          "source_line": 1536
         },
         {
           "id": "S2.52",
@@ -6290,7 +6518,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1529
+          "source_line": 1558
         },
         {
           "id": "S2.53",
@@ -6337,7 +6565,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1552
+          "source_line": 1581
         },
         {
           "id": "S2.54",
@@ -6370,7 +6598,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1576
+          "source_line": 1605
         },
         {
           "id": "S2.55",
@@ -6392,7 +6620,13 @@
           ],
           "statement": "Auth endpoints (login, password reset, token refresh) have stricter rate limits than\ngeneral API endpoints. Failed attempts are counted per IP per time window. Progressive\ndelay applied after three consecutive failures. After ten consecutive failures, IP is\ntemporarily blocked. All thresholds are configurable via environment variables.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.55a",
+              "description": "Auth endpoints rate-limited the same as general routes — credential stuffing is bounded by the general limit, which is set for legitimate traffic and is far too generous for guessing.",
+              "parent_standard_id": "S2.55"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S2.41",
@@ -6402,7 +6636,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1598
+          "source_line": 1627
         },
         {
           "id": "S2.56",
@@ -6440,7 +6674,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1626
+          "source_line": 1658
         },
         {
           "id": "S2.57",
@@ -6461,12 +6695,18 @@
           ],
           "statement": "Every incoming request receives a unique `X-Request-ID`. If the client sends one, it is\nused. If not, the server generates a UUID4. The ID is included in every log entry for the\nrequest duration and in every outgoing call to downstream services. Returned in response\nheaders. Enables full request tracing across services.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.57a",
+              "description": "A request that receives no correlation identifier — its log lines cannot be gathered, and a fault spanning two services is diagnosed twice from two halves that cannot be joined.",
+              "parent_standard_id": "S2.57"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1649
+          "source_line": 1681
         },
         {
           "id": "S2.58",
@@ -6488,12 +6728,18 @@
           ],
           "statement": "All unhandled exceptions and caught errors at `error` level or above are reported to the\nconfigured external observability platform (Sentry for error tracking, Better Stack for\nlog aggregation). Configured from day one — not after the first production incident.\nStaging errors are also reported.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.58a",
+              "description": "Error reporting configured after the first production incident — the incident that justified it is the one with no telemetry, so the reason for the outage is reconstructed from memory.",
+              "parent_standard_id": "S2.58"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1668
+          "source_line": 1703
         },
         {
           "id": "S2.59",
@@ -6515,12 +6761,18 @@
           ],
           "statement": "Response time is measured for every request and included in the structured log as\n`durationMs`. Alerts fire when the P95 response time for any endpoint exceeds two seconds\nfor more than one minute.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.59a",
+              "description": "Response time neither measured nor alerted — degradation is reported by users rather than by monitoring, which means it is reported late and only by the ones who did not simply leave.",
+              "parent_standard_id": "S2.59"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1687
+          "source_line": 1725
         },
         {
           "id": "S2.60",
@@ -6545,12 +6797,18 @@
           ],
           "statement": "For any request exceeding one second total, the number of database queries and individual\ndurations are logged. Enables instant identification of N+1 problems and missing indexes\nin production. Prisma query logging is at `query` level in staging, `warn`/`error` in\nproduction.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.60a",
+              "description": "A slow request logged without its query count — an N+1 and a missing index present identically, so the investigation starts by reproducing what the log could have stated.",
+              "parent_standard_id": "S2.60"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1705
+          "source_line": 1746
         },
         {
           "id": "S2.61",
@@ -6566,12 +6824,18 @@
           ],
           "statement": "The following alert thresholds are active before first production deployment:\n\n| Metric | Threshold |\n|--------|-----------|\n| API error rate | >1% of requests in any 5-minute window |\n| P95 response time | >2 seconds sustained >1 minute |\n| Database connection failures | Any failure |\n| Health check failures | 2 consecutive failures |\n| Disk usage | >80% |",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.61a",
+              "description": "First production deployment with no alert thresholds configured — the system is live and unwatched, and the gap is discovered by whichever failure happens to arrive first.",
+              "parent_standard_id": "S2.61"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1724
+          "source_line": 1768
         },
         {
           "id": "S2.62",
@@ -6593,7 +6857,13 @@
           ],
           "statement": "Every sensitive operation writes an audit log record: `userId`, `action`\n(CREATE/READ/UPDATE/DELETE), `entity`, `entityId`, `timestamp`, `ipAddress`, `metadata`\n(JSON). Audit log records are never deleted — the table is append-only. The soft delete\nstandard (S2.35) exists partly because hard-deleting a record with audit log entries\ncreates an incomplete audit trail.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.62a",
+              "description": "A sensitive operation performed with no audit record, or an audit table that permits deletion — the trail is complete only until someone has a reason for it not to be.",
+              "parent_standard_id": "S2.62"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S2.35",
@@ -6603,7 +6873,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1748
+          "source_line": 1795
         },
         {
           "id": "S2.63",
@@ -6636,7 +6906,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1778
+          "source_line": 1828
         },
         {
           "id": "S2.64",
@@ -6668,7 +6938,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1817
+          "source_line": 1867
         },
         {
           "id": "S2.65",
@@ -6693,12 +6963,18 @@
           ],
           "statement": "Every router is registered with a versioned prefix (`/api/v1/`) and a descriptive tag\nmatching the domain name. Prefixes are set at router registration in `main.py` — not\nhardcoded in individual route decorators. Routes within a router are relative paths\nwithout the version prefix.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.65a",
+              "description": "Prefixes hardcoded into individual route decorators — the version lives in dozens of places, and introducing a second version means editing every route rather than one registration.",
+              "parent_standard_id": "S2.65"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1839
+          "source_line": 1889
         },
         {
           "id": "S2.66",
@@ -6719,12 +6995,18 @@
           ],
           "statement": "Operations that occur after the API response is sent — email notifications, audit log\nwrites to external systems, analytics events — use FastAPI's `BackgroundTasks`. The route\nhandler adds the background task and returns the response. The task runs after the\nresponse is sent without blocking the client.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.66a",
+              "description": "Post-response work performed inline in the handler — the client waits on an email or an analytics event, so latency is spent on work whose result the caller never receives.",
+              "parent_standard_id": "S2.66"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1858
+          "source_line": 1911
         },
         {
           "id": "S2.67",
@@ -6760,7 +7042,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1877
+          "source_line": 1933
         },
         {
           "id": "S2.68",
@@ -6786,12 +7068,18 @@
           ],
           "statement": "AI and ML capabilities — LangChain RAG, embedding generation, scholarship matching,\nprediction endpoints — are grouped in a dedicated `ai/` or `intelligence/` router and\nservice module. AI services may depend on domain services (reading from student or\nscholarship domain) but domain services never depend on AI services. AI capabilities\ncan be replaced, upgraded, or disabled without touching any core domain logic.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.68a",
+              "description": "A domain service that depends on an intelligence service — the capability that was meant to be replaceable becomes load-bearing, and disabling it takes core domain logic with it.",
+              "parent_standard_id": "S2.68"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1899
+          "source_line": 1955
         },
         {
           "id": "S2.69",
@@ -6812,12 +7100,18 @@
           ],
           "statement": "Exception handlers for all custom exception classes and for generic `Exception` are\nregistered on the FastAPI application object in `main.py`. Every handler returns the\nstandard error response shape (S2.22). No route handler catches raw `Exception` and\nformats its own error response.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.69a",
+              "description": "A route handler catching raw `Exception` and formatting its own error — one endpoint's failures come back in a shape nothing else uses, and the global handler that would have caught it never runs.",
+              "parent_standard_id": "S2.69"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1919
+          "source_line": 1978
         },
         {
           "id": "S2.70",
@@ -6845,7 +7139,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1944
+          "source_line": 2006
         },
         {
           "id": "S2.71",
@@ -6872,7 +7166,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1976
+          "source_line": 2038
         },
         {
           "id": "S2.72",
@@ -6897,12 +7191,18 @@
           ],
           "statement": "Server Actions are used exclusively for form-based mutations from Server Components.\nClient Components use API routes. All Server Actions validate session and input before\ncalling service functions — they are not exempt from the validation boundary.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.72a",
+              "description": "A Server Action treated as exempt from the validation boundary — input reaches service functions unvalidated through the one path that looks internal and is reachable from the browser.",
+              "parent_standard_id": "S2.72"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 1997
+          "source_line": 2059
         },
         {
           "id": "S2.73",
@@ -6927,12 +7227,18 @@
           ],
           "statement": "All Next.js API route handlers wrap execution in try-catch. Caught errors are passed to\na shared error handler utility that formats them into the standard error shape and returns\nthe appropriate `NextResponse`. The shared handler is used across all route files — no\nroute implements its own error formatting.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.73a",
+              "description": "A route implementing its own error formatting — error shapes drift per file, and the client's error handling is correct for the routes that were written first.",
+              "parent_standard_id": "S2.73"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 2015
+          "source_line": 2080
         },
         {
           "id": "S2.74",
@@ -6953,12 +7259,18 @@
           ],
           "statement": "Next.js middleware (`middleware.ts`) handles route-level auth checks using NextAuth.\nMiddleware confirms the session exists and redirects unauthenticated requests to login.\nMiddleware does not check roles or resource ownership — those decisions happen in the\nservice layer.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.74a",
+              "description": "Middleware deciding roles or resource ownership — an authorisation decision is made at the edge without the data to make it, and the service layer trusts a verdict reached without context.",
+              "parent_standard_id": "S2.74"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 2034
+          "source_line": 2102
         },
         {
           "id": "S2.75",
@@ -6990,7 +7302,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 2053
+          "source_line": 2124
         },
         {
           "id": "S2.76",
@@ -7022,7 +7334,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 2083
+          "source_line": 2154
         },
         {
           "id": "S2.77",
@@ -7059,7 +7371,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 2104
+          "source_line": 2175
         },
         {
           "id": "S2.78",
@@ -7084,12 +7396,18 @@
           ],
           "statement": "When a new version is introduced and the previous is to be retired, the retirement follows\na minimum three-month sunset period. During sunset: the deprecated version continues to\nfunction, every response includes a `Deprecation` header with the sunset date, the OpenAPI\nspec is marked deprecated, and all internal consumers are migrated before the sunset date.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.78a",
+              "description": "A version retired without an announced sunset — consumers discover the retirement when their requests start failing, which is the moment they have no time to migrate.",
+              "parent_standard_id": "S2.78"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 2138
+          "source_line": 2209
         },
         {
           "id": "S2.79",
@@ -7110,12 +7428,18 @@
           ],
           "statement": "When a new version is introduced, the previous version continues from the same deployment.\nVersion routing directs requests to the appropriate handlers. Shared service logic is\ncalled by both versions — the service layer is version-agnostic. Only route handlers\nand response serialisation differ between versions.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.79a",
+              "description": "Service logic forked per version rather than shared — a fix applied to one version silently leaves the other wrong, and the divergence grows for as long as both are live.",
+              "parent_standard_id": "S2.79"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 2157
+          "source_line": 2231
         },
         {
           "id": "S2.80",
@@ -7136,12 +7460,18 @@
           ],
           "statement": "New endpoints are always added to the current latest API version. New endpoints are never\nadded to a deprecated version. If the new feature introduces a breaking change, a new\nversion is created. Otherwise, the new endpoint is added to the existing latest version.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S2.80a",
+              "description": "A new endpoint added to a deprecated version — the version that was scheduled to be removed acquires a consumer that did not exist when the sunset was announced.",
+              "parent_standard_id": "S2.80"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 2176
+          "source_line": 2253
         },
         {
           "id": "S2.81",
@@ -7169,7 +7499,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C02-backend-constitution.md",
-          "source_line": 2195
+          "source_line": 2274
         }
       ]
     },
@@ -14246,7 +14576,13 @@
           ],
           "statement": "Internal tools, admin panels, and simple CRUD systems that do not require SEO, financial precision, or Python AI may use either stack. The decision requires an ADR evaluating: team familiarity, existing infrastructure alignment, expected complexity growth, and maintenance cost. The decision is documented and immutable.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.5a",
+              "description": "A stack chosen for a simple system without the ADR — team familiarity, infrastructure alignment and expected complexity growth are weighed in someone's head, and the decision that was meant to be immutable has no record to be immutable against.",
+              "parent_standard_id": "S6.5"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S6.8",
@@ -14297,7 +14633,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 164
+          "source_line": 167
         },
         {
           "id": "S6.7",
@@ -14330,7 +14666,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 185
+          "source_line": 188
         },
         {
           "id": "S6.8",
@@ -14372,7 +14708,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 212
+          "source_line": 215
         },
         {
           "id": "S6.9",
@@ -14397,7 +14733,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 235
+          "source_line": 238
         },
         {
           "id": "S6.10",
@@ -14422,7 +14758,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 240
+          "source_line": 243
         },
         {
           "id": "S6.11",
@@ -14447,7 +14783,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 245
+          "source_line": 248
         },
         {
           "id": "S6.12",
@@ -14500,7 +14836,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 258
+          "source_line": 261
         },
         {
           "id": "S6.13",
@@ -14553,7 +14889,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 295
+          "source_line": 298
         },
         {
           "id": "S6.14",
@@ -14599,7 +14935,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 332
+          "source_line": 335
         },
         {
           "id": "S6.15",
@@ -14624,7 +14960,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 358
+          "source_line": 361
         },
         {
           "id": "S6.16",
@@ -14649,7 +14985,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 363
+          "source_line": 366
         },
         {
           "id": "S6.17",
@@ -14674,7 +15010,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 368
+          "source_line": 371
         },
         {
           "id": "S6.18",
@@ -14728,7 +15064,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 381
+          "source_line": 384
         },
         {
           "id": "S6.19",
@@ -14782,7 +15118,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 419
+          "source_line": 422
         },
         {
           "id": "S6.20",
@@ -14812,7 +15148,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 461
+          "source_line": 464
         },
         {
           "id": "S6.21",
@@ -14842,7 +15178,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 466
+          "source_line": 469
         },
         {
           "id": "S6.22",
@@ -14876,7 +15212,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 471
+          "source_line": 474
         },
         {
           "id": "S6.23",
@@ -14906,7 +15242,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 476
+          "source_line": 479
         },
         {
           "id": "S6.24",
@@ -14931,7 +15267,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 481
+          "source_line": 484
         },
         {
           "id": "S6.25",
@@ -14943,14 +15279,20 @@
           "phase_label": null,
           "depends_on": [],
           "enforced_by": [],
-          "statement": "Per S6.14 — restated here for emphasis. No system in the Next.js stack calls an endpoint in the Angular+FastAPI stack or vice versa. This is an architectural boundary.\n\n---",
+          "statement": "Per S6.14 — restated here for emphasis. No system in the Next.js stack calls an endpoint in the Angular+FastAPI stack or vice versa. This is an architectural boundary.\n\n**Anti-Patterns:**\n- `AP-S6.25a` — A system calling across the stack boundary directly — the boundary that made the two stacks independently deployable stops existing, and it is removed by a single import rather than by any decision.\n\n---",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.25a",
+              "description": "A system calling across the stack boundary directly — the boundary that made the two stacks independently deployable stops existing, and it is removed by a single import rather than by any decision.",
+              "parent_standard_id": "S6.25"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 494
+          "source_line": 497
         },
         {
           "id": "S6.26",
@@ -14975,7 +15317,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 502
+          "source_line": 508
         },
         {
           "id": "S6.27",
@@ -15000,7 +15342,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 507
+          "source_line": 513
         },
         {
           "id": "S6.28",
@@ -15025,7 +15367,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 512
+          "source_line": 518
         },
         {
           "id": "S6.29",
@@ -15066,7 +15408,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 523
+          "source_line": 529
         },
         {
           "id": "S6.30",
@@ -15096,7 +15438,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 546
+          "source_line": 552
         },
         {
           "id": "S6.31",
@@ -15121,7 +15463,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 551
+          "source_line": 557
         },
         {
           "id": "S6.32",
@@ -15146,7 +15488,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 556
+          "source_line": 562
         },
         {
           "id": "S6.33",
@@ -15171,7 +15513,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 561
+          "source_line": 567
         },
         {
           "id": "S6.34",
@@ -15183,14 +15525,20 @@
           "phase_label": null,
           "depends_on": [],
           "enforced_by": [],
-          "statement": "| Layer | Technology | Governs |\n|-------|-----------|---------|\n| Frontend | Next.js 14+ App Router, React 18+, TypeScript strict | C4 |\n| Styling | Tailwind CSS + Custom CSS Modules | C4 |\n| Components | shadcn/ui as base library | C4 |\n| State (server) | TanStack Query v5 | C4 |\n| State (client) | Zustand v4 | C4 |\n| Forms | React Hook Form + Zod | C4 |\n| Auth | NextAuth.js v5 with Prisma Adapter | C3 |\n| API | Next.js API Routes under `/api/v1/` | C2 |\n| Database | PostgreSQL via Prisma ORM + Raw SQL | C5 |\n| Background jobs | BullMQ + Redis (SyncUp) | C2 |\n| Testing | Jest + RTL + Playwright | C7 |\n| Deployment | Vercel | C8 |\n| Monitoring | Sentry + Better Stack + Vercel Analytics | C8 |\n\n---",
+          "statement": "| Layer | Technology | Governs |\n|-------|-----------|---------|\n| Frontend | Next.js 14+ App Router, React 18+, TypeScript strict | C4 |\n| Styling | Tailwind CSS + Custom CSS Modules | C4 |\n| Components | shadcn/ui as base library | C4 |\n| State (server) | TanStack Query v5 | C4 |\n| State (client) | Zustand v4 | C4 |\n| Forms | React Hook Form + Zod | C4 |\n| Auth | NextAuth.js v5 with Prisma Adapter | C3 |\n| API | Next.js API Routes under `/api/v1/` | C2 |\n| Database | PostgreSQL via Prisma ORM + Raw SQL | C5 |\n| Background jobs | BullMQ + Redis (SyncUp) | C2 |\n| Testing | Jest + RTL + Playwright | C7 |\n| Deployment | Vercel | C8 |\n| Monitoring | Sentry + Better Stack + Vercel Analytics | C8 |\n\n**Anti-Patterns:**\n- `AP-S6.34a` — A technology substituted for the locked one without an amendment — the locked table still describes what review assumes is running, so the divergence is discovered by whoever next trusts the document.\n\n---",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.34a",
+              "description": "A technology substituted for the locked one without an amendment — the locked table still describes what review assumes is running, so the divergence is discovered by whoever next trusts the document.",
+              "parent_standard_id": "S6.34"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 574
+          "source_line": 580
         },
         {
           "id": "S6.35",
@@ -15202,14 +15550,20 @@
           "phase_label": null,
           "depends_on": [],
           "enforced_by": [],
-          "statement": "| Layer | Technology | Governs |\n|-------|-----------|---------|\n| Frontend | Angular 17+ standalone, TypeScript strict | C4 |\n| Styling | Tailwind CSS + Custom CSS (component styles) | C4 |\n| State | Angular Signals + RxJS | C4 |\n| Forms | Angular Reactive Forms | C4 |\n| Auth (FE) | JWT in Angular memory + HTTP interceptor | C3 |\n| Auth (BE) | FastAPI RS256 JWT issuance + Depends() | C3 |\n| API | FastAPI (Python) under `/api/v1/` | C2 |\n| Database (relational) | PostgreSQL via Prisma ORM + Raw SQL | C5 |\n| Database (document) | MongoDB via Beanie ODM | C5 |\n| Vector store | ChromaDB (FundsLink only) | C5 |\n| AI pipeline | LangChain + Python (FundsLink only) | C2 |\n| Background jobs | BullMQ + Redis (Reserve Bank) | C2 |\n| Testing | Vitest + Angular utilities + Playwright + pytest | C7 |\n| Deployment (FE) | Vercel | C8 |\n| Deployment (BE) | Railway | C8 |\n| Monitoring | Sentry + Better Stack + Railway Metrics | C8 |\n\n---",
+          "statement": "| Layer | Technology | Governs |\n|-------|-----------|---------|\n| Frontend | Angular 17+ standalone, TypeScript strict | C4 |\n| Styling | Tailwind CSS + Custom CSS (component styles) | C4 |\n| State | Angular Signals + RxJS | C4 |\n| Forms | Angular Reactive Forms | C4 |\n| Auth (FE) | JWT in Angular memory + HTTP interceptor | C3 |\n| Auth (BE) | FastAPI RS256 JWT issuance + Depends() | C3 |\n| API | FastAPI (Python) under `/api/v1/` | C2 |\n| Database (relational) | PostgreSQL via Prisma ORM + Raw SQL | C5 |\n| Database (document) | MongoDB via Beanie ODM | C5 |\n| Vector store | ChromaDB (FundsLink only) | C5 |\n| AI pipeline | LangChain + Python (FundsLink only) | C2 |\n| Background jobs | BullMQ + Redis (Reserve Bank) | C2 |\n| Testing | Vitest + Angular utilities + Playwright + pytest | C7 |\n| Deployment (FE) | Vercel | C8 |\n| Deployment (BE) | Railway | C8 |\n| Monitoring | Sentry + Better Stack + Railway Metrics | C8 |\n\n**Anti-Patterns:**\n- `AP-S6.35a` — A technology substituted for the locked one without an amendment — the second answer to an already-solved problem is maintained forever, and no ADR records why it was introduced.\n\n---",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.35a",
+              "description": "A technology substituted for the locked one without an amendment — the second answer to an already-solved problem is maintained forever, and no ADR records why it was introduced.",
+              "parent_standard_id": "S6.35"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 594
+          "source_line": 603
         },
         {
           "id": "S6.36",
@@ -15234,7 +15588,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 619
+          "source_line": 631
         },
         {
           "id": "S6.37",
@@ -15259,7 +15613,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 624
+          "source_line": 636
         },
         {
           "id": "S6.38",
@@ -15284,7 +15638,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 629
+          "source_line": 641
         },
         {
           "id": "S6.39",
@@ -15303,7 +15657,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 640
+          "source_line": 652
         },
         {
           "id": "S6.40",
@@ -15322,7 +15676,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 655
+          "source_line": 667
         },
         {
           "id": "S6.41",
@@ -15341,7 +15695,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 669
+          "source_line": 681
         },
         {
           "id": "S6.42",
@@ -15360,7 +15714,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 683
+          "source_line": 695
         },
         {
           "id": "S6.43",
@@ -15379,7 +15733,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 701
+          "source_line": 713
         },
         {
           "id": "S6.44",
@@ -15391,14 +15745,20 @@
           "phase_label": null,
           "depends_on": [],
           "enforced_by": [],
-          "statement": "Before any Phase 2 work begins on a system, the following must be complete:\n\n```\nPHASE 1 COMPLETION GATE\n[ ] Stack ADR committed to adrs/ and locked\n[ ] System context file created in system-contexts/{system}-context.md\n[ ] CONSTITUTION-INDEX.md created in project workspace (S10.4)\n[ ] OpenAPI contract drafted for all v1 endpoints (S2.7)\n[ ] Auth implementation complete and tested (C3)\n[ ] Primary user workflow implemented end-to-end\n[ ] All database schemas migrated (S5.9, S5.59)\n[ ] All v1 API endpoints live and returning standard response shape (S2.19)\n[ ] Angular HTTP interceptor tested with deduplication (S3.15, S7.12) — Angular only\n[ ] Visual regression tests passing at 320/375/390px (S4.10, S7.19)\n[ ] Coverage gate passing (S7.25)\n[ ] Preview deployment functional and reviewed\n```\n\n---",
+          "statement": "Before any Phase 2 work begins on a system, the following must be complete:\n\n```\nPHASE 1 COMPLETION GATE\n[ ] Stack ADR committed to adrs/ and locked\n[ ] System context file created in system-contexts/{system}-context.md\n[ ] CONSTITUTION-INDEX.md created in project workspace (S10.4)\n[ ] OpenAPI contract drafted for all v1 endpoints (S2.7)\n[ ] Auth implementation complete and tested (C3)\n[ ] Primary user workflow implemented end-to-end\n[ ] All database schemas migrated (S5.9, S5.59)\n[ ] All v1 API endpoints live and returning standard response shape (S2.19)\n[ ] Angular HTTP interceptor tested with deduplication (S3.15, S7.12) — Angular only\n[ ] Visual regression tests passing at 320/375/390px (S4.10, S7.19)\n[ ] Coverage gate passing (S7.25)\n[ ] Preview deployment functional and reviewed\n```\n\n**Anti-Patterns:**\n- `AP-S6.44a` — Phase 2 work begun with items on the completion gate outstanding — the unfinished item is always the unglamorous one, and it is now behind a layer of new work that assumed it was done.\n\n---",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.44a",
+              "description": "Phase 2 work begun with items on the completion gate outstanding — the unfinished item is always the unglamorous one, and it is now behind a layer of new work that assumed it was done.",
+              "parent_standard_id": "S6.44"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 728
+          "source_line": 740
         },
         {
           "id": "S6.45",
@@ -15447,7 +15807,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 750
+          "source_line": 765
         }
       ]
     },
@@ -25702,7 +26062,7 @@
   },
   "integrity": {
     "standards_extracted": 670,
-    "anti_patterns_extracted": 729,
+    "anti_patterns_extracted": 789,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

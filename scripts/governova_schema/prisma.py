@@ -218,8 +218,18 @@ def _resolve_relations(
 
     relations: list[Relation] = []
     for (left, right), halves in sorted(by_pair.items()):
-        left_to_many = any(is_list for source, _, is_list in halves if source == left)
-        right_to_many = any(is_list for source, _, is_list in halves if source == right)
+        # `X_to_many` means X is the **many** end (see `Relation`). Prisma states
+        # that from the *other* side: `Organisation { teams Team[] }` says Team is
+        # the many end, not Organisation.
+        #
+        # This read the declaring side instead, which inverted every relation
+        # parsed from Prisma. It was invisible because the only check reading both
+        # flags — many-to-many — is symmetric, and the checks that read one flag
+        # were exercised against SQL fixtures, where the other parser had it
+        # right. The first real Prisma schema analysed (`#255`) reported a bridge
+        # entity as a fan trap and missed the genuine one.
+        left_to_many = any(is_list for source, _, is_list in halves if source == right)
+        right_to_many = any(is_list for source, _, is_list in halves if source == left)
         field_name = halves[0][1] if halves else ""
         relations.append(
             Relation(

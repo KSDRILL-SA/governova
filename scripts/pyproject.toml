@@ -154,6 +154,7 @@ packages = [
     "governova_onboard",
     "governova_identity",
     "governova_auth",
+    "governova_org",
     "governova_settings",
 ]
 
@@ -198,5 +199,6 @@ files = [
     "governova_onboard",
     "governova_identity",
     "governova_auth",
+    "governova_org",
     "governova_settings",
 ]

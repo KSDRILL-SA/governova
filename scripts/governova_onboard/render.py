@@ -233,6 +233,12 @@ def to_json(baseline: Baseline, *, top: int | None = None) -> str:
             ],
         },
         "score": {
+            # ADR-012 — `headline` is null below quorum; `score` remains the
+            # arithmetic over whatever was assessed. A consumer reading this
+            # payload must be able to tell the difference, which is exactly what
+            # the CLI surface withholds.
+            "headline": baseline.score.headline,
+            "has_quorum": baseline.score.has_quorum,
             "score": baseline.score.score,
             "grade": baseline.score.grade,
             "assessed_weight": baseline.score.assessed_weight,

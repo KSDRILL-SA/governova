@@ -69,6 +69,23 @@ class BoardReport:
     def headline(self) -> str:
         """One plain-English sentence for the top of the report."""
         s = self.score
+        # ADR-012 — below quorum the sentence reports what was measured and stops.
+        # Saying a repository "is below the certification threshold" implies it was
+        # measured against that threshold, which on a partial assessment it was not.
+        if s.headline is None:
+            measured = f"{len(s.assessed_factors)} of {len(s.factors)} factor(s)"
+            if self.areas_red:
+                return (
+                    f"Partial assessment — {measured} could be assessed, "
+                    f"{s.assessed_weight}% of the model. "
+                    f"{self.areas_red} constitutional area(s) have blocking violations. "
+                    "No overall score is issued until a project profile is accepted."
+                )
+            return (
+                f"Partial assessment — {measured} could be assessed, "
+                f"{s.assessed_weight}% of the model. "
+                "No overall score is issued until a project profile is accepted."
+            )
         cert = "is Governova Certified eligible" if s.certified_eligible else "is below the certification threshold"
         if self.areas_red:
             return (

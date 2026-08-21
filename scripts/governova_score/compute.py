@@ -25,16 +25,35 @@ def _factor(key: str, score: float | None, detail: str) -> Factor:
 
 
 def _violation_rate(root: Path) -> Factor:
-    """Always assessable: scan the repo's source and penalise findings."""
+    """Always assessable: scan the repo's source and penalise findings.
+
+    The factor is a **count**, and it saturates: at three points per advisory
+    finding it reaches zero at 34, and cannot then distinguish 34 from 340. That
+    is a real limitation and it is not corrected here — amending the penalty
+    curve means picking a number to produce a pleasing shape, and no defensible
+    basis for a particular curve has been established (ADR-012).
+
+    What is added is **density beside the count**, never instead of it. Once the
+    factor reads zero the reader's next question is *how bad, and how spread
+    out?* — and 52 findings across 32 files is a different situation from 52
+    across 3,200 while being the same number. Reported the same way
+    `mechanical_coverage_pct` sits beside `coverage_pct`, and for the same
+    reason: a metric's definition is never silently widened, so every historical
+    reading of `violation_rate` still means what it meant.
+    """
     files = list(iter_source_files(root))
     findings = scan_paths(files)
     blocking = sum(1 for f in findings if f.blocking)
     advisory = len(findings) - blocking
     score = max(0.0, 100.0 - _BLOCKING_PENALTY * blocking - _ADVISORY_PENALTY * advisory)
+
+    if not findings:
+        return _factor("violation_rate", score, f"clean across {len(files)} source file(s)")
+
+    density = len(findings) / len(files) if files else 0.0
     detail = (
-        f"{blocking} blocking, {advisory} advisory across {len(files)} source file(s)"
-        if findings
-        else f"clean across {len(files)} source file(s)"
+        f"{blocking} blocking, {advisory} advisory across {len(files)} source file(s) "
+        f"— {density:.2f} per file"
     )
     return _factor("violation_rate", score, detail)
 

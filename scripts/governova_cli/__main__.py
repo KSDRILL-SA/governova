@@ -338,6 +338,7 @@ def govscore(
     import os
 
     from governova_score import compute_score, to_badge, to_json, to_markdown
+    from governova_score.model import QUORUM_WEIGHT
 
     gs = compute_score(_root(repo_root))
     fmt = output.lower()
@@ -359,12 +360,29 @@ def govscore(
                 pass
         return
 
-    colour = "green" if gs.score >= 85 else "yellow" if gs.score >= 70 else "red"
     t = Table.grid(padding=(0, 2))
     for f in gs.factors:
         val = f"{f.score:.0f}/100" if f.assessed else "[dim]not assessed[/]"
         t.add_row(f"{f.title} ({f.weight}%):", f"{val}  [dim]{f.detail}[/]")
     console.print(t)
+
+    # ADR-012 — below quorum there is no headline to print. The factors above are
+    # the whole honest output, and saying so is more useful than a number that
+    # rests on a minority of the model.
+    if gs.headline is None:
+        assessed = len(gs.assessed_factors)
+        console.print(
+            f"\n[bold yellow]Partial assessment[/] — {assessed} of {len(gs.factors)} "
+            f"factor(s) assessed, {gs.assessed_weight}% of the model."
+        )
+        console.print(
+            "[dim]No Governova Score is issued below "
+            f"{QUORUM_WEIGHT}%. Accept a project profile to assess "
+            "constitutional coverage, which is the factor that reaches quorum.[/]"
+        )
+        return
+
+    colour = "green" if gs.score >= 85 else "yellow" if gs.score >= 70 else "red"
     console.print(f"\n[bold {colour}]Governova Score: {gs.score}/100  [{gs.grade}][/]")
     if gs.certified_eligible:
         console.print("[bold green]✓ Governova Certified eligible (≥85)[/]")

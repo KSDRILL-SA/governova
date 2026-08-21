@@ -51,8 +51,15 @@ def _area_counts(report: BoardReport) -> str:
 
 def to_html(report: BoardReport, coverage: dict[str, Any]) -> str:
     s = report.score
-    cert = "Governova Certified eligible" if s.certified_eligible else "Below certification (85)"
-    cert_bg = "#16a34a" if s.certified_eligible else "#6b7280"
+    # ADR-012 — below quorum the badge states the assessment is partial rather
+    # than reporting a repository as below a threshold it was never measured
+    # against.
+    if s.headline is None:
+        cert = f"Partial assessment — {s.assessed_weight}% of the model"
+        cert_bg = "#6b7280"
+    else:
+        cert = "Governova Certified eligible" if s.certified_eligible else "Below certification (85)"
+        cert_bg = "#16a34a" if s.certified_eligible else "#6b7280"
     area_cards = "\n".join(
         f'''      <div class="area" style="border-left:5px solid {_AREA_COLOUR[a.status]}">
         <div class="area-top"><span class="dot" style="background:{_AREA_COLOUR[a.status]}"></span>
@@ -113,7 +120,7 @@ def to_html(report: BoardReport, coverage: dict[str, Any]) -> str:
   <div class="grid">
     <div class="card">
       <div class="label">Governova Score</div>
-      <div class="score" style="color:{_score_colour(s.score)}">{s.score}<span style="font-size:22px">/100</span></div>
+      <div class="score" style="color:{_score_colour(s.score) if s.headline is not None else "#9ca3af"}">{s.score if s.headline is not None else "—"}<span style="font-size:22px">{"/100" if s.headline is not None else ""}</span></div>
       <div class="grade">Grade {_esc(s.grade)}</div>
     </div>
     <div class="card">

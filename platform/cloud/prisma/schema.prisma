@@ -111,6 +111,11 @@ model Membership {
   /// application code, two concurrent invitations both read absent and both
   /// write, and the duplicate exists before either transaction commits.
   @@unique([organisation_id, account_id])
+  /// The target of `TeamMembership`'s composite foreign key. `id` is already
+  /// unique on its own; this pair exists so a referencing row must name the
+  /// organisation it believes this membership belongs to, and be wrong loudly
+  /// if it does not.
+  @@unique([organisation_id, id])
   /// `S5.13` — every foreign key column carries an index.
   @@index([organisation_id])
   @@index([account_id])
@@ -130,6 +135,8 @@ model Team {
   members      TeamMembership[]
 
   @@unique([organisation_id, name])
+  /// The other target of `TeamMembership`'s composite foreign key — see there.
+  @@unique([organisation_id, id])
   @@index([organisation_id])
   @@index([deleted_at])
 }
@@ -142,25 +149,36 @@ model Team {
 /// expressible; going through `Account` would allow a person with no membership
 /// to sit on a team.
 ///
-/// **That leaves two paths from here to an organisation** — through the team,
-/// and through the membership — which `S14.11` warns about. The schema cannot
-/// close it: PostgreSQL has no way to say "these two foreign keys must resolve
-/// to the same organisation" without a composite key carrying `organisation_id`
-/// through both sides. It is enforced as an invariant in `governova_org`
-/// instead, with a test, and recorded here so the next reader finds the reason
-/// rather than the gap.
+/// **`organisation_id` is carried here on purpose, and it is a denormalisation.**
+/// `S14.8` requires that to be recorded rather than assumed, so: the column
+/// duplicates a fact reachable through either `team` or `membership`, and it
+/// exists because **one shared column is what makes the two foreign keys
+/// composite**. Both references below are keyed on `organisation_id` plus the
+/// row's own id, so a team in one organisation and a membership in another
+/// cannot both satisfy them. The invariant becomes impossible rather than
+/// merely checked.
+///
+/// The alternative was an application-level check, and it was rejected: an
+/// application invariant holds only for code that calls it. A migration, a bulk
+/// import, a support script or a direct `INSERT` all bypass it, and every one of
+/// those is a normal thing to do to a production database. The cost is one
+/// column and two composite unique constraints on the referenced tables.
 model TeamMembership {
-  id            String    @id @default(uuid())
-  team_id       String
-  membership_id String
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
-  deleted_at    DateTime?
+  id              String    @id @default(uuid())
+  /// Denormalised from `team.organisation_id` / `membership.organisation_id`,
+  /// which the composite foreign keys below force to agree with each other.
+  organisation_id String
+  team_id         String
+  membership_id   String
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  deleted_at      DateTime?
 
-  team       Team       @relation(fields: [team_id], references: [id])
-  membership Membership @relation(fields: [membership_id], references: [id])
+  team       Team       @relation(fields: [organisation_id, team_id], references: [organisation_id, id])
+  membership Membership @relation(fields: [organisation_id, membership_id], references: [organisation_id, id])
 
   @@unique([team_id, membership_id])
+  @@index([organisation_id])
   @@index([team_id])
   @@index([membership_id])
   @@index([deleted_at])

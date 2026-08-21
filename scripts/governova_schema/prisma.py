@@ -83,46 +83,71 @@ def parse_prisma(text: str, *, source_path: str = "") -> Schema:
             current = None
             continue
 
-        block_id = _BLOCK_ID.match(line)
-        if block_id:
-            for name in _split_identifiers(block_id.group(1)):
-                _mark(current, name, primary_key=True)
+        if _apply_block_attribute(current, line):
             continue
 
-        block_unique = _BLOCK_UNIQUE.match(line)
-        if block_unique:
-            for name in _split_identifiers(block_unique.group(1)):
-                _mark(current, name, unique=True)
+        if stripped.startswith("@@"):
             continue
 
-        field = _FIELD.match(line)
-        if not field or stripped.startswith("@@"):
-            continue
-
-        name, type_name, is_list, optional, attributes = field.groups()
-        is_list = bool(is_list)
-        nullable = bool(optional)
-        lowered = type_name.lower()
-
-        if lowered not in _SCALARS and lowered not in declared_types:
-            # A relation field. The scalar FK column, if any, is named in `fields:`.
-            pending.append((current.name, name, type_name, is_list))
-            _record_foreign_key(current, type_name, attributes or "")
-            continue
-
-        current.columns.append(
-            Column(
-                name=name,
-                type=type_name,
-                nullable=nullable and not is_list,
-                primary_key=bool(_ID_ATTR.search(attributes or "")),
-                unique=bool(_UNIQUE_ATTR.search(attributes or "")),
-                is_list=is_list,
-            )
-        )
+        _parse_field(current, line, declared_types, pending)
 
     schema.relations.extend(_resolve_relations(pending, {t.name for t in schema.tables}))
     return schema
+
+
+def _apply_block_attribute(table: Table, line: str) -> bool:
+    """Handle `@@id` / `@@unique`. Returns whether the line was one of them.
+
+    Split out of `parse_prisma` for `S13.6`: the loop was doing three unrelated
+    jobs — tracking model boundaries, applying block attributes, and parsing
+    fields — and each additional branch was making the other two harder to read.
+    """
+    block_id = _BLOCK_ID.match(line)
+    if block_id:
+        for name in _split_identifiers(block_id.group(1)):
+            _mark(table, name, primary_key=True)
+        return True
+
+    block_unique = _BLOCK_UNIQUE.match(line)
+    if block_unique:
+        for name in _split_identifiers(block_unique.group(1)):
+            _mark(table, name, unique=True)
+        return True
+
+    return False
+
+
+def _parse_field(
+    table: Table,
+    line: str,
+    declared_types: set[str],
+    pending: list[tuple[str, str, str, bool]],
+) -> None:
+    """Add one field to `table`, or record it as a relation to resolve later."""
+    field = _FIELD.match(line)
+    if not field:
+        return
+
+    name, type_name, is_list, optional, attributes = field.groups()
+    is_list = bool(is_list)
+    lowered = type_name.lower()
+
+    if lowered not in _SCALARS and lowered not in declared_types:
+        # A relation field. The scalar FK column, if any, is named in `fields:`.
+        pending.append((table.name, name, type_name, is_list))
+        _record_foreign_key(table, type_name, attributes or "")
+        return
+
+    table.columns.append(
+        Column(
+            name=name,
+            type=type_name,
+            nullable=bool(optional) and not is_list,
+            primary_key=bool(_ID_ATTR.search(attributes or "")),
+            unique=bool(_UNIQUE_ATTR.search(attributes or "")),
+            is_list=is_list,
+        )
+    )
 
 
 def _mark(table: Table, column_name: str, *, primary_key: bool = False, unique: bool = False) -> None:

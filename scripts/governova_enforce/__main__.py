@@ -172,41 +172,44 @@ def _run_semantic(scannable: list[Path], fmt: Fmt, root: Path) -> int:
             code = p.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError):
             continue
-        try:
-            rel = p.resolve().relative_to(root.resolve()).as_posix()
-        except ValueError:
-            rel = p.as_posix()
 
         result = semantic_review_result(code, index=index)
-        if result.outcome is Outcome.UNPARSEABLE:
-            # A 200 with no readable verdict. Reported like an outage because it has the
-            # same consequence — nothing was reviewed — and the same invisibility.
-            unavailable = result
-            break
-        if result.outcome is Outcome.UNAVAILABLE:
-            # Stop at the first failure. Every remaining file would fail the same way,
-            # and hammering a dead endpoint once per file is neither informative nor
-            # polite to whoever operates it.
+        # UNPARSEABLE is a 200 with no readable verdict. Reported like an outage
+        # because it has the same consequence — nothing was reviewed — and the
+        # same invisibility. Either way, stop at the first failure: every
+        # remaining file fails identically, and hammering a dead endpoint once
+        # per file is neither informative nor polite to whoever operates it.
+        if result.outcome in (Outcome.UNPARSEABLE, Outcome.UNAVAILABLE):
             unavailable = result
             break
         if result.ran:
             reviewed += 1
-
-        for f in result.findings:
-            if fmt is Fmt.github:
-                print(
-                    f"::warning file={rel},line={f.line or 1}::"
-                    f"{f.standard} (semantic) — {f.message}"
-                )
-            else:
-                loc = f"{rel}:{f.line}" if f.line else rel
-                console.print(
-                    f"  [magenta]semantic[/] [bold]{f.standard}[/] {loc} — {f.message}"
-                )
-            count += 1
+        count += _emit_semantic_findings(result, _relative(p, root), fmt)
 
     _report_semantic_outcome(fmt, reviewed=reviewed, findings=count, unavailable=unavailable)
     return count
+
+
+def _relative(path: Path, root: Path) -> str:
+    """A repo-relative posix path, or the path as given when it lies outside."""
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def _emit_semantic_findings(result: ReviewResult, rel: str, fmt: Fmt) -> int:
+    """Print one file's advisory findings. Returns how many there were."""
+    for f in result.findings:
+        if fmt is Fmt.github:
+            print(
+                f"::warning file={rel},line={f.line or 1}::"
+                f"{f.standard} (semantic) — {f.message}"
+            )
+        else:
+            loc = f"{rel}:{f.line}" if f.line else rel
+            console.print(f"  [magenta]semantic[/] [bold]{f.standard}[/] {loc} — {f.message}")
+    return len(result.findings)
 
 
 def _report_semantic_outcome(
@@ -248,6 +251,41 @@ def _report_semantic_outcome(
         console.print(f"[dim]{summary}[/]")
 
 
+def _candidate_files(paths: list[Path] | None, base: str, root: Path) -> list[Path]:
+    """Every file the invocation asks about, before ignores are applied.
+
+    Given paths, directories are walked. Given none, this is a pull request and
+    the candidates are the files it changed — the CI default.
+    """
+    if not paths:
+        return _changed_files(base, root)
+
+    candidates: list[Path] = []
+    for p in paths:
+        if p.is_dir():
+            candidates.extend(q for q in p.rglob("*") if q.is_file())
+        else:
+            candidates.append(p)
+    return candidates
+
+
+def _not_ignored(candidates: list[Path], root: Path, ignores: tuple[str, ...]) -> list[Path]:
+    """The candidates that survive the ignore globs, matched repo-relative.
+
+    A path outside the repository has no relative form; it is matched as given
+    rather than dropped, because a caller who names a file explicitly means it.
+    """
+    kept: list[Path] = []
+    for c in candidates:
+        try:
+            rel = c.resolve().relative_to(root.resolve()).as_posix()
+        except ValueError:
+            rel = c.as_posix()
+        if not is_ignored(rel, ignores):
+            kept.append(c)
+    return kept
+
+
 @app.command()
 def main(
     paths: Annotated[
@@ -282,28 +320,10 @@ def main(
     root = _root()
     ignores = (() if no_default_ignore else DEFAULT_IGNORES) + tuple(ignore or ())
 
-    # Resolve the candidate file set.
-    if paths:
-        candidates: list[Path] = []
-        for p in paths:
-            if p.is_dir():
-                candidates.extend(q for q in p.rglob("*") if q.is_file())
-            else:
-                candidates.append(p)
-    else:
-        # No explicit paths -> changed-files mode (the CI default).
-        _ = changed  # both no-paths and --changed mean the same thing; kept for clarity
-        candidates = _changed_files(base, root)
-
-    # Apply ignores on the repo-relative posix path.
-    scannable: list[Path] = []
-    for c in candidates:
-        try:
-            rel = c.resolve().relative_to(root.resolve()).as_posix()
-        except ValueError:
-            rel = c.as_posix()
-        if not is_ignored(rel, ignores):
-            scannable.append(c)
+    # Both no-paths and --changed mean the same thing; the flag is kept for clarity.
+    _ = changed
+    candidates = _candidate_files(paths, base, root)
+    scannable = _not_ignored(candidates, root, ignores)
 
     findings = scan_paths(scannable)
     blocking = [f for f in findings if mode is Mode.block and f.blocking]

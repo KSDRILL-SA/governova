@@ -114,46 +114,69 @@ def parse_sql(text: str, *, source_path: str = "") -> Schema:
         )
 
     for name, body, line in _table_bodies(text):
-        table = Table(name=name, source_line=line)
-        deferred_keys: list[str] = []
-        deferred_unique: list[str] = []
-
-        for clause in _split_top_level(body):
-            pk = _TABLE_PRIMARY_KEY.match(clause)
-            if pk:
-                deferred_keys.extend(_clean(c) for c in pk.group(1).split(","))
-                continue
-            unique = _TABLE_UNIQUE.match(clause)
-            if unique:
-                deferred_unique.extend(_clean(c) for c in unique.group(1).split(","))
-                continue
-            fk = _TABLE_FOREIGN_KEY.match(clause)
-            if fk:
-                targets = [_clean(c) for c in (fk.group(3) or "").split(",") if c.strip()]
-                for offset, column_name in enumerate(_clean(c) for c in fk.group(1).split(",")):
-                    _attach_reference(
-                        table,
-                        column_name,
-                        _clean(fk.group(2)),
-                        targets[offset] if offset < len(targets) else None,
-                    )
-                continue
-            if _CONSTRAINT_START.match(clause):
-                continue  # CHECK / EXCLUDE / named constraint — not a soundness input
-
-            column = _parse_column(clause)
-            if column is not None:
-                table.columns.append(column)
-
-        for column_name in deferred_keys:
-            _mark(table, column_name, primary_key=True)
-        for column_name in deferred_unique:
-            _mark(table, column_name, unique=True)
-
-        schema.tables.append(table)
+        schema.tables.append(_parse_table(name, body, line))
 
     schema.relations.extend(_relations_from_columns(schema))
     return schema
+
+
+def _parse_table(name: str, body: str, line: int) -> Table:
+    """One `CREATE TABLE` body, as a table.
+
+    Split out of `parse_sql` for `S13.6`. The outer function's job is to find
+    table bodies and note what it skipped; this one's is to read a body. They
+    were one function, and the clause loop below was the reason nobody could see
+    where either began.
+    """
+    table = Table(name=name, source_line=line)
+    deferred_keys: list[str] = []
+    deferred_unique: list[str] = []
+
+    for clause in _split_top_level(body):
+        if _apply_table_constraint(table, clause, deferred_keys, deferred_unique):
+            continue
+        column = _parse_column(clause)
+        if column is not None:
+            table.columns.append(column)
+
+    # Table-level constraints name columns that may appear after them, so they
+    # are applied once every column is known rather than as they are read.
+    for column_name in deferred_keys:
+        _mark(table, column_name, primary_key=True)
+    for column_name in deferred_unique:
+        _mark(table, column_name, unique=True)
+
+    return table
+
+
+def _apply_table_constraint(
+    table: Table, clause: str, deferred_keys: list[str], deferred_unique: list[str]
+) -> bool:
+    """Handle a table-level constraint. Returns whether the clause was one."""
+    pk = _TABLE_PRIMARY_KEY.match(clause)
+    if pk:
+        deferred_keys.extend(_clean(c) for c in pk.group(1).split(","))
+        return True
+
+    unique = _TABLE_UNIQUE.match(clause)
+    if unique:
+        deferred_unique.extend(_clean(c) for c in unique.group(1).split(","))
+        return True
+
+    fk = _TABLE_FOREIGN_KEY.match(clause)
+    if fk:
+        targets = [_clean(c) for c in (fk.group(3) or "").split(",") if c.strip()]
+        for offset, column_name in enumerate(_clean(c) for c in fk.group(1).split(",")):
+            _attach_reference(
+                table,
+                column_name,
+                _clean(fk.group(2)),
+                targets[offset] if offset < len(targets) else None,
+            )
+        return True
+
+    # CHECK / EXCLUDE / named constraint — not a soundness input.
+    return bool(_CONSTRAINT_START.match(clause))
 
 
 def _parse_column(clause: str) -> Column | None:

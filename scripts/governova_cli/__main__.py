@@ -1249,6 +1249,73 @@ def schema(
         raise typer.Exit(code=1)
 
 
+def _print_baseline_score(baseline: Any) -> None:
+    """The headline, or an honest refusal to issue one.
+
+    ADR-012 — below a quorum of the model there is no Governova Score, and this
+    is the surface that amendment was written for: first contact with a
+    repository carrying no governance instrumentation, where four of five factors
+    cannot be assessed and the fifth would otherwise become the whole answer.
+    """
+    from governova_onboard.render import score_table
+
+    score = baseline.score
+    assessed = len(score.assessed_factors)
+
+    if score.headline is None:
+        console.print(
+            f"\n[bold yellow]Partial assessment[/] — {assessed} of "
+            f"{len(score.factors)} factor(s), {score.assessed_weight}% of the model."
+        )
+        console.print(
+            "[dim]No baseline score is issued on this much. The factors below are "
+            "what could be measured; accepting the proposed profile assesses "
+            "constitutional coverage, which is what reaches quorum.[/]"
+        )
+    else:
+        console.print(f"\n[bold]Baseline score:[/] {score.score}/100  [{score.grade}]")
+        console.print(
+            f"[dim]drawn from {assessed} of {len(score.factors)} factors "
+            f"({score.assessed_weight}% of factor weight)[/]"
+        )
+    console.print(score_table(baseline))
+
+
+def _print_baseline_findings(baseline: Any, *, top: int, show_probes: bool) -> None:
+    """Findings, structural findings, and the caveats attached to both."""
+    from governova_onboard.render import findings_table, probe_table, structural_table
+
+    if baseline.groups:
+        shown = min(top, len(baseline.groups))
+        console.print(
+            f"\n[bold]Top findings[/] — {shown} of {len(baseline.groups)} group(s), "
+            f"blocking first"
+        )
+        console.print(findings_table(baseline, top=top))
+
+    # Probe violations count toward the heatmap's `violated` column, so they are
+    # printed whenever there are any. Omitting them left the report showing a
+    # violated standard it could not account for.
+    if baseline.violated_probes:
+        console.print("\n[bold]Structural findings[/] — repository facts, not lines")
+        console.print(structural_table(baseline))
+
+    if baseline.clean:
+        console.print(
+            "\n[green]No deterministic findings.[/] [dim]That is not a clean bill of "
+            "health — see the undetermined column above.[/]"
+        )
+
+    if show_probes:
+        console.print("\n[bold]Structural probes[/]")
+        console.print(probe_table(baseline))
+
+    if baseline.provisional:
+        console.print("\n[yellow]These numbers are provisional:[/]")
+        for reason in baseline.provisional:
+            console.print(f"  [yellow]•[/] {reason}")
+
+
 @app.command()
 def onboard(
     path: Annotated[
@@ -1280,12 +1347,8 @@ def onboard(
     from governova_onboard import ProfileExistsError, assess, render_profile
     from governova_onboard import accept as write_profile
     from governova_onboard.render import (
-        findings_table,
         heatmap_table,
-        probe_table,
         profile_table,
-        score_table,
-        structural_table,
         to_json,
     )
 
@@ -1317,20 +1380,7 @@ def onboard(
     console.print("[bold]What this repository is[/]")
     console.print(profile_table(baseline))
 
-    assessed = len(baseline.score.assessed_factors)
-    console.print(
-        f"\n[bold]Baseline score:[/] {baseline.score.score}/100  [{baseline.score.grade}]"
-    )
-    # The headline is the only line some readers take away, so what it rests on
-    # belongs beside it. On first contact most factors need governance records the
-    # repository does not have yet, and a score drawn from one factor out of five
-    # is a different claim from one drawn from all of them.
-    console.print(
-        f"[dim]drawn from {assessed} of 5 factors ({baseline.score.assessed_weight}% of "
-        f"factor weight) — the rest need governance instrumentation this repository "
-        f"does not have yet[/]"
-    )
-    console.print(score_table(baseline))
+    _print_baseline_score(baseline)
 
     console.print("\n[bold]Gap heatmap[/] — against the proposed profile")
     console.print(heatmap_table(baseline))
@@ -1340,35 +1390,7 @@ def onboard(
         f"nobody has looked yet, and it is never counted as satisfied.[/]"
     )
 
-    if baseline.groups:
-        shown = min(top, len(baseline.groups))
-        console.print(
-            f"\n[bold]Top findings[/] — {shown} of {len(baseline.groups)} group(s), "
-            f"blocking first"
-        )
-        console.print(findings_table(baseline, top=top))
-
-    # Probe violations count toward the heatmap's `violated` column, so they are
-    # printed whenever there are any. Omitting them left the report showing a
-    # violated standard it could not account for.
-    if baseline.violated_probes:
-        console.print("\n[bold]Structural findings[/] — repository facts, not lines")
-        console.print(structural_table(baseline))
-
-    if baseline.clean:
-        console.print(
-            "\n[green]No deterministic findings.[/] [dim]That is not a clean bill of "
-            "health — see the undetermined column above.[/]"
-        )
-
-    if show_probes:
-        console.print("\n[bold]Structural probes[/]")
-        console.print(probe_table(baseline))
-
-    if baseline.provisional:
-        console.print("\n[yellow]These numbers are provisional:[/]")
-        for reason in baseline.provisional:
-            console.print(f"  [yellow]•[/] {reason}")
+    _print_baseline_findings(baseline, top=top, show_probes=show_probes)
 
     proposal = render_profile(
         baseline.detection,

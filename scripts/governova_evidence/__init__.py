@@ -1204,8 +1204,252 @@ def _probe_vendor_register(root: Path) -> ProbeResult:
     return _ok(sid, f"{len(rows)} vendor(s) registered in {name}, with an exit plan")
 
 
+# ── Testing and maintenance infrastructure ───────────────────────────────────
+
+# Test runners, grouped by the stack each belongs to. S7.2 locks *one per stack*,
+# so a Python repository with pytest and a TypeScript repository with vitest is
+# two runners and no violation; pytest beside nose is one stack with two.
+_PYTHON_RUNNERS: tuple[tuple[str, str], ...] = (
+    ("pytest", r"\[tool\.pytest|pytest\.ini|\bpytest-"),
+    ("nose", r"\[nosetests\]|\bnose2?\b"),
+    ("tox", r"\[tox\]"),
+)
+_JS_RUNNERS: tuple[tuple[str, str], ...] = (
+    ("jest", r'"jest"\s*:|jest\.config'),
+    ("vitest", r'"vitest"\s*:|vitest\.config'),
+    ("karma", r"karma\.conf|\"karma\"\s*:"),
+    ("mocha", r'"mocha"\s*:|\.mocharc'),
+    ("jasmine", r'"jasmine"\s*:|jasmine\.json'),
+    ("ava", r'"ava"\s*:'),
+)
+
+# Files a runner is declared in.
+_RUNNER_CONFIGS: tuple[str, ...] = (
+    "pyproject.toml", "setup.cfg", "tox.ini", "pytest.ini",
+    "package.json", "jest.config.js", "jest.config.ts",
+    "vitest.config.js", "vitest.config.ts", "karma.conf.js", ".mocharc.json",
+)
+
+# Test names that describe nothing. Deliberately narrow: this must never accuse
+# a real name, so it matches placeholders and enumerations only, never merely
+# short names — `test_redact` is terse and perfectly descriptive.
+_PLACEHOLDER_TEST_NAME = re.compile(
+    r"^test_?(?:\d+|[a-z]\d*|foo|bar|baz|qux|thing|stuff|case\d*|"
+    r"it_works|works|ok|basic|simple|main|tmp|temp|new|todo)$",
+    re.I,
+)
+_TEST_DEF = re.compile(r"^\s*(?:async\s+)?def\s+(test_\w+)", re.M)
+
+# How many test files to read before answering. A repository with ten thousand
+# tests does not need all of them to establish whether names are written or
+# generated.
+_TEST_NAME_LIMIT = 400
+
+# Files that hold a web interface. S7.20 is an accessibility gate, which is not
+# a question that arises in a repository with no interface to audit.
+_UI_SUFFIXES: tuple[str, ...] = (".html", ".htm", ".tsx", ".jsx", ".vue", ".svelte")
+
+
+def _probe_single_test_runner(root: Path) -> ProbeResult:
+    """S7.2 — one test runner per stack, never mixed.
+
+    Two runners in one stack means two sets of conventions, two configuration
+    files and two answers to "did the suite pass" — and the one nobody watches
+    is the one that goes red quietly.
+    """
+    sid = "S7.2"
+    corpus = "\n".join(t for name in _RUNNER_CONFIGS if (t := _read(root / name)) is not None)
+    globbed = " ".join(p.name for p in root.glob("*.js")) + " ".join(p.name for p in root.glob("*.ts"))
+    corpus = f"{corpus}\n{globbed}"
+    if not corpus.strip():
+        return _unknown(sid, "no test runner configuration found to inspect")
+
+    found: dict[str, list[str]] = {"Python": [], "JavaScript": []}
+    for stack, runners in (("Python", _PYTHON_RUNNERS), ("JavaScript", _JS_RUNNERS)):
+        for name, pattern in runners:
+            if re.search(pattern, corpus, re.I):
+                found[stack].append(name)
+
+    mixed = {stack: names for stack, names in found.items() if len(names) > 1}
+    if mixed:
+        detail = "; ".join(f"{stack}: {', '.join(names)}" for stack, names in mixed.items())
+        return _bad(sid, f"more than one test runner in a stack — {detail}")
+
+    declared = [n for names in found.values() for n in names]
+    if not declared:
+        return _unknown(sid, "no test runner is configured, so none can be locked")
+    return _ok(sid, f"one runner per stack: {', '.join(declared)}")
+
+
+def _probe_test_names_describe_behaviour(root: Path) -> ProbeResult:
+    """S7.5 — a test name states the behaviour, in plain English.
+
+    The name is what a reader sees when the suite goes red. `test_3` reports that
+    something broke and nothing about what, so the failure has to be reproduced
+    before it can even be triaged.
+    """
+    sid = "S7.5"
+    files = [
+        p
+        for p in sorted(root.rglob("test_*.py")) + sorted(root.rglob("*_test.py"))
+        if not any(part in {".git", ".venv", "node_modules", "__pycache__"} for part in p.parts)
+    ][:_TEST_NAME_LIMIT]
+    if not files:
+        return _unknown(sid, "no Python test files found to inspect")
+
+    names: list[str] = []
+    for path in files:
+        text = _read(path)
+        if text is not None:
+            names.extend(_TEST_DEF.findall(text))
+    if not names:
+        return _unknown(sid, "no test functions found to inspect")
+
+    placeholders = [n for n in names if _PLACEHOLDER_TEST_NAME.match(n)]
+    if placeholders:
+        shown = ", ".join(placeholders[:5])
+        return _bad(sid, f"{len(placeholders)} of {len(names)} test name(s) describe nothing: {shown}")
+    return _ok(sid, f"all {len(names)} test name(s) name a behaviour")
+
+
+def _probe_coverage_reported_on_prs(root: Path) -> ProbeResult:
+    """S7.27 — the coverage report reaches the pull request.
+
+    A threshold that fails the build says the total is acceptable. It does not
+    show a reviewer *which added lines* are untested, and that is the question
+    review is there to answer.
+    """
+    sid = "S7.27"
+    workflows = sorted((root / ".github" / "workflows").glob("*.y*ml"))
+    if not workflows:
+        return _unknown(sid, "no CI workflows to inspect")
+
+    for path in workflows:
+        text = _read(path)
+        if text is None or not re.search(r"^\s*pull_request:", text, re.M):
+            continue
+        # Coverage-specific evidence only. The first version of this matched a
+        # bare `upload-artifact`, and reported this repository as satisfied on
+        # the strength of a workflow that uploads an **SBOM** — a false
+        # SATISFIED, which silently retires a standard nobody will look at
+        # again. An artifact upload proves an artifact exists, not what is in it.
+        if re.search(
+            r"codecov|coveralls|--cov-report[= ]\s*(?:xml|html|lcov)|"
+            r"coverage\.xml|lcov\.info|htmlcov|coverage-summary|"
+            r"upload-artifact[\s\S]{0,300}?\bcoverage\b",
+            text,
+            re.I,
+        ):
+            return _ok(sid, f"{path.name} publishes coverage output on pull requests")
+    return _bad(
+        sid,
+        "no coverage report reaches a pull request — a reviewer cannot see which "
+        "added lines are untested, so the question is answered by whether the "
+        "author remembered to mention it",
+    )
+
+
+def _probe_branch_coverage(root: Path) -> ProbeResult:
+    """S7.28 — branch coverage is tracked alongside line coverage.
+
+    A function called once reports as covered while none of its error branches
+    has ever run. The line figure then reassures precisely where it should not,
+    which is worse than having no figure.
+    """
+    sid = "S7.28"
+    python_config = None
+    for name in ("pyproject.toml", "setup.cfg", ".coveragerc", "tox.ini"):
+        text = _read(root / name)
+        if text is None:
+            continue
+        if re.search(r"\[tool\.coverage|\[coverage:", text):
+            python_config = (name, text)
+            break
+
+    package = _read(root / "package.json")
+    js_declares_branches = bool(package and re.search(r'"branches"\s*:', package))
+
+    if python_config is None and package is None:
+        return _unknown(sid, "no coverage configuration found to inspect")
+
+    if python_config is not None:
+        name, text = python_config
+        if re.search(r"^\s*branch\s*=\s*true", text, re.M | re.I):
+            return _ok(sid, f"{name} enables branch coverage")
+        if not js_declares_branches:
+            return _bad(
+                sid,
+                f"{name} configures coverage but not `branch = true` — a function "
+                "whose error paths never run still reports as covered",
+            )
+
+    if js_declares_branches:
+        return _ok(sid, "package.json declares a branch coverage threshold")
+    return _unknown(sid, "coverage is configured but its branch setting cannot be read")
+
+
+def _probe_accessibility_gate(root: Path) -> ProbeResult:
+    """S7.20 — an automated accessibility gate runs in CI.
+
+    Returns UNKNOWN for a repository with no interface. An accessibility gate is
+    not a question that arises where there is nothing to audit, and reporting it
+    as violated would be an accusation about code that does not exist.
+    """
+    sid = "S7.20"
+    if not _has_language(root, _UI_SUFFIXES):
+        return _unknown(sid, "no web interface in this repository, so there is nothing to audit")
+
+    text = _workflow_text(root)
+    if text is None:
+        return _bad(sid, "a web interface with no CI at all, so no accessibility gate can run")
+    if re.search(r"axe|pa11y|lighthouse|accessibility", text, re.I):
+        return _ok(sid, "CI runs an automated accessibility check")
+    return _bad(
+        sid,
+        "no accessibility gate in CI — the users excluded by a regression are the "
+        "least likely to report it",
+    )
+
+
+def _probe_complexity_gate(root: Path) -> ProbeResult:
+    """S13.6 — complexity is actively reduced, which requires it to be measured.
+
+    Nothing here judges whether the code is simple. A gate is the probe-able
+    half: without one, complexity is only ever discussed, and it grows by a
+    little on every merge with no single change responsible.
+    """
+    sid = "S13.6"
+    for name in ("pyproject.toml", "setup.cfg", ".flake8", "tox.ini", "ruff.toml", ".ruff.toml"):
+        text = _read(root / name)
+        if text is None:
+            continue
+        if re.search(r"max-complexity|mccabe|\bC901\b|\"C90\"|'C90'", text):
+            return _ok(sid, f"a complexity limit is enforced in {name}")
+
+    for name in (".eslintrc", ".eslintrc.json", ".eslintrc.js", "eslint.config.js"):
+        text = _read(root / name)
+        if text and re.search(r'"complexity"|sonarjs/cognitive-complexity', text):
+            return _ok(sid, f"a complexity rule is enabled in {name}")
+
+    workflows = _workflow_text(root)
+    if workflows and re.search(r"\bradon\b|\bxenon\b|sonar-scanner|sonarcloud", workflows, re.I):
+        return _ok(sid, "CI measures complexity")
+
+    return _bad(
+        sid,
+        "no complexity gate — complexity is discussed rather than measured, so it "
+        "grows by a little on every merge with no single change responsible",
+    )
+
+
 PROBES: tuple[Probe, ...] = (
     Probe("S1.17", "Main is verified by CI, not only pull requests", _probe_ci_on_main),
+    Probe("S7.2", "One test runner per stack, never mixed", _probe_single_test_runner),
+    Probe("S7.5", "Test names describe a behaviour", _probe_test_names_describe_behaviour),
+    Probe("S7.20", "An accessibility gate runs in CI", _probe_accessibility_gate),
+    Probe("S7.27", "Coverage output reaches the pull request", _probe_coverage_reported_on_prs),
+    Probe("S7.28", "Branch coverage is tracked, not only line coverage", _probe_branch_coverage),
+    Probe("S13.6", "Complexity is measured, not only discussed", _probe_complexity_gate),
     Probe("S1.19", "Commits follow the conventional format", _probe_conventional_commits),
     Probe("S1.22", "Squash merge keeps history linear", _probe_squash_merge),
     Probe("S1.29", "Proposals have a mandatory template", _probe_issue_template),

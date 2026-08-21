@@ -531,6 +531,185 @@ def test_a_probe_never_returns_satisfied_from_an_empty_directory(tmp_path) -> No
     assert not guessing, f"probe(s) claimed satisfied with no evidence present: {guessing}"
 
 
+# ─── Testing and maintenance infrastructure ──────────────────────────────────
+
+
+def test_s72_two_runners_in_one_stack_is_a_violation(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_single_test_runner
+
+    (tmp_path / "package.json").write_text(
+        '{"devDependencies": {"jest": "^29", "vitest": "^2"}}', encoding="utf-8"
+    )
+    result = _probe_single_test_runner(tmp_path)
+    assert result.verdict is Verdict.VIOLATED
+    assert "jest" in result.evidence and "vitest" in result.evidence
+
+
+def test_s72_one_runner_per_stack_is_two_runners_and_no_violation(tmp_path) -> None:
+    """S7.2 locks one runner *per stack*, not one runner per repository.
+
+    A Python service beside a TypeScript frontend legitimately runs two, and a
+    probe that called that mixed would accuse every full-stack repository there is.
+    """
+    from governova_evidence import Verdict, _probe_single_test_runner
+
+    (tmp_path / "pyproject.toml").write_text("[tool.pytest.ini_options]\n", encoding="utf-8")
+    (tmp_path / "package.json").write_text('{"devDependencies": {"vitest": "^2"}}', encoding="utf-8")
+    assert _probe_single_test_runner(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s72_is_unknown_with_no_runner_configured(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_single_test_runner
+
+    assert _probe_single_test_runner(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s75_a_placeholder_test_name_is_a_violation(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_test_names_describe_behaviour
+
+    (tmp_path / "test_thing.py").write_text(
+        "def test_1():\n    pass\n\ndef test_foo():\n    pass\n", encoding="utf-8"
+    )
+    result = _probe_test_names_describe_behaviour(tmp_path)
+    assert result.verdict is Verdict.VIOLATED
+    assert "test_1" in result.evidence
+
+
+def test_s75_a_terse_name_is_not_a_placeholder(tmp_path) -> None:
+    """The check must never accuse a real name.
+
+    `test_redact` is short and says exactly what it covers. A rule that demanded
+    a word count would fail it, and a governance tool that accuses good code is
+    a governance tool nobody runs twice.
+    """
+    from governova_evidence import Verdict, _probe_test_names_describe_behaviour
+
+    (tmp_path / "test_thing.py").write_text(
+        "def test_redact():\n    pass\n\n"
+        "def test_an_empty_environment_reports_nothing():\n    pass\n",
+        encoding="utf-8",
+    )
+    assert _probe_test_names_describe_behaviour(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s75_is_unknown_with_no_tests(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_test_names_describe_behaviour
+
+    assert _probe_test_names_describe_behaviour(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s727_an_artifact_upload_is_not_evidence_of_coverage(tmp_path) -> None:
+    """The false SATISFIED this probe shipped with, pinned so it cannot return.
+
+    The first version matched a bare `upload-artifact` and reported this
+    repository as satisfied on the strength of a workflow that uploads an
+    **SBOM**. An artifact upload proves an artifact exists, not what is in it —
+    and a false satisfied silently retires a standard nobody will examine again.
+    """
+    from governova_evidence import Verdict, _probe_coverage_reported_on_prs
+
+    _workflow(
+        tmp_path,
+        "on:\n  pull_request:\njobs:\n  sbom:\n    steps:\n"
+        "      - name: Upload the SBOM\n"
+        "        uses: actions/upload-artifact@v4\n"
+        "        with:\n          path: sbom.cyclonedx.json\n",
+    )
+    assert _probe_coverage_reported_on_prs(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s727_a_coverage_upload_satisfies(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_coverage_reported_on_prs
+
+    _workflow(
+        tmp_path,
+        "on:\n  pull_request:\njobs:\n  t:\n    steps:\n"
+        "      - run: pytest --cov-report=xml\n"
+        "      - uses: actions/upload-artifact@v4\n"
+        "        with:\n          path: coverage.xml\n",
+    )
+    assert _probe_coverage_reported_on_prs(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s727_is_unknown_with_no_ci(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_coverage_reported_on_prs
+
+    assert _probe_coverage_reported_on_prs(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s728_line_coverage_without_branch_coverage_is_a_violation(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_branch_coverage
+
+    (tmp_path / "pyproject.toml").write_text(
+        "[tool.coverage.report]\nfail_under = 80\n", encoding="utf-8"
+    )
+    assert _probe_branch_coverage(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s728_branch_coverage_enabled_satisfies(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_branch_coverage
+
+    (tmp_path / "pyproject.toml").write_text(
+        "[tool.coverage.run]\nbranch = true\n", encoding="utf-8"
+    )
+    assert _probe_branch_coverage(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s728_is_unknown_when_coverage_is_not_configured_at_all(tmp_path) -> None:
+    """S7.25 asks whether coverage is gated. S7.28 asks about its shape.
+
+    With no coverage configured the second question does not arise, and
+    answering it would be reporting on something that is not there.
+    """
+    from governova_evidence import Verdict, _probe_branch_coverage
+
+    assert _probe_branch_coverage(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s720_is_unknown_without_an_interface_to_audit(tmp_path) -> None:
+    """An accessibility gate is not a question that arises with nothing to audit."""
+    from governova_evidence import Verdict, _probe_accessibility_gate
+
+    (tmp_path / "engine.py").write_text("x = 1\n", encoding="utf-8")
+    assert _probe_accessibility_gate(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s720_an_interface_with_no_gate_is_a_violation(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_accessibility_gate
+
+    (tmp_path / "index.html").write_text("<h1>hello</h1>\n", encoding="utf-8")
+    _workflow(tmp_path, "on: push\njobs:\n  t:\n    steps:\n      - run: npm test\n")
+    assert _probe_accessibility_gate(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s720_an_axe_gate_satisfies(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_accessibility_gate
+
+    (tmp_path / "index.html").write_text("<h1>hello</h1>\n", encoding="utf-8")
+    _workflow(tmp_path, "on: push\njobs:\n  t:\n    steps:\n      - run: npx axe-core ./dist\n")
+    assert _probe_accessibility_gate(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s136_no_complexity_gate_is_a_violation(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_complexity_gate
+
+    (tmp_path / "pyproject.toml").write_text(
+        '[tool.ruff.lint]\nselect = ["E", "F"]\n', encoding="utf-8"
+    )
+    assert _probe_complexity_gate(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s136_a_configured_complexity_limit_satisfies(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_complexity_gate
+
+    (tmp_path / "pyproject.toml").write_text(
+        '[tool.ruff.lint]\nselect = ["E", "C90"]\n\n'
+        "[tool.ruff.lint.mccabe]\nmax-complexity = 10\n",
+        encoding="utf-8",
+    )
+    assert _probe_complexity_gate(tmp_path).verdict is Verdict.SATISFIED
+
+
 def test_every_probe_binds_a_standard_that_exists() -> None:
     """A probe citing a non-existent standard is as ungrounded as a stray rule."""
     root = resolve_repo_root()

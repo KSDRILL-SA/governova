@@ -47,6 +47,7 @@ select = [
     "RUF",  # ruff-specific
     "N",    # pep8-naming
     "C4",   # flake8-comprehensions
+    "C90",  # mccabe — see [tool.ruff.lint.mccabe] for what the limit means
 ]
 ignore = [
     # Line length is declared above and not enforced here. Measured on this tree:
@@ -61,6 +62,24 @@ ignore = [
     "RUF002",   # ambiguous unicode in docstrings
     "RUF003",   # ambiguous unicode in comments
 ]
+
+[tool.ruff.lint.mccabe]
+# S13.6 — "complexity is actively reduced", which first requires it to be
+# measured. Nothing measured it: `C4` above is flake8-comprehensions, not mccabe,
+# and the resemblance is why the gap survived review.
+#
+# **15 is where this code already is, not where it should be.** `main` in the CLI
+# is 15; fourteen functions sit above the conventional default of 10. Setting the
+# limit at the current ceiling is deliberate and is the whole value of the gate:
+# it cannot make the existing code simpler, and it stops the number *growing* —
+# which is exactly the failure `AP-S13.6a` names, complexity rising by a little
+# on every merge with no single change responsible.
+#
+# Setting 10 today would mean fourteen refactors bundled into a configuration
+# change, and per-file ignores to dodge them would hide the very thing being
+# measured. The ratchet down is recorded as `D-22` with the offenders named, so
+# the number moves by deliberate work rather than by drift.
+max-complexity = 15
 
 [tool.ruff.lint.per-file-ignores]
 "**/tests/**" = ["N802", "N803"]
@@ -99,6 +118,21 @@ testpaths = ["scripts/tests", "platform/engine/tests"]
 # point — which is what a floor is supposed to feel like.
 [tool.coverage.run]
 source = ["scripts"]
+# S7.28 — "branch coverage is tracked alongside line coverage — a function that
+# is called but whose error branches are never exercised has misleading line
+# coverage." That was this repository exactly: 82.39% line coverage concealed
+# 194 partial branches, twenty of them in the probe module, where every one was
+# a verdict that had never been produced in a test. An unexercised verdict path
+# is the worst kind to leave, because it is only ever reached in someone else's
+# repository — where a wrong answer looks exactly like a right one.
+#
+# **`fail_under` is unchanged at 80.** Enabling branches took the figure from
+# 82.39% to 80.07%; covering those twenty probe verdicts brought it to 80.43%.
+# The headroom is four tenths of a point, so a change that adds a handful of
+# uncovered branches fails the build. That is the gate working, and it is
+# recorded as `D-23`. The one response not available is lowering the number to
+# make room — the bar does not move to fit the code.
+branch = true
 omit = [
     # Test code inflates the figure toward 100% and says nothing about whether
     # the engine is covered. Measuring it would make the gate meaningless.

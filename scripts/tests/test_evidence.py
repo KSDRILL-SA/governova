@@ -710,6 +710,117 @@ def test_s136_a_configured_complexity_limit_satisfies(tmp_path) -> None:
     assert _probe_complexity_gate(tmp_path).verdict is Verdict.SATISFIED
 
 
+# ─── Verdict paths branch coverage found unexercised ─────────────────────────
+#
+# Enabling `branch = true` showed twenty partial branches in this module — every
+# one a probe verdict that had never been produced in a test. An unexercised
+# verdict path is the worst kind to leave: it is reached only in someone else's
+# repository, where a wrong answer is indistinguishable from a right one.
+
+
+def test_s142_is_unknown_in_a_repository_with_no_commits(tmp_path) -> None:
+    import subprocess as sp
+
+    from governova_evidence import Verdict, _probe_purposeful_commits
+
+    sp.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    assert _probe_purposeful_commits(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s174_accepts_the_eslint_import_order_rule(tmp_path) -> None:
+    """The JavaScript half of S1.74, which had never run."""
+    from governova_evidence import Verdict, _probe_import_order_automated
+
+    (tmp_path / "app.ts").write_text("import x from 'y';\n", encoding="utf-8")
+    (tmp_path / ".eslintrc.json").write_text(
+        '{"rules": {"import/order": "error"}}', encoding="utf-8"
+    )
+    result = _probe_import_order_automated(tmp_path)
+    assert result.verdict is Verdict.SATISFIED
+    assert "import/order" in result.evidence
+
+
+def test_s886_a_register_with_no_readable_table_is_unknown(tmp_path) -> None:
+    """Prose about vendors is not a register, and it is not a violation either."""
+    from governova_evidence import Verdict, _probe_vendor_register
+
+    (tmp_path / "governance").mkdir()
+    (tmp_path / "governance" / "vendors.md").write_text(
+        "We use a few services. Exit plans are discussed quarterly.\n", encoding="utf-8"
+    )
+    assert _probe_vendor_register(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s75_is_unknown_when_test_files_hold_no_test_functions(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_test_names_describe_behaviour
+
+    (tmp_path / "test_helpers.py").write_text("HELPERS = {}\n", encoding="utf-8")
+    assert _probe_test_names_describe_behaviour(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s728_accepts_a_javascript_branch_threshold(tmp_path) -> None:
+    """The JavaScript half of S7.28, which had never run."""
+    from governova_evidence import Verdict, _probe_branch_coverage
+
+    (tmp_path / "package.json").write_text(
+        '{"jest": {"coverageThreshold": {"global": {"branches": 80}}}}', encoding="utf-8"
+    )
+    assert _probe_branch_coverage(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s720_an_interface_with_no_ci_at_all_is_a_violation(tmp_path) -> None:
+    """Distinct from "CI exists and has no gate" — same verdict, different reason."""
+    from governova_evidence import Verdict, _probe_accessibility_gate
+
+    (tmp_path / "index.html").write_text("<h1>hi</h1>\n", encoding="utf-8")
+    result = _probe_accessibility_gate(tmp_path)
+    assert result.verdict is Verdict.VIOLATED
+    assert "no CI at all" in result.evidence
+
+
+def test_s136_accepts_an_eslint_complexity_rule(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_complexity_gate
+
+    (tmp_path / ".eslintrc.json").write_text(
+        '{"rules": {"complexity": ["error", 10]}}', encoding="utf-8"
+    )
+    assert _probe_complexity_gate(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s136_accepts_a_complexity_tool_running_in_ci(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_complexity_gate
+
+    _workflow(tmp_path, "on: push\njobs:\n  t:\n    steps:\n      - run: radon cc -n C src/\n")
+    assert _probe_complexity_gate(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s127_compares_models_against_the_contracts_they_describe(tmp_path) -> None:
+    """The whole body of this probe had never been reached.
+
+    Governova carries no model artifacts, so every run of it returned UNKNOWN at
+    the first line and the comparison below it was never executed once.
+    """
+    import subprocess as sp
+
+    from governova_evidence import Verdict, _probe_models_track_contracts
+
+    sp.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    sp.run(["git", "config", "user.email", "t@example.com"], cwd=tmp_path, check=True)
+    sp.run(["git", "config", "user.name", "T"], cwd=tmp_path, check=True)
+
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    (docs / "context.mmd").write_text("graph TD\n  A-->B\n", encoding="utf-8")
+    (tmp_path / "openapi.yaml").write_text("openapi: 3.1.0\n", encoding="utf-8")
+    sp.run(["git", "add", "-A"], cwd=tmp_path, check=True)
+    sp.run(["git", "commit", "-q", "-m", "feat: model and contract together"], cwd=tmp_path, check=True)
+
+    verdict = _probe_models_track_contracts(tmp_path).verdict
+    assert verdict in {Verdict.SATISFIED, Verdict.VIOLATED, Verdict.UNKNOWN}
+    # The point is that the comparison ran at all rather than short-circuiting.
+    assert _probe_models_track_contracts(tmp_path).evidence != "no model artifacts to compare against"
+
+
 def test_every_probe_binds_a_standard_that_exists() -> None:
     """A probe citing a non-existent standard is as ungrounded as a stray rule."""
     root = resolve_repo_root()

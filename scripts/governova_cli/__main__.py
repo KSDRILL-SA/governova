@@ -407,6 +407,43 @@ def report(
 
 
 @app.command()
+def config(
+    strict: Annotated[
+        bool, typer.Option("--strict", help="Exit non-zero when anything cannot be used.")
+    ] = False,
+) -> None:
+    """Show how the environment resolved, and everything in it that cannot be used.
+
+    S1.68 asks for validation at startup rather than at the point of use. Every
+    variable here previously fell back in silence: a timeout that was not a
+    number became 30, a misspelled variable name became nothing at all, and
+    neither said so.
+
+    An empty environment is the supported configuration, not a finding — the
+    deterministic engine runs with none of these set (`ADR-010` §5.1).
+    """
+    from governova_settings import inspect_env, resolved
+
+    table = Table("Variable", "Value", box=None, pad_edge=False)
+    for setting in resolved():
+        style = "" if setting.set else "dim"
+        table.add_row(setting.variable, f"[{style}]{setting.shown}[/]" if style else setting.shown)
+    console.print(table)
+
+    problems = inspect_env()
+    if not problems:
+        console.print("\n[green]configuration OK[/] — nothing supplied that cannot be used.")
+        return
+
+    console.print(f"\n[yellow]{len(problems)} problem(s):[/]")
+    for problem in problems:
+        console.print(f"  [yellow]•[/] [bold]{problem.variable}[/] — {problem.detail}")
+
+    if strict:
+        raise typer.Exit(code=1)
+
+
+@app.command()
 def notify(
     base: Annotated[str, typer.Option("--base", help="Git ref to diff against.")] = "origin/main",
     repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,

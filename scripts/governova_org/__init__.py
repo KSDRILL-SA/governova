@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import dataclasses
 import datetime as dt
+from collections.abc import Iterable, Iterator
 from enum import StrEnum
 from typing import Protocol, runtime_checkable
 
@@ -109,30 +110,67 @@ class SoftDeletable(Protocol):
     def deleted_at(self) -> dt.datetime | None: ...
 
 
-def active[T: SoftDeletable](records: list[T]) -> list[T]:
-    """Only the rows a query should see. `S5.22` — `deleted_at IS NULL`.
+@dataclasses.dataclass(frozen=True)
+class Active[T: SoftDeletable]:
+    """Records that have been filtered, in a type that cannot hold a deleted one.
 
-    A free function rather than something callers remember, because `S5.22`'s own
-    anti-pattern is a query that forgot the filter: the deleted record reappears
-    in whichever query forgot, and only in that one.
+    `S5.22`'s own anti-pattern is a query that forgot `deleted_at IS NULL` — the
+    deleted record reappears in whichever query forgot, and only in that one. A
+    free `active()` helper does not prevent that: it relies on every caller
+    remembering to call it, and the first version of this module proved the point.
+    `assign_seat` and `change_role` both took a raw list, and both would happily
+    give a seat to a removed member or promote them to admin, because the only
+    thing standing between them and a deleted row was that somebody had thought
+    to filter.
 
-    Bound to a protocol rather than to a list of models on purpose. The first
-    version named the three types that existed, and adding a fourth — the team
-    bridge — made it a type error to filter the new model with the shared filter,
-    which is precisely the shape of mistake that ends in somebody writing the
-    comparison inline and omitting it somewhere.
+    So the filter is carried by the **type**. A function that must not see
+    deleted rows asks for `Active[Membership]`, and a raw list will not type-check
+    where one is wanted. `__post_init__` then makes it true rather than merely
+    conventional: an `Active` containing a deleted record cannot be constructed
+    at all, including by a caller who bypasses `active()` and builds one directly.
+
+    This is the same choice as the composite foreign key one layer down. A rule
+    the system cannot break beats a rule everybody is asked to remember.
     """
-    return [record for record in records if record.deleted_at is None]
+
+    records: tuple[T, ...]
+
+    def __post_init__(self) -> None:
+        deleted = [r for r in self.records if r.deleted_at is not None]
+        if deleted:
+            raise OrgRuleError(
+                f"{len(deleted)} deleted record(s) were put into an Active set. "
+                "Build one with `active()`, which filters; constructing it "
+                "directly is only for records already known to be live."
+            )
+
+    def __iter__(self) -> Iterator[T]:
+        return iter(self.records)
+
+    def __len__(self) -> int:
+        return len(self.records)
+
+    def __contains__(self, record: object) -> bool:
+        return record in self.records
 
 
-def seats_in_use(memberships: list[Membership]) -> int:
+def active[T: SoftDeletable](records: Iterable[T]) -> Active[T]:
+    """The only way to get an `Active` from records of unknown state.
+
+    `S5.22` — `deleted_at IS NULL`, applied once, in the one place that is easy
+    to find and impossible to skip on the way to a function that needs it.
+    """
+    return Active(tuple(record for record in records if record.deleted_at is None))
+
+
+def seats_in_use(memberships: Active[Membership]) -> int:
     """How many seats an organisation is currently paying for."""
     return sum(1 for m in memberships if m.occupies_a_seat)
 
 
 def assign_seat(
     organisation: Organisation,
-    memberships: list[Membership],
+    memberships: Active[Membership],
     membership_id: str,
     *,
     now: dt.datetime | None = None,
@@ -156,13 +194,13 @@ def assign_seat(
     return dataclasses.replace(target, seat_assigned_at=now or dt.datetime.now(dt.UTC))
 
 
-def release_seat(memberships: list[Membership], membership_id: str) -> Membership:
+def release_seat(memberships: Active[Membership], membership_id: str) -> Membership:
     """Take a seat back. Idempotent — releasing an empty seat is not an error."""
     return dataclasses.replace(_member(memberships, membership_id), seat_assigned_at=None)
 
 
 def change_role(
-    memberships: list[Membership], membership_id: str, role: MemberRole
+    memberships: Active[Membership], membership_id: str, role: MemberRole
 ) -> Membership:
     """Change a member's role, unless it would leave nobody in charge.
 
@@ -176,9 +214,7 @@ def change_role(
         return dataclasses.replace(target, role=role)
 
     other_owners = [
-        m
-        for m in active(memberships)
-        if m.role is MemberRole.OWNER and m.id != membership_id
+        m for m in memberships if m.role is MemberRole.OWNER and m.id != membership_id
     ]
     if not other_owners:
         raise OrgRuleError(
@@ -189,7 +225,9 @@ def change_role(
     return dataclasses.replace(target, role=role)
 
 
-def remove_member(memberships: list[Membership], membership_id: str, *, now: dt.datetime | None = None) -> Membership:
+def remove_member(
+    memberships: Active[Membership], membership_id: str, *, now: dt.datetime | None = None
+) -> Membership:
     """Soft-delete a membership, subject to the same last-owner rule.
 
     Soft rather than hard (`S5.8`): a hard delete is irreversible and takes the
@@ -198,7 +236,7 @@ def remove_member(memberships: list[Membership], membership_id: str, *, now: dt.
     target = _member(memberships, membership_id)
     if target.role is MemberRole.OWNER:
         other_owners = [
-            m for m in active(memberships) if m.role is MemberRole.OWNER and m.id != membership_id
+            m for m in memberships if m.role is MemberRole.OWNER and m.id != membership_id
         ]
         if not other_owners:
             raise OrgRuleError(
@@ -257,23 +295,25 @@ def add_to_team(team: Team, membership: Membership, *, identifier: str = "") -> 
 # returning 40 beside these returning 10 and 4.
 
 
-def members_of(organisation: Organisation, memberships: list[Membership]) -> list[Membership]:
-    """Active memberships of one organisation. Never joined through teams."""
-    return [
-        m
-        for m in active(memberships)
-        if m.organisation_id == organisation.id
-    ]
+def members_of(
+    organisation: Organisation, memberships: Iterable[Membership]
+) -> Active[Membership]:
+    """Active memberships of one organisation. Never joined through teams.
+
+    Takes raw records and returns an `Active` — this is one of the boundaries
+    where unfiltered rows arrive from storage and stop being unfiltered.
+    """
+    return active(m for m in memberships if m.organisation_id == organisation.id)
 
 
-def teams_of(organisation: Organisation, teams: list[Team]) -> list[Team]:
+def teams_of(organisation: Organisation, teams: Iterable[Team]) -> Active[Team]:
     """Active teams of one organisation. Never joined through memberships."""
-    return [t for t in active(teams) if t.organisation_id == organisation.id]
+    return active(t for t in teams if t.organisation_id == organisation.id)
 
 
 def members_of_team(
-    team: Team, links: list[TeamMembership], memberships: list[Membership]
-) -> list[Membership]:
+    team: Team, links: Iterable[TeamMembership], memberships: Iterable[Membership]
+) -> Active[Membership]:
     """Members on one team, by the path that does not fan.
 
     `Team → TeamMembership → Membership` is the real relationship. Reaching the
@@ -281,15 +321,11 @@ def members_of_team(
     wrong: it would return every member of the organisation rather than every
     member of the team.
     """
-    on_team = {
-        link.membership_id
-        for link in active(links)
-        if link.team_id == team.id
-    }
-    return [m for m in active(memberships) if m.id in on_team]
+    on_team = {link.membership_id for link in active(links) if link.team_id == team.id}
+    return active(m for m in memberships if m.id in on_team)
 
 
-def _member(memberships: list[Membership], membership_id: str) -> Membership:
+def _member(memberships: Active[Membership], membership_id: str) -> Membership:
     for membership in memberships:
         if membership.id == membership_id:
             return membership

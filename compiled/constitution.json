@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-08-21T00:31:02.447342Z",
-  "source_commit_sha": "bcb7458",
-  "checksum": "sha256:1cb68ae50fce3f76a70869290091003fd3606ced5f4a04df73d3c5c7d9adf00f",
+  "compiled_at": "2026-08-21T12:06:31.382626Z",
+  "source_commit_sha": "2733ffc",
+  "checksum": "sha256:0035a1499bb4e4d762f744d67ad57bda3ed19945cf5470ad4de2a81c888ae17a",
   "framework": [
     {
       "id": "format-specification",
@@ -26017,6 +26017,12 @@
       "name": "The corpus is the product: licence, price ladder, and the gates that unlock each tier",
       "status": "ACCEPTED",
       "path": "governance/decisions/ADR-011-corpus-licence-and-pricing.md"
+    },
+    {
+      "id": "ADR-012",
+      "name": "A score drawn from one factor is not a score, and a count is not a rate",
+      "status": "ACCEPTED",
+      "path": "governance/decisions/ADR-012-partial-assessment-and-violation-density.md"
     }
   ],
   "hierarchy": [

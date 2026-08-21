@@ -289,6 +289,9 @@ The ability to approve irreversible or high-consequence decisions must rest with
 > - `AP-S10.11a` — Auth/security architecture decided without Founder L4 approval — the clarity of a recommendation is not evidence for it, and a security decision taken without an accountable human is unowned at exactly the point where ownership matters most.
 
 > **S10.12** — Database schema changes are always L4 — schema changes require human review of the migration, the rollback plan, and the backward compatibility assessment (S5.59–S5.64).
+>
+> **Anti-Patterns:**
+> - `AP-S10.12a` — A schema change taken at a lower authority level — the migration, the rollback plan and the backward-compatibility assessment are approved by whoever wrote them, and the one review that could have caught an irreversible change never happens.
 
 > **S10.13** — AI recommendations that contradict a constitutional standard are flagged, not silently complied with. The AI states: "This recommendation conflicts with `S3.14` (access token in Angular memory). Following the recommendation would require a constitutional amendment per C0 §8."
 >
@@ -296,6 +299,9 @@ The ability to approve irreversible or high-consequence decisions must rest with
 > - `AP-S10.13a` — AI silently complies with a constitutional violation instead of flagging it — compliance without objection is indistinguishable from the standard having been checked and found satisfied, which is the one failure a governance layer must never produce.
 
 > **S10.14** — When AI detects a potential constitutional violation in existing code, it flags the violation and the violated standard — it does not silently work around the violation by generating compliant wrappers that obscure the underlying problem.
+>
+> **Anti-Patterns:**
+> - `AP-S10.14a` — A detected violation worked around by a compliant wrapper — the wrapper passes review, the original defect is now harder to find than before it was noticed, and the standard reads as satisfied.
 
 ---
 
@@ -349,14 +355,29 @@ The design phase follows this three-step sequence before any code is written:
 ### S10.16–S10.20 — Additional Design Phase Standards
 
 > **S10.16** — The design session document (Claude's proposal, Devil's Advocate's challenge, and human resolution) is saved to a `decisions/` folder in the project or as a GitHub Issue comment. Design decisions are not ephemeral chat — they are documented decisions.
+>
+> **Anti-Patterns:**
+> - `AP-S10.16a` — A design session left in chat — the challenge, the resolution and the reasoning are unrecoverable a week later, so the same design is re-argued from the beginning by whoever inherits it.
 
 > **S10.17** — Constitutional gaps identified during design (a situation not covered by any existing standard) are documented as constitutional amendment proposals following C0 §8, not solved by improvisation.
+>
+> **Anti-Patterns:**
+> - `AP-S10.17a` — A gap in the standards solved by improvisation — the improvisation becomes precedent without ever being reviewed, and the corpus grows a rule nobody voted for.
 
 > **S10.18** — When AI proposes a design that requires a stack deviation, it must immediately flag the constitutional amendment required: "This proposal would require an amendment to `S4.1` (framework assignment) per C0 §8."
+>
+> **Anti-Patterns:**
+> - `AP-S10.18a` — A proposal that needs a deviation presented without naming the amendment it requires — the deviation is approved as a design decision, and the standard it breaks is discovered only when a check fires against it.
 
 > **S10.19** — AI-generated architecture diagrams, data flow descriptions, and system topology descriptions are treated as proposals (L1) — never as approved designs until a human confirms them.
+>
+> **Anti-Patterns:**
+> - `AP-S10.19a` — A generated diagram treated as an approved design — the build proceeds against a topology no human confirmed, and the first review of it is the incident.
 
 > **S10.20** — The design phase is not skipped for "small" features. A feature that touches authentication, database schema, or the API contract is not small — it requires the full design phase protocol.
+>
+> **Anti-Patterns:**
+> - `AP-S10.20a` — The design phase skipped because a feature looked small — a change touching authentication, schema or the API contract goes straight to build, and the size judgement is what turns out to be wrong.
 
 ---
 
@@ -441,12 +462,24 @@ given its stack and current build phase.
 ### S10.23–S10.26 — Additional Build Phase Standards
 
 > **S10.23** — `CONSTITUTION-INDEX.md` is updated at the start of every sprint with the current sprint goal, active feature, and active feature group. A stale index from a previous sprint is equivalent to no index.
+>
+> **Anti-Patterns:**
+> - `AP-S10.23a` — A stale sprint index carried forward — it names last sprint's goal and last sprint's active feature, which is worse than no index because it is followed with confidence.
 
 > **S10.24** — The builder AI (Cursor) explicitly acknowledges `CONSTITUTION-INDEX.md` at the start of the session. If Cursor does not acknowledge it, the file was not loaded correctly — reload and verify before proceeding.
+>
+> **Anti-Patterns:**
+> - `AP-S10.24a` — A session started without confirming the index loaded — the assistant works from whatever it last held, and the mismatch is invisible until output arrives against the wrong sprint.
 
 > **S10.25** — Code generated by the builder AI is reviewed by the human for constitutional compliance before committing. The layer build order (S4.79) ensures each commit is reviewable at the layer level.
+>
+> **Anti-Patterns:**
+> - `AP-S10.25a` — Generated code committed without a compliance review — the layer build order exists precisely so each commit is reviewable, and skipping the review discards the only benefit that ordering buys.
 
 > **S10.26** — Build sessions that run longer than 4 hours without a commit should reset context: commit what is working, reload `CONSTITUTION-INDEX.md`, and start a fresh session. Context window degradation over long sessions produces lower-quality, less constitutionally aligned output.
+>
+> **Anti-Patterns:**
+> - `AP-S10.26a` — A build session run for hours with no commit — context degrades across the session, so the least aligned output is produced at the end and lands in the same uncommitted pile as the good work.
 
 ---
 
@@ -483,26 +516,53 @@ Code review by another person exists because the author of the code has blind sp
 ### S10.28–S10.32 — Additional Solo Mode Standards
 
 > **S10.28** — AI as proposal reviewer: feature proposals (S1.27) in solo mode are reviewed by Claude using adversarial review (S10.3) before self-approval. The review is documented in the GitHub Issue for the feature.
+>
+> **Anti-Patterns:**
+> - `AP-S10.28a` — A solo-mode proposal self-approved with no adversarial review — the only check on a single author's reasoning is that author, and the proposal that most needed challenging is the one nobody challenged.
 
 > **S10.29** — AI as standup accountability: at the start of every session, the dev log from the previous session is presented to Claude: "Review this dev log. What blockers were identified? What was the plan? Has the plan been followed?" This replaces the team standup accountability mechanism.
+>
+> **Anti-Patterns:**
+> - `AP-S10.29a` — A session started without reviewing the previous dev log — the blockers recorded last time are rediscovered rather than resolved, and the plan drifts with nothing reporting the drift.
 
 > **S10.30** — AI as SEV classifier in incident response: when a production issue is detected, Claude is given the symptom description and asked to classify the severity and suggest the runbook. Claude suggests — the human classifies and acts.
+>
+> **Anti-Patterns:**
+> - `AP-S10.30a` — A severity assigned without a human confirming it — the classification determines the response, so a wrong one routes a live incident to the wrong runbook at the moment speed matters most.
 
 > **S10.31** — AI as constitutional amendment evaluator: before the 24-hour personal review period (C0 §8.2), Claude reviews the proposed amendment for unintended consequences and cross-constitution conflicts. Claude's output is documented in the amendment GitHub Issue.
+>
+> **Anti-Patterns:**
+> - `AP-S10.31a` — An amendment entering its review period without a conflict evaluation — cross-constitution contradictions are ratified into law, and the corpus now says two incompatible things with equal authority.
 
 > **S10.32** — AI output in solo mode is documented, not ephemeral. Review sessions, proposal adversarial reviews, and amendment evaluations are documented in GitHub Issues or dev log entries. Undocumented AI interactions provide no audit trail and no knowledge transfer.
+>
+> **Anti-Patterns:**
+> - `AP-S10.32a` — A review session left undocumented — the reasoning cannot be cited in a later dispute and cannot be handed to anyone, so the work produced value once and none of it compounds.
 
 ---
 
 ## Part 6 — Team AI Governance (`S10.33`–`S10.36`)
 
 > **S10.33** — In team mode, AI recommendations require a human to evaluate and cite the standard basis before the recommendation is actioned. "Claude said to do this" is never sufficient justification in a team PR review.
+>
+> **Anti-Patterns:**
+> - `AP-S10.33a` — A recommendation actioned without a human citing the standard behind it — the justification is the source rather than the reasoning, and the pull request records no basis anyone can check.
 
 > **S10.34** — AI code review sessions (S10.27) are additive in team mode — they supplement human review, not replace it. The 2-approval rule (S1.30) remains a 2-human-approval rule. AI review is a third review, not a substitute.
+>
+> **Anti-Patterns:**
+> - `AP-S10.34a` — A review session counted toward the two-approval rule — the number of approvals is unchanged on paper and reduced by one in fact, which is the precise failure the rule exists to prevent.
 
 > **S10.35** — Team members using AI tools document which AI tools were used in significant design decisions in the PR description. This enables the team to evaluate whether the constitutional AI workflow was followed.
+>
+> **Anti-Patterns:**
+> - `AP-S10.35a` — Tooling used in a significant design decision left out of the pull request description — the team cannot assess whether the workflow was followed, because the record does not say what was involved.
 
 > **S10.36** — AI tools are not given access to production credentials, production database connections, or production Railway/Vercel dashboards. AI operates on code and design — not on live production systems.
+>
+> **Anti-Patterns:**
+> - `AP-S10.36a` — Production credentials, database connections or deployment dashboards exposed to tooling — a system scoped to code and design acquires the ability to act on live infrastructure, and no control anywhere assumes it can.
 
 ---
 

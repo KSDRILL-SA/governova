@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
-  "compiled_at": "2026-08-20T23:47:30.035605Z",
-  "source_commit_sha": "0ba23a0",
-  "checksum": "sha256:c0f5b7ed5d7be81a392b8da4a0856122ded857f374b5b506934cccda91bdc2b2",
+  "compiled_at": "2026-08-21T00:12:35.871369Z",
+  "source_commit_sha": "e1de458",
+  "checksum": "sha256:82262c0dcbcab4d66d42955a2a73483eb9a995bedc38f5fcc2de84f3c853df22",
   "framework": [
     {
       "id": "format-specification",
@@ -14386,7 +14386,13 @@
           "enforced_by": [],
           "statement": "ADR status values: `proposed` (under review), `accepted` (locked), `superseded` (replaced by newer ADR with reference), `deprecated` (decision no longer applies). An ADR is never deleted — it is superseded or deprecated.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.9a",
+              "description": "An ADR deleted once its decision stopped applying — the record of what was tried and why it was abandoned goes with it, and the next engineer re-proposes the rejected option as though it were new.",
+              "parent_standard_id": "S6.9"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
@@ -14405,12 +14411,18 @@
           "enforced_by": [],
           "statement": "ADR template fields: Title, Date, Status, Context (the forces at play), Decision (what was decided and why), Consequences (what becomes easier and harder), Alternatives Considered (options evaluated and why rejected). All fields are required.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.10a",
+              "description": "An ADR that records the decision without the alternatives or the consequences — it reads as an announcement rather than a reasoning, so a later reader cannot tell whether the forces that produced it still hold.",
+              "parent_standard_id": "S6.10"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 237
+          "source_line": 240
         },
         {
           "id": "S6.11",
@@ -14424,12 +14436,18 @@
           "enforced_by": [],
           "statement": "Approved constitutional deviations are documented in both the ADR and the system context file — the deviation is visible to AI assistants reading the context file before build sessions.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.11a",
+              "description": "An approved deviation recorded only in the ADR — the context file an assistant reads before a build session still describes the unamended rule, so the deviation is re-implemented as a violation.",
+              "parent_standard_id": "S6.11"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 239
+          "source_line": 245
         },
         {
           "id": "S6.12",
@@ -14482,7 +14500,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 249
+          "source_line": 258
         },
         {
           "id": "S6.13",
@@ -14535,7 +14553,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 286
+          "source_line": 295
         },
         {
           "id": "S6.14",
@@ -14581,7 +14599,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 323
+          "source_line": 332
         },
         {
           "id": "S6.15",
@@ -14595,12 +14613,18 @@
           "enforced_by": [],
           "statement": "Each system has exactly one primary API gateway. Next.js systems: `/api/v1/` routes. Angular systems: FastAPI at the Railway internal URL. No secondary API surfaces.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.15a",
+              "description": "A second API surface added beside the primary gateway — authentication, rate limiting and logging now have two implementations, and the one nobody remembers is the one that is unprotected.",
+              "parent_standard_id": "S6.15"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 349
+          "source_line": 358
         },
         {
           "id": "S6.16",
@@ -14614,12 +14638,18 @@
           "enforced_by": [],
           "statement": "Both stacks use the same BullMQ + Redis pattern for background jobs — Next.js uses Vercel cron for simple jobs, BullMQ for queue-based workflows. Angular+FastAPI uses Railway Redis with BullMQ for all scheduled and queued operations.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.16a",
+              "description": "Background jobs implemented per-service in whatever the author reached for — retries, dead-letter handling and visibility differ per queue, so an operator debugging a stuck job must first discover which mechanism they are looking at.",
+              "parent_standard_id": "S6.16"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 351
+          "source_line": 363
         },
         {
           "id": "S6.17",
@@ -14633,12 +14663,18 @@
           "enforced_by": [],
           "statement": "Internal service-to-service calls (within the Angular stack: FastAPI to ChromaDB, FastAPI to MongoDB) use Railway internal networking — never public internet routing for internal traffic.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.17a",
+              "description": "Internal service-to-service traffic routed over the public internet — latency and egress cost are paid on every hop, and traffic that was never meant to leave the platform is exposed to it.",
+              "parent_standard_id": "S6.17"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 353
+          "source_line": 368
         },
         {
           "id": "S6.18",
@@ -14692,7 +14728,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 363
+          "source_line": 381
         },
         {
           "id": "S6.19",
@@ -14746,7 +14782,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 401
+          "source_line": 419
         },
         {
           "id": "S6.20",
@@ -14760,7 +14796,13 @@
           "enforced_by": [],
           "statement": "The `X-Request-ID` header is generated by the interceptor (Angular) or Next.js middleware for every request. FastAPI includes it in the structured log entry. Sentry captures it in the frontend error context. This enables full cross-system request tracing (S2.60).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.20a",
+              "description": "A request that carries no `X-Request-ID` — the frontend error and the backend log entry that explains it cannot be joined, so each is diagnosed alone and neither is conclusive.",
+              "parent_standard_id": "S6.20"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S2.60",
@@ -14770,7 +14812,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 443
+          "source_line": 461
         },
         {
           "id": "S6.21",
@@ -14784,7 +14826,13 @@
           "enforced_by": [],
           "statement": "Error responses in both stacks use the standard error shape defined in S2.19 — `{ success: false, error: { code, message, details? } }`.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.21a",
+              "description": "An error response in an ad-hoc shape — every client must special-case that one endpoint, and generic error handling silently reports the failure as a success with missing fields.",
+              "parent_standard_id": "S6.21"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S2.19",
@@ -14794,7 +14842,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 445
+          "source_line": 466
         },
         {
           "id": "S6.22",
@@ -14808,7 +14856,13 @@
           "enforced_by": [],
           "statement": "API versioning: `/api/v1/` prefix on all routes. When v2 is introduced per S2.76–S2.80, v1 remains live. No request routing changes in the frontend during v1/v2 coexistence.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.22a",
+              "description": "Routes served without the `/api/v1/` prefix — a second version can never be introduced beside the first, so the only path to a breaking change is one that breaks live clients.",
+              "parent_standard_id": "S6.22"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S2.76",
@@ -14822,7 +14876,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 447
+          "source_line": 471
         },
         {
           "id": "S6.23",
@@ -14836,7 +14890,13 @@
           "enforced_by": [],
           "statement": "Health check endpoints at `/api/health` (Next.js) and `/health` (FastAPI) return 200 with database connectivity status. These are the endpoints monitored by Better Stack (S8.10).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.23a",
+              "description": "A health endpoint that returns 200 without checking database connectivity — the monitor reports the service healthy while every request that touches data fails.",
+              "parent_standard_id": "S6.23"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S8.10",
@@ -14846,7 +14906,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 449
+          "source_line": 476
         },
         {
           "id": "S6.24",
@@ -14860,12 +14920,18 @@
           "enforced_by": [],
           "statement": "WebSocket connections (SyncUp real-time features, Reserve Bank live balance) are managed as separate connection types — they do not go through the standard REST request flow.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.24a",
+              "description": "A WebSocket forced through the standard REST request flow — middleware written for short-lived requests runs against a long-lived connection, and the mismatch surfaces as connections dropped for reasons no log explains.",
+              "parent_standard_id": "S6.24"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 451
+          "source_line": 481
         },
         {
           "id": "S6.25",
@@ -14884,7 +14950,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 461
+          "source_line": 494
         },
         {
           "id": "S6.26",
@@ -14898,12 +14964,18 @@
           "enforced_by": [],
           "statement": "Future cross-system data sharing uses a shared PostgreSQL read replica or an explicit integration API with its own ADR — never direct service-to-service HTTP calls between stacks.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.26a",
+              "description": "Cross-system data shared by direct service-to-service HTTP between stacks — the two systems are coupled with no ADR recording it, and an outage in one becomes an outage in both.",
+              "parent_standard_id": "S6.26"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 469
+          "source_line": 502
         },
         {
           "id": "S6.27",
@@ -14917,12 +14989,18 @@
           "enforced_by": [],
           "statement": "Shared authentication between stacks (a user authenticated in Next.js accessing an Angular system) is not supported in v1. Each system has its own independent auth. Cross-system SSO is a future ADR decision.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.27a",
+              "description": "Cross-stack SSO implemented in v1 without an ADR — a session model neither system was designed for is introduced quietly, and the security boundary between two independent systems stops being a boundary.",
+              "parent_standard_id": "S6.27"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 471
+          "source_line": 507
         },
         {
           "id": "S6.28",
@@ -14936,12 +15014,18 @@
           "enforced_by": [],
           "statement": "If business logic requires data from both stacks simultaneously, the feature design is incorrect — re-evaluate the feature boundaries per C9 feature governance before implementing.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.28a",
+              "description": "A feature built to read from both stacks at once — the boundary error is fixed by adding coupling rather than by correcting the design, so every later feature inherits the mistake.",
+              "parent_standard_id": "S6.28"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 473
+          "source_line": 512
         },
         {
           "id": "S6.29",
@@ -14982,7 +15066,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 481
+          "source_line": 523
         },
         {
           "id": "S6.30",
@@ -14996,7 +15080,13 @@
           "enforced_by": [],
           "statement": "Database migration runs before service start on every deployment (S5.59) — this applies to both stacks.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.30a",
+              "description": "A service started before its migration completes — writes land against the old schema during the window, and the corruption is written by the healthy new version rather than by the deploy.",
+              "parent_standard_id": "S6.30"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S5.59",
@@ -15006,7 +15096,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 504
+          "source_line": 546
         },
         {
           "id": "S6.31",
@@ -15020,12 +15110,18 @@
           "enforced_by": [],
           "statement": "Preview deployments for Angular stack PRs that change the API update the Railway staging environment — the Angular preview deployment is tested against the staged FastAPI, not against production.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.31a",
+              "description": "An Angular preview deployment pointed at production FastAPI — a pull request under review issues writes against real data, and the review environment becomes an unreviewed production client.",
+              "parent_standard_id": "S6.31"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 506
+          "source_line": 551
         },
         {
           "id": "S6.32",
@@ -15039,12 +15135,18 @@
           "enforced_by": [],
           "statement": "Rollback procedure per stack: Next.js — Vercel one-click rollback to previous deployment. Angular — Vercel rollback for frontend + Railway redeploy previous build for FastAPI + migration rollback if schema changed. Per runbooks.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.32a",
+              "description": "A stack with no written rollback procedure — the recovery steps are worked out during the incident, which is the one moment when nobody has time to work them out.",
+              "parent_standard_id": "S6.32"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 508
+          "source_line": 556
         },
         {
           "id": "S6.33",
@@ -15058,12 +15160,18 @@
           "enforced_by": [],
           "statement": "Environment variable changes require coordination — an env var added to FastAPI that Angular reads must be deployed to both Railway Secrets and Vercel environment simultaneously.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.33a",
+              "description": "An environment variable deployed to one side only — the reader finds it absent and fails at runtime, in a way that reads as a code defect rather than a deploy that was half-applied.",
+              "parent_standard_id": "S6.33"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 510
+          "source_line": 561
         },
         {
           "id": "S6.34",
@@ -15082,7 +15190,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 520
+          "source_line": 574
         },
         {
           "id": "S6.35",
@@ -15101,7 +15209,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 540
+          "source_line": 594
         },
         {
           "id": "S6.36",
@@ -15115,12 +15223,18 @@
           "enforced_by": [],
           "statement": "New library additions require a PR comment explaining: why existing stack cannot solve the problem, bundle size impact, maintenance status, and constitutional compatibility. Libraries that introduce a second solution for a problem the locked stack already solves are rejected.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.36a",
+              "description": "A library added with no note on why the locked stack cannot solve the problem — the codebase acquires a second answer to a solved question, and both must be maintained forever.",
+              "parent_standard_id": "S6.36"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 565
+          "source_line": 619
         },
         {
           "id": "S6.37",
@@ -15134,12 +15248,18 @@
           "enforced_by": [],
           "statement": "Technology version upgrades are handled as a dedicated sprint task — not as part of a feature PR. Major version upgrades require an ADR.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.37a",
+              "description": "A version upgrade folded into a feature pull request — a regression cannot be attributed to the feature or the upgrade, so the revert takes both and the feature is lost with the bug.",
+              "parent_standard_id": "S6.37"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 567
+          "source_line": 624
         },
         {
           "id": "S6.38",
@@ -15153,12 +15273,18 @@
           "enforced_by": [],
           "statement": "The tech stack reference table in this section is updated on every version upgrade of a locked technology — the document is the source of truth for what version is in use.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S6.38a",
+              "description": "A version upgraded without updating the stack reference table — the document that claims to be the source of truth now disagrees with what is running, and nothing reports the divergence.",
+              "parent_standard_id": "S6.38"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 569
+          "source_line": 629
         },
         {
           "id": "S6.39",
@@ -15177,7 +15303,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 577
+          "source_line": 640
         },
         {
           "id": "S6.40",
@@ -15196,7 +15322,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 592
+          "source_line": 655
         },
         {
           "id": "S6.41",
@@ -15215,7 +15341,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 606
+          "source_line": 669
         },
         {
           "id": "S6.42",
@@ -15234,7 +15360,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 620
+          "source_line": 683
         },
         {
           "id": "S6.43",
@@ -15253,7 +15379,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 638
+          "source_line": 701
         },
         {
           "id": "S6.44",
@@ -15272,7 +15398,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 665
+          "source_line": 728
         },
         {
           "id": "S6.45",
@@ -15321,7 +15447,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-1-core-architecture/C06-fullstack-architecture-constitution.md",
-          "source_line": 687
+          "source_line": 750
         }
       ]
     },
@@ -16229,7 +16355,13 @@
           "enforced_by": [],
           "statement": "E2E tests run against preview deployments when available — not against localhost in CI. Preview deployment E2E validates the actual deployed artifact.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.22a",
+              "description": "End-to-end tests run against localhost in CI — they validate a build that was never deployed, so every fault introduced by the deployment itself passes the suite that exists to catch it.",
+              "parent_standard_id": "S7.22"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
@@ -16248,12 +16380,18 @@
           "enforced_by": [],
           "statement": "E2E test data is isolated per test run using unique identifiers (timestamp-based email addresses, test-specific user accounts) — tests never depend on pre-existing production data.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.23a",
+              "description": "Test data shared across runs — two runs collide on the same record, and the suite fails for a reason that has nothing to do with the change under test.",
+              "parent_standard_id": "S7.23"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 517
+          "source_line": 520
         },
         {
           "id": "S7.24",
@@ -16267,12 +16405,18 @@
           "enforced_by": [],
           "statement": "Playwright's `--reporter=html` generates a test report on every nightly run — stored as a CI artifact for 7 days.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.24a",
+              "description": "A nightly run that leaves no stored report — a failure seen in the morning cannot be inspected, and the only way to learn what broke is to reproduce it.",
+              "parent_standard_id": "S7.24"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 519
+          "source_line": 525
         },
         {
           "id": "S7.25",
@@ -16313,7 +16457,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 527
+          "source_line": 536
         },
         {
           "id": "S7.26",
@@ -16327,12 +16471,18 @@
           "enforced_by": [],
           "statement": "Coverage exclusions are explicit and documented: `/* istanbul ignore next */` requires a comment explaining why the code is intentionally uncovered. Blanket coverage exclusions are a code review block.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.26a",
+              "description": "A coverage exclusion added with no comment explaining it — the excluded code is indistinguishable from code nobody has reached yet, and the exclusion outlives the reason for it.",
+              "parent_standard_id": "S7.26"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 550
+          "source_line": 559
         },
         {
           "id": "S7.27",
@@ -16346,12 +16496,18 @@
           "enforced_by": [],
           "statement": "Coverage reports are generated as CI artifacts on every PR — reviewers can see which lines were added without test coverage.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.27a",
+              "description": "No coverage report published on the pull request — a reviewer cannot see which added lines are untested, so the question is answered by whether the author remembered to mention it.",
+              "parent_standard_id": "S7.27"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 552
+          "source_line": 564
         },
         {
           "id": "S7.28",
@@ -16365,12 +16521,18 @@
           "enforced_by": [],
           "statement": "Branch coverage is tracked alongside line coverage — a function that is called but whose error branches are never exercised has misleading line coverage.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.28a",
+              "description": "Line coverage tracked without branch coverage — a function called once reports as covered while none of its error branches has ever run, and the number reassures precisely where it should not.",
+              "parent_standard_id": "S7.28"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 554
+          "source_line": 569
         },
         {
           "id": "S7.29",
@@ -16384,12 +16546,18 @@
           "enforced_by": [],
           "statement": "Auth-related code has 100% branch coverage — the security implications make partial branch coverage unacceptable for authentication logic.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.29a",
+              "description": "Partial branch coverage accepted on authentication code — an unexercised branch in the one component whose failure is a breach is treated the same as an unexercised branch anywhere else.",
+              "parent_standard_id": "S7.29"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 556
+          "source_line": 574
         },
         {
           "id": "S7.30",
@@ -16403,12 +16571,18 @@
           "enforced_by": [],
           "statement": "Performance budget: CI fails if the bundle size increases by more than 10% from the previous baseline without an explicit justification comment in the PR.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.30a",
+              "description": "Bundle growth merged with no justification and no gate — each increase is defensible alone, no single change is responsible, and the regression is noticed only once it is large.",
+              "parent_standard_id": "S7.30"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 558
+          "source_line": 579
         },
         {
           "id": "S7.31",
@@ -16450,7 +16624,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 566
+          "source_line": 590
         },
         {
           "id": "S7.32",
@@ -16495,7 +16669,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 587
+          "source_line": 611
         },
         {
           "id": "S7.33",
@@ -16509,12 +16683,18 @@
           "enforced_by": [],
           "statement": "Pydantic models are unit-tested with valid input, invalid input (expecting ValidationError), and edge cases — Pydantic validation is business logic.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.33a",
+              "description": "A validation model tested only against valid input — the rejection path is the entire reason the model exists, and it is the path with no test.",
+              "parent_standard_id": "S7.33"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 610
+          "source_line": 634
         },
         {
           "id": "S7.34",
@@ -16528,12 +16708,18 @@
           "enforced_by": [],
           "statement": "pytest fixtures provide test data — no hardcoded test data in test functions. Fixtures are defined in `conftest.py` and scope-labeled (`function`, `session`).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.34a",
+              "description": "Test data hardcoded inside test functions — the same setup is duplicated and drifts, so two tests that claim to describe the same case quietly stop doing so.",
+              "parent_standard_id": "S7.34"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 612
+          "source_line": 639
         },
         {
           "id": "S7.35",
@@ -16547,12 +16733,18 @@
           "enforced_by": [],
           "statement": "FastAPI dependency overrides (`app.dependency_overrides`) are used to inject test dependencies (mock auth, test database) — not monkey-patching.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.35a",
+              "description": "Dependencies swapped by monkey-patching rather than through the framework's override mechanism — the patch leaks between tests, and the failure appears in whichever test happens to run next.",
+              "parent_standard_id": "S7.35"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 614
+          "source_line": 644
         },
         {
           "id": "S7.36",
@@ -16566,12 +16758,18 @@
           "enforced_by": [],
           "statement": "Async pytest tests use `@pytest.mark.asyncio` and the asyncio event loop fixture — never mix sync and async test functions in the same test file.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.36a",
+              "description": "Synchronous and asynchronous tests mixed in one file without the event loop fixture — tests pass or fail according to collection order, which is the hardest failure mode to attribute to anything.",
+              "parent_standard_id": "S7.36"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 616
+          "source_line": 649
         },
         {
           "id": "S7.37",
@@ -16585,12 +16783,18 @@
           "enforced_by": [],
           "statement": "LangChain pipeline tests use fixtures with pre-computed embeddings — never call the actual embedding model in unit tests (cost and latency).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.37a",
+              "description": "A unit test that calls the real embedding model — the suite is billed and slowed on every run, and a network fault is reported as a test failure.",
+              "parent_standard_id": "S7.37"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 618
+          "source_line": 654
         },
         {
           "id": "S7.38",
@@ -16615,7 +16819,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 620
+          "source_line": 659
         },
         {
           "id": "S7.39",
@@ -16661,7 +16865,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 631
+          "source_line": 670
         },
         {
           "id": "S7.40",
@@ -16675,12 +16879,18 @@
           "enforced_by": [],
           "statement": "Each integration test runs inside a database transaction that rolls back after the test completes — the database is in a clean state for every test without truncating tables.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.40a",
+              "description": "An integration test that commits its writes — the next test sees data it never created, so the suite passes in one order and fails in another with no change to the code.",
+              "parent_standard_id": "S7.40"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 654
+          "source_line": 693
         },
         {
           "id": "S7.41",
@@ -16694,12 +16904,18 @@
           "enforced_by": [],
           "statement": "Prisma migrations are applied to the test database before the test suite runs — `prisma migrate deploy` is part of the CI test setup script.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.41a",
+              "description": "A test suite run against a database whose migrations were never applied — the failures describe a schema that exists nowhere, and the time goes into diagnosing the environment rather than the change.",
+              "parent_standard_id": "S7.41"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 656
+          "source_line": 698
         },
         {
           "id": "S7.42",
@@ -16713,12 +16929,18 @@
           "enforced_by": [],
           "statement": "Test fixtures seed the minimum data required for the test — not the entire dataset. Over-seeded fixtures slow down tests and create implicit dependencies.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.42a",
+              "description": "A fixture that seeds the whole dataset — tests slow down for everyone and acquire implicit dependencies on records they never asked for, so removing a row breaks a test that never referenced it.",
+              "parent_standard_id": "S7.42"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 658
+          "source_line": 703
         },
         {
           "id": "S7.43",
@@ -16732,12 +16954,18 @@
           "enforced_by": [],
           "statement": "ChromaDB and MongoDB test instances use in-memory or temporary collections that are cleared after each test suite (Angular/FundsLink only).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S7.43a",
+              "description": "Vector and document test instances left uncleared between suites — state carries from one suite into the next, and a passing run depends on what ran before it.",
+              "parent_standard_id": "S7.43"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-2-quality-reliability/C07-testing-constitution.md",
-          "source_line": 660
+          "source_line": 708
         }
       ]
     },
@@ -19603,7 +19831,13 @@
           "enforced_by": [],
           "statement": "Stack impact assessed before any feature approval: Does it require a new database table? New endpoint (pushes toward the v1 endpoint limit)? New background job? New external service? Features that exceed v1 stack complexity limits are deferred.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.11a",
+              "description": "A feature approved without assessing what it adds to the stack — the new table, endpoint, job and external service are each individually small, and the complexity limit is crossed by a feature nobody thought was large.",
+              "parent_standard_id": "S9.11"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
@@ -19622,12 +19856,18 @@
           "enforced_by": [],
           "statement": "A feature that requires switching frameworks is automatically deferred. FundsLink cannot add React components. Maphophe cannot add FastAPI. The framework assignment is locked by C6 and C1.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.12a",
+              "description": "A feature accepted that needs a second framework — the locked assignment is broken by a product decision rather than an amendment, and the system now carries two answers to every frontend question.",
+              "parent_standard_id": "S9.12"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 309
+          "source_line": 312
         },
         {
           "id": "S9.13",
@@ -19641,12 +19881,18 @@
           "enforced_by": [],
           "statement": "Feature proposals are written in plain language describing the user problem and expected behaviour — not technical specifications. Technical design is a separate document that follows a locked feature proposal.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.13a",
+              "description": "A proposal written as a technical specification — the user problem is never stated, so the design is evaluated against an implementation instead of against whether it helps anyone.",
+              "parent_standard_id": "S9.13"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 311
+          "source_line": 317
         },
         {
           "id": "S9.14",
@@ -19691,7 +19937,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 319
+          "source_line": 328
         },
         {
           "id": "S9.15",
@@ -19705,12 +19951,18 @@
           "enforced_by": [],
           "statement": "MVP includes: all C3 auth requirements, all v1 database schemas migrated, all v1 API endpoints under OpenAPI contract, CI/CD pipeline green, test coverage gates passing, visual regression at 320/375/390px passing.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.15a",
+              "description": "A launch declared with part of the criteria unmet — the missing half is always the unglamorous half, and it is discovered by the first real user rather than by the gate.",
+              "parent_standard_id": "S9.15"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 349
+          "source_line": 358
         },
         {
           "id": "S9.16",
@@ -19724,7 +19976,13 @@
           "enforced_by": [],
           "statement": "Build order is locked per S9.3. No system begins until the previous system's MVP is in production and has been in production for at least 2 weeks with no SEV0/SEV1 incidents.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.16a",
+              "description": "A system started before the previous one has held production for the full soak — two systems are then in flight, and a defect surfacing in the first arrives while attention has already moved to the second.",
+              "parent_standard_id": "S9.16"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S9.3",
@@ -19734,7 +19992,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 351
+          "source_line": 363
         },
         {
           "id": "S9.17",
@@ -19748,12 +20006,18 @@
           "enforced_by": [],
           "statement": "MVP launch includes a public status page (Better Stack) and a support email address. Users experiencing issues have a way to report them.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.17a",
+              "description": "A launch with no status page and no support address — a user hitting a fault has nowhere to report it, so the outage is measured by how many people quietly stop returning.",
+              "parent_standard_id": "S9.17"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 353
+          "source_line": 368
         },
         {
           "id": "S9.18",
@@ -19767,7 +20031,13 @@
           "enforced_by": [],
           "statement": "Performance budget is part of MVP criteria: Lighthouse mobile score ≥ 80 in production. FundsLink and Maphophe target ≥ 85 given the low-bandwidth constraint (S9.5).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.18a",
+              "description": "A launch that skips the performance budget — on the low-bandwidth connections the product exists to serve, the page is unusable, and every other criterion passing is irrelevant.",
+              "parent_standard_id": "S9.18"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S9.5",
@@ -19777,7 +20047,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 355
+          "source_line": 373
         },
         {
           "id": "S9.19",
@@ -19791,7 +20061,13 @@
           "enforced_by": [],
           "statement": "Accessibility is part of MVP criteria: axe-core CI gate passing (no critical/serious violations). This is enforced by C7 S7.20 but confirmed here as a product criterion, not just a technical criterion.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.19a",
+              "description": "Accessibility treated as a technical gate rather than a product criterion — it is waived at launch alongside other technical items, and the users excluded are the ones least able to report it.",
+              "parent_standard_id": "S9.19"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S7.20",
@@ -19801,7 +20077,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 357
+          "source_line": 378
         },
         {
           "id": "S9.20",
@@ -19826,7 +20102,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 359
+          "source_line": 383
         },
         {
           "id": "S9.21",
@@ -19840,12 +20116,18 @@
           "enforced_by": [],
           "statement": "User feedback is collected from real users — not from the builder's assumptions about what users want. User research is conducted before v2 scope is locked.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.21a",
+              "description": "Scope drawn from the builder's assumptions about users — the product is optimised for a person who does not exist, and the mismatch is discovered after the version is built.",
+              "parent_standard_id": "S9.21"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 368
+          "source_line": 392
         },
         {
           "id": "S9.22",
@@ -19859,12 +20141,18 @@
           "enforced_by": [],
           "statement": "User feedback is documented as GitHub Issues in the system repository with the `user-feedback` label — not as informal notes or in messaging apps.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.22a",
+              "description": "Feedback kept in messaging apps and informal notes — it cannot be counted, labelled or cited in a gate evaluation, so a request made by many users carries the same weight as one made by nobody.",
+              "parent_standard_id": "S9.22"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 370
+          "source_line": 397
         },
         {
           "id": "S9.23",
@@ -19878,12 +20166,18 @@
           "enforced_by": [],
           "statement": "User feedback informs the next sprint's feature gate evaluation — a feature that multiple users have independently requested scores higher on Q5 (has a real user confirmed they need this?).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.23a",
+              "description": "Feedback not carried into the gate evaluation — the question of whether a real user needs a feature is answered from memory, and the answer favours whatever was discussed most recently.",
+              "parent_standard_id": "S9.23"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 372
+          "source_line": 402
         },
         {
           "id": "S9.24",
@@ -19897,12 +20191,18 @@
           "enforced_by": [],
           "statement": "Quantitative metrics (active users, primary workflow completion rate, time-to-complete, error rate) are tracked from day 1 of v1 production via Vercel Analytics and Sentry. Decisions are made against data, not intuition.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.24a",
+              "description": "Usage metrics not instrumented from day one — the first version's real behaviour is unrecoverable, so the next version's scope is decided on intuition and presented as evidence.",
+              "parent_standard_id": "S9.24"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 374
+          "source_line": 407
         },
         {
           "id": "S9.25",
@@ -19916,12 +20216,18 @@
           "enforced_by": [],
           "statement": "A feature requested by users that fails Q1–Q4 gate questions is still deferred — user desire does not override the constitutional gate framework. Document the request in the v2 backlog.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.25a",
+              "description": "A requested feature admitted because users asked for it — the gate framework is bypassed by popularity, and the gates stop being a constraint the moment they are inconvenient.",
+              "parent_standard_id": "S9.25"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 376
+          "source_line": 412
         },
         {
           "id": "S9.26",
@@ -19935,12 +20241,18 @@
           "enforced_by": [],
           "statement": "The roadmap is the sequence of constitutionally approved features — not a wishlist. Items on the roadmap have passed the 5 gate questions, have a feature group classification, and have a written feature proposal.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.26a",
+              "description": "A roadmap that carries unapproved items — a wishlist and a plan become indistinguishable, and work begins on entries that never passed a gate because they were on the same list as those that did.",
+              "parent_standard_id": "S9.26"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 382
+          "source_line": 421
         },
         {
           "id": "S9.27",
@@ -19954,12 +20266,18 @@
           "enforced_by": [],
           "statement": "v2 scope is not locked until v1 has been in production for at least 2 weeks with quantitative usage data. v2 features are informed by real usage, not pre-launch assumptions.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.27a",
+              "description": "Next-version scope locked before real usage data exists — the assumptions being tested are frozen as commitments, and the data arrives too late to change anything.",
+              "parent_standard_id": "S9.27"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 384
+          "source_line": 426
         },
         {
           "id": "S9.28",
@@ -19973,12 +20291,18 @@
           "enforced_by": [],
           "statement": "Roadmap items are prioritised by: (1) primary workflow impact, (2) user feedback volume, (3) technical dependency order. Not by engineering interest, tool novelty, or feature complexity.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.28a",
+              "description": "Priority set by engineering interest or tool novelty — the most interesting item leads, and the primary workflow's blocker waits behind work that no user asked for.",
+              "parent_standard_id": "S9.28"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 386
+          "source_line": 431
         },
         {
           "id": "S9.29",
@@ -19992,12 +20316,18 @@
           "enforced_by": [],
           "statement": "A roadmap item that has been on the backlog for two consecutive sprints without being started is reviewed: either it enters the current sprint as a priority, or it is moved to a formal \"deferred\" list with written reasoning.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.29a",
+              "description": "A backlog item carried across sprints unreviewed — it is neither started nor deferred with reasoning, so the backlog accumulates items whose status is decided by nobody.",
+              "parent_standard_id": "S9.29"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 388
+          "source_line": 436
         },
         {
           "id": "S9.30",
@@ -20011,12 +20341,18 @@
           "enforced_by": [],
           "statement": "The roadmap is reviewed at every quarterly constitutional review (C0 §12) — features that no longer pass the 5 gate questions given new information are removed from the roadmap.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S9.30a",
+              "description": "A roadmap never re-reviewed against new information — items that stopped passing the gates stay on it, and the plan increasingly describes a product the evidence no longer supports.",
+              "parent_standard_id": "S9.30"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 390
+          "source_line": 441
         },
         {
           "id": "S9.31",
@@ -20050,7 +20386,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 430
+          "source_line": 484
         },
         {
           "id": "S9.32",
@@ -20084,7 +20420,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 460
+          "source_line": 514
         },
         {
           "id": "S9.33",
@@ -20118,7 +20454,7 @@
           ],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C09-product-feature-constitution.md",
-          "source_line": 493
+          "source_line": 547
         }
       ]
     },
@@ -20573,7 +20909,13 @@
           "enforced_by": [],
           "statement": "Database schema changes are always L4 — schema changes require human review of the migration, the rollback plan, and the backward compatibility assessment (S5.59–S5.64).",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.12a",
+              "description": "A schema change taken at a lower authority level — the migration, the rollback plan and the backward-compatibility assessment are approved by whoever wrote them, and the one review that could have caught an irreversible change never happens.",
+              "parent_standard_id": "S10.12"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S5.59",
@@ -20617,7 +20959,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 293
+          "source_line": 296
         },
         {
           "id": "S10.14",
@@ -20631,12 +20973,18 @@
           "enforced_by": [],
           "statement": "When AI detects a potential constitutional violation in existing code, it flags the violation and the violated standard — it does not silently work around the violation by generating compliant wrappers that obscure the underlying problem.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.14a",
+              "description": "A detected violation worked around by a compliant wrapper — the wrapper passes review, the original defect is now harder to find than before it was noticed, and the standard reads as satisfied.",
+              "parent_standard_id": "S10.14"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 298
+          "source_line": 301
         },
         {
           "id": "S10.15",
@@ -20689,7 +21037,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 308
+          "source_line": 314
         },
         {
           "id": "S10.16",
@@ -20703,12 +21051,18 @@
           "enforced_by": [],
           "statement": "The design session document (Claude's proposal, Devil's Advocate's challenge, and human resolution) is saved to a `decisions/` folder in the project or as a GitHub Issue comment. Design decisions are not ephemeral chat — they are documented decisions.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.16a",
+              "description": "A design session left in chat — the challenge, the resolution and the reasoning are unrecoverable a week later, so the same design is re-argued from the beginning by whoever inherits it.",
+              "parent_standard_id": "S10.16"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 351
+          "source_line": 357
         },
         {
           "id": "S10.17",
@@ -20722,12 +21076,18 @@
           "enforced_by": [],
           "statement": "Constitutional gaps identified during design (a situation not covered by any existing standard) are documented as constitutional amendment proposals following C0 §8, not solved by improvisation.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.17a",
+              "description": "A gap in the standards solved by improvisation — the improvisation becomes precedent without ever being reviewed, and the corpus grows a rule nobody voted for.",
+              "parent_standard_id": "S10.17"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 353
+          "source_line": 362
         },
         {
           "id": "S10.18",
@@ -20741,7 +21101,13 @@
           "enforced_by": [],
           "statement": "When AI proposes a design that requires a stack deviation, it must immediately flag the constitutional amendment required: \"This proposal would require an amendment to `S4.1` (framework assignment) per C0 §8.\"",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.18a",
+              "description": "A proposal that needs a deviation presented without naming the amendment it requires — the deviation is approved as a design decision, and the standard it breaks is discovered only when a check fires against it.",
+              "parent_standard_id": "S10.18"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S4.1",
@@ -20751,7 +21117,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 355
+          "source_line": 367
         },
         {
           "id": "S10.19",
@@ -20765,12 +21131,18 @@
           "enforced_by": [],
           "statement": "AI-generated architecture diagrams, data flow descriptions, and system topology descriptions are treated as proposals (L1) — never as approved designs until a human confirms them.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.19a",
+              "description": "A generated diagram treated as an approved design — the build proceeds against a topology no human confirmed, and the first review of it is the incident.",
+              "parent_standard_id": "S10.19"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 357
+          "source_line": 372
         },
         {
           "id": "S10.20",
@@ -20784,12 +21156,18 @@
           "enforced_by": [],
           "statement": "The design phase is not skipped for \"small\" features. A feature that touches authentication, database schema, or the API contract is not small — it requires the full design phase protocol.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.20a",
+              "description": "The design phase skipped because a feature looked small — a change touching authentication, schema or the API contract goes straight to build, and the size judgement is what turns out to be wrong.",
+              "parent_standard_id": "S10.20"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 359
+          "source_line": 377
         },
         {
           "id": "S10.21",
@@ -20822,7 +21200,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 367
+          "source_line": 388
         },
         {
           "id": "S10.22",
@@ -20859,7 +21237,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 391
+          "source_line": 412
         },
         {
           "id": "S10.23",
@@ -20873,12 +21251,18 @@
           "enforced_by": [],
           "statement": "`CONSTITUTION-INDEX.md` is updated at the start of every sprint with the current sprint goal, active feature, and active feature group. A stale index from a previous sprint is equivalent to no index.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.23a",
+              "description": "A stale sprint index carried forward — it names last sprint's goal and last sprint's active feature, which is worse than no index because it is followed with confidence.",
+              "parent_standard_id": "S10.23"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 443
+          "source_line": 464
         },
         {
           "id": "S10.24",
@@ -20892,12 +21276,18 @@
           "enforced_by": [],
           "statement": "The builder AI (Cursor) explicitly acknowledges `CONSTITUTION-INDEX.md` at the start of the session. If Cursor does not acknowledge it, the file was not loaded correctly — reload and verify before proceeding.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.24a",
+              "description": "A session started without confirming the index loaded — the assistant works from whatever it last held, and the mismatch is invisible until output arrives against the wrong sprint.",
+              "parent_standard_id": "S10.24"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 445
+          "source_line": 469
         },
         {
           "id": "S10.25",
@@ -20911,7 +21301,13 @@
           "enforced_by": [],
           "statement": "Code generated by the builder AI is reviewed by the human for constitutional compliance before committing. The layer build order (S4.79) ensures each commit is reviewable at the layer level.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.25a",
+              "description": "Generated code committed without a compliance review — the layer build order exists precisely so each commit is reviewable, and skipping the review discards the only benefit that ordering buys.",
+              "parent_standard_id": "S10.25"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S4.79",
@@ -20921,7 +21317,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 447
+          "source_line": 474
         },
         {
           "id": "S10.26",
@@ -20935,12 +21331,18 @@
           "enforced_by": [],
           "statement": "Build sessions that run longer than 4 hours without a commit should reset context: commit what is working, reload `CONSTITUTION-INDEX.md`, and start a fresh session. Context window degradation over long sessions produces lower-quality, less constitutionally aligned output.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.26a",
+              "description": "A build session run for hours with no commit — context degrades across the session, so the least aligned output is produced at the end and lands in the same uncommitted pile as the good work.",
+              "parent_standard_id": "S10.26"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 449
+          "source_line": 479
         },
         {
           "id": "S10.27",
@@ -20981,7 +21383,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 459
+          "source_line": 492
         },
         {
           "id": "S10.28",
@@ -20995,7 +21397,13 @@
           "enforced_by": [],
           "statement": "AI as proposal reviewer: feature proposals (S1.27) in solo mode are reviewed by Claude using adversarial review (S10.3) before self-approval. The review is documented in the GitHub Issue for the feature.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.28a",
+              "description": "A solo-mode proposal self-approved with no adversarial review — the only check on a single author's reasoning is that author, and the proposal that most needed challenging is the one nobody challenged.",
+              "parent_standard_id": "S10.28"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S1.27",
@@ -21009,7 +21417,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 485
+          "source_line": 518
         },
         {
           "id": "S10.29",
@@ -21023,12 +21431,18 @@
           "enforced_by": [],
           "statement": "AI as standup accountability: at the start of every session, the dev log from the previous session is presented to Claude: \"Review this dev log. What blockers were identified? What was the plan? Has the plan been followed?\" This replaces the team standup accountability mechanism.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.29a",
+              "description": "A session started without reviewing the previous dev log — the blockers recorded last time are rediscovered rather than resolved, and the plan drifts with nothing reporting the drift.",
+              "parent_standard_id": "S10.29"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 487
+          "source_line": 523
         },
         {
           "id": "S10.30",
@@ -21042,12 +21456,18 @@
           "enforced_by": [],
           "statement": "AI as SEV classifier in incident response: when a production issue is detected, Claude is given the symptom description and asked to classify the severity and suggest the runbook. Claude suggests — the human classifies and acts.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.30a",
+              "description": "A severity assigned without a human confirming it — the classification determines the response, so a wrong one routes a live incident to the wrong runbook at the moment speed matters most.",
+              "parent_standard_id": "S10.30"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 489
+          "source_line": 528
         },
         {
           "id": "S10.31",
@@ -21061,12 +21481,18 @@
           "enforced_by": [],
           "statement": "AI as constitutional amendment evaluator: before the 24-hour personal review period (C0 §8.2), Claude reviews the proposed amendment for unintended consequences and cross-constitution conflicts. Claude's output is documented in the amendment GitHub Issue.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.31a",
+              "description": "An amendment entering its review period without a conflict evaluation — cross-constitution contradictions are ratified into law, and the corpus now says two incompatible things with equal authority.",
+              "parent_standard_id": "S10.31"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 491
+          "source_line": 533
         },
         {
           "id": "S10.32",
@@ -21080,12 +21506,18 @@
           "enforced_by": [],
           "statement": "AI output in solo mode is documented, not ephemeral. Review sessions, proposal adversarial reviews, and amendment evaluations are documented in GitHub Issues or dev log entries. Undocumented AI interactions provide no audit trail and no knowledge transfer.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.32a",
+              "description": "A review session left undocumented — the reasoning cannot be cited in a later dispute and cannot be handed to anyone, so the work produced value once and none of it compounds.",
+              "parent_standard_id": "S10.32"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 493
+          "source_line": 538
         },
         {
           "id": "S10.33",
@@ -21099,12 +21531,18 @@
           "enforced_by": [],
           "statement": "In team mode, AI recommendations require a human to evaluate and cite the standard basis before the recommendation is actioned. \"Claude said to do this\" is never sufficient justification in a team PR review.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.33a",
+              "description": "A recommendation actioned without a human citing the standard behind it — the justification is the source rather than the reasoning, and the pull request records no basis anyone can check.",
+              "parent_standard_id": "S10.33"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 499
+          "source_line": 547
         },
         {
           "id": "S10.34",
@@ -21118,7 +21556,13 @@
           "enforced_by": [],
           "statement": "AI code review sessions (S10.27) are additive in team mode — they supplement human review, not replace it. The 2-approval rule (S1.30) remains a 2-human-approval rule. AI review is a third review, not a substitute.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.34a",
+              "description": "A review session counted toward the two-approval rule — the number of approvals is unchanged on paper and reduced by one in fact, which is the precise failure the rule exists to prevent.",
+              "parent_standard_id": "S10.34"
+            }
+          ],
           "cross_references": [
             {
               "standard_id": "S10.27",
@@ -21132,7 +21576,7 @@
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 501
+          "source_line": 552
         },
         {
           "id": "S10.35",
@@ -21146,12 +21590,18 @@
           "enforced_by": [],
           "statement": "Team members using AI tools document which AI tools were used in significant design decisions in the PR description. This enables the team to evaluate whether the constitutional AI workflow was followed.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.35a",
+              "description": "Tooling used in a significant design decision left out of the pull request description — the team cannot assess whether the workflow was followed, because the record does not say what was involved.",
+              "parent_standard_id": "S10.35"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 503
+          "source_line": 557
         },
         {
           "id": "S10.36",
@@ -21165,12 +21615,18 @@
           "enforced_by": [],
           "statement": "AI tools are not given access to production credentials, production database connections, or production Railway/Vercel dashboards. AI operates on code and design — not on live production systems.",
           "rationale": "",
-          "anti_patterns": [],
+          "anti_patterns": [
+            {
+              "id": "AP-S10.36a",
+              "description": "Production credentials, database connections or deployment dashboards exposed to tooling — a system scoped to code and design acquires the ability to act on live infrastructure, and no control anywhere assumes it can.",
+              "parent_standard_id": "S10.36"
+            }
+          ],
           "cross_references": [],
           "grounded_in": [],
           "abbreviated": true,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 505
+          "source_line": 562
         },
         {
           "id": "S10.37",
@@ -21215,7 +21671,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 513
+          "source_line": 573
         },
         {
           "id": "S10.38",
@@ -21272,7 +21728,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 537
+          "source_line": 597
         },
         {
           "id": "S10.39",
@@ -21311,7 +21767,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 565
+          "source_line": 625
         },
         {
           "id": "S10.40",
@@ -21353,7 +21809,7 @@
           "grounded_in": [],
           "abbreviated": false,
           "source_path": "constitution/core/phase-3-product-intelligence/C10-ai-collaboration-constitution.md",
-          "source_line": 595
+          "source_line": 655
         }
       ]
     },
@@ -25246,7 +25702,7 @@
   },
   "integrity": {
     "standards_extracted": 670,
-    "anti_patterns_extracted": 653,
+    "anti_patterns_extracted": 729,
     "bindings_extracted": 72,
     "domain_standards_extracted": 19,
     "domain_anti_patterns_extracted": 38,

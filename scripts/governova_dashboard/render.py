@@ -28,6 +28,27 @@ def _esc(text: object) -> str:
     return html.escape(str(text))
 
 
+def _area_counts(report: BoardReport) -> str:
+    """Green/amber/red area counts, as coloured dots with spoken labels.
+
+    These were three emoji. `S4.17` prohibits that, and the rule bound to it in
+    the same change caught this line — the emoji is the only carrier of the
+    distinction, so the counts render differently on every platform and reach a
+    screen reader as three bare numbers. The dot is the component this
+    stylesheet already had; the label is what the emoji was standing in for.
+    """
+    parts = [
+        (GREEN, "Green", report.areas_green),
+        (AMBER, "Amber", report.areas_amber),
+        (RED, "Red", report.areas_red),
+    ]
+    return " · ".join(
+        f'<span class="dot" style="background:{_AREA_COLOUR[status]}" aria-hidden="true"></span>'
+        f'<span class="sr">{name}: </span>{_esc(count)}'
+        for status, name, count in parts
+    )
+
+
 def to_html(report: BoardReport, coverage: dict[str, Any]) -> str:
     s = report.score
     cert = "Governova Certified eligible" if s.certified_eligible else "Below certification (85)"
@@ -69,6 +90,11 @@ def to_html(report: BoardReport, coverage: dict[str, Any]) -> str:
   .area {{ background:#121a30; border:1px solid #1f2a44; border-radius:12px; padding:14px 16px; }}
   .area-top {{ display:flex; align-items:center; gap:8px; }}
   .dot {{ width:10px; height:10px; border-radius:999px; display:inline-block; }}
+  /* Visible to a screen reader, not to the eye. The area counts read as three
+     bare numbers without it, because the colour carrying their meaning is not
+     something a screen reader can announce. */
+  .sr {{ position:absolute; width:1px; height:1px; overflow:hidden;
+        clip:rect(0 0 0 0); white-space:nowrap; }}
   .muted {{ color:#9ca3af; font-size:13px; margin-top:6px; }}
   footer {{ color:#6b7280; font-size:12px; margin-top:40px; }}
   a {{ color:#60a5fa; }}
@@ -92,7 +118,7 @@ def to_html(report: BoardReport, coverage: dict[str, Any]) -> str:
     </div>
     <div class="card">
       <div class="label">Constitutional areas</div>
-      <div class="big">🟢 {report.areas_green} · 🟡 {report.areas_amber} · 🔴 {report.areas_red}</div>
+      <div class="big">{_area_counts(report)}</div>
       <div class="muted">{len(report.areas)} areas assessed</div>
     </div>
     <div class="card">

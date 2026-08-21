@@ -875,6 +875,33 @@ RULES: list[Rule] = [
         "medium",
         unless=re.compile(r"aria-label"),
     ),
+    # ── Reachable only once templates and schemas entered the scan surface ────
+    Rule(
+        "AP-S5.10a",
+        "S5.10",
+        re.compile(r"@id\b.{0,40}@default\s*\(\s*autoincrement\s*\(\s*\)"),
+        "Sequential integer primary key. S5.10: a UUID — a sequential id publishes the total record count and makes the next record guessable.",
+        "high",
+    ),
+    Rule(
+        "AP-S4.17a",
+        "S4.17",
+        # Pictographs used as interface iconography. The ranges are the emoji
+        # blocks proper; letters, digits and punctuation are untouched.
+        re.compile(
+            r"<(?:span|div|i|b|button|td|p|h[1-6])\b[^>]{0,120}>\s*"
+            r"[\U0001F300-\U0001FAFF←-⇿☀-➿️]"
+        ),
+        "Emoji standing in for an icon. S4.17: use the icon component — an emoji renders differently on every platform and is announced by its unicode name.",
+        "medium",
+    ),
+    Rule(
+        "AP-S4.3a",
+        "S4.3",
+        re.compile(r"""["'`(\s]/mobile/|\bm\.[a-z0-9-]{2,40}\.(?:com|co\.za|org|net|io|app)\b"""),
+        "Separate mobile surface. S4.3: one responsive build — a second surface diverges from the first, and the divergence is discovered by the users on it.",
+        "medium",
+    ),
 ]
 
 
@@ -888,6 +915,18 @@ TEXT_EXTENSIONS: frozenset[str] = frozenset(
         ".java", ".kt", ".kts", ".scala", ".groovy",
         ".py", ".rb", ".php", ".go", ".rs", ".cs", ".swift", ".m", ".mm",
         ".c", ".cc", ".cpp", ".h", ".hpp", ".dart", ".ex", ".exs", ".css", ".scss",
+        # Templates. A large part of C4 lives here and nowhere else: the list
+        # repeater, form binding and icon-button anti-patterns (`AP-S4.60a`,
+        # `AP-S4.47a`, `AP-S4.23a`) are written in markup, so rules bound to
+        # them could only ever reach the minority of components that inline
+        # their template. Named by id rather than quoted, so this comment does
+        # not become a violation of the rules it describes. Safe to add because
+        # `gather.SKIP_DIRS` now excludes the generated reports that embed
+        # source — see the note there.
+        ".html", ".htm",
+        # Schema. `S5.10` is a claim about a column definition, which exists in
+        # exactly one kind of file.
+        ".prisma",
     }
 )
 

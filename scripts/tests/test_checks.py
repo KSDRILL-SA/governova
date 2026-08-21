@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 from governova_checks import (
     RULES,
+    TEXT_EXTENSIONS,
     Finding,
     check_text,
     enforcement_coverage,
@@ -255,6 +256,9 @@ _CITED_SIBLING: dict[str, str] = {
     "S1.44": "AP-S1.44a",
     "S4.14": "AP-S4.14a",
     "S5.9": "AP-S5.9a",
+    # Added with the scan-surface change: `AP-S5.10b` is "a model without
+    # `deleted_at`", which is a different claim about the same schema line.
+    "S5.10": "AP-S5.10a",
 }
 
 
@@ -512,6 +516,10 @@ _CATCHES: list[tuple[str, str, str | None]] = [
     ("AP-S4.7a", "  height: 100vh;", "src/hero.css"),
     ("AP-S4.26a", "const user = await res.json() as UserProfile;", "src/api.ts"),
     ("AP-S4.23a", "<button onClick={close}><CloseIcon /></button>", "src/modal.tsx"),
+    # Reachable only once templates and schemas entered the scan surface.
+    ("AP-S5.10a", "  id Int @id @default(autoincrement())", "prisma/schema.prisma"),
+    ("AP-S4.17a", '<span class="badge">\U0001f512 Secure</span>', "src/badge.html"),
+    ("AP-S4.3a", 'router.get("/mobile/dashboard", handler)', "src/routes.ts"),
 ]
 
 _HOLDS: list[tuple[str, str, str | None]] = [
@@ -549,6 +557,11 @@ _HOLDS: list[tuple[str, str, str | None]] = [
         '<button aria-label="Close" onClick={close}><CloseIcon /></button>',
         "src/modal.tsx",
     ),
+    ("AP-S5.10a", "  id String @id @default(uuid())", "prisma/schema.prisma"),
+    ("AP-S4.17a", '<span class="badge"><LockIcon /> Secure</span>', "src/badge.html"),
+    # A word beginning with `m.` is not a mobile subdomain, and prose about
+    # mobile is not a mobile build.
+    ("AP-S4.3a", "// the mobile layout is handled by the same responsive build", "src/routes.ts"),
 ]
 
 
@@ -588,6 +601,89 @@ def test_a_path_scoped_rule_declines_when_it_has_no_file():
     scoped = [r for r in RULES if r.path_scoped]
     assert scoped, "the batch added path-scoped rules; this test is about them"
     assert all(not r.applies_to(None) for r in scoped)
+
+
+# ── The scan surface ─────────────────────────────────────────────────────────
+
+
+def test_templates_and_schemas_are_in_the_scan_surface():
+    """A rule bound to markup is inert until markup is scanned.
+
+    `AP-S4.60a`, `AP-S4.47a` and `AP-S4.23a` describe things written in a
+    template. While the surface was source extensions only they could reach the
+    minority of components that inline their template, and nothing else — a
+    coverage figure counting rules that no file could trigger.
+    """
+    for ext in (".html", ".htm", ".prisma"):
+        assert ext in TEXT_EXTENSIONS
+
+
+def test_generated_report_directories_are_never_scanned(tmp_path):
+    """Coverage reporters embed the source under test, line by line, in markup.
+
+    Scanning them reproduces findings against a path nobody wrote and nobody can
+    fix — and reproduces them only partly, since markup splits some tokens and
+    not others. A blocking finding in an unfixable file is the fastest way to
+    teach an adopter to switch the gate off.
+    """
+    from governova_checks.gather import iter_source_files
+
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "app.ts").write_text("const a = 1;\n", encoding="utf-8")
+
+    for generated in ("htmlcov", "coverage", "playwright-report", ".next", "storybook-static"):
+        d = tmp_path / generated
+        d.mkdir()
+        (d / "index.html").write_text(
+            "<p>app.use(cors({ origin: '*' }))</p>\n", encoding="utf-8"
+        )
+
+    found = {p.name for p in iter_source_files(tmp_path)}
+    assert found == {"app.ts"}, f"generated output reached the scan surface: {found}"
+
+
+def test_generated_and_vendored_files_are_never_scanned(tmp_path):
+    """A bundle sits beside its source, so no directory list can reach it."""
+    from governova_checks.gather import is_generated, iter_source_files
+
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "app.ts").write_text("const a = 1;\n", encoding="utf-8")
+    for name in ("vendor.min.js", "app.bundle.js", "styles.min.css", "schema_pb2.py"):
+        (tmp_path / "src" / name).write_text(
+            "app.use(cors({ origin: '*' }))\n", encoding="utf-8"
+        )
+
+    assert is_generated("vendor.MIN.js"), "the check must not depend on case"
+    found = {p.name for p in iter_source_files(tmp_path)}
+    assert found == {"app.ts"}, f"generated files reached the scan surface: {found}"
+
+
+def test_an_angular_template_is_read_the_way_a_component_is():
+    """The unlock, stated as the thing it unlocks.
+
+    Every violation below is caught and every correct form beside it is left
+    alone — in a file type that produced nothing at all before this change.
+    """
+    template = "\n".join(
+        [
+            '<li *ngFor="let s of students">{{ s.name }}</li>',
+            '<li *ngFor="let t of terms; trackBy: byId">{{ t.name }}</li>',
+            '<input [(ngModel)]="query" />',
+            '<input [formControl]="queryControl" />',
+            "<button (click)=\"close()\"><CloseIcon /></button>",
+            '<button aria-label="Close" (click)="close()"><CloseIcon /></button>',
+        ]
+    )
+    findings = scan_text(template, file="src/app/students/list.component.html")
+    caught = {(f.anti_pattern, f.line) for f in findings}
+
+    assert ("AP-S4.60a", 1) in caught
+    assert ("AP-S4.47a", 3) in caught
+    assert ("AP-S4.23a", 5) in caught
+    # The corrected form of each, on the very next line.
+    assert not any(line in {2, 4, 6} for _, line in caught), (
+        f"a rule fired on the prescribed form: {sorted(caught)}"
+    )
 
 
 def test_scan_file_sets_file_and_reports_line(tmp_path):

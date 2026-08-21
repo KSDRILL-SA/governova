@@ -214,6 +214,304 @@ def test_c12_models_without_a_boundary_are_unknown_not_violated(tmp_path) -> Non
     assert _probe_context_model(unnamed).verdict is Verdict.UNKNOWN
 
 
+# ─── Repository facts the line scan cannot reach (#246) ──────────────────────
+#
+# Each probe below is shown satisfied, violated, and — where the question can
+# fail to arise at all — undeterminable. The third case is the one that matters:
+# a probe that guesses "satisfied" retires a standard nobody will look at again.
+
+
+def test_s122_a_merge_commit_proves_squash_was_not_used(tmp_path) -> None:
+    """A squash merge leaves one parent. Two parents is direct evidence."""
+    from governova_evidence import Verdict, _probe_squash_merge
+
+    _git_repo(tmp_path, ["feat: one"])
+    subprocess.run(["git", "checkout", "-q", "-b", "side"], cwd=tmp_path, check=True)
+    (tmp_path / "side.txt").write_text("x", encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "feat: two"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "checkout", "-q", "-"], cwd=tmp_path, check=True)
+    (tmp_path / "main.txt").write_text("y", encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "feat: three"], cwd=tmp_path, check=True)
+    subprocess.run(
+        ["git", "merge", "--no-ff", "-q", "-m", "Merge side", "side"], cwd=tmp_path, check=True
+    )
+
+    verdict, evidence = _probe_squash_merge(tmp_path).verdict, _probe_squash_merge(tmp_path).evidence
+    assert verdict is Verdict.VIOLATED
+    # The offending commit is named. "History is not linear" is not actionable.
+    assert "Merge side" in evidence
+
+
+def test_s122_linear_history_satisfies_the_squash_strategy(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_squash_merge
+
+    _git_repo(tmp_path, ["feat: one", "fix: two"])
+    assert _probe_squash_merge(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s122_is_unknown_without_git(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_squash_merge
+
+    assert _probe_squash_merge(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s142_a_save_point_is_not_a_change(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_purposeful_commits
+
+    _git_repo(tmp_path, ["feat: real work", "wip", "checkpoint"])
+    result = _probe_purposeful_commits(tmp_path)
+    assert result.verdict is Verdict.VIOLATED
+    assert "wip" in result.evidence
+
+
+def test_s142_purposeful_subjects_satisfy(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_purposeful_commits
+
+    _git_repo(tmp_path, ["feat: add the gate", "fix: correct the citation"])
+    assert _probe_purposeful_commits(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s117_a_pipeline_that_only_runs_on_prs_leaves_main_unverified(tmp_path) -> None:
+    """The branch everyone deploys from must not be the one nothing checks."""
+    from governova_evidence import Verdict, _probe_ci_on_main
+
+    _workflow(tmp_path, "on:\n  pull_request:\n    branches: [main]\njobs:\n  t:\n    steps: []\n")
+    assert _probe_ci_on_main(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s117_a_push_to_main_trigger_satisfies(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_ci_on_main
+
+    _workflow(
+        tmp_path,
+        "on:\n  push:\n    branches: [main]\n  pull_request:\njobs:\n  t:\n    steps: []\n",
+    )
+    assert _probe_ci_on_main(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s117_is_unknown_with_no_workflows(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_ci_on_main
+
+    assert _probe_ci_on_main(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s146_a_missing_pr_template_is_violated_not_unknown(tmp_path) -> None:
+    """Absence is the answer here, not an inability to answer.
+
+    A repository either carries the template or it does not, and the file is
+    where it would be. That is a determination, so `unknown` would be a dodge.
+    """
+    from governova_evidence import Verdict, _probe_pr_template
+
+    assert _probe_pr_template(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s146_an_empty_pr_template_imposes_no_structure(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_pr_template
+
+    (tmp_path / ".github").mkdir()
+    (tmp_path / ".github" / "pull_request_template.md").write_text("\n", encoding="utf-8")
+    assert _probe_pr_template(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s146_a_real_pr_template_satisfies(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_pr_template
+
+    (tmp_path / ".github").mkdir()
+    (tmp_path / ".github" / "pull_request_template.md").write_text(
+        "## What changed\n\n## Constitutional compliance\n\n## Verification\n",
+        encoding="utf-8",
+    )
+    assert _probe_pr_template(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s129_issue_templates_satisfy_and_their_absence_violates(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_issue_template
+
+    assert _probe_issue_template(tmp_path).verdict is Verdict.VIOLATED
+    directory = tmp_path / ".github" / "ISSUE_TEMPLATE"
+    directory.mkdir(parents=True)
+    (directory / "feature.md").write_text("## Problem\n## Gate questions\n", encoding="utf-8")
+    assert _probe_issue_template(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s173_a_line_length_in_prose_is_not_configuration(tmp_path) -> None:
+    """S1.73 closes with *never manually managed*, so a number nobody reads fails."""
+    from governova_evidence import Verdict, _probe_line_length_configured
+
+    (tmp_path / "app.py").write_text("x = 1\n", encoding="utf-8")
+    (tmp_path / "README.md").write_text("Lines are 88 characters.\n", encoding="utf-8")
+    assert _probe_line_length_configured(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s173_tool_configuration_satisfies(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_line_length_configured
+
+    (tmp_path / "app.py").write_text("x = 1\n", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text(
+        "[tool.ruff]\nline-length = 88\n", encoding="utf-8"
+    )
+    assert _probe_line_length_configured(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s173_is_unknown_when_neither_language_is_present(tmp_path) -> None:
+    """A standard naming two languages does not arise in a repository with neither."""
+    from governova_evidence import Verdict, _probe_line_length_configured
+
+    (tmp_path / "main.go").write_text("package main\n", encoding="utf-8")
+    assert _probe_line_length_configured(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s173_typescript_alone_still_needs_its_half(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_line_length_configured
+
+    (tmp_path / "app.ts").write_text("const a = 1;\n", encoding="utf-8")
+    assert _probe_line_length_configured(tmp_path).verdict is Verdict.VIOLATED
+    (tmp_path / ".editorconfig").write_text("[*.ts]\nmax_line_length = 100\n", encoding="utf-8")
+    assert _probe_line_length_configured(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s174_import_order_must_be_automated(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_import_order_automated
+
+    (tmp_path / "app.py").write_text("import os\n", encoding="utf-8")
+    assert _probe_import_order_automated(tmp_path).verdict is Verdict.VIOLATED
+    (tmp_path / "pyproject.toml").write_text(
+        '[tool.ruff.lint]\nselect = ["E", "I"]\n', encoding="utf-8"
+    )
+    assert _probe_import_order_automated(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s174_is_unknown_when_nothing_has_imports(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_import_order_automated
+
+    (tmp_path / "notes.md").write_text("nothing here\n", encoding="utf-8")
+    assert _probe_import_order_automated(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s89_ci_must_exist_to_run_anything(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_ci_exists
+
+    assert _probe_ci_exists(tmp_path).verdict is Verdict.VIOLATED
+    _workflow(tmp_path, "on: push\njobs:\n  t:\n    steps: []\n")
+    assert _probe_ci_exists(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s813_an_uncached_pipeline_is_violated(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_ci_dependency_cache
+
+    _workflow(tmp_path, "on: push\njobs:\n  t:\n    steps:\n      - run: npm ci\n")
+    assert _probe_ci_dependency_cache(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s813_a_cached_pipeline_satisfies(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_ci_dependency_cache
+
+    _workflow(
+        tmp_path,
+        "on: push\njobs:\n  t:\n    steps:\n"
+        "      - uses: actions/cache@v4\n      - run: npm ci\n",
+    )
+    assert _probe_ci_dependency_cache(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s813_is_unknown_with_no_ci(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_ci_dependency_cache
+
+    assert _probe_ci_dependency_cache(tmp_path).verdict is Verdict.UNKNOWN
+
+
+def test_s861_runbooks_are_found_where_they_are_actually_kept(tmp_path) -> None:
+    """The standard names `runbooks/`; a governance directory satisfies its substance.
+
+    Reporting a repository as violating over a path prefix is a false accusation,
+    and a governance tool that makes those does not get a second reading.
+    """
+    from governova_evidence import Verdict, _probe_runbooks
+
+    assert _probe_runbooks(tmp_path).verdict is Verdict.VIOLATED
+    directory = tmp_path / "governance" / "runbooks"
+    directory.mkdir(parents=True)
+    (directory / "RB-01-sev0-response.md").write_text("steps\n", encoding="utf-8")
+    # SEV1 still missing — a partial set is not the set the standard names.
+    assert _probe_runbooks(tmp_path).verdict is Verdict.VIOLATED
+    (directory / "RB-02-sev1-response.md").write_text("steps\n", encoding="utf-8")
+    assert _probe_runbooks(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s861_a_readme_is_not_a_runbook(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_runbooks
+
+    directory = tmp_path / "runbooks"
+    directory.mkdir()
+    (directory / "README.md").write_text("what runbooks are\n", encoding="utf-8")
+    assert _probe_runbooks(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s878_a_template_missing_fields_is_violated(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_post_mortem_template
+
+    (tmp_path / "templates").mkdir()
+    (tmp_path / "templates" / "post-mortem-template.md").write_text(
+        "# Post-mortem\n## Severity\n## Timeline\n", encoding="utf-8"
+    )
+    result = _probe_post_mortem_template(tmp_path)
+    assert result.verdict is Verdict.VIOLATED
+    assert "root cause" in result.evidence
+
+
+def test_s878_a_complete_template_satisfies(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_post_mortem_template
+
+    (tmp_path / "templates").mkdir()
+    (tmp_path / "templates" / "post-mortem-template.md").write_text(
+        "# Post-mortem\n## Severity\n## Detection\n## Resolution\n"
+        "## Incident commander\n## Impact\n## Timeline\n"
+        "## Root cause (5 Whys)\n## Action items\n",
+        encoding="utf-8",
+    )
+    assert _probe_post_mortem_template(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_s886_a_vendor_list_without_an_exit_plan_is_violated(tmp_path) -> None:
+    """S8.86 asks for two things. Listing vendors answers only the first."""
+    from governova_evidence import Verdict, _probe_vendor_register
+
+    (tmp_path / "governance").mkdir()
+    (tmp_path / "governance" / "vendors.md").write_text(
+        "| Vendor | Data held | SLA |\n|---|---|---|\n| Acme | invoices | 99.9% |\n",
+        encoding="utf-8",
+    )
+    assert _probe_vendor_register(tmp_path).verdict is Verdict.VIOLATED
+
+
+def test_s886_a_register_with_an_exit_plan_satisfies(tmp_path) -> None:
+    from governova_evidence import Verdict, _probe_vendor_register
+
+    (tmp_path / "governance").mkdir()
+    (tmp_path / "governance" / "vendors.md").write_text(
+        "| Vendor | Data held | SLA | Exit plan |\n|---|---|---|---|\n"
+        "| Acme | invoices | 99.9% | export monthly, restore to self-hosted |\n",
+        encoding="utf-8",
+    )
+    assert _probe_vendor_register(tmp_path).verdict is Verdict.SATISFIED
+
+
+def test_a_probe_never_returns_satisfied_from_an_empty_directory(tmp_path) -> None:
+    """The rule the whole tier rests on, asserted across every probe at once.
+
+    An empty directory is the strongest case: nothing is present, so nothing can
+    be evidence. Any probe claiming SATISFIED here is guessing, and a false
+    satisfied silently retires a standard nobody will examine again.
+    """
+    from governova_evidence import Verdict, run_probes
+
+    guessing = [r.standard for r in run_probes(tmp_path) if r.verdict is Verdict.SATISFIED]
+    assert not guessing, f"probe(s) claimed satisfied with no evidence present: {guessing}"
+
+
 def test_every_probe_binds_a_standard_that_exists() -> None:
     """A probe citing a non-existent standard is as ungrounded as a stray rule."""
     root = resolve_repo_root()

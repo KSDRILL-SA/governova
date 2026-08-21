@@ -403,14 +403,68 @@ def test_domain_coverage_is_reported_separately_from_core():
     # **No standard written in the blockquote shorthand is bare anywhere in the
     # corpus now.** The 65 that remain are all full-form: C01 28, C02 27, C06 10.
     #
+    # Then the full-form work: C01's 28 and C02's 27, plus the five *prescriptive*
+    # standards among C06's ten. **665 of 670 standards are now bindable.** The five
+    # that are not are `S6.39`-`S6.43` — four reference-system attribute tables and
+    # a concern-to-constitution map. Those are reference data, not law: no behaviour
+    # violates them, so an anti-pattern on one would be invented rather than derived.
+    # They stay bare on purpose. 665 is the ceiling, and 670 was never it.
+    #
     # The denominator keeps *growing*, which lowers enforcement coverage rather
     # than flattering it. That is the honest direction: writing more of the law
     # down does not enforce it, and this figure should never move because a
     # denominator was trimmed.
-    assert cov["total_anti_patterns"] == 729, "core denominator changed unexpectedly"
+    assert cov["total_anti_patterns"] == 789, "core denominator changed unexpectedly"
     assert cov["domain_total_anti_patterns"] > 0
     assert all(ap.startswith("AP-D-") for ap in cov["domain_covered"])
     assert not any(ap.startswith("AP-D-") for ap in cov["covered"])
+
+
+# The five standards that are deliberately not bindable ───────────────────────
+
+# `S6.39`-`S6.42` are reference-system attribute tables — what FundsLink *is*,
+# what Maphophe *is* — and `S6.43` maps a concern to the constitution governing
+# it. They are reference data, not law: there is no behaviour that violates
+# them, so an anti-pattern attached to one would be invented rather than derived
+# from the standard's own words.
+#
+# They are pinned here because the pressure runs the other way. A gap table that
+# reads 665/670 invites someone to close the last five, and closing them means
+# writing five anti-patterns nothing can ever fire on — padding the denominator
+# to make a figure read 100%. That is the move this corpus exists to refuse.
+NOT_BINDABLE = frozenset({"S6.39", "S6.40", "S6.41", "S6.42", "S6.43"})
+
+
+def test_only_the_reference_data_standards_carry_no_anti_pattern():
+    """665 of 670 is the ceiling. The remaining five are not an unfinished job."""
+    import json
+
+    from governova_compile.discovery import resolve_repo_root
+
+    root = resolve_repo_root()
+    data = json.loads((root / "compiled" / "constitution.json").read_text(encoding="utf-8"))
+
+    bare = {
+        standard["id"]
+        for constitution in data["constitutions"]
+        for standard in constitution["standards"]
+        if not standard.get("anti_patterns")
+    }
+
+    padded = NOT_BINDABLE - bare
+    assert not padded, (
+        f"{sorted(padded)} gained an anti-pattern. These describe systems and map "
+        "concerns; nothing can violate them, so any rule bound here would be "
+        "unfalsifiable. Removing the standard is a real option — inventing an "
+        "anti-pattern for it is not."
+    )
+
+    regressed = bare - NOT_BINDABLE
+    assert not regressed, (
+        f"{sorted(regressed)} carry no anti-pattern and so can never become "
+        "evidence. Every prescriptive standard in the corpus is bindable; add the "
+        "block, or add the standard to NOT_BINDABLE with the reason it is not law."
+    )
 
 
 def test_scan_file_sets_file_and_reports_line(tmp_path):

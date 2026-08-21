@@ -199,10 +199,21 @@ def check_fan_trap(schema: Schema) -> list[Finding]:
     and silently returns wrong aggregates. The shape is legitimate; the trap is what
     happens when somebody joins across it, so this is probable and advisory.
     """
+    # The parent is the end that is *not* to-many. Both orientations have to be
+    # handled: `source` and `target` are named alphabetically by the Prisma
+    # parser so that a relation declared from both ends pairs up, so either end
+    # can be the many one. Only the first orientation was handled here, which
+    # meant half of every Prisma schema's relations were skipped outright.
     children: dict[str, list[str]] = {}
     for relation in schema.relations:
         if relation.source_to_many and not relation.target_to_many:
-            children.setdefault(relation.target, []).append(relation.source)
+            one, many = relation.target, relation.source
+        elif relation.target_to_many and not relation.source_to_many:
+            one, many = relation.source, relation.target
+        else:
+            # Many-to-many and one-to-one are not this shape.
+            continue
+        children.setdefault(one, []).append(many)
 
     findings: list[Finding] = []
     for parent, kids in sorted(children.items()):

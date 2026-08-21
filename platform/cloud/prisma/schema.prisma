@@ -1,0 +1,167 @@
+// Governova Cloud — Stage 1 data model.
+//
+// `S5.9` makes this file the single source of truth for the schema; every change
+// to the database is a change here first and a migration second.
+//
+// `#255` asks for something more specific before any of that: **run
+// `governova schema` on this file.** That command analyses data-model soundness
+// against C14 and had never had a real customer. A data-model analyser whose
+// author did not run it on their own schema is a recommendation nobody should
+// take, so this schema was written, analysed, and corrected before anything was
+// built on it. The findings and what was done about them are recorded in
+// `platform/cloud/prisma/README.md`.
+//
+// Every model below carries the four things C05 requires of a table:
+//   - a UUID primary key, never an autoincrementing integer (`AP-S5.10a`) — a
+//     sequential id publishes the total record count and makes the next one
+//     guessable
+//   - `created_at` / `updated_at` / `deleted_at` (`S5.34`)
+//   - `NOT NULL` on every field that is required (`S5.29`) — optionality is
+//     expressed by `?` and nothing else
+//   - uniqueness enforced here rather than in application code (`S5.30`),
+//     because two concurrent requests both read *absent* and both write
+
+generator client {
+  provider = "prisma-client-py"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// The three operating modes from `master.md` §16. An organisation declares one;
+/// it changes which protocols are active, never the constitutional framework.
+///
+/// Named after the modes rather than after billing tiers on purpose — the tiers
+/// change with a price list, and the modes are constitutional.
+enum OperatingMode {
+  PERSONAL
+  TEAM
+  ENTERPRISE
+}
+
+/// What a member may do inside an organisation. Distinct from `OperatingMode`,
+/// which is a property of the organisation itself.
+enum MemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+/// A person. `subject` is the identity service's `sub` claim — the only link
+/// between this database and Stage 0, and the reason nothing here stores a
+/// credential.
+model Account {
+  id         String    @id @default(uuid())
+  subject    String    @unique
+  email      String    @unique
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  memberships Membership[]
+
+  @@index([deleted_at])
+}
+
+/// The billed entity. **Seats are the unit that is billed; projects are never
+/// counted** — counting projects is the crippled-tier thinking `ADR-010`
+/// retired.
+model Organisation {
+  id              String        @id @default(uuid())
+  slug            String        @unique
+  name            String
+  mode            OperatingMode @default(PERSONAL)
+  seats_purchased Int           @default(1)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  deleted_at      DateTime?
+
+  memberships Membership[]
+  teams       Team[]
+
+  @@index([deleted_at])
+}
+
+/// The bridge between a person and an organisation (`S14.9`).
+///
+/// A person may belong to several organisations and an organisation has many
+/// people, so the relationship is many-to-many and needs an entity of its own.
+/// It also has attributes — a role, and whether a seat is occupied — which is
+/// the second reason a join table cannot be implicit here.
+model Membership {
+  id               String     @id @default(uuid())
+  organisation_id  String
+  account_id       String
+  role             MemberRole @default(MEMBER)
+  /// Null means a member who occupies no seat. Seats are counted from this
+  /// column, so an unoccupied membership costs nothing.
+  seat_assigned_at DateTime?
+  created_at       DateTime   @default(now())
+  updated_at       DateTime   @updatedAt
+  deleted_at       DateTime?
+
+  organisation Organisation @relation(fields: [organisation_id], references: [id])
+  account      Account      @relation(fields: [account_id], references: [id])
+
+  team_memberships TeamMembership[]
+
+  /// `S5.30` — one membership per person per organisation, enforced here. In
+  /// application code, two concurrent invitations both read absent and both
+  /// write, and the duplicate exists before either transaction commits.
+  @@unique([organisation_id, account_id])
+  /// `S5.13` — every foreign key column carries an index.
+  @@index([organisation_id])
+  @@index([account_id])
+  @@index([deleted_at])
+}
+
+/// A group inside one organisation.
+model Team {
+  id              String    @id @default(uuid())
+  organisation_id String
+  name            String
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  deleted_at      DateTime?
+
+  organisation Organisation     @relation(fields: [organisation_id], references: [id])
+  members      TeamMembership[]
+
+  @@unique([organisation_id, name])
+  @@index([organisation_id])
+  @@index([deleted_at])
+}
+
+/// The bridge between a team and a membership (`S14.9`).
+///
+/// It points at `Membership` rather than at `Account` deliberately. A team
+/// belongs to exactly one organisation, and its members must belong to that
+/// same organisation — going through `Membership` makes that relationship
+/// expressible; going through `Account` would allow a person with no membership
+/// to sit on a team.
+///
+/// **That leaves two paths from here to an organisation** — through the team,
+/// and through the membership — which `S14.11` warns about. The schema cannot
+/// close it: PostgreSQL has no way to say "these two foreign keys must resolve
+/// to the same organisation" without a composite key carrying `organisation_id`
+/// through both sides. It is enforced as an invariant in `governova_org`
+/// instead, with a test, and recorded here so the next reader finds the reason
+/// rather than the gap.
+model TeamMembership {
+  id            String    @id @default(uuid())
+  team_id       String
+  membership_id String
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  deleted_at    DateTime?
+
+  team       Team       @relation(fields: [team_id], references: [id])
+  membership Membership @relation(fields: [membership_id], references: [id])
+
+  @@unique([team_id, membership_id])
+  @@index([team_id])
+  @@index([membership_id])
+  @@index([deleted_at])
+}

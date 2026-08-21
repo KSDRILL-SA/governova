@@ -54,9 +54,25 @@ class Column:
 class Relation:
     """A declared association between two entities.
 
+    **`X_to_many` means X is the *many* end** — navigating toward X yields many
+    rows. So `invoice.customer_id -> customer` is `source_to_many=True`,
+    `target_to_many=False`: many invoices, one customer.
+
+    That is stated explicitly because it was ambiguous, and the ambiguity cost
+    something. The two parsers filled the same field with opposite meanings —
+    SQL used the reading above, Prisma used "this side declares a list", which is
+    the other end — and every check that consults cardinality was therefore
+    correct in one dialect and inverted in the other. Only the many-to-many check
+    was unaffected, because it reads both flags and is symmetric, which is why
+    the disagreement survived until a real Prisma schema was analysed (`#255`).
+
     `to_many` on both sides is a many-to-many. In a relational store that needs a
     bridge entity to exist at all; where the schema language synthesises one
     implicitly, the modelling decision has been made by a tool rather than a designer.
+
+    Neither end is a "parent" by position: `source` and `target` are named
+    alphabetically by the Prisma parser so that a relation declared from both
+    ends pairs up. Direction lives in these flags and nowhere else.
     """
 
     source: str

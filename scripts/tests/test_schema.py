@@ -361,3 +361,110 @@ def test_a_repository_with_no_schema_reports_nothing(tmp_path):
     # No schema is not a sound schema. It is unknown, exactly as requirements tier 0 is.
     schemas, findings, unknowns = analyse_repository(tmp_path)
     assert schemas == [] and findings == [] and unknowns == []
+
+
+# ─── The two dialects must agree (#255) ──────────────────────────────────────
+
+
+_FAN_TRAP_PRISMA = """
+model Customer {
+  id       String    @id @default(uuid())
+  invoices Invoice[]
+  payments Payment[]
+}
+
+model Invoice {
+  id          String   @id @default(uuid())
+  customer_id String
+  customer    Customer @relation(fields: [customer_id], references: [id])
+}
+
+model Payment {
+  id          String   @id @default(uuid())
+  customer_id String
+  customer    Customer @relation(fields: [customer_id], references: [id])
+}
+"""
+
+_FAN_TRAP_SQL = """
+CREATE TABLE customer (id INTEGER PRIMARY KEY);
+CREATE TABLE invoice (id INTEGER PRIMARY KEY, customer_id INTEGER REFERENCES customer(id));
+CREATE TABLE payment (id INTEGER PRIMARY KEY, customer_id INTEGER REFERENCES customer(id));
+"""
+
+
+def test_the_same_model_gets_the_same_verdict_in_both_dialects():
+    """A schema's soundness is a property of the model, not of how it is written.
+
+    This is the test that would have caught it. `source_to_many` meant opposite
+    things in the two parsers — SQL used "this end is the many end", Prisma used
+    "this end declares a list" — so every cardinality check was correct in one
+    dialect and inverted in the other. Only the many-to-many check was spared,
+    because it reads both flags and is symmetric.
+
+    The SQL fixtures passed throughout. Nothing compared the two.
+    """
+    assert "fan-trap" in _codes(_FAN_TRAP_SQL, sql=True)
+    assert "fan-trap" in _codes(_FAN_TRAP_PRISMA)
+
+
+def test_the_fan_trap_names_the_parent_not_one_of_the_children():
+    """The finding has to point at the join that fans, or nobody can act on it."""
+    from governova_schema.checks import check_fan_trap
+    from governova_schema.prisma import parse_prisma
+
+    findings = check_fan_trap(parse_prisma(_FAN_TRAP_PRISMA))
+    assert [f.table for f in findings] == ["Customer"]
+
+
+_BRIDGE_PRISMA = """
+model Student {
+  id      String       @id @default(uuid())
+  courses Enrolment[]
+}
+
+model Course {
+  id       String      @id @default(uuid())
+  students Enrolment[]
+}
+
+model Enrolment {
+  id         String  @id @default(uuid())
+  student_id String
+  course_id  String
+  student    Student @relation(fields: [student_id], references: [id])
+  course     Course  @relation(fields: [course_id], references: [id])
+}
+"""
+
+
+def test_a_bridge_entity_is_not_a_fan_trap():
+    """`S14.9` *requires* a bridge for a many-to-many. Flagging one accuses the fix.
+
+    Before the parser was corrected this reported `Enrolment` — meaning every
+    correctly-modelled many-to-many in any schema was a finding, and the tool
+    told people the prescribed structure was the defect.
+    """
+    from governova_schema.checks import check_fan_trap
+    from governova_schema.prisma import parse_prisma
+
+    assert check_fan_trap(parse_prisma(_BRIDGE_PRISMA)) == []
+
+
+def test_prisma_marks_the_many_end_as_the_many_end():
+    """The root defect, pinned at the parser rather than at the checks.
+
+    `Customer { invoices Invoice[] }` says **Invoice** is the many end. Reading
+    the declaring side instead inverts every relation Prisma produces.
+    """
+    from governova_schema.prisma import parse_prisma
+
+    schema = parse_prisma(_FAN_TRAP_PRISMA)
+    by_pair = {
+        tuple(sorted((r.source, r.target))): r for r in schema.relations
+    }
+    relation = by_pair[("Customer", "Invoice")]
+    many_end = relation.source if relation.source_to_many else relation.target
+    one_end = relation.target if relation.source_to_many else relation.source
+    assert many_end == "Invoice"
+    assert one_end == "Customer"

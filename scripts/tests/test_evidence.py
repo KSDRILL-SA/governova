@@ -337,6 +337,25 @@ def test_s129_issue_templates_satisfy_and_their_absence_violates(tmp_path) -> No
     assert _probe_issue_template(tmp_path).verdict is Verdict.SATISFIED
 
 
+def test_s129_accepts_the_template_the_standard_names_by_filename(tmp_path) -> None:
+    """S1.29 names `feature-proposal-template.md`, so that file satisfies it.
+
+    The first version of this probe looked only in `.github/ISSUE_TEMPLATE/` and
+    reported this repository as violating while the named template sat in
+    `templates/`. That is a false accusation over a path — the mistake
+    `_probe_runbooks` was written to avoid, made in the same batch.
+    """
+    from governova_evidence import Verdict, _probe_issue_template
+
+    (tmp_path / "templates").mkdir()
+    (tmp_path / "templates" / "feature-proposal-template.md").write_text(
+        "## Problem statement\n## Acceptance criteria\n", encoding="utf-8"
+    )
+    result = _probe_issue_template(tmp_path)
+    assert result.verdict is Verdict.SATISFIED
+    assert "feature-proposal-template.md" in result.evidence
+
+
 def test_s173_a_line_length_in_prose_is_not_configuration(tmp_path) -> None:
     """S1.73 closes with *never manually managed*, so a number nobody reads fails."""
     from governova_evidence import Verdict, _probe_line_length_configured

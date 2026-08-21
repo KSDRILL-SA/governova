@@ -1,0 +1,66 @@
+# The core subset — what the free wheel carries
+#
+# `ADR-011` §1 licenses the corpus and leaves the engine MIT. From v0.3.0 the
+# published wheel bundles a **core subset** rather than all 670 standards; the
+# full corpus, the domain packs and ongoing amendments require a subscription.
+#
+# This file is that boundary, as data. It is read by `governova compile`, which
+# writes `compiled/constitution.core.json` beside the full index, and the wheel
+# bundles the core file. Both are committed, so **what the free tier receives is
+# reviewable in git** rather than being a property of a build machine.
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# THIS MEMBERSHIP IS PROVISIONAL AND IS L4's TO RATIFY.
+#
+# `ADR-011` is explicit that the boundary "has to be chosen, and it is a
+# judgement", and that "~120 is a starting figure, not a derived one". What
+# follows is a first cut derived from the criterion below, not a commercial
+# decision. Changing it is a one-line edit here plus a recompile — deliberately,
+# because the boundary is tunable release to release without breaking anyone.
+# ─────────────────────────────────────────────────────────────────────────────
+
+[criterion]
+# Why these and not others.
+#
+# The corpus already carries `applies_to`, and it does not discriminate finely
+# enough to derive a subset: 513 of 670 standards say "Both Stacks", which
+# excludes only the 77 that name a framework. A stack-independence filter would
+# hand over 593 standards and there would be no product left.
+#
+# So the boundary is drawn at **whole constitutions that govern a codebase
+# regardless of what it is built with**. C1 is engineering practice — commits,
+# branches, review, naming, types, recovery — and applies to any language on any
+# platform. C13 is maintenance: debt, deprecation, reengineering, legacy
+# disposition. Neither mentions a framework, a database or a deployment target.
+#
+# Everything else is where the specific value is. C2–C6 are stack architecture,
+# C7–C8 are testing and platform reliability, C9–C10 are product and workflow
+# governance, C11–C12 and C14 are compliance, modelling and data design, and the
+# domain packs are Layer 4 entirely.
+#
+# Whole constitutions rather than a hand-picked list: a subset assembled standard
+# by standard breaks cross-references, and a free tier whose standards cite
+# standards it does not carry teaches an adopter that the product is broken.
+basis = "whole constitutions that govern a codebase regardless of its stack"
+ratified = false
+ratified_by = ""
+ratified_on = ""
+
+[core]
+# Constitutions carried in full by the free wheel.
+constitutions = ["C01", "C13"]
+
+# Layer 4 domain packs are never free. `ADR-011` §1 lists them beside the full
+# corpus as subscription content, and each encodes regulatory work of its own.
+domains = []
+
+# Framework primitives are the vocabulary the standards are written in. Without
+# them the carried standards cannot be read, so they travel with the core at no
+# commercial cost — they are definitions, not law.
+include_framework = true
+
+# Runbooks and ADRs are this project's own operational records. They are not
+# constitutional content and are not what a subscription sells; they are dropped
+# from the published index entirely rather than being treated as either tier.
+include_runbooks = false
+include_adrs = false

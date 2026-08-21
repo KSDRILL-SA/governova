@@ -1,8 +1,18 @@
-"""Build hook that bundles the compiled constitution into the wheel.
+"""Build hook that bundles the core constitution into the wheel.
 
 An installed `governova` must carry its own constitution, or it cannot govern a
-repository that does not contain one. The file lives at `compiled/constitution.json`
-in the repository root — one copy, no committed duplicate to drift.
+repository that does not contain one.
+
+**It carries the core subset, not the full corpus.** `ADR-011` §1 licenses the
+corpus and leaves the engine MIT: the free wheel bundles the constitutions named
+in `governance/core-subset.toml`, and the full 670 standards, the domain packs
+and ongoing amendments require a subscription. The boundary is entitlement to
+*data* — no licence server, no machine-ID binding, no phone-home (`ADR-010` §5.1)
+— and the engine runs identically and offline against whichever corpus it holds.
+
+The file bundled is `compiled/constitution.core.json`, written by
+`governova compile` beside the full index and committed with it, so what the free
+tier receives is reviewable in a diff.
 
 **Why a hook rather than a static `force-include`.** A `force-include` of
 `../compiled/constitution.json` works when building from the repository and fails
@@ -39,7 +49,15 @@ except ModuleNotFoundError:  # pragma: no cover - only absent outside a build
     BuildHookInterface = object
 
 BUNDLED_AT = "governova_compile/data/constitution.json"
-_CANDIDATES = ("../compiled/constitution.json", "compiled/constitution.json")
+
+# The core index only. Falling back to the full corpus is deliberately *not*
+# offered: a silent fallback would publish the licensed artefact whenever the
+# core file happened to be missing, and the failure would be invisible until
+# someone noticed the wheel was 670 standards instead of 118.
+_CANDIDATES = (
+    "../compiled/constitution.core.json",
+    "compiled/constitution.core.json",
+)
 
 
 def locate_constitution(root: Path) -> Path:
@@ -55,8 +73,9 @@ def locate_constitution(root: Path) -> Path:
 
     searched = ", ".join(str(root / c) for c in _CANDIDATES)
     raise FileNotFoundError(
-        "Cannot build the governova wheel: the compiled constitution was not "
-        f"found. Looked in: {searched}. Run `governova compile` first."
+        "Cannot build the governova wheel: the core constitution was not found. "
+        f"Looked in: {searched}. Run `governova compile` first — it writes the "
+        "core index from governance/core-subset.toml (ADR-011)."
     )
 
 

@@ -100,18 +100,46 @@ jobs:
       # repository that does not contain one. A wheel without it installs fine
       # and then fails on first use, so it is checked here rather than discovered
       # by whoever installs it first.
-      - name: The wheel must carry the compiled constitution
+      - name: The wheel must carry the core constitution, and only the core
         run: |
           set -euo pipefail
           uv run python - <<'PY'
-          import glob, sys, zipfile
+          import glob, json, sys, tomllib, zipfile
           wheel = sorted(glob.glob("dist/*.whl"))[-1]
-          names = zipfile.ZipFile(wheel).namelist()
+          archive = zipfile.ZipFile(wheel)
           bundled = "governova_compile/data/constitution.json"
-          if bundled not in names:
+          if bundled not in archive.namelist():
               sys.exit(f"::error::{wheel} does not bundle {bundled}")
-          size = zipfile.ZipFile(wheel).getinfo(bundled).file_size
-          print(f"{wheel} bundles the constitution ({size:,} bytes)")
+
+          # ADR-011 §1 — the free wheel carries the core subset. Checking that a
+          # file is *present* proves the wheel works; it does not prove the
+          # licence holds. Publishing the full corpus would install cleanly, work
+          # perfectly, and give away the product — a failure nobody would notice
+          # from the outside. So the boundary is asserted against the manifest
+          # rather than against a number written here.
+          manifest = tomllib.loads(open("governance/core-subset.toml", "rb").read().decode())
+          expected = {c.upper() for c in manifest["core"]["constitutions"]}
+
+          index = json.loads(archive.read(bundled).decode("utf-8"))
+          shipped = {c["id"].upper() for c in index["constitutions"]}
+          standards = sum(len(c["standards"]) for c in index["constitutions"])
+
+          if shipped != expected:
+              extra = ", ".join(sorted(shipped - expected)) or "none"
+              missing = ", ".join(sorted(expected - shipped)) or "none"
+              sys.exit(
+                  f"::error::{wheel} bundles the wrong corpus. "
+                  f"Unlicensed content present: {extra}. Missing from core: {missing}."
+              )
+          if index["domains"]:
+              packs = ", ".join(d["id"] for d in index["domains"])
+              sys.exit(f"::error::{wheel} bundles domain pack(s) {packs}; those are never free.")
+
+          size = archive.getinfo(bundled).file_size
+          print(
+              f"{wheel} bundles the core corpus: {standards} standards across "
+              f"{', '.join(sorted(shipped))} ({size:,} bytes)"
+          )
           PY
 
       # Proves the artifact works before it is published, not after: install the

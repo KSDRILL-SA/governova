@@ -66,11 +66,61 @@ def write_index(index: CompiledIndex, out_dir: Path) -> dict[str, Path]:
     )
     checksum_path.write_text(index.checksum + "\n", encoding="utf-8")
 
-    return {
+    written = {
         "index": index_path,
         "schema": schema_path,
         "checksum": checksum_path,
     }
+
+    # ADR-011 §1 — the wheel bundles a core subset, not the full corpus. It is
+    # written here, beside the full index and committed alongside it, so *what
+    # the free tier receives is reviewable in a diff* rather than being a
+    # property of whichever machine ran the build.
+    core_path = _write_core_index(index, out_dir)
+    if core_path is not None:
+        written["core"] = core_path
+
+    return written
+
+
+CORE_INDEX_NAME = "constitution.core.json"
+
+
+def _write_core_index(index: CompiledIndex, out_dir: Path) -> Path | None:
+    """Write the core subset beside the full index, if a manifest declares one.
+
+    Absent manifest means no core index and no error: a consumer compiling their
+    own amended corpus has no commercial boundary to honour, and demanding one
+    would make `governova compile` fail in every repository but this.
+    """
+    from governova_compile.core_subset import (
+        core_index,
+        load_manifest,
+        unknown_constitutions,
+    )
+
+    root = out_dir.parent
+    try:
+        manifest = load_manifest(root)
+    except FileNotFoundError:
+        return None
+
+    missing = unknown_constitutions(index, manifest)
+    if missing:
+        raise ValueError(
+            f"core-subset manifest names {', '.join(missing)}, which the corpus does "
+            "not contain. A typo here silently shrinks what the free tier carries, "
+            "and the wheel would still build and install. Fix the manifest."
+        )
+
+    subset = core_index(index, manifest)
+    subset.checksum = compute_checksum(subset)
+    path = out_dir / CORE_INDEX_NAME
+    path.write_text(
+        json.dumps(subset.model_dump(mode="json"), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    return path
 
 
 def load_index(index_path: Path) -> CompiledIndex:

@@ -173,12 +173,22 @@ def test_the_wheel_bundles_the_compiled_constitution() -> None:
     assert hook["path"] == "hatch_build.py"
     assert (resolve_repo_root() / "scripts" / "hatch_build.py").is_file()
     assert (resolve_repo_root() / "compiled" / "constitution.json").is_file()
+    assert (resolve_repo_root() / "compiled" / "constitution.core.json").is_file()
 
 
-def test_the_sdist_carries_the_constitution_so_it_can_build_a_wheel() -> None:
-    """An sdist that cannot build a wheel is broken for `pip install --no-binary`."""
+def test_the_sdist_carries_the_core_so_it_can_build_a_wheel() -> None:
+    """An sdist that cannot build a wheel is broken for `pip install --no-binary`.
+
+    It carries the **core** index, because that is what the wheel bundles
+    (`ADR-011` §1). An sdist carrying the full corpus would hand the licensed
+    artefact to anyone installing with `--no-binary`, which walks straight around
+    the boundary the wheel draws.
+    """
     include = _packaging()["tool"]["hatch"]["build"]["targets"]["sdist"]["force-include"]
-    assert include["../compiled/constitution.json"] == "compiled/constitution.json"
+    assert include["../compiled/constitution.core.json"] == "compiled/constitution.core.json"
+    assert "../compiled/constitution.json" not in include, (
+        "the sdist must not carry the full corpus — `--no-binary` would bypass the licence"
+    )
 
 
 def _locate_constitution():  # type: ignore[no-untyped-def]
@@ -195,9 +205,9 @@ def _locate_constitution():  # type: ignore[no-untyped-def]
 
 
 @pytest.mark.parametrize(
-    "layout", ["../compiled/constitution.json", "compiled/constitution.json"]
+    "layout", ["../compiled/constitution.core.json", "compiled/constitution.core.json"]
 )
-def test_the_build_hook_finds_the_constitution_in_both_layouts(
+def test_the_build_hook_finds_the_core_constitution_in_both_layouts(
     tmp_path: Path, layout: str
 ) -> None:
     """The repository and an unpacked sdist put the file in different places.
@@ -222,8 +232,23 @@ def test_the_build_hook_refuses_to_ship_a_wheel_without_a_constitution(
     That is a defect the installer discovers rather than the shipper, so the
     build fails loudly instead.
     """
-    with pytest.raises(FileNotFoundError, match="compiled constitution was not"):
+    with pytest.raises(FileNotFoundError, match="core constitution was not found"):
         _locate_constitution()(tmp_path)
+
+
+def test_the_build_hook_never_falls_back_to_the_full_corpus(tmp_path: Path) -> None:
+    """The failure that would have no symptom.
+
+    A hook that fell back to `constitution.json` when the core file was missing
+    would publish the licensed artefact, and the wheel would install cleanly and
+    work perfectly. Nobody would notice until they counted the standards.
+    """
+    project = tmp_path / "project"
+    (project / "compiled").mkdir(parents=True)
+    (project / "compiled" / "constitution.json").write_text("{}", encoding="utf-8")
+
+    with pytest.raises(FileNotFoundError):
+        _locate_constitution()(project)
 
 
 def test_the_bundled_index_is_not_committed_as_a_duplicate() -> None:

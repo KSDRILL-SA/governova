@@ -1001,22 +1001,42 @@ def _probe_pr_template(root: Path) -> ProbeResult:
     return _ok(sid, f"pull request template at {name}")
 
 
+# Where a proposal template is kept. `S1.29` names `feature-proposal-template.md`
+# by filename, so a repository holding exactly that file satisfies the standard
+# as written — whether or not the forge is also configured to offer it.
+#
+# The first version of this probe looked only in `.github/ISSUE_TEMPLATE/` and
+# reported this repository as violating while `templates/feature-proposal-template.md`
+# sat in it. That is the mistake `_probe_runbooks` was written to avoid, made in
+# the very batch that avoided it: a false accusation over a path.
+_PROPOSAL_TEMPLATE_CANDIDATES: tuple[str, ...] = (
+    "templates/feature-proposal-template.md",
+    "docs/feature-proposal-template.md",
+    "feature-proposal-template.md",
+    ".github/issue_template.md",
+    ".github/ISSUE_TEMPLATE.md",
+)
+
+
 def _probe_issue_template(root: Path) -> ProbeResult:
     """S1.29 — a feature proposal uses the mandatory template."""
     sid = "S1.29"
     directory = root / ".github" / "ISSUE_TEMPLATE"
-    templates = sorted(directory.glob("*.md")) + sorted(directory.glob("*.y*ml"))
-    if not templates:
-        legacy = _first_existing(root, (".github/issue_template.md", ".github/ISSUE_TEMPLATE.md"))
-        if legacy is not None:
-            return _ok(sid, f"issue template at {legacy[0]}")
-        return _bad(
-            sid,
-            "no issue templates — a proposal has no mandatory shape, so the gate "
-            "questions are answered when the author happens to remember them",
-        )
-    names = ", ".join(p.name for p in templates[:4])
-    return _ok(sid, f"{len(templates)} issue template(s): {names}")
+    forms = sorted(directory.glob("*.md")) + sorted(directory.glob("*.y*ml"))
+    named = _first_existing(root, _PROPOSAL_TEMPLATE_CANDIDATES)
+
+    if forms and named is not None:
+        return _ok(sid, f"{named[0]}, offered as {len(forms)} form(s) on the forge")
+    if forms:
+        names = ", ".join(p.name for p in forms[:4])
+        return _ok(sid, f"{len(forms)} issue template(s): {names}")
+    if named is not None:
+        return _ok(sid, f"proposal template at {named[0]}")
+    return _bad(
+        sid,
+        "no proposal template — a proposal has no mandatory shape, so the gate "
+        "questions are answered when the author happens to remember them",
+    )
 
 
 def _probe_line_length_configured(root: Path) -> ProbeResult:

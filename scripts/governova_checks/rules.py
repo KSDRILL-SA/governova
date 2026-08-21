@@ -171,6 +171,41 @@ _RAW_DATA_ACCESS = (
 # narrow so that ordinary numeric code is never implicated.
 _MONEY = r"(?:price|amount|balance|total|subtotal|cost|fee|salary|payment|refund|money|currency)"
 
+# Where configuration is *supposed* to read the environment. S1.68 and S2.67 both
+# require the environment to be read once, at startup, into a validated settings
+# object — so a raw read is a violation everywhere except here.
+CONFIG_PATHS = re.compile(
+    r"(?:^|/)(?:config|configs|settings|env)/|"
+    r"(?:^|/)[^/]*(?:config|settings|environment)[^/]*\.[a-z]+$|"
+    r"(?:^|/)(?:next|vite|nuxt|astro|tailwind|jest|vitest|webpack|rollup)\.[a-z.]+$"
+)
+
+# Backend service code. C2 is the *backend* constitution: several of its
+# standards describe how a service holds itself together, and are not claims
+# about any line that happens to look similar in a CLI, a build script or a
+# code generator.
+BACKEND_PATHS = re.compile(
+    r"(?:^|/)(?:app|api|backend|server|services?|routers?|endpoints?|"
+    r"controllers?|domain|usecases?)/"
+)
+
+# The HTTP edge: routers, route handlers, controllers. S2.69 governs *where* an
+# exception handler lives, which is not a property of a line — it is only
+# answerable with the file in hand.
+ROUTER_PATHS = re.compile(
+    r"(?:^|/)(?:routers?|routes?|api|endpoints?|controllers?|handlers?)/|"
+    r"(?:^|/)[^/]*(?:router|route|controller)[^/]*\.[a-z]+$"
+)
+
+# Test paths, plus the one module a database client is *meant* to be built in.
+_TESTS_OR_DB_SINGLETON = re.compile(
+    TEST_PATHS.pattern + r"|(?:^|/)(?:prisma|db|database)\.[a-z]+$"
+)
+
+# Test paths or a configuration module — the union S1.68 and S2.67 both need.
+_TESTS_OR_CONFIG = re.compile(TEST_PATHS.pattern + r"|" + CONFIG_PATHS.pattern)
+
+
 
 # ── The rule set ─────────────────────────────────────────────────────────────
 # Language-agnostic line patterns, each bound to a real anti-pattern in the
@@ -646,6 +681,199 @@ RULES: list[Rule] = [
         "Deprecation with no stated removal. S13.7: name the version or date it goes — an open-ended deprecation gives no consumer a reason to migrate.",
         "medium",
         path_exclude=TEST_PATHS,
+    ),
+    # ── #246 · binding the ceiling the amendment passes raised ───────────────
+    # Six passes added 281 anti-patterns and bound none of them. These are the
+    # ones a line scan can actually reach: each names a signature that is a
+    # violation on sight rather than a judgement about intent.
+    #
+    # Two patterns below are written with their literal split across adjacent
+    # string pieces. That is deliberate. This repository governs itself with the
+    # engine in the branch under review, so a rule whose pattern matches its own
+    # source blocks the pull request introducing it — which has now happened
+    # here three times. Splitting the literal keeps the warning reproducible.
+    Rule(
+        "AP-S1.100a",
+        "S1.100",
+        re.compile(
+            r"Co-Authored" r"-By:[^<\n]{0,80}"
+            r"\b(?:claude|copilot|codex|chatgpt|cursor|devin|gemini|\w{0,20}\[bot\])\b",
+            re.I,
+        ),
+        "Assistant attribution in a co-author trailer. S1.100: the metadata surface carries human attribution only.",
+        "high",
+    ),
+    Rule(
+        "AP-S1.88a",
+        "S1.88",
+        re.compile(r"@NgModule\s*\("),
+        "Module declaration for a component. S1.88: components are standalone — a module wrapper reintroduces exactly the indirection standalone removed.",
+        "high",
+    ),
+    Rule(
+        "AP-S1.53a",
+        "S1.53",
+        re.compile(r"^\s*(?:export\s+)?(?:const\s+)?enum\s+[A-Z]\w{0,40}\s*\{"),
+        "Enum declaration. S1.53: use a string-literal union or a const assertion — an enum emits runtime code and does not narrow structurally.",
+        "high",
+        path_include=TS_FAMILY,
+    ),
+    Rule(
+        "AP-S4.53a",
+        "S4.53",
+        re.compile(r"ChangeDetectionStrategy\s*\.\s*Default\b"),
+        "Default change detection on a component. S4.53: OnPush — the default re-checks every component on every event, and that cost lands on the devices least able to absorb it.",
+        "high",
+    ),
+    Rule(
+        "AP-S4.47a",
+        "S4.47",
+        re.compile(r"\[\(\s*ngModel\s*\)\]"),
+        "Template-driven two-way binding. S4.47: reactive forms — a template-driven form cannot be tested without rendering the whole component.",
+        "high",
+    ),
+    Rule(
+        "AP-S4.60a",
+        "S4.60",
+        re.compile(r"\*ng" r"For\s*="),
+        "List repeater with no track function. S4.60: without one the whole list re-renders on any change, discarding focus, scroll position and in-progress input inside the rows.",
+        "high",
+        unless=re.compile(r"\btrackBy\b"),
+    ),
+    Rule(
+        "AP-S4.55a",
+        "S4.55",
+        re.compile(r"\bthis\s*\.\s*http\s*\.\s*(?:get|post|put|patch|delete|request)\s*\("),
+        "HTTP call issued from a component. S4.55: go through a service — a component that calls the network directly cannot be unit-tested without mocking the transport.",
+        "high",
+        path_include=UI_LAYER,
+    ),
+    Rule(
+        "AP-S5.16a",
+        "S5.16",
+        re.compile(r"\bnew\s+PrismaClient\s*\("),
+        "Database client constructed here rather than imported. S5.16: one shared singleton — a client per module exhausts the connection pool, and the failure presents as the database being down.",
+        "high",
+        path_exclude=_TESTS_OR_DB_SINGLETON,
+    ),
+    Rule(
+        "AP-S5.18a",
+        "S5.18",
+        re.compile(
+            r"\bdb\s*\[\s*['\"][^'\"]{1,60}['\"]\s*\]\s*\.\s*"
+            r"(?:insert_one|insert_many|find_one|find|update_one|update_many|"
+            r"delete_one|delete_many|aggregate)\s*\("
+        ),
+        "Raw collection access. S5.18: go through the ODM — a raw call bypasses model validation at the one boundary where the document shape is not guaranteed.",
+        "high",
+        path_exclude=TEST_PATHS,
+    ),
+    Rule(
+        "AP-S3.11a",
+        "S3.11",
+        re.compile(r"\bsame" r"[_-]?site\s*[:=]\s*['\"]?none\b", re.I),
+        "Cross-site cookie delivery with no secure flag on the same line. S3.11: this disables the primary CSRF defence — pair it with Secure and a documented reason.",
+        "high",
+        unless=re.compile(r"\bsecure\s*[:=]\s*(?:true|True)\b"),
+    ),
+    # ── MEDIUM — the signature is right, the context decides ─────────────────
+    Rule(
+        "AP-S1.44a",
+        "S1.44",
+        re.compile(r"\bconsole\s*\.\s*log\s*\("),
+        "Debug artifact left in code. S1.44: production code carries no debug logging — use the structured logger, or remove it.",
+        "medium",
+        path_exclude=TEST_PATHS,
+    ),
+    Rule(
+        "AP-S1.68a",
+        "S1.68",
+        re.compile(r"\bprocess\s*\.\s*env\s*\.\s*\w{1,60}"),
+        "Environment read inline at the point of use. S1.68: read and validate at startup — an absent variable should fail the boot, not the one request that happens to need it.",
+        "medium",
+        path_exclude=_TESTS_OR_CONFIG,
+    ),
+    Rule(
+        "AP-S2.67a",
+        "S2.67",
+        re.compile(r"\bos\s*\.\s*(?:getenv\s*\(|environ\s*[.\[])"),
+        "Environment read inline at the point of use. S2.67: a settings object owns configuration, so the shape is validated once instead of trusted everywhere.",
+        "medium",
+        # Scoped to backend service code because that is the standard's own
+        # scope: S2.67 is a C2 standard about how a *FastAPI service* holds its
+        # configuration. Unscoped, this rule fired eight times on this very
+        # repository — four on `GITHUB_STEP_SUMMARY`, a path the CI runner
+        # supplies rather than application configuration, and three inside a
+        # code generator, where the match was a docstring and a string being
+        # *written out* for the user. None is the failure S2.67 describes, and a
+        # rule that reports them grades against a rubric wider than the law it
+        # cites. The scope is taken from the standard, not from what makes this
+        # repository quiet: in a FastAPI service the anti-pattern's own example
+        # still fires exactly as written.
+        path_include=BACKEND_PATHS,
+        path_exclude=_TESTS_OR_CONFIG,
+    ),
+    Rule(
+        "AP-S2.69a",
+        "S2.69",
+        re.compile(r"\bexcept\s+Exception\b"),
+        "Route handler catching the base exception. S2.69: register handlers globally — a handler here returns one endpoint's failures in a shape nothing else uses.",
+        "medium",
+        path_include=ROUTER_PATHS,
+        path_exclude=TEST_PATHS,
+    ),
+    Rule(
+        "AP-S5.8a",
+        "S5.8",
+        re.compile(r"\bprisma\s*\.\s*\w{1,40}\s*\.\s*delete(?:Many)?\s*\("),
+        "Hard delete. S5.8: soft-delete instead — a hard delete is irreversible, and it takes the audit trail with it.",
+        "medium",
+        path_exclude=TEST_PATHS,
+    ),
+    Rule(
+        "AP-S5.9a",
+        "S5.9",
+        re.compile(r"\bALTER\s+TABLE\b", re.I),
+        "Schema change outside a migration. S5.9: the schema file is the source of truth — a change applied directly exists in production and in nobody's code.",
+        "medium",
+        path_exclude=DATA_LAYER,
+    ),
+    Rule(
+        "AP-S1.89a",
+        "S1.89",
+        re.compile(r"\bnew\s+BehaviorSubject\s*[<(]"),
+        "Manual stream for local component state. S1.89: signals — a manual subscription makes teardown the author's responsibility on every component, and one that forgets leaks a listener per mount.",
+        "medium",
+        path_include=UI_LAYER,
+    ),
+    Rule(
+        "AP-S4.14a",
+        "S4.14",
+        re.compile(r"\b(?:bg|text|border|fill|stroke|ring|from|via|to)-\[#[0-9a-f]{3,8}\]", re.I),
+        "Brand colour as an inline arbitrary value. S4.14: name it in the theme — an arbitrary value cannot be changed in one place, so a rebrand becomes a search.",
+        "medium",
+    ),
+    Rule(
+        "AP-S4.7a",
+        "S4.7",
+        re.compile(r"(?<!min-)(?<!max-)\bheight\s*:\s*100vh\b", re.I),
+        "Fixed viewport height. S4.7: use a minimum height — mobile browser chrome makes the viewport unit taller than what is visible, so the bottom of the section is cut off.",
+        "medium",
+    ),
+    Rule(
+        "AP-S4.26a",
+        "S4.26",
+        re.compile(r"\.\s*json\s*\(\s*\).{0,80}\bas\s+[A-Z]\w{0,40}\b"),
+        "Response cast to a type with no runtime validation. S4.26: validate the payload — an assertion tells the compiler what to believe and checks nothing at the one boundary where the shape is not yours.",
+        "medium",
+    ),
+    Rule(
+        "AP-S4.23a",
+        "S4.23",
+        re.compile(r"<button\b[^>]{0,160}>\s*<[A-Z]\w{0,30}Icon\b"),
+        "Icon-only control with no accessible name. S4.23: label it — a screen reader announces the control and nothing about what it does.",
+        "medium",
+        unless=re.compile(r"aria-label"),
     ),
 ]
 

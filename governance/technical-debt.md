@@ -24,6 +24,7 @@ paying a debt down.
 | **D-07** | **No TypeScript formatter runs.** `.editorconfig` declares the S1.73 line length, and eleven lines in the IDE extension exceed it. Nothing enforces the number | Small, but it introduces a Node toolchain to govern 485 lines | Nothing today; grows with the extension | `#248` closed with the config; enforcement deferred |
 | **D-08** | **The corpus is bundled whole in every wheel.** `ADR-011` licenses it, which requires splitting a core subset out of the build — the packaging assumes one artefact today | Medium. Touches `hatch_build.py`, the release gate's bundled-constitution assertion, and the compile step | The entire `ADR-011` corpus licence | — |
 | **D-09** | **No Cloud exists.** Workstream D is design-complete (`ADR-010`, `phase-4-cloud.md`) and has no code. Credits are priced and promised in `ADR-011` | Months | Every credit allotment in the price ladder | `#254`, `#255` |
+| **D-15** | **Configuration is read where it is used, not validated at startup.** `GOVERNOVA_*` variables are read inline — `writer.py:122` reads the constitution-path override at the point of use, and `.env.example` declares eleven variables nothing validates on boot | Small — one settings object the CLI reads once | Nothing today. It is the failure `S1.68` and `S2.67` describe, found by binding a rule for them and then scoping that rule to the region its standard governs | — |
 
 ---
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 from governova_checks import (
     RULES,
     Finding,
@@ -248,6 +249,12 @@ _CITED_SIBLING: dict[str, str] = {
     "S3.3": "AP-S3.3a",
     "S4.19": "AP-S4.19a",
     "S5.21": "AP-S5.21a",
+    # Added with the #246 rule batch. Each of these standards carries a second
+    # anti-pattern the rule beneath it does *not* implement, which is exactly
+    # the confusion this pin exists to prevent.
+    "S1.44": "AP-S1.44a",
+    "S4.14": "AP-S4.14a",
+    "S5.9": "AP-S5.9a",
 }
 
 
@@ -465,6 +472,122 @@ def test_only_the_reference_data_standards_carry_no_anti_pattern():
         "evidence. Every prescriptive standard in the corpus is bindable; add the "
         "block, or add the standard to NOT_BINDABLE with the reason it is not law."
     )
+
+
+# ── #246 · the rule batch bound to the raised ceiling ────────────────────────
+#
+# Each rule is stated twice: the line it must catch, and the *near-miss* it must
+# let through. The near-miss is the more important half. A rule that fires on
+# the violation is easy; one that also fires on the correct form next to it
+# teaches adopters to switch the gate off, and a gate that gets switched off
+# enforces nothing at all.
+#
+# Where a rule is path-scoped, the pair differs only by which file the identical
+# line sits in — that is the whole claim such a rule makes.
+
+# The co-author trailer literal is assembled rather than written. This file is a
+# fixture, but the string is the exact artefact S1.100 prohibits, and there is no
+# reason to commit a real one to make a point about detecting them.
+_TRAILER = "Co-Authored" + "-By:"
+
+_CATCHES: list[tuple[str, str, str | None]] = [
+    ("AP-S1.100a", f"{_TRAILER} Claude <noreply@anthropic.com>", None),
+    ("AP-S1.88a", "@NgModule({ declarations: [AppComponent] })", "src/app.module.ts"),
+    ("AP-S1.53a", "export enum Role { Admin = 'ADMIN' }", "src/roles.ts"),
+    ("AP-S4.53a", "  changeDetection: ChangeDetectionStrategy.Default,", "src/a.ts"),
+    ("AP-S4.47a", '<input [(ngModel)]="name">', "src/form.component.ts"),
+    ("AP-S4.60a", '<li *ngFor="let s of students">{{ s.name }}</li>', "src/list.ts"),
+    ("AP-S4.55a", "this.http.get('/api/students')", "src/components/list.component.ts"),
+    ("AP-S5.16a", "const prisma = new PrismaClient()", "src/api/users.ts"),
+    ("AP-S5.18a", 'db["scholarships"].insert_one(doc)', "app/services/store.py"),
+    ("AP-S3.11a", "  sameSite: 'none',", "src/session.ts"),
+    ("AP-S1.44a", "console.log('here', payload)", "src/app.ts"),
+    ("AP-S1.68a", "const url = process.env.DATABASE_URL", "src/services/user.ts"),
+    ("AP-S2.67a", 'url = os.getenv("DATABASE_URL")', "app/services/user.py"),
+    ("AP-S2.69a", "    except Exception:", "app/routers/users.py"),
+    ("AP-S5.8a", "await prisma.user.delete({ where: { id } })", "src/services/user.ts"),
+    ("AP-S5.9a", "ALTER TABLE users ADD COLUMN phone VARCHAR(20)", "src/admin/fix.ts"),
+    ("AP-S1.89a", "new BehaviorSubject<User>(null)", "src/components/user.component.ts"),
+    ("AP-S4.14a", '<div class="bg-[#1A2B3C] p-4">', "src/hero.tsx"),
+    ("AP-S4.7a", "  height: 100vh;", "src/hero.css"),
+    ("AP-S4.26a", "const user = await res.json() as UserProfile;", "src/api.ts"),
+    ("AP-S4.23a", "<button onClick={close}><CloseIcon /></button>", "src/modal.tsx"),
+]
+
+_HOLDS: list[tuple[str, str, str | None]] = [
+    # A human co-author is the form the standard exists to protect.
+    ("AP-S1.100a", f"{_TRAILER} Thandiwe Mokoena <t@example.com>", None),
+    ("AP-S1.88a", "@Component({ standalone: true, selector: 'app-root' })", "src/a.ts"),
+    ("AP-S1.53a", "export type Role = 'ADMIN' | 'USER';", "src/roles.ts"),
+    # Python has no TypeScript enum, and the rule must not reach for one.
+    ("AP-S1.53a", "enum Role { Admin = 'ADMIN' }", "app/roles.py"),
+    ("AP-S4.53a", "  changeDetection: ChangeDetectionStrategy.OnPush,", "src/a.ts"),
+    ("AP-S4.47a", '<input formControlName="name">', "src/form.component.ts"),
+    ("AP-S4.60a", '<li *ngFor="let s of students; trackBy: byId">', "src/list.ts"),
+    # The identical call, one layer down, is the prescribed form.
+    ("AP-S4.55a", "this.http.get('/api/students')", "src/services/student.service.ts"),
+    ("AP-S5.16a", "const prisma = new PrismaClient()", "src/lib/db.ts"),
+    ("AP-S5.18a", "await Scholarship.insert(doc)", "app/services/store.py"),
+    ("AP-S3.11a", "  sameSite: 'none', secure: true,", "src/session.ts"),
+    ("AP-S1.44a", "console.log('here', payload)", "src/app.test.ts"),
+    ("AP-S1.68a", "const url = process.env.DATABASE_URL", "src/config/env.ts"),
+    # S2.67 is a backend standard; a CLI reading the environment is not its subject.
+    ("AP-S2.67a", 'url = os.getenv("DATABASE_URL")', "scripts/cli.py"),
+    ("AP-S2.69a", "    except Exception:", "app/services/users.py"),
+    (
+        "AP-S5.8a",
+        "await prisma.user.update({ where: { id }, data: { deletedAt: now } })",
+        "src/services/user.ts",
+    ),
+    ("AP-S5.9a", "ALTER TABLE users ADD COLUMN phone VARCHAR(20)", "migrations/001_phone.py"),
+    ("AP-S1.89a", "new BehaviorSubject<User>(null)", "src/services/user.service.ts"),
+    ("AP-S4.14a", '<div class="bg-brand-primary p-4">', "src/hero.tsx"),
+    ("AP-S4.7a", "  min-height: 100vh;", "src/hero.css"),
+    ("AP-S4.26a", "const user = UserSchema.parse(await res.json());", "src/api.ts"),
+    (
+        "AP-S4.23a",
+        '<button aria-label="Close" onClick={close}><CloseIcon /></button>',
+        "src/modal.tsx",
+    ),
+]
+
+
+@pytest.mark.parametrize(("anti_pattern", "code", "file"), _CATCHES)
+def test_the_new_rules_catch_the_violation(anti_pattern, code, file):
+    findings = scan_text(code, file=file)
+    assert any(f.anti_pattern == anti_pattern for f in findings), (
+        f"{anti_pattern} did not fire on {code!r} in {file!r}"
+    )
+
+
+@pytest.mark.parametrize(("anti_pattern", "code", "file"), _HOLDS)
+def test_the_new_rules_hold_on_the_near_miss(anti_pattern, code, file):
+    findings = scan_text(code, file=file)
+    assert not any(f.anti_pattern == anti_pattern for f in findings), (
+        f"{anti_pattern} fired on the correct form {code!r} in {file!r}"
+    )
+
+
+def test_every_new_rule_is_stated_in_both_directions():
+    """A rule with no near-miss case is a rule nobody has checked for width.
+
+    The pairs above are the specification. This asserts the specification is
+    complete rather than trusting that each new rule was given both halves.
+    """
+    caught = {ap for ap, _, _ in _CATCHES}
+    held = {ap for ap, _, _ in _HOLDS}
+    assert caught == held, f"missing a direction for {caught ^ held}"
+
+
+def test_a_path_scoped_rule_declines_when_it_has_no_file():
+    """Scope is context the snippet surfaces do not have, so they must not guess.
+
+    The MCP surface scans pasted code with no path. A path-scoped rule that
+    fired there would be asserting the snippet's location, which nobody told it.
+    """
+    scoped = [r for r in RULES if r.path_scoped]
+    assert scoped, "the batch added path-scoped rules; this test is about them"
+    assert all(not r.applies_to(None) for r in scoped)
 
 
 def test_scan_file_sets_file_and_reports_line(tmp_path):

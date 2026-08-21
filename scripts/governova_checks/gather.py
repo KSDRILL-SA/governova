@@ -16,11 +16,39 @@ from pathlib import Path
 from governova_checks.rules import TEXT_EXTENSIONS
 
 # Directories never worth scanning (matched on any path part).
+#
+# The generated-output entries are load-bearing, not housekeeping. Coverage
+# reporters embed the *source under test* line by line inside markup, so a
+# report directory is a second copy of the repository that no rule should read:
+# scanning `htmlcov/` reproduces findings against code nobody wrote at that path
+# and nobody can fix there, and it reproduces them only *partly*, because markup
+# splits some tokens and not others. A blocking finding whose file cannot be
+# edited is the fastest way to teach an adopter to switch the gate off.
+#
+# This mattered less while the surface was source extensions only. It became
+# load-bearing the moment `.html` was added, which is why both changes are in
+# one commit rather than the extension arriving first.
 SKIP_DIRS: frozenset[str] = frozenset(
     {
+        # Version control, environments, caches.
         ".git", ".venv", "venv", "node_modules", "__pycache__", "compiled",
-        "dist", "build", ".pytest_cache", ".mypy_cache", ".ruff_cache",
+        ".pytest_cache", ".mypy_cache", ".ruff_cache", ".tox", ".nox",
+        ".gradle", ".terraform", "vendor",
+        # Build output.
+        "dist", "build", "out", "target", "bin", "obj",
+        ".next", ".nuxt", ".svelte-kit", ".angular", ".astro", ".output",
+        # Generated reports — these embed source.
+        "htmlcov", "coverage", "playwright-report", "test-results",
+        "allure-results", "storybook-static", "site", "_site",
     }
+)
+
+# Files that are generated or vendored rather than written. Matched on the file
+# name, because the giveaway is the name: a bundle sits beside its source and
+# inherits its directory, so a directory list cannot reach it.
+GENERATED_SUFFIXES: tuple[str, ...] = (
+    ".min.js", ".min.css", ".bundle.js", ".chunk.js",
+    ".generated.ts", ".generated.js", ".g.dart", "_pb2.py", ".pb.go",
 )
 
 # Path globs skipped by default: test code, fixtures, and the rule set itself.
@@ -62,6 +90,17 @@ DEFAULT_IGNORES: tuple[str, ...] = (
 def is_ignored(rel: str, ignores: tuple[str, ...]) -> bool:
     """Whether a repo-relative posix path matches any ignore glob."""
     return any(fnmatch.fnmatch(rel, pat) for pat in ignores)
+
+
+def is_generated(name: str) -> bool:
+    """Whether a file name marks output rather than something someone wrote.
+
+    Name-based on purpose: a bundle sits in the same directory as its source and
+    inherits it, so `SKIP_DIRS` cannot reach it. Reporting a violation inside a
+    minified bundle is reporting it against a file the author cannot edit.
+    """
+    lowered = name.lower()
+    return any(lowered.endswith(suffix) for suffix in GENERATED_SUFFIXES)
 
 
 # A git revision: SHA, branch, tag, or `origin/main`-style remote ref. Deliberately
@@ -121,6 +160,8 @@ def iter_source_files(
         if path.suffix.lower() not in TEXT_EXTENSIONS:
             continue
         if any(part in SKIP_DIRS for part in path.parts):
+            continue
+        if is_generated(path.name):
             continue
         rel = path.relative_to(root).as_posix()
         if is_ignored(rel, ignores):

@@ -68,10 +68,35 @@ def test_grade_thresholds():
 
 
 def test_certified_eligibility_boundary():
-    factors = [Factor("violation_rate", "Violation rate", 30, 85.0, "")]
-    assert finalize(factors).certified_eligible
-    factors = [Factor("violation_rate", "Violation rate", 30, 84.0, "")]
-    assert not finalize(factors).certified_eligible
+    """The 85 boundary, now tested at quorum.
+
+    This test previously asserted certification on `violation_rate` alone —
+    30% of the model — which ADR-012 deliberately stops. The boundary it exists
+    to pin is 85 versus 84, and that is unchanged; what moved is that the
+    boundary is only reachable once enough of the model has been assessed to
+    issue a headline at all.
+
+    The partial case is asserted directly below, so removing certification from
+    a one-factor assessment is covered rather than merely no longer tested.
+    """
+    at_quorum = [
+        Factor("violation_rate", "Violation rate", 30, 85.0, ""),
+        Factor("constitutional_coverage", "Constitutional coverage", 20, 85.0, ""),
+    ]
+    assert finalize(at_quorum).certified_eligible
+    below = [
+        Factor("violation_rate", "Violation rate", 30, 84.0, ""),
+        Factor("constitutional_coverage", "Constitutional coverage", 20, 84.0, ""),
+    ]
+    assert not finalize(below).certified_eligible
+
+
+def test_certification_is_refused_below_quorum_however_high_the_score():
+    """A perfect score on 30% of the model certifies nothing (ADR-012)."""
+    factors = [Factor("violation_rate", "Violation rate", 30, 100.0, "")]
+    result = finalize(factors)
+    assert result.score == 100
+    assert not result.certified_eligible
 
 
 def test_renderers(tmp_path):
@@ -81,3 +106,146 @@ def test_renderers(tmp_path):
     data = json.loads(to_json(gs))
     assert data["score"] == gs.score and len(data["factors"]) == 5
     assert "Governova Score" in to_markdown(gs)
+
+
+# ─── ADR-012 · a score drawn from one factor is not a score ──────────────────
+
+
+def _factors(**scores: float | None) -> list[Factor]:
+    """Build a factor list from `key=score`, with None meaning unassessed."""
+    from governova_score.model import TITLES, WEIGHTS
+
+    return [
+        Factor(key=k, title=TITLES[k], weight=WEIGHTS[k], score=scores.get(k), detail="")
+        for k in WEIGHTS
+    ]
+
+
+def test_one_factor_carrying_thirty_percent_issues_no_headline() -> None:
+    """The measured first-contact case, and the reason ADR-012 exists.
+
+    On a repository with no Governova instrumentation four factors return None,
+    and `finalize` renormalises 30% of the model onto 100% of the answer.
+    `pallets/click` was told 0/100 (F) on that basis by a product it had run
+    once. The arithmetic was correct; the claim was not.
+    """
+    from governova_score.model import finalize
+
+    result = finalize(_factors(violation_rate=0.0))
+    assert result.assessed_weight == 30
+    assert result.has_quorum is False
+    assert result.headline is None
+    # The arithmetic is still available — it is the *headline* that is withheld.
+    assert result.score == 0
+
+
+def test_a_good_score_on_one_factor_is_withheld_too() -> None:
+    """Quorum is about how much of the model was assessed, not about the answer.
+
+    A rule that only suppressed bad scores would be flattery with extra steps.
+    """
+    from governova_score.model import finalize
+
+    result = finalize(_factors(violation_rate=95.0))
+    assert result.headline is None
+    assert result.score == 95
+
+
+def test_accepting_a_profile_reaches_quorum() -> None:
+    """Violation rate (30) plus constitutional coverage (20) is exactly 50.
+
+    Coverage becomes assessable when a human accepts the proposed profile, so
+    the score appears once the user has told the tool what it is looking at.
+    That is where the threshold was placed, rather than at a number chosen to
+    produce a pleasing outcome.
+    """
+    from governova_score.model import finalize
+
+    result = finalize(_factors(violation_rate=80.0, constitutional_coverage=60.0))
+    assert result.assessed_weight == 50
+    assert result.has_quorum is True
+    assert result.headline == result.score
+
+
+def test_certification_is_impossible_on_a_partial_assessment() -> None:
+    """A repository cannot be Certified on evidence that was never gathered."""
+    from governova_score.model import finalize
+
+    result = finalize(_factors(violation_rate=100.0))
+    assert result.score == 100
+    assert result.certified_eligible is False
+
+
+def test_certification_still_works_at_quorum() -> None:
+    from governova_score.model import finalize
+
+    result = finalize(_factors(violation_rate=100.0, constitutional_coverage=100.0))
+    assert result.certified_eligible is True
+
+
+def test_a_fully_assessed_repository_is_unaffected() -> None:
+    """The amendment must not change any reading it was not written to change."""
+    from governova_score.model import finalize
+
+    result = finalize(
+        _factors(
+            violation_rate=100.0,
+            relay_compliance=85.0,
+            constitutional_coverage=15.0,
+            amendment_discipline=100.0,
+            audit_trail=100.0,
+        )
+    )
+    assert result.assessed_weight == 100
+    assert result.has_quorum is True
+    assert result.headline == result.score
+
+
+def test_violation_density_is_reported_beside_the_count(tmp_path) -> None:
+    """The count keeps its meaning; density says how spread out it is.
+
+    52 findings across 32 files and 52 across 3,200 are the same number and
+    different situations, and the factor is entitled to say so without
+    pretending to have measured something else.
+    """
+    from governova_score.compute import _violation_rate
+
+    src = tmp_path / "src"
+    src.mkdir()
+    for i in range(4):
+        (src / f"m{i}.ts").write_text("localStorage.setItem('access_token', t);\n", encoding="utf-8")
+
+    factor = _violation_rate(tmp_path)
+    assert "per file" in factor.detail
+    assert "1.00 per file" in factor.detail
+
+
+def test_a_clean_repository_reports_no_density(tmp_path) -> None:
+    """Zero findings per file is not information, and the line stays readable."""
+    from governova_score.compute import _violation_rate
+
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "m.ts").write_text("const a = 1;\n", encoding="utf-8")
+
+    factor = _violation_rate(tmp_path)
+    assert factor.score == 100
+    assert "per file" not in factor.detail
+
+
+def test_the_violation_factor_arithmetic_is_unchanged(tmp_path) -> None:
+    """ADR-012 adds a figure beside the count. It does not redefine the count.
+
+    Every historical reading of `violation_rate` must still mean what it meant,
+    which is the whole reason density was added alongside rather than instead.
+    """
+    from governova_score.compute import _ADVISORY_PENALTY, _violation_rate
+
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "m.ts").write_text(
+        "localStorage.setItem('access_token', t);\nconsole.log('x');\n", encoding="utf-8"
+    )
+    factor = _violation_rate(tmp_path)
+    # One blocking (AP-S3.14a) and one advisory (AP-S8.31a).
+    assert factor.score == 100.0 - 10 - _ADVISORY_PENALTY

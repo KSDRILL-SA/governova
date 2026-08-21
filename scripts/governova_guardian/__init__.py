@@ -88,7 +88,18 @@ def to_markdown(v: GuardianVerdict) -> str:
         "",
         "| | |",
         "|--|--|",
-        f"| **Governova Score** | {v.score.score}/100 ({v.score.grade}) |",
+        # ADR-012 — a headline is withheld below quorum rather than qualified.
+        # This surface posts to a pull request, where a number is quoted and a
+        # caveat beside it is not.
+        (
+            f"| **Governova Score** | {v.score.score}/100 ({v.score.grade}) |"
+            if v.score.headline is not None
+            else (
+                "| **Governova Score** | partial assessment — "
+                f"{len(v.score.assessed_factors)} of {len(v.score.factors)} factor(s), "
+                f"{v.score.assessed_weight}% of the model |"
+            )
+        ),
         f"| **This PR** | {len(v.blocking)} blocking · {len(v.advisory)} advisory · "
         f"{v.files_scanned} file(s) scanned |",
         f"| **Enforcement coverage** | {v.coverage.get('coverage_pct')}% "

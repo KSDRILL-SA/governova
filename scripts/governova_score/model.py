@@ -31,6 +31,23 @@ TITLES: dict[str, str] = {
 # §18.2 — Governova Certified threshold.
 CERTIFIED_THRESHOLD = 85
 
+# ADR-012 — the least of the model that must be assessed before a headline score
+# is issued at all.
+#
+# Below this, `finalize` renormalises a minority of the model onto 100% of the
+# answer. Measured: on first contact with a repository carrying no Governova
+# instrumentation, four factors return None and violation rate alone — 30% of the
+# model — becomes the whole score. `pallets/click` was told 0/100 (F) on that
+# basis, by a product it had run once.
+#
+# 50 is a majority of the weight, not a tuned number: it is the least that can be
+# claimed by something calling itself a weighted average of five factors. It also
+# falls where the product's own design already places the boundary — violation
+# rate (30) plus constitutional coverage (20) — and coverage becomes assessable
+# exactly when a human accepts the proposed profile. So the score appears once
+# the user has told the tool what it is looking at, and not before.
+QUORUM_WEIGHT = 50
+
 
 @dataclass(frozen=True)
 class Factor:
@@ -63,8 +80,26 @@ class GovernovaScore:
     assessed_weight: int
 
     @property
+    def has_quorum(self) -> bool:
+        """Whether enough of the model was assessed to issue a headline (ADR-012)."""
+        return self.assessed_weight >= QUORUM_WEIGHT
+
+    @property
+    def headline(self) -> int | None:
+        """The score to publish, or None when the assessment is partial.
+
+        `score` remains the arithmetic over whatever was assessed, because that
+        figure is still worth showing beside the factors it came from. `headline`
+        is the one a surface may present as *the* Governova Score, and it is
+        withheld rather than qualified: a number with a caveat beside it is read
+        as a number, and the caveat is not what gets quoted.
+        """
+        return self.score if self.has_quorum else None
+
+    @property
     def certified_eligible(self) -> bool:
-        return self.score >= CERTIFIED_THRESHOLD
+        """Certification requires a quorum. A partial assessment certifies nothing."""
+        return self.has_quorum and self.score >= CERTIFIED_THRESHOLD
 
     @property
     def assessed_factors(self) -> list[Factor]:

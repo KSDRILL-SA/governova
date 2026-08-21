@@ -15,7 +15,6 @@ paying a debt down.
 
 | ID | Debt | Cost | Blocks | Tracked |
 |----|------|------|--------|---------|
-| **D-03** | **The violation-rate factor saturates.** 53 findings score identically whether the repository has 30 files or 30,000, so on first contact a mature library baselines at 0/100 | Small to fix, but it is a `C0 §8` model change and therefore L4 | An honest first-contact score for real adopters | `#196` |
 | **D-05** | **`S13.4` is violated and cannot be repaired.** One `harden:` commit sits in history with no valid maintenance type. Rewriting history to fix a metric is precisely the failure the metric exists to catch | Zero to accept. Unbounded to "fix" dishonestly | One permanently violated probe, correctly reported | — |
 | **D-06** | **The relay factor is permanently 85/100.** The audit chain records a refused L4 attempt from the runtime's first live cycle; removing it would break the chain | Zero — accepted permanently | 15 points of the Governova Score, forever. The arithmetic in `#246` already assumes this | — |
 | **D-07** | **No TypeScript formatter runs.** `.editorconfig` declares the S1.73 line length, and eleven lines in the IDE extension exceed it. Nothing enforces the number | Small, but it introduces a Node toolchain to govern 485 lines | Nothing today; grows with the extension | `#248` closed with the config; enforcement deferred |
@@ -40,6 +39,7 @@ paying a debt down.
 | **D-19** | Branch coverage was not tracked, so 194 partial branches sat behind an 82% line figure | 2026-08-21 | `branch = true`, with `fail_under` unchanged at 80. Twenty of the partial branches were probe verdicts that had never been produced in a test; those are covered now |
 | **D-20** | No coverage report reached a pull request | 2026-08-21 | `validate.yml` publishes `coverage.xml` on every run, including failed ones — the run worth reading most is the one that failed |
 | **D-21** | No complexity gate; ruff selected `C4` (comprehensions) and not `C901` (mccabe) | 2026-08-21 | `C90` enabled at the current ceiling. The ratchet down is `D-22` |
+| **D-03** | The violation-rate factor saturated, and a headline score rested on one factor | 2026-08-21 | `ADR-012` — no score is issued below a quorum of 50% of the model, and density is reported beside the count. The saturation itself is **not** removed: amending the penalty curve means picking a number for a pleasing shape, and that is deferred with the reason recorded |
 | **D-10** | The abbreviated form discarded anti-patterns unconditionally — 227 standards could not carry one however carefully it was written | 2026-08-20 | `#241` taught the compiler to read a block on an abbreviated standard, index byte-identical on landing |
 | **D-11** | A blocking rule cited `S2.34` (idempotency) while implementing money-as-float | 2026-08-20 | `#243`, once `AP-S5.28a` existed to bind to. Law before check |
 | **D-12** | The per-rule cost ceiling measured the scheduler, not the rule — 3 failures in 8 under load, with noise reaching 255x against a 355x signal | 2026-08-20 | `#247` — min-of-repeats sampling, ceiling unchanged, and the negative case the gate never had |

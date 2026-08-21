@@ -11,6 +11,7 @@ import datetime as dt
 
 import pytest
 from governova_org import (
+    Active,
     MemberRole,
     Membership,
     OperatingMode,
@@ -63,6 +64,7 @@ def test_deleted_rows_are_not_returned() -> None:
     """`S5.22`. Its own anti-pattern is the query that forgot the filter."""
     rows = [_member("a"), _member("b", deleted=True), _member("c")]
     assert [m.id for m in active(rows)] == ["a", "c"]
+    assert len(active(rows)) == 2
 
 
 def test_a_deleted_membership_occupies_no_seat() -> None:
@@ -76,25 +78,25 @@ def test_a_deleted_membership_occupies_no_seat() -> None:
 def test_seats_are_counted_from_assignment_not_from_headcount() -> None:
     """A membership without a seat costs nothing — that is the billing unit."""
     rows = [_member("a", seated=True), _member("b"), _member("c", seated=True)]
-    assert seats_in_use(rows) == 2
+    assert seats_in_use(active(rows)) == 2
 
 
 def test_a_seat_is_assigned_when_one_is_free() -> None:
     rows = [_member("a", seated=True), _member("b")]
-    assert assign_seat(_org(seats=2), rows, "b", now=_NOW).occupies_a_seat
+    assert assign_seat(_org(seats=2), active(rows), "b", now=_NOW).occupies_a_seat
 
 
 def test_assigning_a_seat_that_is_already_held_changes_nothing() -> None:
     """Idempotent. A double-click must not consume two seats."""
     rows = [_member("a", seated=True)]
-    assert assign_seat(_org(seats=1), rows, "a").seat_assigned_at == _NOW
+    assert assign_seat(_org(seats=1), active(rows), "a").seat_assigned_at == _NOW
 
 
 def test_running_out_of_seats_refuses_with_the_numbers() -> None:
     """"No seats available" makes the administrator go and find out what this knew."""
     rows = [_member("a", seated=True), _member("b", seated=True), _member("c")]
     with pytest.raises(OrgRuleError) as caught:
-        assign_seat(_org(seats=2), rows, "c")
+        assign_seat(_org(seats=2), active(rows), "c")
     message = str(caught.value)
     assert "2 seat(s)" in message
     assert "all 2 are in use" in message
@@ -102,19 +104,19 @@ def test_running_out_of_seats_refuses_with_the_numbers() -> None:
 
 def test_releasing_a_seat_frees_it_for_somebody_else() -> None:
     rows = [_member("a", seated=True), _member("b")]
-    released = release_seat(rows, "a")
+    released = release_seat(active(rows), "a")
     rows = [released, rows[1]]
-    assert seats_in_use(rows) == 0
-    assert assign_seat(_org(seats=1), rows, "b").occupies_a_seat
+    assert seats_in_use(active(rows)) == 0
+    assert assign_seat(_org(seats=1), active(rows), "b").occupies_a_seat
 
 
 def test_releasing_a_seat_nobody_holds_is_not_an_error() -> None:
-    assert release_seat([_member("a")], "a").seat_assigned_at is None
+    assert release_seat(active([_member("a")]), "a").seat_assigned_at is None
 
 
 def test_an_unknown_membership_is_refused_by_name() -> None:
     with pytest.raises(OrgRuleError, match="ghost"):
-        assign_seat(_org(), [_member("a")], "ghost")
+        assign_seat(_org(), active([_member("a")]), "ghost")
 
 
 # ─── The last owner ──────────────────────────────────────────────────────────
@@ -128,12 +130,12 @@ def test_the_last_owner_cannot_demote_themselves() -> None:
     """
     rows = [_member("a", MemberRole.OWNER), _member("b", MemberRole.ADMIN)]
     with pytest.raises(OrgRuleError, match="only owner"):
-        change_role(rows, "a", MemberRole.ADMIN)
+        change_role(active(rows), "a", MemberRole.ADMIN)
 
 
 def test_an_owner_can_step_down_once_somebody_else_is_an_owner() -> None:
     rows = [_member("a", MemberRole.OWNER), _member("b", MemberRole.OWNER)]
-    assert change_role(rows, "a", MemberRole.MEMBER).role is MemberRole.MEMBER
+    assert change_role(active(rows), "a", MemberRole.MEMBER).role is MemberRole.MEMBER
 
 
 def test_a_deleted_owner_does_not_count_as_cover() -> None:
@@ -143,24 +145,24 @@ def test_a_deleted_owner_does_not_count_as_cover() -> None:
         _member("b", MemberRole.OWNER, deleted=True),
     ]
     with pytest.raises(OrgRuleError, match="only owner"):
-        change_role(rows, "a", MemberRole.MEMBER)
+        change_role(active(rows), "a", MemberRole.MEMBER)
 
 
 def test_promoting_somebody_to_owner_is_never_blocked() -> None:
     rows = [_member("a", MemberRole.OWNER), _member("b")]
-    assert change_role(rows, "b", MemberRole.OWNER).role is MemberRole.OWNER
+    assert change_role(active(rows), "b", MemberRole.OWNER).role is MemberRole.OWNER
 
 
 def test_the_last_owner_cannot_be_removed() -> None:
     rows = [_member("a", MemberRole.OWNER), _member("b")]
     with pytest.raises(OrgRuleError, match="only owner"):
-        remove_member(rows, "a")
+        remove_member(active(rows), "a")
 
 
 def test_removing_a_member_is_a_soft_delete_that_frees_their_seat() -> None:
     """`S5.8` — a hard delete is irreversible and takes the audit trail with it."""
     rows = [_member("a", MemberRole.OWNER), _member("b", seated=True)]
-    removed = remove_member(rows, "b", now=_NOW)
+    removed = remove_member(active(rows), "b", now=_NOW)
     assert removed.deleted_at == _NOW
     assert removed.seat_assigned_at is None
     assert not removed.occupies_a_seat
@@ -322,3 +324,65 @@ def test_the_schema_keys_team_membership_on_the_organisation() -> None:
     assert "fields: [organisation_id, team_id]" in block
     assert "references: [organisation_id, id]" in block
     assert "fields: [organisation_id, membership_id]" in block
+
+
+# ─── What the type closes ────────────────────────────────────────────────────
+
+
+def test_a_removed_member_cannot_be_given_a_seat() -> None:
+    """The bug the free-function filter left open.
+
+    `assign_seat` took a raw list and `_member` did not filter, so a removed
+    member could be handed a seat — and it looked like it worked. Nothing in the
+    return value said the row was deleted.
+    """
+    rows = [_member("own", MemberRole.OWNER), _member("gone", deleted=True)]
+    with pytest.raises(OrgRuleError, match="no membership gone"):
+        assign_seat(_org(seats=5), active(rows), "gone", now=_NOW)
+
+
+def test_a_removed_member_cannot_be_promoted() -> None:
+    """The same hole, reached through the other door."""
+    rows = [_member("own", MemberRole.OWNER), _member("gone", deleted=True)]
+    with pytest.raises(OrgRuleError, match="no membership gone"):
+        change_role(active(rows), "gone", MemberRole.ADMIN)
+
+
+def test_an_active_set_cannot_be_built_around_a_deleted_record() -> None:
+    """Not a convention — the constructor refuses.
+
+    A caller who bypasses `active()` and builds one directly gets the same
+    guarantee, which is what makes the type worth having rather than a label.
+    """
+    with pytest.raises(OrgRuleError, match="deleted record"):
+        Active(records=(_member("gone", deleted=True),))
+
+
+def test_an_active_set_built_directly_from_live_records_is_allowed() -> None:
+    """Direct construction is for records already known to be live."""
+    assert len(Active(records=(_member("a"),))) == 1
+
+
+def test_the_filter_is_in_the_signature_not_in_the_caller() -> None:
+    """The point of the type, stated as a property of the API.
+
+    Every function that must not see deleted rows asks for `Active`. A raw list
+    does not type-check where one is wanted, so the filter cannot be forgotten on
+    the way in — which is the failure `S5.22`'s anti-pattern describes.
+    """
+    import inspect
+
+    import governova_org as org
+
+    must_be_filtered = (
+        org.seats_in_use,
+        org.assign_seat,
+        org.release_seat,
+        org.change_role,
+        org.remove_member,
+    )
+    for function in must_be_filtered:
+        annotations = inspect.get_annotations(function)
+        assert any(
+            "Active[" in str(a) for a in annotations.values()
+        ), f"{function.__name__} accepts records without requiring them filtered"

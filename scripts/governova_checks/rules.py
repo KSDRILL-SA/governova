@@ -245,7 +245,24 @@ RULES: list[Rule] = [
         "AP-S5.28a",
         "S5.28",
         re.compile(
-            r"\b(?:double|float)\s+\w*(?:price|amount|balance|total|cost|fee|money|currency)\w*",
+            # The C-family declaration: `double price`, `float amount`.
+            r"\b(?:double|float)\s+\w*(?:price|amount|balance|total|cost|fee|money|currency)\w*"
+            # The Python annotation: `amount: float`, `balance: float = 0.0`.
+            #
+            # Added because the pattern above cannot see Python at all, and this
+            # rule blocks builds. Governova's own credit ledger is Python, so
+            # `#255`'s "no float in monetary arithmetic, asserted by our own
+            # enforcer" would have passed over it without reading a line.
+            #
+            # `total` is deliberately absent from this half. `\w*total\w*` also
+            # matches `total_seconds`, `total_count` and `total_files`, none of
+            # which are money — and a blocking rule that fires on those is one
+            # people turn off. `subtotal` carries the monetary sense on its own.
+            r"|\b\w{0,40}(?:price|amount|balance|subtotal|cost|fee|money|currency|credit)\w{0,40}"
+            r"\s*:\s*float\b"
+            # A function that returns money as a float. Same reasoning.
+            r"|\bdef\s+\w{0,40}(?:price|amount|balance|subtotal|cost|fee|money|currency|credit)"
+            r"\w{0,40}\s*\([^)]{0,160}\)\s*->\s*float\b",
             re.I,
         ),
         "Monetary value as float/double. S5.28: money uses Decimal, never Float.",

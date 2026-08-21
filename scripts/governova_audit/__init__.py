@@ -23,7 +23,6 @@ partially written tail cannot corrupt earlier records.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 from dataclasses import asdict, dataclass, field
@@ -32,11 +31,16 @@ from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
+from governova_chain import GENESIS_HASH, canonical_hash, verify_chain
+
 AUDIT_RELATIVE_PATH = "governance/audit/audit-log.jsonl"
 
 # The genesis link. The first record chains to this, so a log whose first record
 # claims any other predecessor has had its head removed.
-GENESIS_HASH = "0" * 64
+#
+# It now comes from `governova_chain` and is imported above rather than defined
+# here, which keeps it re-exported for callers that read it from this module —
+# the value is unchanged, so every hash in the committed trail still verifies.
 
 
 class PermissionLevel(StrEnum):
@@ -83,10 +87,14 @@ class AuditRecord:
         return d
 
     def compute_hash(self) -> str:
-        # sort_keys + separators make the encoding canonical, so the same record
-        # hashes identically on any platform and any Python version.
-        canonical = json.dumps(self.payload(), sort_keys=True, separators=(",", ":"))
-        return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+        """Delegated to `governova_chain` — the encoding is identical.
+
+        It was `json.dumps(..., sort_keys=True, separators=(",", ":"))` followed
+        by SHA-256, which is exactly what `canonical_hash` does. Every hash in the
+        existing trail still verifies, which the audit tests assert against the
+        committed chain rather than against a fixture.
+        """
+        return canonical_hash(self.payload())
 
     def is_intact(self) -> bool:
         return self.record_hash == self.compute_hash()
@@ -198,24 +206,12 @@ def verify(root: Path) -> ChainVerification:
         except (json.JSONDecodeError, TypeError) as exc:
             issues.append(f"line {i}: unreadable audit record ({type(exc).__name__})")
 
-    expected_prev = GENESIS_HASH
-    expected_seq = 1
-    for record in records:
-        if not record.is_intact():
-            issues.append(
-                f"seq {record.seq}: record content was altered after it was written "
-                f"(hash mismatch)"
-            )
-        if record.prev_hash != expected_prev:
-            issues.append(
-                f"seq {record.seq}: chain link broken — expected predecessor "
-                f"{expected_prev[:12]}…, found {record.prev_hash[:12]}…"
-            )
-        if record.seq != expected_seq:
-            issues.append(f"sequence gap — expected seq {expected_seq}, found {record.seq}")
-            expected_seq = record.seq
-        expected_prev = record.record_hash
-        expected_seq += 1
+    # The walk itself is shared with the credit ledger (`governova_chain`).
+    # `#255` asked the ledger to reuse this rather than grow a second one —
+    # "building a second one is the `validate`-existed-twice failure with money
+    # attached" — and the honest way to be reused is to be extracted, not copied.
+    walked = verify_chain(records)
+    issues.extend(walked.issues)
 
     return ChainVerification(valid=not issues, records=len(records), issues=issues)
 

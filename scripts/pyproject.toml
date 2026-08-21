@@ -93,7 +93,12 @@ build-backend = "hatchling.build"
 path = "hatch_build.py"
 
 [tool.hatch.build.targets.sdist.force-include]
-"../compiled/constitution.json" = "compiled/constitution.json"
+# The *core* index is what a wheel bundles (ADR-011 §1), so it is what an sdist
+# must carry for a wheel built from that sdist to find one. The full corpus is
+# deliberately not included: an sdist carrying it would hand over the licensed
+# artefact to anyone installing with `--no-binary`, which is the whole boundary
+# this mechanism exists to draw.
+"../compiled/constitution.core.json" = "compiled/constitution.core.json"
 
 [tool.hatch.build.targets.wheel]
 packages = [

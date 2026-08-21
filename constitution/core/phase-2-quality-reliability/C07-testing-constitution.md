@@ -513,10 +513,19 @@ axe-core accessibility checks run on every page in the PR CI pipeline via Playwr
 > - `AP-S7.21a` — Playwright `page.locator('.css-class')` — the test asserts on styling rather than on behaviour, so a purely visual refactor fails it and a genuine behavioural regression can pass it.
 
 > **S7.22** — E2E tests run against preview deployments when available — not against localhost in CI. Preview deployment E2E validates the actual deployed artifact.
+>
+> **Anti-Patterns:**
+> - `AP-S7.22a` — End-to-end tests run against localhost in CI — they validate a build that was never deployed, so every fault introduced by the deployment itself passes the suite that exists to catch it.
 
 > **S7.23** — E2E test data is isolated per test run using unique identifiers (timestamp-based email addresses, test-specific user accounts) — tests never depend on pre-existing production data.
+>
+> **Anti-Patterns:**
+> - `AP-S7.23a` — Test data shared across runs — two runs collide on the same record, and the suite fails for a reason that has nothing to do with the change under test.
 
 > **S7.24** — Playwright's `--reporter=html` generates a test report on every nightly run — stored as a CI artifact for 7 days.
+>
+> **Anti-Patterns:**
+> - `AP-S7.24a` — A nightly run that leaves no stored report — a failure seen in the morning cannot be inspected, and the only way to learn what broke is to reproduce it.
 
 ---
 
@@ -548,14 +557,29 @@ Minimum coverage thresholds enforced by CI: Next.js (Jest): 70% line/statement c
 ### S7.26–S7.30 — Additional Coverage and CI Standards
 
 > **S7.26** — Coverage exclusions are explicit and documented: `/* istanbul ignore next */` requires a comment explaining why the code is intentionally uncovered. Blanket coverage exclusions are a code review block.
+>
+> **Anti-Patterns:**
+> - `AP-S7.26a` — A coverage exclusion added with no comment explaining it — the excluded code is indistinguishable from code nobody has reached yet, and the exclusion outlives the reason for it.
 
 > **S7.27** — Coverage reports are generated as CI artifacts on every PR — reviewers can see which lines were added without test coverage.
+>
+> **Anti-Patterns:**
+> - `AP-S7.27a` — No coverage report published on the pull request — a reviewer cannot see which added lines are untested, so the question is answered by whether the author remembered to mention it.
 
 > **S7.28** — Branch coverage is tracked alongside line coverage — a function that is called but whose error branches are never exercised has misleading line coverage.
+>
+> **Anti-Patterns:**
+> - `AP-S7.28a` — Line coverage tracked without branch coverage — a function called once reports as covered while none of its error branches has ever run, and the number reassures precisely where it should not.
 
 > **S7.29** — Auth-related code has 100% branch coverage — the security implications make partial branch coverage unacceptable for authentication logic.
+>
+> **Anti-Patterns:**
+> - `AP-S7.29a` — Partial branch coverage accepted on authentication code — an unexercised branch in the one component whose failure is a breach is treated the same as an unexercised branch anywhere else.
 
 > **S7.30** — Performance budget: CI fails if the bundle size increases by more than 10% from the previous baseline without an explicit justification comment in the PR.
+>
+> **Anti-Patterns:**
+> - `AP-S7.30a` — Bundle growth merged with no justification and no gate — each increase is defensible alone, no single change is responsible, and the regression is noticed only once it is large.
 
 ---
 
@@ -608,14 +632,29 @@ FastAPI endpoint integration tests use `httpx.AsyncClient(app=app, base_url="htt
 ### S7.33–S7.38 — Additional Python Testing Standards
 
 > **S7.33** — Pydantic models are unit-tested with valid input, invalid input (expecting ValidationError), and edge cases — Pydantic validation is business logic.
+>
+> **Anti-Patterns:**
+> - `AP-S7.33a` — A validation model tested only against valid input — the rejection path is the entire reason the model exists, and it is the path with no test.
 
 > **S7.34** — pytest fixtures provide test data — no hardcoded test data in test functions. Fixtures are defined in `conftest.py` and scope-labeled (`function`, `session`).
+>
+> **Anti-Patterns:**
+> - `AP-S7.34a` — Test data hardcoded inside test functions — the same setup is duplicated and drifts, so two tests that claim to describe the same case quietly stop doing so.
 
 > **S7.35** — FastAPI dependency overrides (`app.dependency_overrides`) are used to inject test dependencies (mock auth, test database) — not monkey-patching.
+>
+> **Anti-Patterns:**
+> - `AP-S7.35a` — Dependencies swapped by monkey-patching rather than through the framework's override mechanism — the patch leaks between tests, and the failure appears in whichever test happens to run next.
 
 > **S7.36** — Async pytest tests use `@pytest.mark.asyncio` and the asyncio event loop fixture — never mix sync and async test functions in the same test file.
+>
+> **Anti-Patterns:**
+> - `AP-S7.36a` — Synchronous and asynchronous tests mixed in one file without the event loop fixture — tests pass or fail according to collection order, which is the hardest failure mode to attribute to anything.
 
 > **S7.37** — LangChain pipeline tests use fixtures with pre-computed embeddings — never call the actual embedding model in unit tests (cost and latency).
+>
+> **Anti-Patterns:**
+> - `AP-S7.37a` — A unit test that calls the real embedding model — the suite is billed and slowed on every run, and a network fault is reported as a test failure.
 
 > **S7.38** — Financial calculation tests use `Decimal` for all expected values — not floats. Tests that compare float financial results are incorrect.
 >
@@ -652,12 +691,24 @@ Integration tests run against a dedicated test database — never production, ne
 ### S7.40–S7.43 — Test Database Standards
 
 > **S7.40** — Each integration test runs inside a database transaction that rolls back after the test completes — the database is in a clean state for every test without truncating tables.
+>
+> **Anti-Patterns:**
+> - `AP-S7.40a` — An integration test that commits its writes — the next test sees data it never created, so the suite passes in one order and fails in another with no change to the code.
 
 > **S7.41** — Prisma migrations are applied to the test database before the test suite runs — `prisma migrate deploy` is part of the CI test setup script.
+>
+> **Anti-Patterns:**
+> - `AP-S7.41a` — A test suite run against a database whose migrations were never applied — the failures describe a schema that exists nowhere, and the time goes into diagnosing the environment rather than the change.
 
 > **S7.42** — Test fixtures seed the minimum data required for the test — not the entire dataset. Over-seeded fixtures slow down tests and create implicit dependencies.
+>
+> **Anti-Patterns:**
+> - `AP-S7.42a` — A fixture that seeds the whole dataset — tests slow down for everyone and acquire implicit dependencies on records they never asked for, so removing a row breaks a test that never referenced it.
 
 > **S7.43** — ChromaDB and MongoDB test instances use in-memory or temporary collections that are cleared after each test suite (Angular/FundsLink only).
+>
+> **Anti-Patterns:**
+> - `AP-S7.43a` — Vector and document test instances left uncleared between suites — state carries from one suite into the next, and a passing run depends on what ran before it.
 
 ---
 

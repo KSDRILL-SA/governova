@@ -305,10 +305,19 @@ Every new feature beyond the initial v1 set ships behind a feature flag stored i
 ### S9.11–S9.13 — Additional Feature Governance Standards
 
 > **S9.11** — Stack impact assessed before any feature approval: Does it require a new database table? New endpoint (pushes toward the v1 endpoint limit)? New background job? New external service? Features that exceed v1 stack complexity limits are deferred.
+>
+> **Anti-Patterns:**
+> - `AP-S9.11a` — A feature approved without assessing what it adds to the stack — the new table, endpoint, job and external service are each individually small, and the complexity limit is crossed by a feature nobody thought was large.
 
 > **S9.12** — A feature that requires switching frameworks is automatically deferred. FundsLink cannot add React components. Maphophe cannot add FastAPI. The framework assignment is locked by C6 and C1.
+>
+> **Anti-Patterns:**
+> - `AP-S9.12a` — A feature accepted that needs a second framework — the locked assignment is broken by a product decision rather than an amendment, and the system now carries two answers to every frontend question.
 
 > **S9.13** — Feature proposals are written in plain language describing the user problem and expected behaviour — not technical specifications. Technical design is a separate document that follows a locked feature proposal.
+>
+> **Anti-Patterns:**
+> - `AP-S9.13a` — A proposal written as a technical specification — the user problem is never stated, so the design is evaluated against an implementation instead of against whether it helps anyone.
 
 ---
 
@@ -347,14 +356,29 @@ MVP "done" is defined by the completion of the primary user workflow end-to-end 
 ### S9.15–S9.20 — Additional MVP Standards
 
 > **S9.15** — MVP includes: all C3 auth requirements, all v1 database schemas migrated, all v1 API endpoints under OpenAPI contract, CI/CD pipeline green, test coverage gates passing, visual regression at 320/375/390px passing.
+>
+> **Anti-Patterns:**
+> - `AP-S9.15a` — A launch declared with part of the criteria unmet — the missing half is always the unglamorous half, and it is discovered by the first real user rather than by the gate.
 
 > **S9.16** — Build order is locked per S9.3. No system begins until the previous system's MVP is in production and has been in production for at least 2 weeks with no SEV0/SEV1 incidents.
+>
+> **Anti-Patterns:**
+> - `AP-S9.16a` — A system started before the previous one has held production for the full soak — two systems are then in flight, and a defect surfacing in the first arrives while attention has already moved to the second.
 
 > **S9.17** — MVP launch includes a public status page (Better Stack) and a support email address. Users experiencing issues have a way to report them.
+>
+> **Anti-Patterns:**
+> - `AP-S9.17a` — A launch with no status page and no support address — a user hitting a fault has nowhere to report it, so the outage is measured by how many people quietly stop returning.
 
 > **S9.18** — Performance budget is part of MVP criteria: Lighthouse mobile score ≥ 80 in production. FundsLink and Maphophe target ≥ 85 given the low-bandwidth constraint (S9.5).
+>
+> **Anti-Patterns:**
+> - `AP-S9.18a` — A launch that skips the performance budget — on the low-bandwidth connections the product exists to serve, the page is unusable, and every other criterion passing is irrelevant.
 
 > **S9.19** — Accessibility is part of MVP criteria: axe-core CI gate passing (no critical/serious violations). This is enforced by C7 S7.20 but confirmed here as a product criterion, not just a technical criterion.
+>
+> **Anti-Patterns:**
+> - `AP-S9.19a` — Accessibility treated as a technical gate rather than a product criterion — it is waived at launch alongside other technical items, and the users excluded are the ones least able to report it.
 
 > **S9.20** — MVP does not include v2 features in a disabled/hidden state. Features that are not ready are not deployed — not deployed and hidden. Ship only what is done.
 >
@@ -366,28 +390,58 @@ MVP "done" is defined by the completion of the primary user workflow end-to-end 
 ## Part 4 — User Feedback Integration (`S9.21`–`S9.25`)
 
 > **S9.21** — User feedback is collected from real users — not from the builder's assumptions about what users want. User research is conducted before v2 scope is locked.
+>
+> **Anti-Patterns:**
+> - `AP-S9.21a` — Scope drawn from the builder's assumptions about users — the product is optimised for a person who does not exist, and the mismatch is discovered after the version is built.
 
 > **S9.22** — User feedback is documented as GitHub Issues in the system repository with the `user-feedback` label — not as informal notes or in messaging apps.
+>
+> **Anti-Patterns:**
+> - `AP-S9.22a` — Feedback kept in messaging apps and informal notes — it cannot be counted, labelled or cited in a gate evaluation, so a request made by many users carries the same weight as one made by nobody.
 
 > **S9.23** — User feedback informs the next sprint's feature gate evaluation — a feature that multiple users have independently requested scores higher on Q5 (has a real user confirmed they need this?).
+>
+> **Anti-Patterns:**
+> - `AP-S9.23a` — Feedback not carried into the gate evaluation — the question of whether a real user needs a feature is answered from memory, and the answer favours whatever was discussed most recently.
 
 > **S9.24** — Quantitative metrics (active users, primary workflow completion rate, time-to-complete, error rate) are tracked from day 1 of v1 production via Vercel Analytics and Sentry. Decisions are made against data, not intuition.
+>
+> **Anti-Patterns:**
+> - `AP-S9.24a` — Usage metrics not instrumented from day one — the first version's real behaviour is unrecoverable, so the next version's scope is decided on intuition and presented as evidence.
 
 > **S9.25** — A feature requested by users that fails Q1–Q4 gate questions is still deferred — user desire does not override the constitutional gate framework. Document the request in the v2 backlog.
+>
+> **Anti-Patterns:**
+> - `AP-S9.25a` — A requested feature admitted because users asked for it — the gate framework is bypassed by popularity, and the gates stop being a constraint the moment they are inconvenient.
 
 ---
 
 ## Part 5 — Roadmap Governance (`S9.26`–`S9.30`)
 
 > **S9.26** — The roadmap is the sequence of constitutionally approved features — not a wishlist. Items on the roadmap have passed the 5 gate questions, have a feature group classification, and have a written feature proposal.
+>
+> **Anti-Patterns:**
+> - `AP-S9.26a` — A roadmap that carries unapproved items — a wishlist and a plan become indistinguishable, and work begins on entries that never passed a gate because they were on the same list as those that did.
 
 > **S9.27** — v2 scope is not locked until v1 has been in production for at least 2 weeks with quantitative usage data. v2 features are informed by real usage, not pre-launch assumptions.
+>
+> **Anti-Patterns:**
+> - `AP-S9.27a` — Next-version scope locked before real usage data exists — the assumptions being tested are frozen as commitments, and the data arrives too late to change anything.
 
 > **S9.28** — Roadmap items are prioritised by: (1) primary workflow impact, (2) user feedback volume, (3) technical dependency order. Not by engineering interest, tool novelty, or feature complexity.
+>
+> **Anti-Patterns:**
+> - `AP-S9.28a` — Priority set by engineering interest or tool novelty — the most interesting item leads, and the primary workflow's blocker waits behind work that no user asked for.
 
 > **S9.29** — A roadmap item that has been on the backlog for two consecutive sprints without being started is reviewed: either it enters the current sprint as a priority, or it is moved to a formal "deferred" list with written reasoning.
+>
+> **Anti-Patterns:**
+> - `AP-S9.29a` — A backlog item carried across sprints unreviewed — it is neither started nor deferred with reasoning, so the backlog accumulates items whose status is decided by nobody.
 
 > **S9.30** — The roadmap is reviewed at every quarterly constitutional review (C0 §12) — features that no longer pass the 5 gate questions given new information are removed from the roadmap.
+>
+> **Anti-Patterns:**
+> - `AP-S9.30a` — A roadmap never re-reviewed against new information — items that stopped passing the gates stay on it, and the plan increasingly describes a product the evidence no longer supports.
 
 ---
 

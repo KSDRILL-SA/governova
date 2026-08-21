@@ -398,11 +398,16 @@ def test_domain_coverage_is_reported_separately_from_core():
     # plus **all of C08, C04 and C05**, closed by the ceiling programme. C08 was
     # the corpus's largest gap at 72 bare; C04 followed at 36 and C05 at 35.
     #
+    # The figure then took 76 more when the last four constitutions still holding
+    # bare blockquote standards were cleared — C06 21, C10 20, C09 18, C07 17.
+    # **No standard written in the blockquote shorthand is bare anywhere in the
+    # corpus now.** The 65 that remain are all full-form: C01 28, C02 27, C06 10.
+    #
     # The denominator keeps *growing*, which lowers enforcement coverage rather
     # than flattering it. That is the honest direction: writing more of the law
     # down does not enforce it, and this figure should never move because a
     # denominator was trimmed.
-    assert cov["total_anti_patterns"] == 653, "core denominator changed unexpectedly"
+    assert cov["total_anti_patterns"] == 729, "core denominator changed unexpectedly"
     assert cov["domain_total_anti_patterns"] > 0
     assert all(ap.startswith("AP-D-") for ap in cov["domain_covered"])
     assert not any(ap.startswith("AP-D-") for ap in cov["covered"])

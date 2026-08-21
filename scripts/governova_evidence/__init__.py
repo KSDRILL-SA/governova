@@ -797,8 +797,407 @@ def _last_commit_time(root: Path, path: Path) -> int | None:
     return int(result.stdout.strip()) if result.stdout.strip().isdigit() else None
 
 
+# ── Repository facts the line scan cannot reach (#246) ───────────────────────
+#
+# Every probe below binds a standard that is a *fact about the repository*
+# rather than a property of any line. Several return VIOLATED against this very
+# repository. That is the point: a probe that only ever passes on its author's
+# code has not been tested against anything.
+
+# A merge commit has two parents. `%P` lists them, so a subject with a space in
+# it is a merge — which is the whole question S1.22 asks.
+_MERGE_WINDOW = 400
+
+# Locations a runbook directory is actually kept, in the conventions in use.
+# S8.61 names `runbooks/`; a repository that groups governance material under one
+# directory satisfies the standard's substance, and a probe that insisted on the
+# literal path would report a compliant repository as violating.
+_RUNBOOK_DIRS: tuple[str, ...] = (
+    "runbooks",
+    "governance/runbooks",
+    "docs/runbooks",
+    "ops/runbooks",
+)
+
+# The post-mortem fields S8.78 enumerates. Matched on the template rather than on
+# any particular incident: the standard is about the document's shape, and a
+# repository with no incidents yet should still be able to prove it is ready for
+# one.
+_POST_MORTEM_FIELDS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("severity", ("severity", "sev")),
+    ("detection time", ("detect",)),
+    ("resolution time", ("resol", "recover")),
+    ("incident commander", ("commander", "incident lead")),
+    ("impact", ("impact",)),
+    ("timeline", ("timeline",)),
+    ("root cause", ("root cause", "5 whys", "five whys")),
+    ("action items", ("action item", "follow-up", "follow up")),
+)
+
+_POST_MORTEM_CANDIDATES: tuple[str, ...] = (
+    "templates/post-mortem-template.md",
+    "templates/postmortem-template.md",
+    ".github/ISSUE_TEMPLATE/post-mortem.md",
+    "docs/post-mortem-template.md",
+    "governance/post-mortem-template.md",
+)
+
+_VENDOR_REGISTER_CANDIDATES: tuple[str, ...] = (
+    "governance/vendors.md",
+    "governance/vendor-register.md",
+    "VENDORS.md",
+    "docs/vendors.md",
+    "docs/vendor-register.md",
+)
+
+_PR_TEMPLATE_CANDIDATES: tuple[str, ...] = (
+    ".github/pull_request_template.md",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/PULL_REQUEST_TEMPLATE/pull_request_template.md",
+    "docs/pull_request_template.md",
+    ".gitlab/merge_request_templates/default.md",
+)
+
+# Commit subjects that record a save point rather than a change. These are the
+# forms `AP-S1.42a` names.
+_PLACEHOLDER_SUBJECT = re.compile(
+    r"^\s*(?:wip\b|temp\b|temp save\b|checkpoint\b|updates?\s*$|fix stuff\b|"
+    r"stuff\b|asdf\b|\.+\s*$|test\s*$)",
+    re.I,
+)
+
+
+# Directories that hold someone else's code or this build's output. A language
+# probe that counted them would report TypeScript in a Python repository on the
+# strength of a vendored bundle.
+_NOT_OUR_CODE = frozenset(
+    {".git", ".venv", "venv", "node_modules", "__pycache__", "dist", "build", "compiled"}
+)
+
+# Enough of a walk to answer "is this language present"; not a full inventory.
+_LANGUAGE_SCAN_LIMIT = 4000
+
+
+def _has_language(root: Path, suffixes: tuple[str, ...]) -> bool:
+    """Whether the repository contains source in any of `suffixes`.
+
+    Several standards name a language explicitly. Applying one to a repository
+    that has none of that language is not a violation, it is a question that does
+    not arise — so the probes above ask this first and return UNKNOWN rather than
+    accusing a Python-only repository of mismanaging its TypeScript.
+    """
+    wanted = {s.lower() for s in suffixes}
+    seen = 0
+    for path in root.rglob("*"):
+        seen += 1
+        if seen > _LANGUAGE_SCAN_LIMIT:
+            break
+        if any(part in _NOT_OUR_CODE for part in path.parts):
+            continue
+        if path.is_file() and path.suffix.lower() in wanted:
+            return True
+    return False
+
+
+def _probe_squash_merge(root: Path) -> ProbeResult:
+    """S1.22 — squash merge is the mandatory strategy, so history stays linear.
+
+    A squash merge produces one single-parent commit. A merge commit has two, so
+    the presence of one is direct evidence the strategy was not followed. The
+    probe reports the offending commit rather than a count: "history is not
+    linear" is not something anyone can act on.
+    """
+    sid = "S1.22"
+    try:
+        result = subprocess.run(
+            ["git", "log", "-n", str(_MERGE_WINDOW), "--merges", "--format=%h %s"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=15,
+        )
+    except (subprocess.SubprocessError, OSError):
+        return _unknown(sid, "git history unavailable")
+
+    merges = [line for line in result.stdout.splitlines() if line.strip()]
+    if not merges:
+        return _ok(sid, f"no merge commits in the last {_MERGE_WINDOW} — history is linear")
+    shown = "; ".join(merges[:3])
+    return _bad(sid, f"{len(merges)} merge commit(s) — squash was not used: {shown}")
+
+
+def _probe_purposeful_commits(root: Path) -> ProbeResult:
+    """S1.42 — every commit is a change, not a save point."""
+    sid = "S1.42"
+    try:
+        result = subprocess.run(
+            ["git", "log", "-n", str(_CONVENTIONAL_WINDOW), "--no-merges", "--format=%s"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=15,
+        )
+    except (subprocess.SubprocessError, OSError):
+        return _unknown(sid, "git history unavailable")
+
+    subjects = [s for s in result.stdout.splitlines() if s.strip()]
+    if not subjects:
+        return _unknown(sid, "no commits to inspect")
+
+    placeholders = [s for s in subjects if _PLACEHOLDER_SUBJECT.match(s)]
+    frame = _window_note(len(subjects), _CONVENTIONAL_WINDOW)
+    if not placeholders:
+        return _ok(sid, f"no placeholder commit subjects in {len(subjects)} commit(s){frame}")
+    shown = "; ".join(repr(s) for s in placeholders[:3])
+    return _bad(sid, f"{len(placeholders)} placeholder commit(s): {shown}")
+
+
+def _probe_ci_on_main(root: Path) -> ProbeResult:
+    """S1.17 — main is always deployable, which requires main to be tested.
+
+    A pipeline that runs only on pull requests leaves main unverified between
+    merges: the branch everyone deploys from is the one nothing checks.
+    """
+    sid = "S1.17"
+    workflows = sorted((root / ".github" / "workflows").glob("*.y*ml"))
+    if not workflows:
+        return _unknown(sid, "no GitHub Actions workflows to inspect")
+
+    on_main = []
+    for path in workflows:
+        text = _read(path)
+        if text is None:
+            continue
+        pushes = re.search(r"^\s*push:\s*$.{0,400}?^\s*branches:.*$", text, re.M | re.S)
+        if pushes and re.search(r"\b(?:main|master|trunk)\b", pushes.group(0)):
+            on_main.append(path.name)
+
+    if not on_main:
+        return _bad(sid, "no workflow runs on a push to main — main is unverified between merges")
+    return _ok(sid, f"{len(on_main)} workflow(s) run on main: {', '.join(on_main[:4])}")
+
+
+def _probe_pr_template(root: Path) -> ProbeResult:
+    """S1.46 — a pull request description follows the mandatory template.
+
+    The template's *existence* is what a repository can prove. Whether an author
+    filled it in is a property of a pull request, which lives in the forge and
+    not here — so a missing template is VIOLATED and a present one is as far as
+    this tier can honestly go.
+    """
+    sid = "S1.46"
+    found = _first_existing(root, _PR_TEMPLATE_CANDIDATES)
+    if found is None:
+        return _bad(
+            sid,
+            "no pull request template — every description is written from memory, "
+            "so the mandatory sections are present only when the author recalls them",
+        )
+    name, text = found
+    if len(text.strip()) < 40:
+        return _bad(sid, f"{name} is effectively empty, so it imposes no structure")
+    return _ok(sid, f"pull request template at {name}")
+
+
+def _probe_issue_template(root: Path) -> ProbeResult:
+    """S1.29 — a feature proposal uses the mandatory template."""
+    sid = "S1.29"
+    directory = root / ".github" / "ISSUE_TEMPLATE"
+    templates = sorted(directory.glob("*.md")) + sorted(directory.glob("*.y*ml"))
+    if not templates:
+        legacy = _first_existing(root, (".github/issue_template.md", ".github/ISSUE_TEMPLATE.md"))
+        if legacy is not None:
+            return _ok(sid, f"issue template at {legacy[0]}")
+        return _bad(
+            sid,
+            "no issue templates — a proposal has no mandatory shape, so the gate "
+            "questions are answered when the author happens to remember them",
+        )
+    names = ", ".join(p.name for p in templates[:4])
+    return _ok(sid, f"{len(templates)} issue template(s): {names}")
+
+
+def _probe_line_length_configured(root: Path) -> ProbeResult:
+    """S1.73 — both halves of the line length live in tool configuration.
+
+    The standard names two numbers and closes with *never manually managed*, so
+    a repository satisfies it only where a tool reads the value. A number written
+    in prose and enforced by nobody is the case this probe exists to separate.
+    """
+    sid = "S1.73"
+    python_config = None
+    for name in ("pyproject.toml", "setup.cfg", "ruff.toml", ".ruff.toml"):
+        text = _read(root / name)
+        if text and re.search(r"^\s*line[-_]length\s*=\s*\d+", text, re.M):
+            python_config = name
+            break
+
+    typescript_config = None
+    for name in (".editorconfig", ".prettierrc", ".prettierrc.json", "prettier.config.js"):
+        text = _read(root / name)
+        if text and re.search(r"(?:max_line_length|printWidth)\s*[=:]\s*\d+", text):
+            typescript_config = name
+            break
+
+    has_python = _has_language(root, (".py",))
+    has_typescript = _has_language(root, (".ts", ".tsx"))
+
+    missing = []
+    if has_python and python_config is None:
+        missing.append("Python (no line-length in any tool config)")
+    if has_typescript and typescript_config is None:
+        missing.append("TypeScript (no max_line_length or printWidth)")
+
+    if not has_python and not has_typescript:
+        return _unknown(sid, "no Python or TypeScript source to hold a line length")
+    if missing:
+        return _bad(sid, "line length is not tool-managed for " + "; ".join(missing))
+    configured = ", ".join(n for n in (python_config, typescript_config) if n)
+    return _ok(sid, f"line length configured in {configured}")
+
+
+def _probe_import_order_automated(root: Path) -> ProbeResult:
+    """S1.74 — import order is enforced automatically, never by hand."""
+    sid = "S1.74"
+    if not _has_language(root, (".py", ".ts", ".tsx", ".js", ".jsx")):
+        return _unknown(sid, "no source whose imports could be ordered")
+
+    for name in ("pyproject.toml", "ruff.toml", ".ruff.toml", "setup.cfg", ".isort.cfg"):
+        text = _read(root / name)
+        if text is None:
+            continue
+        if re.search(r"^\s*\[tool\.isort\]", text, re.M) or '"I"' in text or "'I'" in text:
+            return _ok(sid, f"import sorting selected in {name}")
+
+    for name in (".eslintrc", ".eslintrc.json", ".eslintrc.js", "eslint.config.js"):
+        text = _read(root / name)
+        if text and "import/order" in text:
+            return _ok(sid, f"import/order rule enabled in {name}")
+
+    return _bad(
+        sid,
+        "no import sorter is configured — order is maintained by hand, so it is "
+        "correct only in files written by people who remember the convention",
+    )
+
+
+def _probe_ci_exists(root: Path) -> ProbeResult:
+    """S8.9 — CI runs through GitHub Actions, one workflow set per repository."""
+    sid = "S8.9"
+    workflows = sorted((root / ".github" / "workflows").glob("*.y*ml"))
+    if not workflows:
+        return _bad(sid, "no .github/workflows — nothing runs automatically on a change")
+    names = ", ".join(p.name for p in workflows[:5])
+    return _ok(sid, f"{len(workflows)} workflow(s): {names}")
+
+
+def _probe_ci_dependency_cache(root: Path) -> ProbeResult:
+    """S8.13 — dependency caching in CI.
+
+    An uncached pipeline re-downloads the world on every run. The standard's own
+    reason is speed, and slow CI is not a neutral cost: it is the pressure that
+    produces the merge nobody waited for.
+    """
+    sid = "S8.13"
+    text = _workflow_text(root)
+    if text is None:
+        return _unknown(sid, "no CI workflows to inspect")
+    if re.search(r"actions/cache|\bcache:\s*\S|cache-dependency-path|enable-cache", text, re.I):
+        return _ok(sid, "CI caches dependencies between runs")
+    return _bad(sid, "no dependency cache in CI — every run re-downloads the dependency tree")
+
+
+def _probe_runbooks(root: Path) -> ProbeResult:
+    """S8.61 — a runbook exists for the SEV0 and SEV1 scenarios.
+
+    Accepts the conventional locations rather than only the literal `runbooks/`.
+    A repository that groups its governance material under one directory
+    satisfies the standard's substance, and reporting it as violating would be a
+    false accusation over a path.
+    """
+    sid = "S8.61"
+    for relative in _RUNBOOK_DIRS:
+        directory = root / relative
+        if not directory.is_dir():
+            continue
+        books = [p for p in sorted(directory.glob("*.md")) if p.name.lower() != "readme.md"]
+        if not books:
+            return _bad(sid, f"{relative}/ exists but holds no runbook")
+        joined = " ".join(p.name.lower() for p in books)
+        severities = [s for s in ("sev0", "sev1") if s in joined.replace("-", "")]
+        if len(severities) < 2:
+            return _bad(
+                sid,
+                f"{len(books)} runbook(s) in {relative}/ but none named for "
+                f"{'SEV0' if 'sev0' not in joined.replace('-', '') else 'SEV1'}",
+            )
+        return _ok(sid, f"{len(books)} runbook(s) in {relative}/, covering SEV0 and SEV1")
+    return _bad(sid, "no runbook directory — the recovery steps are worked out during the incident")
+
+
+def _probe_post_mortem_template(root: Path) -> ProbeResult:
+    """S8.78 — the post-mortem document has the fields the standard enumerates.
+
+    Read from the template, not from any incident: the standard describes the
+    document's shape, and a repository with no incidents yet should still be able
+    to show it is ready for one.
+    """
+    sid = "S8.78"
+    found = _first_existing(root, _POST_MORTEM_CANDIDATES)
+    if found is None:
+        return _bad(
+            sid,
+            "no post-mortem template — the fields are recalled after an incident, "
+            "which is when the recalling is least reliable",
+        )
+    name, text = found
+    lowered = text.lower()
+    missing = [
+        label
+        for label, needles in _POST_MORTEM_FIELDS
+        if not any(needle in lowered for needle in needles)
+    ]
+    if missing:
+        return _bad(sid, f"{name} omits {', '.join(missing)}")
+    return _ok(sid, f"{name} carries all {len(_POST_MORTEM_FIELDS)} required fields")
+
+
+def _probe_vendor_register(root: Path) -> ProbeResult:
+    """S8.86 — every critical external vendor has a register entry and an exit plan."""
+    sid = "S8.86"
+    found = _first_existing(root, _VENDOR_REGISTER_CANDIDATES)
+    if found is None:
+        return _bad(
+            sid,
+            "no vendor register — what each dependency holds, and how to leave it, "
+            "is known only to whoever chose it",
+        )
+    name, text = found
+    rows = _table_rows(text)
+    if not rows:
+        return _unknown(sid, f"{name} present but holds no readable table of vendors")
+    lowered = text.lower()
+    if not any(word in lowered for word in ("exit", "portability", "migrate", "leave")):
+        return _bad(sid, f"{name} lists vendors but documents no exit or portability plan")
+    return _ok(sid, f"{len(rows)} vendor(s) registered in {name}, with an exit plan")
+
+
 PROBES: tuple[Probe, ...] = (
+    Probe("S1.17", "Main is verified by CI, not only pull requests", _probe_ci_on_main),
     Probe("S1.19", "Commits follow the conventional format", _probe_conventional_commits),
+    Probe("S1.22", "Squash merge keeps history linear", _probe_squash_merge),
+    Probe("S1.29", "Proposals have a mandatory template", _probe_issue_template),
+    Probe("S1.42", "Every commit is a change, not a save point", _probe_purposeful_commits),
+    Probe("S1.46", "Pull requests have a mandatory template", _probe_pr_template),
+    Probe("S1.73", "Line length is tool-managed, not hand-managed", _probe_line_length_configured),
+    Probe("S1.74", "Import order is enforced automatically", _probe_import_order_automated),
+    Probe("S8.9", "CI runs through GitHub Actions", _probe_ci_exists),
+    Probe("S8.13", "CI caches dependencies between runs", _probe_ci_dependency_cache),
+    Probe("S8.61", "A runbook exists for SEV0 and SEV1", _probe_runbooks),
+    Probe("S8.78", "The post-mortem document has its required fields", _probe_post_mortem_template),
+    Probe("S8.86", "Critical vendors are registered with an exit plan", _probe_vendor_register),
     Probe("S1.70", "Lint enforced in CI", _probe_lint_in_ci),
     Probe("S1.71", "Pre-commit hooks enforce lint and format", _probe_pre_commit_hooks),
     Probe("S1.84", "README maintained at the repository root", _probe_readme),

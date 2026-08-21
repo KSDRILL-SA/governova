@@ -157,6 +157,7 @@ packages = [
     "governova_org",
     "governova_chain",
     "governova_ledger",
+    "governova_gateway",
     "governova_settings",
 ]
 
@@ -204,5 +205,6 @@ files = [
     "governova_org",
     "governova_chain",
     "governova_ledger",
+    "governova_gateway",
     "governova_settings",
 ]

@@ -253,7 +253,7 @@ _CITED_SIBLING: dict[str, str] = {
     # Added with the #246 rule batch. Each of these standards carries a second
     # anti-pattern the rule beneath it does *not* implement, which is exactly
     # the confusion this pin exists to prevent.
-    "S1.44": "AP-S1.44a",
+    "S1.44": "AP-S1.44b",
     "S4.14": "AP-S4.14a",
     "S5.9": "AP-S5.9a",
     # Added with the scan-surface change: `AP-S5.10b` is "a model without
@@ -502,14 +502,14 @@ _CATCHES: list[tuple[str, str, str | None]] = [
     ("AP-S4.47a", '<input [(ngModel)]="name">', "src/form.component.ts"),
     ("AP-S4.60a", '<li *ngFor="let s of students">{{ s.name }}</li>', "src/list.ts"),
     ("AP-S4.55a", "this.http.get('/api/students')", "src/components/list.component.ts"),
-    ("AP-S5.16a", "const prisma = new PrismaClient()", "src/api/users.ts"),
+    ("AP-S2.75a", "const prisma = new PrismaClient()", "src/api/users.ts"),
     ("AP-S5.18a", 'db["scholarships"].insert_one(doc)', "app/services/store.py"),
     ("AP-S3.11a", "  sameSite: 'none',", "src/session.ts"),
-    ("AP-S1.44a", "console.log('here', payload)", "src/app.ts"),
+    ("AP-S1.44b", "// remove this later", "src/app.ts"),
     ("AP-S1.68a", "const url = process.env.DATABASE_URL", "src/services/user.ts"),
     ("AP-S2.67a", 'url = os.getenv("DATABASE_URL")', "app/services/user.py"),
     ("AP-S2.69a", "    except Exception:", "app/routers/users.py"),
-    ("AP-S5.8a", "await prisma.user.delete({ where: { id } })", "src/services/user.ts"),
+    ("AP-S2.35a", "await prisma.user.delete({ where: { id } })", "src/services/user.ts"),
     ("AP-S5.9a", "ALTER TABLE users ADD COLUMN phone VARCHAR(20)", "src/admin/fix.ts"),
     ("AP-S1.89a", "new BehaviorSubject<User>(null)", "src/components/user.component.ts"),
     ("AP-S4.14a", '<div class="bg-[#1A2B3C] p-4">', "src/hero.tsx"),
@@ -534,16 +534,16 @@ _HOLDS: list[tuple[str, str, str | None]] = [
     ("AP-S4.60a", '<li *ngFor="let s of students; trackBy: byId">', "src/list.ts"),
     # The identical call, one layer down, is the prescribed form.
     ("AP-S4.55a", "this.http.get('/api/students')", "src/services/student.service.ts"),
-    ("AP-S5.16a", "const prisma = new PrismaClient()", "src/lib/db.ts"),
+    ("AP-S2.75a", "const prisma = new PrismaClient()", "src/lib/db.ts"),
     ("AP-S5.18a", "await Scholarship.insert(doc)", "app/services/store.py"),
     ("AP-S3.11a", "  sameSite: 'none', secure: true,", "src/session.ts"),
-    ("AP-S1.44a", "console.log('here', payload)", "src/app.test.ts"),
+    ("AP-S1.44b", "// TODO: remove this later", "src/app.ts"),
     ("AP-S1.68a", "const url = process.env.DATABASE_URL", "src/config/env.ts"),
     # S2.67 is a backend standard; a CLI reading the environment is not its subject.
     ("AP-S2.67a", 'url = os.getenv("DATABASE_URL")', "scripts/cli.py"),
     ("AP-S2.69a", "    except Exception:", "app/services/users.py"),
     (
-        "AP-S5.8a",
+        "AP-S2.35a",
         "await prisma.user.update({ where: { id }, data: { deletedAt: now } })",
         "src/services/user.ts",
     ),
@@ -683,6 +683,38 @@ def test_an_angular_template_is_read_the_way_a_component_is():
     # The corrected form of each, on the very next line.
     assert not any(line in {2, 4, 6} for _, line in caught), (
         f"a rule fired on the prescribed form: {sorted(caught)}"
+    )
+
+
+def test_no_line_produces_findings_from_two_standards():
+    """One line, one finding. A duplicate is not a false positive — it is worse.
+
+    Two rules on the same signature are *both correct* about the line, which is
+    why review passes them. What they produce is a violation count inflated by
+    an engine defect rather than by the code under review, and every figure
+    derived from findings inherits it — including the Score's violation-rate
+    factor.
+
+    Measured against `expressjs/express` before this was fixed: 36 `console.log`
+    lines reported 72 times, because `AP-S1.44a` and `AP-S8.31a` share a
+    signature that no line scan can separate. `AP-S2.75a` and `AP-S5.16a` shared
+    another.
+
+    The corpus below is every rule's own canonical violating line, so this fails
+    the moment a new rule overlaps an existing one.
+    """
+    overlaps: list[tuple[str, list[str]]] = []
+    for anti_pattern, code, file in _CATCHES:
+        standards = {f.standard for f in scan_text(code, file=file)}
+        if len(standards) > 1:
+            overlaps.append((f"{anti_pattern} :: {code}", sorted(standards)))
+
+    assert not overlaps, (
+        "these lines are reported against more than one standard:\n  "
+        + "\n  ".join(f"{where} -> {found}" for where, found in overlaps)
+        + "\nBind one of the anti-patterns, not both. A line scan cannot tell "
+        "which of two identically-shaped failures occurred, so claiming both "
+        "means one of them is wrong on every line."
     )
 
 

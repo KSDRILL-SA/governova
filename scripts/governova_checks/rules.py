@@ -399,6 +399,9 @@ RULES: list[Rule] = [
         re.compile(r"\.delete\(\s*\{\s*where\b"),
         "Hard delete on a possibly-auditable entity. S2.35: prefer soft-delete for auditable records.",
         "medium",
+        # Scoping taken from the `AP-S5.8a` rule removed as a duplicate of this
+        # one: a fixture that deletes its own row is not the failure S2.35 names.
+        path_exclude=TEST_PATHS,
     ),
     Rule(
         "AP-S8.31a",
@@ -512,6 +515,10 @@ RULES: list[Rule] = [
         re.compile(r"\bnew\s+PrismaClient\s*\("),
         "Ad-hoc PrismaClient instance. S2.75: use a single shared client to avoid connection-pool exhaustion.",
         "medium",
+        # Scoping taken from the `AP-S5.16a` rule that was removed as a duplicate
+        # of this one. The module a client is *meant* to be built in must not be
+        # reported for building it — without this the rule flags the fix.
+        path_exclude=_TESTS_OR_DB_SINGLETON,
     ),
     Rule(
         "AP-S1.56a",
@@ -749,14 +756,6 @@ RULES: list[Rule] = [
         path_include=UI_LAYER,
     ),
     Rule(
-        "AP-S5.16a",
-        "S5.16",
-        re.compile(r"\bnew\s+PrismaClient\s*\("),
-        "Database client constructed here rather than imported. S5.16: one shared singleton — a client per module exhausts the connection pool, and the failure presents as the database being down.",
-        "high",
-        path_exclude=_TESTS_OR_DB_SINGLETON,
-    ),
-    Rule(
         "AP-S5.18a",
         "S5.18",
         re.compile(
@@ -778,11 +777,34 @@ RULES: list[Rule] = [
     ),
     # ── MEDIUM — the signature is right, the context decides ─────────────────
     Rule(
-        "AP-S1.44a",
+        # `AP-S1.44a` is "`console.log` left in code", and binding it here was a
+        # duplicate: `AP-S8.31a` above already matches that exact signature, so
+        # every such line produced *two* findings. Measured against express, that
+        # was 36 lines reported 72 times — a violation count inflated by an
+        # engine defect rather than by the code under review.
+        #
+        # A line scan cannot separate "left behind after debugging" (S1.44) from
+        # "used as the logging mechanism" (S8.31); the text is identical. Binding
+        # both asserts both, and one of them is wrong on any given line. S8.31
+        # keeps the signature because its message names the fix.
+        #
+        # `S1.44` is bound to its *other* anti-pattern instead, which has a
+        # signature of its own. Nothing is lost and the double count is gone.
+        "AP-S1.44b",
         "S1.44",
-        re.compile(r"\bconsole\s*\.\s*log\s*\("),
-        "Debug artifact left in code. S1.44: production code carries no debug logging — use the structured logger, or remove it.",
+        re.compile(
+            r"^\s*(?://|#|/\*)"
+            r"(?=.{0,160}?\b(?:remove|delete|drop|clean\s*up)\b)"
+            r"(?=.{0,160}?\b(?:later|eventually|someday|for\s+now|"
+            r"before\s+(?:merge|release|ship))\b)"
+            r".{0,200}"
+        ),
+        "Commented-out code kept with a note to remove it later. S1.44: delete it — version control already holds it, and the note outlives the intention.",
         "medium",
+        # A marker comment belongs to `AP-S13.1a`, which owns that signature and
+        # checks for a tracked issue. Without this the two overlap on
+        # `// TODO: remove this later`, which is the defect being fixed above.
+        unless=re.compile(r"\b(?:TODO|FIXME|HACK|XXX)\b"),
         path_exclude=TEST_PATHS,
     ),
     Rule(
@@ -820,14 +842,6 @@ RULES: list[Rule] = [
         "Route handler catching the base exception. S2.69: register handlers globally — a handler here returns one endpoint's failures in a shape nothing else uses.",
         "medium",
         path_include=ROUTER_PATHS,
-        path_exclude=TEST_PATHS,
-    ),
-    Rule(
-        "AP-S5.8a",
-        "S5.8",
-        re.compile(r"\bprisma\s*\.\s*\w{1,40}\s*\.\s*delete(?:Many)?\s*\("),
-        "Hard delete. S5.8: soft-delete instead — a hard delete is irreversible, and it takes the audit trail with it.",
-        "medium",
         path_exclude=TEST_PATHS,
     ),
     Rule(

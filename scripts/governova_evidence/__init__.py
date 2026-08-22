@@ -28,6 +28,11 @@ from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
 
+# The directory exclusions the scanner already uses. Shared rather than re-listed:
+# a probe that walks `node_modules` reports a repository on its dependencies'
+# conventions, and the two lists drifting apart is how that starts.
+from governova_checks import SKIP_DIRS
+
 
 class Verdict(StrEnum):
     """Implements REQ-002 — a check that cannot determine an answer says so."""
@@ -1442,6 +1447,211 @@ def _probe_complexity_gate(root: Path) -> ProbeResult:
     )
 
 
+# Standalone Python linters and formatters that would sit *beside* Ruff. Each is
+# matched by how it is **configured**, never by being named.
+#
+# That distinction is the whole difficulty of this probe. A Ruff `select` list
+# reads:
+#
+#     "B",    # flake8-bugbear
+#     "SIM",  # flake8-simplify
+#
+# Those are Ruff rule families reimplementing those plugins; the tools
+# themselves are absent. A probe searching for the word `flake8` reports this
+# repository — which uses Ruff and nothing else — as running three linters.
+# Accusing a compliant repository is the worse direction for a governance tool
+# to err, so every pattern below anchors on a config section header or a
+# pre-commit hook id.
+_SECOND_PYTHON_TOOL = (
+    ("black", re.compile(r"^\s*\[tool\.black\]", re.M)),
+    ("flake8", re.compile(r"^\s*\[flake8\]", re.M)),
+    ("pylint", re.compile(r"^\s*\[tool\.pylint", re.M)),
+    ("autopep8", re.compile(r"^\s*\[tool\.autopep8\]", re.M)),
+    ("yapf", re.compile(r"^\s*\[(?:tool\.)?yapf\]", re.M)),
+    # `[tool.isort]` is standalone isort. `[tool.ruff.lint.isort]` is Ruff's own
+    # implementation of the same ordering, which `S1.61` asks for — so the
+    # pattern requires the section name to end right after `isort`.
+    ("isort", re.compile(r"^\s*\[tool\.isort\]", re.M)),
+)
+
+_PRECOMMIT_SECOND_TOOL = re.compile(
+    r"^\s*-\s*id:\s*(black|flake8|pylint|autopep8|yapf|isort)\b", re.M
+)
+
+_PYTHON_CONFIG_FILES = ("pyproject.toml", "setup.cfg", "tox.ini", ".flake8", ".pylintrc")
+
+
+def _probe_single_python_linter(root: Path) -> ProbeResult:
+    """S1.62 — one linting and formatting tool for Python, and it is Ruff.
+
+    Two tools disagree about the same file and the last one to run decides, so
+    the formatting of the repository becomes a property of hook ordering rather
+    than of anything anybody chose.
+    """
+    sid = "S1.62"
+    if not any(root.rglob("*.py")):
+        return _unknown(sid, "no Python in this repository")
+
+    found: list[str] = []
+    for name in _PYTHON_CONFIG_FILES:
+        text = _read(root / name)
+        if text is None:
+            continue
+        found += [
+            f"{tool} configured in {name}"
+            for tool, pattern in _SECOND_PYTHON_TOOL
+            if pattern.search(text)
+        ]
+
+    hooks = _read(root / ".pre-commit-config.yaml") or _read(root / ".pre-commit-config.yml")
+    if hooks:
+        found += [
+            f"{match.group(1)} runs as a pre-commit hook"
+            for match in _PRECOMMIT_SECOND_TOOL.finditer(hooks)
+        ]
+
+    if found:
+        return _bad(sid, "a second Python tool sits beside Ruff: " + "; ".join(sorted(set(found))))
+
+    configured = any(
+        (text := _read(root / name)) is not None and re.search(r"^\s*\[tool\.ruff", text, re.M)
+        for name in ("pyproject.toml",)
+    ) or any((root / name).is_file() for name in ("ruff.toml", ".ruff.toml"))
+    if not configured:
+        return _unknown(
+            sid, "no Python linter is configured at all, so there is no single tool to confirm"
+        )
+    return _ok(sid, "Ruff is the only Python linter or formatter configured")
+
+
+# A TypeScript file name that is lowercase with hyphens. Anchored on the stem, so
+# a directory named `MyApp/` — which `S1.64` does not govern — is untouched.
+_TS_FILE_NAME = re.compile(r"^[a-z0-9]+(?:[-.][a-z0-9]+)*$")
+
+
+def _probe_typescript_file_names(root: Path) -> ProbeResult:
+    """S1.64 — TypeScript file names are lowercase with hyphens.
+
+    Case-insensitive filesystems are why this is worth a gate rather than a
+    convention: `UserService.ts` and `userService.ts` are the same file on macOS
+    and two files on the Linux runner, so the import that works everywhere fails
+    in the one place that decides whether the build ships.
+    """
+    sid = "S1.64"
+    offenders: list[str] = []
+    seen = 0
+    for path in root.rglob("*.ts*"):
+        if path.suffix not in {".ts", ".tsx"}:
+            continue
+        if any(part in SKIP_DIRS or part.startswith(".") for part in path.parts):
+            continue
+        seen += 1
+        stem = path.name.removesuffix(path.suffix)
+        if not _TS_FILE_NAME.match(stem):
+            offenders.append(path.relative_to(root).as_posix())
+
+    if seen == 0:
+        return _unknown(sid, "no TypeScript in this repository")
+    if offenders:
+        shown = "; ".join(sorted(offenders)[:3])
+        return _bad(
+            sid,
+            f"{len(offenders)} of {seen} TypeScript file name(s) are not "
+            f"lowercase-hyphenated: {shown}",
+        )
+    return _ok(sid, f"all {seen} TypeScript file name(s) are lowercase-hyphenated")
+
+
+_DOCKERIGNORE_REQUIRED = ("node_modules", ".git", ".env", "__pycache__")
+
+
+def _probe_dockerignore(root: Path) -> ProbeResult:
+    """S8.20 — the Docker build context is minimal.
+
+    Only asked of a repository that builds an image. Everything named here has
+    been shipped inside somebody's container at some point: `.git` carries every
+    secret ever committed and later removed, and `.env*` carries the ones that
+    were never removed at all.
+    """
+    sid = "S8.20"
+    dockerfiles = [
+        path
+        for path in root.rglob("Dockerfile*")
+        if not any(part in SKIP_DIRS for part in path.parts)
+    ]
+    compose = any(
+        (root / name).is_file() for name in ("docker-compose.yml", "docker-compose.yaml")
+    )
+    if not dockerfiles and not compose:
+        return _unknown(sid, "no Dockerfile or compose file — nothing builds an image here")
+
+    text = _read(root / ".dockerignore")
+    if text is None:
+        return _bad(
+            sid,
+            "an image is built and there is no .dockerignore — the build context carries "
+            ".git, which holds every secret ever committed and later removed",
+        )
+
+    entries = {line.strip().lstrip("/").rstrip("/*") for line in text.splitlines() if line.strip()}
+    missing = [need for need in _DOCKERIGNORE_REQUIRED if not any(need in e for e in entries)]
+    if missing:
+        return _bad(sid, ".dockerignore does not exclude: " + ", ".join(missing))
+    return _ok(sid, f".dockerignore excludes all {len(_DOCKERIGNORE_REQUIRED)} required entries")
+
+
+_MOCK_RESET_CONFIG = re.compile(r"(?:clearMocks|restoreMocks|resetMocks)\s*[:=]\s*true", re.I)
+_MOCK_RESET_CALL = re.compile(r"(?:clearAllMocks|restoreAllMocks|resetAllMocks)\s*\(")
+
+_TEST_CONFIG_FILES = (
+    "jest.config.js",
+    "jest.config.ts",
+    "jest.config.mjs",
+    "jest.config.json",
+    "vitest.config.ts",
+    "vitest.config.js",
+    "vite.config.ts",
+    "package.json",
+)
+
+
+def _probe_mocks_reset_between_tests(root: Path) -> ProbeResult:
+    """S7.13 — mocks are cleared between tests.
+
+    A mock that survives a test makes the suite order-dependent: it passes on
+    the developer's machine, where the file setting it up runs first, and fails
+    on the runner that shards differently. The symptom points at the test that
+    failed rather than the one that leaked, which is why this is worth a
+    configuration flag rather than discipline.
+    """
+    sid = "S7.13"
+    for name in _TEST_CONFIG_FILES:
+        text = _read(root / name)
+        if text and _MOCK_RESET_CONFIG.search(text):
+            return _ok(sid, f"mocks are reset between tests by configuration in {name}")
+
+    has_js_tests = False
+    for path in root.rglob("*"):
+        if path.suffix not in {".ts", ".tsx", ".js", ".jsx"}:
+            continue
+        if ".test." not in path.name and ".spec." not in path.name:
+            continue
+        if any(part in SKIP_DIRS or part.startswith(".") for part in path.parts):
+            continue
+        has_js_tests = True
+        text = _read(path)
+        if text and _MOCK_RESET_CALL.search(text):
+            return _ok(sid, f"mocks are cleared in {path.relative_to(root).as_posix()}")
+
+    if not has_js_tests:
+        return _unknown(sid, "no JavaScript or TypeScript test files — nothing to reset")
+    return _bad(
+        sid,
+        "no mock reset is configured or called — a mock that survives a test makes the "
+        "suite order-dependent, and the failure points at the wrong test",
+    )
+
+
 PROBES: tuple[Probe, ...] = (
     Probe("S1.17", "Main is verified by CI, not only pull requests", _probe_ci_on_main),
     Probe("S7.2", "One test runner per stack, never mixed", _probe_single_test_runner),
@@ -1480,6 +1690,10 @@ PROBES: tuple[Probe, ...] = (
     Probe("S12.7", "Models change with the contracts they describe", _probe_models_track_contracts),
     Probe("S13.2", "A debt register exists and is reachable", _probe_debt_register),
     Probe("S13.4", "Every change declares its maintenance type", _probe_maintenance_classification),
+    Probe("S1.62", "One Python linter and formatter, not two", _probe_single_python_linter),
+    Probe("S1.64", "TypeScript file names are lowercase-hyphenated", _probe_typescript_file_names),
+    Probe("S7.13", "Mocks are reset between tests", _probe_mocks_reset_between_tests),
+    Probe("S8.20", "The Docker build context is minimal", _probe_dockerignore),
 )
 
 

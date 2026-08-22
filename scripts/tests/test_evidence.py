@@ -1197,3 +1197,193 @@ def test_this_repository_scans_clean() -> None:
     root = resolve_repo_root()
     findings = scan_paths(list(iter_source_files(root)))
     assert not findings, f"self-scan regressed: {[(f.anti_pattern, f.file) for f in findings]}"
+
+
+# ─── S1.62 — one Python linter and formatter ────────────────────────────────
+
+
+def test_s162_ruff_alone_is_a_single_tool(tmp_path) -> None:
+    (tmp_path / "app.py").write_text("x = 1\n", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text(
+        "[tool.ruff]\nline-length = 88\n", encoding="utf-8"
+    )
+    verdict, evidence = _probe(tmp_path, "S1.62")
+    assert verdict is Verdict.SATISFIED, evidence
+
+
+def test_s162_a_ruff_rule_family_named_after_a_plugin_is_not_a_second_tool(tmp_path) -> None:
+    """The case that decides whether this probe is usable at all.
+
+    Ruff's rule families are named after the plugins they reimplement, so a
+    perfectly compliant `select` list contains the words `flake8` three times.
+    The first version of this probe searched for tool names and reported this
+    repository — which runs Ruff and nothing else — as running four linters.
+
+    Accusing a compliant repository is the worse direction for a governance tool
+    to err: a report whose first finding is false does not get a second reading.
+    """
+    (tmp_path / "app.py").write_text("x = 1\n", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text(
+        "[tool.ruff.lint]\n"
+        'select = [\n'
+        '    "B",    # flake8-bugbear\n'
+        '    "SIM",  # flake8-simplify\n'
+        '    "C4",   # flake8-comprehensions\n'
+        "]\n"
+        "\n[tool.ruff.lint.isort]\nknown-first-party = [\"app\"]\n",
+        encoding="utf-8",
+    )
+    verdict, evidence = _probe(tmp_path, "S1.62")
+    assert verdict is Verdict.SATISFIED, evidence
+
+
+def test_s162_black_configured_beside_ruff_is_two_tools(tmp_path) -> None:
+    (tmp_path / "app.py").write_text("x = 1\n", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text(
+        "[tool.ruff]\nline-length = 88\n\n[tool.black]\nline-length = 100\n",
+        encoding="utf-8",
+    )
+    verdict, evidence = _probe(tmp_path, "S1.62")
+    assert verdict is Verdict.VIOLATED
+    assert "black" in evidence
+
+
+def test_s162_a_pre_commit_hook_is_a_second_tool_too(tmp_path) -> None:
+    """Where the disagreement actually bites: the hook runs after the linter."""
+    (tmp_path / "app.py").write_text("x = 1\n", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text("[tool.ruff]\n", encoding="utf-8")
+    (tmp_path / ".pre-commit-config.yaml").write_text(
+        "repos:\n  - repo: local\n    hooks:\n      - id: black\n        name: black\n",
+        encoding="utf-8",
+    )
+    verdict, evidence = _probe(tmp_path, "S1.62")
+    assert verdict is Verdict.VIOLATED
+    assert "pre-commit" in evidence
+
+
+def test_s162_standalone_isort_is_a_second_tool_and_ruffs_is_not(tmp_path) -> None:
+    """`[tool.isort]` is another formatter. `[tool.ruff.lint.isort]` is Ruff."""
+    (tmp_path / "app.py").write_text("x = 1\n", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text(
+        "[tool.ruff]\n\n[tool.isort]\nprofile = \"black\"\n", encoding="utf-8"
+    )
+    assert _probe(tmp_path, "S1.62")[0] is Verdict.VIOLATED
+
+
+def test_s162_no_python_is_unknown(tmp_path) -> None:
+    (tmp_path / "main.go").write_text("package main\n", encoding="utf-8")
+    assert _probe(tmp_path, "S1.62")[0] is Verdict.UNKNOWN
+
+
+def test_s162_python_with_no_linter_at_all_is_unknown(tmp_path) -> None:
+    """No tool is not the same as one tool, and reporting it as satisfied would
+    hand a repository with no linting the evidence for having exactly one."""
+    (tmp_path / "app.py").write_text("x = 1\n", encoding="utf-8")
+    assert _probe(tmp_path, "S1.62")[0] is Verdict.UNKNOWN
+
+
+# ─── S1.64 — TypeScript file names ──────────────────────────────────────────
+
+
+def test_s164_lowercase_hyphenated_names_are_satisfied(tmp_path) -> None:
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "user-service.ts").write_text("export {};\n", encoding="utf-8")
+    (src / "hover.ts").write_text("export {};\n", encoding="utf-8")
+    (src / "app.spec.ts").write_text("export {};\n", encoding="utf-8")
+    verdict, evidence = _probe(tmp_path, "S1.64")
+    assert verdict is Verdict.SATISFIED, evidence
+
+
+def test_s164_camel_and_pascal_case_are_reported_by_name(tmp_path) -> None:
+    """The evidence names the files, because "naming is inconsistent" is not actionable."""
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "UserService.ts").write_text("export {};\n", encoding="utf-8")
+    (src / "user_service.ts").write_text("export {};\n", encoding="utf-8")
+    (src / "fine.ts").write_text("export {};\n", encoding="utf-8")
+    verdict, evidence = _probe(tmp_path, "S1.64")
+    assert verdict is Verdict.VIOLATED
+    assert "UserService.ts" in evidence
+
+
+def test_s164_a_directory_in_another_case_is_not_governed(tmp_path) -> None:
+    """`S1.64` governs file names. A probe that widened to directories would
+    report a violation the standard does not describe."""
+    src = tmp_path / "MyApp"
+    src.mkdir()
+    (src / "index.ts").write_text("export {};\n", encoding="utf-8")
+    assert _probe(tmp_path, "S1.64")[0] is Verdict.SATISFIED
+
+
+def test_s164_no_typescript_is_unknown(tmp_path) -> None:
+    (tmp_path / "app.py").write_text("x = 1\n", encoding="utf-8")
+    assert _probe(tmp_path, "S1.64")[0] is Verdict.UNKNOWN
+
+
+# ─── S7.13 — mocks reset between tests ──────────────────────────────────────
+
+
+def test_s713_configuration_resets_mocks(tmp_path) -> None:
+    (tmp_path / "vitest.config.ts").write_text(
+        "export default { test: { clearMocks: true } };\n", encoding="utf-8"
+    )
+    assert _probe(tmp_path, "S7.13")[0] is Verdict.SATISFIED
+
+
+def test_s713_an_explicit_call_counts_too(tmp_path) -> None:
+    (tmp_path / "app.test.ts").write_text(
+        "afterEach(() => { vi.clearAllMocks(); });\n", encoding="utf-8"
+    )
+    assert _probe(tmp_path, "S7.13")[0] is Verdict.SATISFIED
+
+
+def test_s713_js_tests_with_no_reset_are_reported(tmp_path) -> None:
+    (tmp_path / "app.test.ts").write_text("it('works', () => {});\n", encoding="utf-8")
+    verdict, evidence = _probe(tmp_path, "S7.13")
+    assert verdict is Verdict.VIOLATED
+    assert "order-dependent" in evidence
+
+
+def test_s713_no_js_tests_is_unknown(tmp_path) -> None:
+    """A Python repository has no mocks of this kind to reset."""
+    (tmp_path / "test_app.py").write_text("def test_x(): pass\n", encoding="utf-8")
+    assert _probe(tmp_path, "S7.13")[0] is Verdict.UNKNOWN
+
+
+# ─── S8.20 — the Docker build context ───────────────────────────────────────
+
+
+def test_s820_a_complete_dockerignore_is_satisfied(tmp_path) -> None:
+    (tmp_path / "Dockerfile").write_text("FROM python:3.12\n", encoding="utf-8")
+    (tmp_path / ".dockerignore").write_text(
+        "node_modules/\n.git\n.env*\n__pycache__/\n", encoding="utf-8"
+    )
+    verdict, evidence = _probe(tmp_path, "S8.20")
+    assert verdict is Verdict.SATISFIED, evidence
+
+
+def test_s820_a_missing_dockerignore_is_reported(tmp_path) -> None:
+    (tmp_path / "Dockerfile").write_text("FROM python:3.12\n", encoding="utf-8")
+    verdict, evidence = _probe(tmp_path, "S8.20")
+    assert verdict is Verdict.VIOLATED
+    assert ".git" in evidence
+
+
+def test_s820_an_incomplete_dockerignore_names_what_is_missing(tmp_path) -> None:
+    (tmp_path / "Dockerfile").write_text("FROM python:3.12\n", encoding="utf-8")
+    (tmp_path / ".dockerignore").write_text("node_modules/\n", encoding="utf-8")
+    verdict, evidence = _probe(tmp_path, "S8.20")
+    assert verdict is Verdict.VIOLATED
+    assert ".git" in evidence and "__pycache__" in evidence
+
+
+def test_s820_no_image_is_built_is_unknown(tmp_path) -> None:
+    """`S8.20` is a claim about a build context. A repository with no image has none."""
+    (tmp_path / "app.py").write_text("x = 1\n", encoding="utf-8")
+    assert _probe(tmp_path, "S8.20")[0] is Verdict.UNKNOWN
+
+
+def test_the_four_new_probes_are_registered() -> None:
+    registered = {probe.standard for probe in PROBES}
+    assert {"S1.62", "S1.64", "S7.13", "S8.20"} <= registered

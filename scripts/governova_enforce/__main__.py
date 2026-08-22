@@ -24,11 +24,13 @@ from typing import Annotated
 import typer
 from governova_checks import (
     DEFAULT_IGNORES,
+    SKIP_DIRS,
     Finding,
     changed_files,
     is_ignored,
     scan_paths,
 )
+from governova_checks.gather import is_generated
 from governova_compile.discovery import resolve_target_root
 from governova_compile.writer import load_active_index
 from governova_console import configure_stdout
@@ -256,6 +258,22 @@ def _candidate_files(paths: list[Path] | None, base: str, root: Path) -> list[Pa
 
     Given paths, directories are walked. Given none, this is a pull request and
     the candidates are the files it changed — the CI default.
+
+    **A directory walk honours `SKIP_DIRS`.** It did not, and the effect was the
+    worst first impression this tool can make. `governova enforce .` is the first
+    command a new adopter types, and a bare `rglob("*")` reached into `.venv`,
+    `node_modules` and `dist`: measured against a freshly installed wheel in an
+    empty project, it reported **51 blocking findings, every one of them from
+    somebody else's dependency**, including files inside `site-packages`.
+
+    The exclusions already existed and were only consulted on the other branch of
+    this function — `iter_source_files`, used when no paths are given, has always
+    filtered. So the CI path was correct and the human path was not, which is why
+    nothing caught it: CI never passes an argument.
+
+    A file named explicitly is still honoured wherever it lives. Naming a file is
+    a decision; naming a directory is not a decision about everything vendored
+    inside it.
     """
     if not paths:
         return _changed_files(base, root)
@@ -263,10 +281,32 @@ def _candidate_files(paths: list[Path] | None, base: str, root: Path) -> list[Pa
     candidates: list[Path] = []
     for p in paths:
         if p.is_dir():
-            candidates.extend(q for q in p.rglob("*") if q.is_file())
+            candidates.extend(_walk_directory(p))
         else:
             candidates.append(p)
     return candidates
+
+
+def _walk_directory(directory: Path) -> list[Path]:
+    """Files under `directory`, skipping the directories nothing authored.
+
+    Pruned during the walk rather than filtered afterwards, so a large
+    `node_modules` is never enumerated in the first place.
+    """
+    found: list[Path] = []
+    for path in directory.rglob("*"):
+        if not path.is_file():
+            continue
+        try:
+            parts = path.relative_to(directory).parts[:-1]
+        except ValueError:  # pragma: no cover - rglob results are always relative
+            parts = path.parts[:-1]
+        if any(part in SKIP_DIRS for part in parts):
+            continue
+        if is_generated(path.name):
+            continue
+        found.append(path)
+    return found
 
 
 def _not_ignored(candidates: list[Path], root: Path, ignores: tuple[str, ...]) -> list[Path]:

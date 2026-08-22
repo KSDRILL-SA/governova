@@ -125,13 +125,23 @@ def _constitutional_coverage(root: Path) -> Factor:
     never hand-listed. A project that has declared no profile is unassessed — an
     undeclared project is never assumed compliant.
     """
-    from governova_compile.writer import load_index
+    from governova_compile.writer import load_active_index
     from governova_project import coverage_factor
 
-    index_file = root / "compiled" / "constitution.json"
-    if not index_file.is_file():
-        return _factor("constitutional_coverage", None, "no compiled index")
-    score, detail = coverage_factor(root, load_index(index_file))
+    # `load_active_index`, not `root / "compiled" / ...`. The hard-coded path
+    # exists only in a Governova source tree, so an installed adopter always got
+    # "no compiled index" here — and this is the factor `ADR-012` names as the
+    # one that reaches quorum. The effect was that **no installed user could
+    # ever be issued a Governova Score**, which is the product's headline number.
+    #
+    # The resolver already handles all four cases: an explicit path, the
+    # `GOVERNOVA_CONSTITUTION` override, a working-tree index found by walking
+    # up, and the copy bundled in the wheel.
+    try:
+        index = load_active_index(start=root)
+    except FileNotFoundError:
+        return _factor("constitutional_coverage", None, "no constitution index found")
+    score, detail = coverage_factor(root, index)
     return _factor("constitutional_coverage", score, detail)
 
 

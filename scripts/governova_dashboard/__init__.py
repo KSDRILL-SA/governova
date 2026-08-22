@@ -10,7 +10,7 @@ from pathlib import Path
 
 from governova_checks import enforcement_coverage
 from governova_compile.discovery import resolve_repo_root
-from governova_compile.writer import load_index
+from governova_compile.writer import load_active_index
 from governova_report import build_report
 
 from governova_dashboard.render import to_html
@@ -20,7 +20,8 @@ def build_html(root: Path | None = None) -> str:
     """Build the dashboard HTML for the repo rooted at `root`."""
     r = root or resolve_repo_root()
     report = build_report(r)
-    index = load_index(r / "compiled" / "constitution.json")
+    # Resolved rather than assumed — see `governova_score.compute`.
+    index = load_active_index(start=r)
     coverage = enforcement_coverage(index)
     return to_html(report, coverage)
 

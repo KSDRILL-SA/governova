@@ -320,6 +320,14 @@ RULES: list[Rule] = [
         "SQL built by string interpolation (injection risk). S2.28: parameterise every query.",
         "medium",
     ),
+    # `S2.27` says the same thing and has no rule of its own, deliberately. A
+    # rule was written for `AP-S2.27a` and removed before landing: it matched
+    # the same lines as the one above, which would have reported one defect
+    # twice under two standards and inflated every count drawn from findings.
+    # Three duplicates already reached this file once and were removed after
+    # they showed up in a measurement — express reported 36 lines 72 times.
+    # Coverage counts standards, and buying one with a second name for a
+    # finding that already exists is buying it dishonestly.
     Rule(
         "AP-S2.10c",
         "S2.10",
@@ -1033,6 +1041,47 @@ RULES: list[Rule] = [
             re.I,
         ),
         "Form input below 16px. S4.20: iOS Safari zooms the viewport when a smaller input takes focus, and the page the user came back to is not the one they left.",
+        "medium",
+    ),
+    Rule(
+        "AP-S5.11a",
+        "S5.11",
+        # Only the form that closes on its own line. A multi-line Prisma call
+        # opens with `findMany({` and its `select` is three lines below, so a
+        # pattern that did not require the closing paren would report the correct
+        # spelling of this call in almost every repository that uses Prisma.
+        re.compile(r"\.findMany\s*\([^)\n]{0,200}\)"),
+        "findMany with no select clause. S5.11: name the columns — the default "
+        "returns every field on the model, including the password hash and the "
+        "refresh token, to anything that calls it.",
+        "medium",
+        unless=re.compile(r"\bselect\s*:"),
+    ),
+    Rule(
+        "AP-S5.14a",
+        "S5.14",
+        # Same single-line restriction, and a `where` is required: an unfiltered
+        # `findMany()` is `AP-S5.11a`'s subject, and a filtered one that still
+        # cannot bound its result set is this one's.
+        re.compile(r"\.findMany\s*\(\s*\{[^)\n]{0,200}\bwhere\b[^)\n]{0,200}\}\s*\)"),
+        "findMany with a filter and no take. S5.14: bound the result — this works "
+        "on the row count the table has today and exhausts memory on the count it "
+        "will have, with no code change in between.",
+        "medium",
+        unless=re.compile(r"\btake\s*:"),
+    ),
+    Rule(
+        "AP-S5.17a",
+        "S5.17",
+        # `as SomeType` applied to a Prisma result. The assertion silences the
+        # one check that would have caught the schema drift.
+        re.compile(
+            r"\bprisma\.[A-Za-z_$][\w$]{0,60}\.[A-Za-z_$][\w$]{0,40}\s*\([^;\n]{0,200}"
+            r"\)\s*(?:as\s+(?!const\b)[A-Z][\w<>\[\]]{0,60})"
+        ),
+        "Type assertion on a Prisma result. S5.17: the generated type is the "
+        "schema's guarantee, and asserting over it turns a compile error about a "
+        "renamed column into a runtime one about undefined.",
         "medium",
     ),
 ]

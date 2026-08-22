@@ -133,6 +133,38 @@ def orphan_citations(requirement_set: RequirementSet) -> list[Finding]:
 # ─── A verification that went stale ──────────────────────────────────────────
 
 
+def _manifest_revisions(root: Path, manifest_relative: str) -> list[tuple[str, int]]:
+    """The manifest's history as `(sha, commit timestamp)`, newest first.
+
+    Split out of `_statement_changed_at` so that reading history and comparing
+    statements are two functions rather than one: they fail differently — a
+    missing git binary against a manifest revision that will not parse — and only
+    the second one carries the logic anybody needs to reason about.
+
+    A line without a numeric timestamp is dropped rather than defaulted. A guessed
+    timestamp here would date a statement change to the wrong commit, which is a
+    wrong answer wearing the shape of a right one.
+    """
+    log = _git(
+        root,
+        "log",
+        "-n",
+        str(_MAX_MANIFEST_REVISIONS),
+        "--format=%H %ct",
+        "--",
+        manifest_relative,
+    )
+    if not log:
+        return []
+
+    revisions: list[tuple[str, int]] = []
+    for line in log.splitlines():
+        sha, _, when = line.partition(" ")
+        if sha and when.strip().isdigit():
+            revisions.append((sha, int(when.strip())))
+    return revisions
+
+
 def _statement_changed_at(root: Path, manifest_relative: str) -> dict[str, int]:
     """When each requirement's *statement* last changed, as a commit timestamp.
 
@@ -140,15 +172,7 @@ def _statement_changed_at(root: Path, manifest_relative: str) -> dict[str, int]:
     than using the file's modification time. That distinction is the whole point: a
     manifest edited to add REQ-009 must not mark every other requirement's tests stale.
     """
-    log = _git(root, "log", "-n", str(_MAX_MANIFEST_REVISIONS), "--format=%H %ct", "--", manifest_relative)
-    if not log:
-        return {}
-
-    revisions: list[tuple[str, int]] = []
-    for line in log.splitlines():
-        sha, _, when = line.partition(" ")
-        if sha and when.strip().isdigit():
-            revisions.append((sha, int(when.strip())))
+    revisions = _manifest_revisions(root, manifest_relative)
     if not revisions:
         return {}
 

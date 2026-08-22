@@ -75,14 +75,17 @@ dev = [
 ingest = [
     "pypdf>=5.0",
 ]
-# The identity service (Workstream D, Stage 0). An extra rather than a runtime
-# dependency for the same reason `ingest` is one, and for a stronger one:
+# The Cloud services — identity (Stage 0) and the hosted read API (Stage 4).
+# An extra rather than a runtime dependency for the same reason `ingest` is one,
+# and for a stronger one:
 # `ADR-010` §1 and §5.1 guarantee the deterministic engine runs complete and
 # offline forever. A consumer who installs `governova` to govern a repository
 # must never acquire a web framework, an ASGI server and a JWT library to do it.
 #
 # The separation is asserted, not assumed — `test_identity_isolation.py` imports
-# every engine surface with these packages made unimportable.
+# every engine surface with these packages made unimportable, and finds Cloud
+# packages by what they import rather than by a list, so a new one added here is
+# covered without anybody remembering to add it.
 cloud = [
     "fastapi>=0.115",
     "uvicorn>=0.32",
@@ -159,6 +162,7 @@ packages = [
     "governova_ledger",
     "governova_gateway",
     "governova_settings",
+    "governova_hosted",
 ]
 
 [tool.mypy]
@@ -207,4 +211,5 @@ files = [
     "governova_ledger",
     "governova_gateway",
     "governova_settings",
+    "governova_hosted",
 ]

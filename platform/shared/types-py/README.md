@@ -7,7 +7,7 @@ Typed models for the Governova compiled constitutional index
 `scripts/governova_compile/schema.py` by `governova-codegen`. Edit the schema,
 re-run codegen.
 
-The version tracks the index schema version (currently `1.2.0`): pinning
+The version tracks the index schema version (currently `1.3.0`): pinning
 this package pins the index shape your code can read.
 
 ```python

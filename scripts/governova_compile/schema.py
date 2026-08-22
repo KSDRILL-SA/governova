@@ -18,11 +18,11 @@ from __future__ import annotations
 
 from datetime import date, datetime
 from enum import StrEnum
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-SCHEMA_VERSION = "1.2.0"
+SCHEMA_VERSION = "1.3.0"
 """Semantic version of the compiled-index schema. See module docstring."""
 
 MAX_GROUNDED_IN_CHARS = 120
@@ -435,6 +435,18 @@ class CompiledIndex(BaseModel):
     compiled_at: datetime
     source_commit_sha: str | None = Field(default=None, description="Git SHA of the source tree.")
     checksum: str = Field(description="SHA-256 of the index body (everything except this field).")
+
+    corpus: Literal["full", "core"] = Field(
+        default="full",
+        description=(
+            "Which corpus this document is. `ADR-011` ships a core subset in the "
+            "wheel and keeps the domain packs licensed, and until this field "
+            "existed the two files were indistinguishable: same schema version, "
+            "same commit, different law. Every metric computed from an index is "
+            "computed against a denominator, and a denominator whose provenance "
+            "cannot be read invites the wrong comparison — `ADR-013` §(c)."
+        ),
+    )
 
     framework: list[FrameworkPrimitive] = Field(default_factory=list)
     constitutions: list[Constitution] = Field(default_factory=list)

@@ -833,10 +833,10 @@
     }
   },
   "additionalProperties": false,
-  "description": "Machine-readable form of the Governova constitutional database, schema version 1.2.0. See https://governova.dev/docs/schema.",
+  "description": "Machine-readable form of the Governova constitutional database, schema version 1.3.0. See https://governova.dev/docs/schema.",
   "properties": {
     "schema_version": {
-      "default": "1.2.0",
+      "default": "1.3.0",
       "description": "Semantic version of the schema.",
       "title": "Schema Version",
       "type": "string"
@@ -862,6 +862,16 @@
     "checksum": {
       "description": "SHA-256 of the index body (everything except this field).",
       "title": "Checksum",
+      "type": "string"
+    },
+    "corpus": {
+      "default": "full",
+      "description": "Which corpus this document is. `ADR-011` ships a core subset in the wheel and keeps the domain packs licensed, and until this field existed the two files were indistinguishable: same schema version, same commit, different law. Every metric computed from an index is computed against a denominator, and a denominator whose provenance cannot be read invites the wrong comparison — `ADR-013` §(c).",
+      "enum": [
+        "full",
+        "core"
+      ],
+      "title": "Corpus",
       "type": "string"
     },
     "framework": {
@@ -951,5 +961,5 @@
   "title": "Governova Compiled Constitutional Index",
   "type": "object",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://governova.dev/schema/v1.2.0/constitution.schema.json"
+  "$id": "https://governova.dev/schema/v1.3.0/constitution.schema.json"
 }

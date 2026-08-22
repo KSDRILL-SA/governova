@@ -4,7 +4,13 @@ Kept separate from `rules.py` (which is pure stdlib) because these functions rea
 the compiled index. They answer two questions:
 
 - Is every rule *legitimate* — does it bind a real anti-pattern? (`validate_rules`)
+- Which bindings does *this* installation's corpus not resolve? (`unresolved_bindings`)
 - How much of the constitution is mechanically enforceable? (`enforcement_coverage`)
+
+The first two look like one question and are two, which is what `ADR-013` decides:
+a rule citing an anti-pattern that exists nowhere is a bug; a rule citing law this
+installation does not hold is the licence boundary, and reporting it as a bug is a
+false accusation against a correctly-built wheel.
 """
 
 from __future__ import annotations
@@ -40,16 +46,40 @@ def domain_anti_patterns(index: CompiledIndex | None = None) -> set[str]:
     return {ap.id for d in idx.domains for s in d.standards for ap in s.anti_patterns}
 
 
-def validate_rules(index: CompiledIndex | None = None) -> list[str]:
-    """Anti-pattern ids referenced by rules that exist in no layer of the constitution.
+def unresolved_bindings(index: CompiledIndex | None = None) -> list[str]:
+    """Anti-pattern ids referenced by rules that this index does not define.
 
-    Implements REQ-006 — the rule set cannot drift from the corpus it enforces.
-
-    An empty list means the rule set is fully grounded. Core and domain
-    anti-patterns are both legitimate bindings — a rule may enforce either.
+    A fact about the index, with no verdict attached. On the full corpus this is
+    empty and any entry is drift; on the core subset it is 46 entries and every
+    one of them is the licence boundary working correctly. The two cases are the
+    same measurement and opposite conclusions, which is why the conclusion is
+    drawn by `validate_rules` below rather than here.
     """
     defined = index_anti_patterns(index) | domain_anti_patterns(index)
     return sorted(r.anti_pattern for r in RULES if r.anti_pattern not in defined)
+
+
+def validate_rules(index: CompiledIndex | None = None) -> list[str]:
+    """Rule-set drift: anti-pattern ids that exist in **no** corpus at all.
+
+    Implements `REQ-006` — the rule set cannot drift from the corpus it enforces.
+    An empty list means the rule set is grounded. Core and domain anti-patterns
+    are both legitimate bindings; a rule may enforce either.
+
+    **This is an authoring-time invariant and it is answerable only against the
+    full corpus.** `ADR-013` §(b): on a core installation 46 of 64 rules cite law
+    the operator does not hold, by design, and this function used to report all
+    46 as drift — accusing the licence boundary of being a bug. An installation
+    holding a subset cannot tell a missing standard from an unlicensed one, so it
+    does not guess. It returns nothing and `unresolved_bindings` reports the fact.
+
+    That is the same discipline every probe follows: a check that cannot
+    determine an answer says so rather than returning the convenient one. Here
+    the convenient answer was a false accusation, which is worse than silence.
+    """
+    if _load_index(index).corpus != "full":
+        return []
+    return unresolved_bindings(index)
 
 
 def analyser_anti_patterns() -> set[str]:
@@ -99,6 +129,13 @@ def enforcement_coverage(index: CompiledIndex | None = None) -> dict[str, Any]:
     high = sum(1 for r in RULES if r.confidence == "high")
     medium = sum(1 for r in RULES if r.confidence == "medium")
     return {
+        # `ADR-013` §(c) — every figure below is a fraction of a corpus, and the
+        # core subset returns a *higher* `coverage_pct` than the full one (10.8
+        # against 7.6) because its denominator shrank faster than its numerator.
+        # Both are correct. Read side by side without this label, they say
+        # coverage improved when the corpus was cut.
+        "corpus": _load_index(index).corpus,
+        "unresolved_bindings": len(unresolved_bindings(index)),
         "rules": len(RULES),
         "blocking_rules": high,
         "advisory_rules": medium,

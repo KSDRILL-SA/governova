@@ -11,6 +11,7 @@ from governova_checks.coverage import (
     domain_anti_patterns,
     enforcement_coverage,
     index_anti_patterns,
+    unresolved_bindings,
     validate_rules,
 )
 from governova_checks.gather import (
@@ -52,5 +53,6 @@ __all__ = [
     "scan_file",
     "scan_paths",
     "scan_text",
+    "unresolved_bindings",
     "validate_rules",
 ]

@@ -20,6 +20,62 @@ Nothing yet.
 
 ---
 
+## [0.2.1] — unreleased
+
+**A patch release, and the reason for it is worth stating plainly: `0.2.0` did not work
+properly once installed.** Both defects were invisible from a source checkout and appeared the
+moment the wheel was installed somewhere else — which is what every adopter does and what
+nothing in CI did.
+
+### Fixed
+
+- **`governova enforce .` reported findings from your dependencies.** A directory argument was
+  expanded without consulting `SKIP_DIRS`, so the walk reached into `.venv`, `node_modules` and
+  `dist`. Measured on a fresh install of `0.2.0` into an empty project containing exactly one
+  real violation: **51 blocking findings, 50 of them from inside `site-packages`.** Every one
+  was true about the line it cited and none was the reader's code. The exclusions existed and
+  were applied only on the branch of that function CI uses, because CI never passes a path.
+  (#320, #321)
+
+- **No installed user could ever be issued a Governova Score.** The constitutional coverage
+  factor looked for `compiled/constitution.json` relative to the project being scored — a path
+  that exists only inside a Governova checkout. `ADR-012` names that factor as the one that
+  reaches quorum, so an installed Governova sat permanently at 30% assessed and withheld the
+  headline number from everyone not running from source. Six surfaces bypassed the resolver
+  that already answered this question; all six now use it, so `GOVERNOVA_CONSTITUTION` reaches
+  every command rather than some of them. (#320, #321)
+
+- **Test files named the way the constitution mandates were scanned as source.** `S1.69`
+  requires co-located `{source}.test.ts` / `.spec.ts`, and those two conventions were missing
+  from the ignore list while Python's and Go's were present — so a repository following
+  Governova's own standard was reported against every rule its tests deliberately exercise.
+  (#315, #316)
+
+- **The score renderers published a headline below quorum.** `ADR-012` reached the CLI, the
+  guardian and the dashboard, and left `to_badge`, `to_markdown`, `to_text` and `to_json`
+  printing the arithmetic. The badge was the one that mattered: it goes in a public README and
+  showed `0/100 (F)` for a repository nobody had measured. (#304)
+
+- **A core installation reported its own licence boundary as a defect.** `validate_rules`
+  returned the 46 rules citing anti-patterns outside the bundled corpus as rule-set drift,
+  accusing a correctly built wheel of a bug. `ADR-013` decides the question and splits the two
+  claims apart. (#305, #306)
+
+### Added
+
+- `ADR-013` — a rule fires for a defect, not for a licence. Records why rules stay active for
+  law the operator has not licensed, on `ADR-010 §5.1` grounds rather than preference.
+- A `corpus` marker on the compiled index (schema `1.3.0`, additive). The full and core indexes
+  were previously indistinguishable — same schema version, same commit, different law — so
+  every coverage figure carried a denominator nobody could attribute.
+- 13 rules and 4 probes. Constitutional coverage 17.1 → 19.0.
+
+### Changed
+
+- Complexity gate ratcheted 11 → 10, the conventional limit, with no per-file exemptions.
+
+---
+
 ## [0.2.0] — 2026-08-20
 
 The first release since the engine learned to arrive at a repository it has never seen.

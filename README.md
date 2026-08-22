@@ -3,21 +3,28 @@
 > *"AI can build anything. It is us who must tell it exactly what to build,
 > how to build it, what not to build, and who approves every decision."*
 
-[![Governova Score](https://img.shields.io/badge/Governova_Score-78%2F100_(C)-yellow)](docs/vision/master.md)
-[![Status](https://img.shields.io/badge/Status-LOCKED-red)](docs/vision/master.md)
-[![Version](https://img.shields.io/badge/Version-v2.0-blue)](docs/vision/master.md)
+[![PyPI](https://img.shields.io/pypi/v/governova?color=blue)](https://pypi.org/project/governova/)
+[![Governova Score](https://img.shields.io/badge/Governova_Score-80%2F100_(B)-green)](docs/vision/master.md)
 [![Constitutions](https://img.shields.io/badge/Constitutions-15-purple)](constitution/core/)
 [![Standards](https://img.shields.io/badge/Standards-670-green)](constitution/indexes/standards-index.md)
-[![Phases](https://img.shields.io/badge/Phases-4-teal)](framework/phase-model.md)
-[![Locked](https://img.shields.io/badge/Locked-2026--05--22-orange)](docs/vision/master.md)
+[![Python](https://img.shields.io/badge/Python-3.12+-teal)](https://pypi.org/project/governova/)
+[![Licence](https://img.shields.io/badge/Licence-MIT-orange)](LICENSE)
 
-> **On that score.** Governova scores itself with the same engine it ships, over
-> all five factors at full weight — and currently scores **78 (C)**, below its own
-> Certified bar of 85. It was 100 while three of the five factors were unassessed;
-> instrumenting them lowered it. The gap is constitutional coverage: 61 of 596
-> applicable standards are *evidenced*, and undemonstrated compliance is
-> deliberately uncounted. A governance product that grades itself generously is
-> the one number nobody should trust.
+> **On that score.** Governova scores itself with the engine it ships, over all five
+> factors at full weight, and currently scores **80 (B)** — below its own Certified
+> bar of 85. It was 100 while three of the five factors were unassessed;
+> instrumenting them lowered it. The gap is constitutional coverage: under a fifth
+> of applicable standards are *evidenced*, and undemonstrated compliance is
+> deliberately uncounted. A governance product that grades itself generously is the
+> one number nobody should trust.
+>
+> For the exact count, run `governova govscore` — it is deliberately not quoted
+> here, because it is not reproducible between a full checkout and a CI shallow
+> clone (`D-29`). The headline is.
+>
+> That number is checked by a test, not maintained by hand — see
+> `test_readme_states_the_score_the_engine_computes`. A stale badge on a governance
+> tool is the same defect as a stale metric inside one.
 
 ---
 
@@ -65,17 +72,30 @@ Engineering, C12 System Modelling, C13 Software Evolution, C14 Data Design).
 ## Quick start
 
 ```bash
-# Clone alongside your project
+pip install governova
+```
+
+Then, from the root of any project — one you started yesterday or one that has been
+running for years:
+
+```bash
+governova enforce .      # what violates the constitution, right now
+governova onboard        # propose a project profile, changing nothing
+governova govscore       # the headline governance number
+```
+
+`onboard` writes nothing. It reads the repository, proposes a profile, and tells you
+plainly what it could not detect — a stack it does not recognise, a domain no code can
+reveal — rather than guessing and quietly narrowing what gets measured.
+
+**It runs entirely offline.** No account, no server, no telemetry, no licence check —
+permanently, by `ADR-010 §5.1`, and asserted by a test that imports every command with
+the network stack made unimportable. Nothing you scan leaves your machine.
+
+Governing Governova itself, or reading the corpus? Clone the repository:
+
+```bash
 git clone https://github.com/KSDRILL-SA/governova.git
-
-# First — read the master document
-cat docs/vision/master.md
-
-# Start a new governed project
-cat docs/guides/quickstart.md
-
-# Validate constitutional integrity at any time
-python scripts/validate-integrity.py
 ```
 
 New here? Start with the [documentation index](docs/README.md).

@@ -197,6 +197,16 @@ ROUTER_PATHS = re.compile(
     r"(?:^|/)[^/]*(?:router|route|controller)[^/]*\.[a-z]+$"
 )
 
+# Service and model modules. Narrower than `BACKEND_PATHS` on purpose: `S1.55`
+# and `S2.23` are both claims about the *service layer* specifically. A router is
+# exactly where `request.body` is supposed to be touched — that is the boundary
+# doing its job — so including routers here would report the correct code and
+# miss the point of the standard.
+SERVICE_PATHS = re.compile(
+    r"(?:^|/)(?:services?|models?|domain|usecases?|use[-_]cases?)/|"
+    r"(?:^|/)[^/]*(?:service|usecase)[^/]*\.[a-z]+$"
+)
+
 # Test paths, plus the one module a database client is *meant* to be built in.
 _TESTS_OR_DB_SINGLETON = re.compile(
     TEST_PATHS.pattern + r"|(?:^|/)(?:prisma|db|database)\.[a-z]+$"
@@ -1084,6 +1094,83 @@ RULES: list[Rule] = [
         "renamed column into a runtime one about undefined.",
         "medium",
     ),
+    Rule(
+        "AP-S2.76a",
+        "S2.76",
+        # `/api/` not followed by a version segment. The negative lookahead is
+        # the whole rule: `/api/v1/students` is the correct form and must not
+        # match, `/api/students` is the violation.
+        #
+        # Scoped to where routes are *declared*. `S2.76` governs the endpoint —
+        # "All API endpoints are prefixed with `/api/v1/` from the first endpoint
+        # implemented" — and a frontend calling an unversioned URL is a symptom
+        # of a backend that declared one, fixable only at the declaration.
+        #
+        # Without the scope this fired on `this.http.get('/api/students')` in an
+        # Angular component, which `AP-S4.55a` already reports for a different
+        # and equally true reason: the component is calling the network at all.
+        # Two standards on one line is what `test_no_line_produces_findings_from_
+        # two_standards` exists to stop, and it caught this before it landed.
+        re.compile(r"""["'`]/api/(?!v\d+[/"'`])[a-z]"""),
+        "Endpoint declared with no version in the path. S2.76: prefix `/api/v1/` "
+        "from the first endpoint — an unversioned route cannot gain a v2 beside "
+        "it, so the only path to a breaking change is breaking the clients.",
+        "medium",
+        path_include=ROUTER_PATHS,
+    ),
+    Rule(
+        "AP-S1.55a",
+        "S1.55",
+        # A single-letter type parameter on a declaration. `S1.55` permits one in
+        # a utility type "where the abstraction is so total that no meaningful
+        # name exists", so this is scoped to service and model code, which is
+        # exactly where the standard says a name is owed.
+        re.compile(
+            r"\b(?:function|class|interface|type)\s+[A-Za-z_$][\w$]{0,60}\s*"
+            r"<\s*[A-Z]\s*(?:,\s*[A-Z]\s*)*[,>]"
+        ),
+        "Single-letter generic in service or model code. S1.55: name it for its "
+        "role — `TEntity`, `TPayload` — because a caller reading the signature "
+        "cannot tell what the parameter is for.",
+        "medium",
+        path_include=SERVICE_PATHS,
+    ),
+    Rule(
+        "AP-S2.23a",
+        "S2.23",
+        # A request body read *inside the service layer*. Reaching the service at
+        # all means it came through the boundary, and the boundary's job was to
+        # replace it with a validated value — so the raw shape appearing here is
+        # the evidence that it did not.
+        re.compile(r"\b(?:request|req|ctx\.request)\s*\.\s*(?:body|query|params)\s*[.\[]"),
+        "Raw request data read in the service layer. S2.23: validate at the "
+        "boundary — a service reading the unvalidated shape is a service that "
+        "trusts whatever the client sent.",
+        "medium",
+        path_include=SERVICE_PATHS,
+    ),
+    Rule(
+        "AP-S2.19b",
+        "S2.19",
+        # The detectable half of the response contract. `S2.20` says the same
+        # thing about a collection — see the note below.
+        re.compile(r"""["']?\bdata["']?\s*:\s*(?:null|None)\b"""),
+        "`data: null` in a response envelope. S2.19: `data` is never null — a "
+        "client cannot tell an empty result from a failed one, so every consumer "
+        "grows a special case for it.",
+        "medium",
+    ),
+    # `S2.20` — the same shape for a *collection*, where the correct value is `[]`
+    # rather than an object — has no rule of its own, deliberately. Its
+    # anti-pattern is "`data: null` when list is empty", and a line scanner cannot
+    # know whether the endpoint returns a collection: the fact on the line is
+    # `data: null` and nothing more. Binding it here as well would report one line
+    # under two standards, which is how three duplicate rules reached this file
+    # before. `S2.19b` is the claim the evidence actually supports.
+    #
+    # `S6.22` and `AP-S2.76a` stand in the same relation. `S6.22` requires the
+    # `/api/v1/` prefix and cites `S2.76` for the versioning policy, so the rule
+    # is written once, against the standard that owns the rule.
 ]
 
 

@@ -540,6 +540,11 @@ _CATCHES: list[tuple[str, str, str | None]] = [
     ("AP-S5.10a", "  id Int @id @default(autoincrement())", "prisma/schema.prisma"),
     ("AP-S4.17a", '<span class="badge">\U0001f512 Secure</span>', "src/badge.html"),
     ("AP-S4.3a", 'router.get("/mobile/dashboard", handler)', "src/routes.ts"),
+    # The API-contract batch.
+    ("AP-S2.76a", 'router.get("/api/students", handler)', "src/routers/student-router.ts"),
+    ("AP-S1.55a", "export function fetchAll<T>(url: string) {", "src/services/student.ts"),
+    ("AP-S2.23a", "const email = request.body.email;", "src/services/student.ts"),
+    ("AP-S2.19b", 'return res.json({ data: null });', "src/routers/student-router.ts"),
 ]
 
 _HOLDS: list[tuple[str, str, str | None]] = [
@@ -582,6 +587,11 @@ _HOLDS: list[tuple[str, str, str | None]] = [
     # A word beginning with `m.` is not a mobile subdomain, and prose about
     # mobile is not a mobile build.
     ("AP-S4.3a", "// the mobile layout is handled by the same responsive build", "src/routes.ts"),
+    # The API-contract batch. Each near-miss is the correct form of the same line.
+    ("AP-S2.76a", 'router.get("/api/v1/students", handler)', "src/routers/student-router.ts"),
+    ("AP-S1.55a", "export function fetchAll<TEntity>(url: string) {", "src/services/student.ts"),
+    ("AP-S2.23a", "const email = validated.email;", "src/services/student.ts"),
+    ("AP-S2.19b", "return res.json({ data: [], count: 0 });", "src/routers/student-router.ts"),
 ]
 
 

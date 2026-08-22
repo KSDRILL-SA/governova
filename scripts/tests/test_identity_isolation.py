@@ -32,6 +32,27 @@ import pytest
 # Everything the Cloud brings in. None of it may be reachable from engine code.
 CLOUD_ONLY = ("fastapi", "uvicorn", "jwt", "cryptography", "starlette", "keyring")
 
+# Governova's own Cloud packages. Named as a set rather than one at a time,
+# because the check below started as `"governova_identity" in text` and would
+# have silently stopped covering Stage 4 the day `governova_hosted` was added —
+# a guard that only knows the packages that existed when it was written expires
+# without failing. Anything new under Workstream D belongs here.
+#
+# `governova_auth` is on this list because
+# `test_every_cloud_package_on_disk_is_covered_by_that_check` put it there: it
+# pulls in `keyring` and was never covered by the by-name check, which is exactly
+# the blind spot that check exists to close.
+CLOUD_PACKAGES = ("governova_identity", "governova_hosted", "governova_auth")
+
+# The one reference an engine module is allowed to make, and the test that makes
+# it safe. `governova login`, `logout` and `whoami` need the client, so the CLI
+# names it inside those three command bodies — never at module scope, which is
+# what would put a keychain library on the import path of `governova score`.
+# `test_the_cli_reaches_the_auth_client_only_inside_the_identity_commands` is the
+# narrower rule that governs it, so a blanket ban here would only duplicate that
+# test badly. Listed as a pair so the exemption cannot widen to another module.
+PERMITTED_REFERENCES = {("governova_auth", "governova_cli.__main__")}
+
 # Every surface the engine offers. `#254` names the commands; these are the
 # modules behind them.
 ENGINE_MODULES = (
@@ -140,11 +161,13 @@ def test_the_engine_runs_with_the_cloud_unimportable(tmp_path) -> None:
     assert "engine ok" in result.stdout
 
 
-def test_the_identity_package_is_not_reachable_from_the_engine() -> None:
-    """No engine module may import `governova_identity` either.
+@pytest.mark.parametrize("cloud_package", CLOUD_PACKAGES)
+def test_no_cloud_package_is_reachable_from_the_engine(cloud_package: str) -> None:
+    """No engine module may import a Cloud package either.
 
     The dependency direction is one-way by design: the Cloud may read the engine,
-    and the engine must never learn the Cloud exists.
+    and the engine must never learn the Cloud exists. That direction is what lets
+    the hosted API reuse `compute_score` while the engine stays offline forever.
     """
     offenders: list[str] = []
     for name in ENGINE_MODULES:
@@ -153,9 +176,31 @@ def test_the_identity_package_is_not_reachable_from_the_engine() -> None:
         if source is None:
             continue
         text = Path(source).read_text(encoding="utf-8")
-        if "governova_identity" in text:
+        if cloud_package in text and (cloud_package, name) not in PERMITTED_REFERENCES:
             offenders.append(name)
-    assert not offenders, f"engine module(s) reference the identity package: {offenders}"
+    assert not offenders, f"engine module(s) reference {cloud_package}: {offenders}"
+
+
+def test_every_cloud_package_on_disk_is_covered_by_that_check() -> None:
+    """The list above must not fall behind the packages that exist.
+
+    `CLOUD_PACKAGES` is hand-maintained, and a hand-maintained list of things to
+    guard is exactly the kind that goes stale quietly. This finds Cloud packages
+    by what they import — a `governova_*` package that imports FastAPI is a Cloud
+    package whatever it is called — and fails if one is not being guarded.
+    """
+    from governova_compile.discovery import resolve_repo_root
+
+    packages = Path(resolve_repo_root()) / "scripts"
+    found = set()
+    for init in packages.glob("governova_*/**/*.py"):
+        text = init.read_text(encoding="utf-8")
+        if any(f"import {dep}" in text or f"from {dep}" in text for dep in CLOUD_ONLY):
+            found.add(init.relative_to(packages).parts[0])
+
+    assert found <= set(CLOUD_PACKAGES), (
+        f"Cloud package(s) not covered by the isolation check: {found - set(CLOUD_PACKAGES)}"
+    )
 
 
 def test_the_cli_reaches_the_auth_client_only_inside_the_identity_commands() -> None:
@@ -192,7 +237,7 @@ def test_the_identity_service_is_an_extra_not_a_runtime_dependency() -> None:
         assert package not in runtime, f"{package} became a runtime dependency"
 
     extras = packaging["project"]["optional-dependencies"]
-    assert "cloud" in extras, "the identity service must be installable as an extra"
+    assert "cloud" in extras, "the Cloud packages must be installable as an extra"
     assert any("fastapi" in spec for spec in extras["cloud"])
 
 
@@ -209,14 +254,17 @@ def test_importing_identity_without_the_extra_fails_loudly_not_silently() -> Non
             raise ModuleNotFoundError("No module named 'fastapi'")
         return real_import(name, *args, **kwargs)
 
-    for cached in [m for m in sys.modules if m.startswith(("governova_identity", "fastapi"))]:
+    for cached in [m for m in sys.modules if m.startswith((*CLOUD_PACKAGES, "fastapi"))]:
         del sys.modules[cached]
 
     builtins.__import__ = guarded
     try:
-        with pytest.raises(ModuleNotFoundError):
-            importlib.import_module("governova_identity.app")
+        # `governova_auth` is not here: it fails on `keyring`, not on `fastapi`,
+        # and blocking the wrong dependency would make this pass for no reason.
+        for module in ("governova_identity.app", "governova_hosted.app"):
+            with pytest.raises(ModuleNotFoundError):
+                importlib.import_module(module)
     finally:
         builtins.__import__ = real_import
-        for cached in [m for m in sys.modules if m.startswith("governova_identity")]:
+        for cached in [m for m in sys.modules if m.startswith(CLOUD_PACKAGES)]:
             del sys.modules[cached]

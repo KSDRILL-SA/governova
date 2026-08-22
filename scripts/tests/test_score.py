@@ -6,6 +6,7 @@ import json
 
 from governova_score import compute_score, grade_for, to_badge, to_json, to_markdown
 from governova_score.model import Factor, finalize
+from governova_score.render import to_text
 
 
 def _ts(tmp_path, name, content):
@@ -249,3 +250,98 @@ def test_the_violation_factor_arithmetic_is_unchanged(tmp_path) -> None:
     factor = _violation_rate(tmp_path)
     # One blocking (AP-S3.14a) and one advisory (AP-S8.31a).
     assert factor.score == 100.0 - 10 - _ADVISORY_PENALTY
+
+
+# ─── ADR-012 across every renderer, not one at a time ────────────────────────
+
+
+def test_every_score_renderer_honours_the_quorum() -> None:
+    """The sweep, because this amendment has now been missed four times.
+
+    `ADR-012` landed across the CLI, the guardian, the dashboard, the board
+    report and the onboarding payload — and left `governova_score.render`, the
+    module whose entire job is rendering the score, printing the arithmetic as a
+    headline on all four of its surfaces.
+
+    Each was found separately, one surface at a time. This walks the module's
+    public renderers instead, so a fifth added later cannot quietly skip it.
+    """
+    import governova_score.render as render
+
+    partial = finalize([Factor("violation_rate", "Violation rate", 30, 0.0, "")])
+    renderers = {
+        name: value
+        for name, value in vars(render).items()
+        if name.startswith("to_") and callable(value)
+    }
+    assert len(renderers) >= 4, f"expected every renderer, found {sorted(renderers)}"
+
+    for name, renderer in renderers.items():
+        rendered = renderer(partial)
+
+        # The *headline* is what ADR-012 withholds, not the breakdown. A factor
+        # reporting its own `0/100` in the table below is correct and useful —
+        # the amendment's whole point is that the factors are shown and the
+        # number drawn from them is not. So this reads the headline line only.
+        headline_line = rendered.splitlines()[0] if name != "to_badge" else rendered
+        assert "0/100" not in headline_line, f"{name} published a score below quorum"
+
+        if name == "to_json":
+            # A machine surface carries the fields and lets the consumer decide.
+            # `certified_eligible: false` is correct here precisely *because*
+            # `has_quorum: false` sits beside it; a reader gets both or neither.
+            payload = json.loads(rendered)
+            assert payload["headline"] is None
+            assert payload["has_quorum"] is False
+            continue
+
+        # A prose surface has no second field to qualify a sentence, so the
+        # sentence itself must not claim the repository was measured against a
+        # threshold it was never measured against.
+        assert "partial" in rendered.lower() or "not issued" in rendered.lower(), (
+            f"{name} does not say the assessment is partial"
+        )
+        assert "below the governova certified" not in rendered.lower(), (
+            f"{name} says an unmeasured repository is below a threshold"
+        )
+
+
+def test_the_badge_never_publishes_a_score_below_quorum() -> None:
+    """The most public surface there is, and the one worth calling out alone.
+
+    A README badge reading `0/100 (F)` for a repository that was never measured
+    is the exact first impression `ADR-012` was written to stop — and unlike a
+    terminal line, it is indexed, screenshotted and linked.
+    """
+    partial = finalize([Factor("violation_rate", "Violation rate", 30, 0.0, "")])
+    badge = to_badge(partial)
+    assert "0/100" not in badge
+    assert "partial" in badge
+    assert "brightgreen" not in badge and "red" not in badge
+
+
+def test_the_json_surface_says_whether_it_has_quorum() -> None:
+    """A machine consumer must be able to tell, since it reads no prose."""
+    partial = finalize([Factor("violation_rate", "Violation rate", 30, 55.0, "")])
+    payload = json.loads(to_json(partial))
+    assert payload["headline"] is None
+    assert payload["has_quorum"] is False
+    # The arithmetic is still available; it is the *headline* that is withheld.
+    assert payload["score"] == 55
+
+
+def test_a_full_assessment_still_renders_its_number_everywhere() -> None:
+    """The amendment withholds a headline below quorum and changes nothing above it."""
+    import governova_score.render as render
+
+    full = finalize(
+        [
+            Factor("violation_rate", "Violation rate", 30, 90.0, ""),
+            Factor("constitutional_coverage", "Constitutional coverage", 20, 90.0, ""),
+        ]
+    )
+    assert "90/100" in to_badge(full)
+    assert "90/100" in to_text(full)
+    assert "90/100" in to_markdown(full)
+    assert json.loads(to_json(full))["headline"] == 90
+    assert render.to_json is to_json

@@ -83,6 +83,30 @@ DEFAULT_IGNORES: tuple[str, ...] = (
     "*/test_*",
     "test_*",
     "*_test.*",
+    # The JavaScript and TypeScript filename convention, and the one the
+    # constitution itself mandates. `S1.69`: *"Unit test files are co-located
+    # with the source file they test, named `{source-file}.test.ts` or
+    # `{source-file}.spec.ts`."*
+    #
+    # These were missing while `test_*` (Python) and `*_test.*` (Go) were here,
+    # so a repository following `S1.69` was scanned against every rule its own
+    # tests deliberately exercise. Measured before the fix: a co-located
+    # `auth.test.ts` asserting that a token in `localStorage` is rejected was
+    # reported as `AP-S3.14a` — the violation the test exists to prevent.
+    #
+    # That is the express failure a second time. The note above records the
+    # first: 20 of 21 blocking findings were fixtures in `test/`. The fix that
+    # followed added the directory conventions and two of the three filename
+    # ones, and nothing checked whether the set was complete —
+    # `test_every_test_convention_is_skipped` checks it now.
+    #
+    # `*.test.*` and `*.spec.*` need the dots, so `latest.ts` and `spectrum.ts`
+    # are untouched. A source file genuinely named `openapi.spec.ts` would be
+    # skipped, which is the one real cost here and much the cheaper error: a
+    # missed finding in one unusually-named file, against a false accusation in
+    # every test file of every repository that follows the convention.
+    "*.test.*",
+    "*.spec.*",
     "scripts/governova_checks/rules.py",
 )
 

@@ -310,12 +310,12 @@ def find_manifest(root: Path, config: ReaderConfig) -> Path | None:
     return None
 
 
-def parse_manifest(text: str, *, origin: str = "manifest") -> list[Requirement]:
-    """Parse the interchange manifest. Raises `ManifestError` on anything malformed.
+def _manifest_records(text: str) -> list[object]:
+    """Validate the envelope and return the record list. Raises `ManifestError`.
 
-    Strict on purpose. A manifest is a published contract that other people's
-    exporters write against, and silently skipping a record the writer believed was
-    accepted would make the contract untestable from their side.
+    The envelope and the records fail for unrelated reasons — a wrong schema
+    version against a record missing an id — and reading them in one function
+    meant every new envelope rule deepened the loop below it.
     """
     try:
         data = json.loads(text)
@@ -327,8 +327,7 @@ def parse_manifest(text: str, *, origin: str = "manifest") -> list[Requirement]:
     version = data.get("schema_version")
     if not isinstance(version, str) or not version.strip():
         raise ManifestError("manifest is missing `schema_version`")
-    major = version.split(".", 1)[0]
-    if major != MANIFEST_SCHEMA_VERSION.split(".", 1)[0]:
+    if version.split(".", 1)[0] != MANIFEST_SCHEMA_VERSION.split(".", 1)[0]:
         raise ManifestError(
             f"manifest schema_version {version!r} is not compatible with "
             f"{MANIFEST_SCHEMA_VERSION!r} supported here"
@@ -337,34 +336,54 @@ def parse_manifest(text: str, *, origin: str = "manifest") -> list[Requirement]:
     raw = data.get("requirements")
     if not isinstance(raw, list):
         raise ManifestError("manifest `requirements` must be a list")
+    return raw
 
-    requirements: list[Requirement] = []
-    for position, item in enumerate(raw):
-        if not isinstance(item, dict):
-            raise ManifestError(f"requirement #{position} is not an object")
-        rid = item.get("id")
-        if not isinstance(rid, str) or not rid.strip():
-            raise ManifestError(f"requirement #{position} has no `id`")
-        kind = item.get("kind")
-        if kind is not None and kind not in KINDS:
-            raise ManifestError(f"{rid}: kind {kind!r} is not one of {sorted(KINDS)}")
-        obligation = item.get("obligation")
-        if obligation is not None and obligation not in OBLIGATIONS:
-            raise ManifestError(
-                f"{rid}: obligation {obligation!r} is not one of {sorted(OBLIGATIONS)}"
-            )
-        requirements.append(
-            Requirement(
-                id=rid.strip(),
-                statement=_text_or_none(item.get("statement")),
-                kind=kind,
-                obligation=obligation,
-                source=_text_or_none(item.get("source")),
-                acceptance=_text_or_none(item.get("acceptance")),
-                origin=origin,
-            )
+
+def _requirement_from_record(item: object, position: int, origin: str) -> Requirement:
+    """One record. Raises `ManifestError` naming the record that is wrong.
+
+    `position` is in every message that cannot quote an id, because "requirement
+    #7 is not an object" is findable and "manifest is malformed" is not.
+    """
+    if not isinstance(item, dict):
+        raise ManifestError(f"requirement #{position} is not an object")
+
+    rid = item.get("id")
+    if not isinstance(rid, str) or not rid.strip():
+        raise ManifestError(f"requirement #{position} has no `id`")
+
+    kind = item.get("kind")
+    if kind is not None and kind not in KINDS:
+        raise ManifestError(f"{rid}: kind {kind!r} is not one of {sorted(KINDS)}")
+
+    obligation = item.get("obligation")
+    if obligation is not None and obligation not in OBLIGATIONS:
+        raise ManifestError(
+            f"{rid}: obligation {obligation!r} is not one of {sorted(OBLIGATIONS)}"
         )
-    return requirements
+
+    return Requirement(
+        id=rid.strip(),
+        statement=_text_or_none(item.get("statement")),
+        kind=kind,
+        obligation=obligation,
+        source=_text_or_none(item.get("source")),
+        acceptance=_text_or_none(item.get("acceptance")),
+        origin=origin,
+    )
+
+
+def parse_manifest(text: str, *, origin: str = "manifest") -> list[Requirement]:
+    """Parse the interchange manifest. Raises `ManifestError` on anything malformed.
+
+    Strict on purpose. A manifest is a published contract that other people's
+    exporters write against, and silently skipping a record the writer believed was
+    accepted would make the contract untestable from their side.
+    """
+    return [
+        _requirement_from_record(item, position, origin)
+        for position, item in enumerate(_manifest_records(text))
+    ]
 
 
 def _text_or_none(value: object) -> str | None:

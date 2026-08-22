@@ -416,36 +416,61 @@ def _stack_signals(root: Path, manifests: list[Path]) -> list[Signal]:
     return signals
 
 
+def _declared_name(value: object) -> str | None:
+    """A manifest's `name` field, if it is one. Whitespace is not a name."""
+    return value.strip() if isinstance(value, str) and value.strip() else None
+
+
+def _name_from_json_manifest(text: str) -> str | None:
+    """`package.json` and `composer.json` — both a top-level `name`."""
+    try:
+        data = json.loads(text)
+    except ValueError:
+        return None
+    return _declared_name(data.get("name")) if isinstance(data, dict) else None
+
+
+def _name_from_pyproject(text: str) -> str | None:
+    """`pyproject.toml` — `[project] name`, not `[tool.*] name`."""
+    try:
+        data = tomllib.loads(text)
+    except (tomllib.TOMLDecodeError, ValueError):
+        return None
+    project = data.get("project")
+    return _declared_name(project.get("name")) if isinstance(project, dict) else None
+
+
+# Filename → how that format names itself. A table rather than a chain of
+# branches because the branches were the complexity: each new manifest format
+# added two levels of nesting to one function, and the parsing has nothing to do
+# with the search order that surrounds it.
+_NAME_READERS: dict[str, Callable[[str], str | None]] = {
+    "package.json": _name_from_json_manifest,
+    "composer.json": _name_from_json_manifest,
+    "pyproject.toml": _name_from_pyproject,
+}
+
+
 def _project_name(root: Path, manifests: list[Path]) -> str:
     """The repository's own name for itself, else its directory name.
 
     The directory name is a fact about the checkout rather than a guess about the
     project, so it is a safe fallback — and the proposal is reviewed by a human
     who can correct it in one edit.
+
+    Shallowest manifest first: a monorepo's root manifest names the repository
+    and a package's manifest names the package.
     """
     for path in sorted(manifests, key=lambda p: (len(p.parts), p.as_posix())):
+        reader = _NAME_READERS.get(path.name)
+        if reader is None:
+            continue
         text = _read(path)
         if text is None:
             continue
-        if path.name == "package.json" or path.name == "composer.json":
-            try:
-                data = json.loads(text)
-            except ValueError:
-                continue
-            if isinstance(data, dict):
-                name = data.get("name")
-                if isinstance(name, str) and name.strip():
-                    return name.strip()
-        elif path.name == "pyproject.toml":
-            try:
-                data_toml = tomllib.loads(text)
-            except (tomllib.TOMLDecodeError, ValueError):
-                continue
-            project = data_toml.get("project")
-            if isinstance(project, dict):
-                name = project.get("name")
-                if isinstance(name, str) and name.strip():
-                    return name.strip()
+        name = reader(text)
+        if name is not None:
+            return name
     return root.name
 
 

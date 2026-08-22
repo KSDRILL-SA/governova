@@ -68,18 +68,28 @@ ignore = [
 # measured. Nothing measured it: `C4` above is flake8-comprehensions, not mccabe,
 # and the resemblance is why the gap survived review.
 #
-# **11, ratcheted down from the 15 this code sat at.** The gate landed at the
-# ceiling first, deliberately — it cannot make existing code simpler, and its
-# value is stopping the number *growing*, which is the failure `AP-S13.6a`
-# names: complexity rising by a little on every merge with no single change
-# responsible.
+# **10 — the conventional default, ratcheted down from the 15 this code sat at.**
+# The gate landed at the ceiling first, deliberately: it cannot make existing
+# code simpler, and its value is stopping the number *growing*, which is the
+# failure `AP-S13.6a` names — complexity rising by a little on every merge with
+# no single change responsible.
 #
-# Six functions were then refactored to move it: `main` 15, `parse_prisma` 14,
-# `onboard` 13, `_run_semantic` 13, `parse_sql` 12, `compile_index` 12. Each was
-# split along a boundary it already had, never by adding a per-file ignore —
-# hiding what is measured is worse than not measuring it. Four functions remain
-# at 11; `D-22` carries the rest of the ratchet.
-max-complexity = 11
+# Nine functions were refactored to walk it down. 15 → 11: `main` 15,
+# `parse_prisma` 14, `onboard` 13, `_run_semantic` 13, `parse_sql` 12,
+# `compile_index` 12. 11 → 10: `_project_name`, `_statement_changed_at` and
+# `parse_manifest`.
+#
+# Every one was split along a boundary it already had — a manifest format's
+# parser separated from the search order around it, reading git history
+# separated from comparing what it returned, envelope validation separated from
+# record validation. None was split by adding a per-file ignore: hiding what is
+# measured is worse than not measuring it, and the ratchet only means anything
+# if nothing was exempted on the way down.
+#
+# There is no next step. 10 is where the ratchet was heading, `D-22` is paid,
+# and a limit below the convention would buy stricter arithmetic at the cost of
+# functions split for the gate rather than for the reader.
+max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
 "**/tests/**" = ["N802", "N803"]

@@ -239,7 +239,6 @@ _CITED_SIBLING: dict[str, str] = {
     "S1.67": "AP-S1.67b",
     "S2.14": "AP-S2.14a",
     "S2.16": "AP-S2.16b",
-    "S2.17": "AP-S2.17a",
     "S2.18": "AP-S2.18b",
     "S2.28": "AP-S2.28f",
     "S2.35": "AP-S2.35a",
@@ -259,6 +258,12 @@ _CITED_SIBLING: dict[str, str] = {
     # Added with the scan-surface change: `AP-S5.10b` is "a model without
     # `deleted_at`", which is a different claim about the same schema line.
     "S5.10": "AP-S5.10a",
+    # Two rules, two siblings, one standard. `AP-S2.17a` is the wildcard `*`;
+    # `AP-S2.17b` is a real URL compiled into the application. `AP-S2.12a` is a
+    # verb in the path; `AP-S2.12c` is nesting past two levels. Pinning both
+    # members is the point — these are the pairs most likely to be swapped.
+    "S2.17": ("AP-S2.17a", "AP-S2.17b"),
+    "S2.12": ("AP-S2.12a", "AP-S2.12c"),
 }
 
 
@@ -272,9 +277,24 @@ def test_a_rule_cites_the_sibling_anti_pattern_it_actually_implements():
     false, which is why review passed it. Onboarding `expressjs/express` then
     described its one blocking finding as a database error with no database in
     sight.
+
+    A standard may carry more than one rule, so the pin holds *every* sibling
+    cited for it. The first version of this comparison was a dict comprehension
+    keyed by standard, which silently kept the last rule and dropped the rest —
+    so the moment `AP-S2.17b` joined `AP-S2.17a`, the pin stopped checking the
+    one it was written for. A pin that quietly narrows is worse than no pin.
     """
-    cited = {r.standard: r.anti_pattern for r in RULES if r.standard in _CITED_SIBLING}
-    assert cited == _CITED_SIBLING
+    expected = {
+        standard: frozenset(value) if isinstance(value, tuple) else frozenset({value})
+        for standard, value in _CITED_SIBLING.items()
+    }
+
+    cited: dict[str, set[str]] = {}
+    for rule in RULES:
+        if rule.standard in _CITED_SIBLING:
+            cited.setdefault(rule.standard, set()).add(rule.anti_pattern)
+
+    assert {k: frozenset(v) for k, v in cited.items()} == expected
 
 
 def test_playwright_css_class_locator_is_flagged():

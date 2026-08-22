@@ -933,6 +933,108 @@ RULES: list[Rule] = [
         "Separate mobile surface. S4.3: one responsive build — a second surface diverges from the first, and the divergence is discovered by the users on it.",
         "medium",
     ),
+    Rule(
+        "AP-S2.10a",
+        "S2.10",
+        # The conditional, not the read. `process.env.NODE_ENV` appearing in a
+        # config file is how a build learns which bundle to emit and is correct;
+        # a *branch* on it inside application code is a code path that has never
+        # run in the environment it was written for.
+        re.compile(
+            r"""(?:if|elif|when|&&|\|\|)\s*\(?\s*[^)
+]{0,80}"""
+            r"""(?:process\.env\.NODE_ENV|ENVIRONMENT|APP_ENV|os\.environ\[['"]ENV)"""
+            r"""[^)
+]{0,40}(?:===?|==|!=|!==|is)\s*['"](?:prod|production)['"]"""
+        ),
+        "Behaviour branching on the environment name. S2.10: the production path is the one nobody exercised — configure the difference, do not branch on it.",
+        "medium",
+    ),
+    Rule(
+        "AP-S2.12a",
+        "S2.12",
+        # A verb in the path is the signature. The verb has to be followed by a
+        # capital or a separator so that a resource legitimately named `updates`
+        # or `posts` does not match.
+        #
+        # The message below names the collection and the method rather than
+        # quoting a verb-based path, because quoting one would make this rule
+        # report the file that defines it. Two other rules here split a literal
+        # for the same reason. A rule whose first finding is itself spends the
+        # reader's first ten minutes on something that is not real.
+        re.compile(
+            r"""["'`]/(?:api/)?(?:v\d+/)?(?:get|create|update|delete|fetch|list|"""
+            r"""remove|save|set|do|make|send)(?:[A-Z][A-Za-z0-9]{1,30}|[-_][a-z][a-z0-9-_]{1,30})"""
+        ),
+        "Verb-based endpoint path. S2.12: the HTTP method is the verb — "
+        "`POST` against the collection, not the operation named in the path, "
+        "which needs a second convention for every operation ever added.",
+        "high",
+    ),
+    Rule(
+        "AP-S2.12c",
+        "S2.12",
+        # Four or more segments after the version. Two levels of nesting is the
+        # documented limit, and the version segment is not one of them.
+        re.compile(
+            r"""["'`]/api/v\d+(?:/[A-Za-z0-9_{}:$-]{1,40}){4,}["'`/]"""
+        ),
+        "Endpoint nested more than two levels. S2.12: deep nesting encodes one traversal path into the URL, and every client that needs another one gets a new endpoint.",
+        "medium",
+    ),
+    Rule(
+        "AP-S2.17b",
+        "S2.17",
+        # A literal origin inside an allow-list. Distinct from the wildcard rules
+        # above (`AP-S2.17a`, `AP-S3.29a`): those catch `*`, this catches a real
+        # URL compiled into the application, which cannot differ per environment
+        # and is changed by a deploy rather than by configuration.
+        re.compile(
+            r"""(?:allow_origins|allowedOrigins|allowed_origins|cors(?:Origins)?|origin)\s*"""
+            r"""[=:]\s*\[?\s*['"`]https?://(?!localhost|127\.0\.0\.1)[a-z0-9.-]{3,60}""",
+            re.I,
+        ),
+        "Allowed CORS origin hardcoded in application code. S2.17: origins differ per environment, so a literal here is a value that can only be corrected by a deploy.",
+        "medium",
+    ),
+    Rule(
+        "AP-S2.21a",
+        "S2.21",
+        # FastAPI declares the code on the route decorator, so this is a
+        # single-line fact rather than an inference about the handler body.
+        #
+        # Deliberately narrower than it could be. A bare `@HttpCode(HttpStatus.OK)`
+        # was in the first version and had to come out: NestJS puts that
+        # decorator on its own line, above `@Get()` as often as above `@Post()`,
+        # and on a GET it is correct. Catching the NestJS form would mean firing
+        # on correct code, and a rule that does that is one people switch off.
+        # So the FastAPI form is caught and the NestJS form is not, which is a
+        # gap rather than a defect: `S2.21` is still enforced where it is
+        # visible on one line.
+        re.compile(
+            r"""@\w{0,20}\.?post\s*\([^)
+]{0,120}"""
+            r"""status_code\s*=\s*(?:200|status\.HTTP_200_OK)"""
+        ),
+        "POST declared to return 200. S2.21: a creation returns 201 with the created resource — a client cannot tell a create from an update when both answer 200.",
+        "medium",
+    ),
+    Rule(
+        "AP-S4.20a",
+        "S4.20",
+        # Below 16px, iOS Safari zooms the viewport on focus and the layout
+        # breaks. Scoped to a rule that also mentions an input, so ordinary body
+        # copy at 14px is untouched.
+        re.compile(
+            r"""(?:input|textarea|select|\[type=)[^{;
+]{0,80}\{[^}
+]{0,120}"""
+            r"""font-size\s*:\s*(?:1[0-5](?:\.\d+)?px|0?\.\d+rem)""",
+            re.I,
+        ),
+        "Form input below 16px. S4.20: iOS Safari zooms the viewport when a smaller input takes focus, and the page the user came back to is not the one they left.",
+        "medium",
+    ),
 ]
 
 

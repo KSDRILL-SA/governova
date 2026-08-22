@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from governova_compile.discovery import resolve_repo_root
-from governova_compile.writer import load_index
+from governova_compile.writer import load_active_index
 
 # The dependency-first build order from protocols/build-lifecycle.md §1.
 # Each stage names the constitutions that govern it and the stages it builds upon.
@@ -60,7 +60,7 @@ def build_handoff(stage: str, root: Path | None = None) -> Handoff:
         raise KeyError(f"unknown stage '{stage}'. Known: {', '.join(STAGE_ORDER)}")
     spec = STAGES[key]
     r = root or resolve_repo_root()
-    index = load_index(r / "compiled" / "constitution.json")
+    index = load_active_index(start=r)
     by_id = {c.id: c for c in index.constitutions}
 
     areas: list[AreaBrief] = []

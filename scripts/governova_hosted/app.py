@@ -113,10 +113,9 @@ class HostedService:
 
     def coverage(self) -> dict[str, Any]:
         from governova_checks import enforcement_coverage
-        from governova_compile.writer import load_index
+        from governova_compile.writer import load_active_index
 
-        index = load_index(self.root / "compiled" / "constitution.json")
-        return enforcement_coverage(index)
+        return enforcement_coverage(load_active_index(start=self.root))
 
     def audit(self) -> dict[str, Any]:
         from governova_audit import verify

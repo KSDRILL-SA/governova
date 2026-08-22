@@ -8,7 +8,7 @@ from pathlib import Path
 
 from governova_checks import iter_source_files, scan_paths
 from governova_compile.discovery import resolve_repo_root
-from governova_compile.writer import load_index
+from governova_compile.writer import load_active_index
 from governova_score import compute_score
 
 from governova_report.model import (
@@ -39,7 +39,9 @@ def build_report(root: Path | None = None, *, today: date | None = None) -> Boar
     """Build the board report for the repo rooted at `root`."""
     r = root or resolve_repo_root()
     score = compute_score(r)
-    index = load_index(r / "compiled" / "constitution.json")
+    # `load_active_index` so a board report can be generated from an
+    # installed wheel, not only inside a Governova checkout.
+    index = load_active_index(start=r)
 
     # Map each standard to its constitution, then group scan findings by area.
     std_to_con = {s.id: s.constitution_id for c in index.constitutions for s in c.standards}

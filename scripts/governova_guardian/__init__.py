@@ -20,7 +20,7 @@ from governova_checks import (
     scan_paths,
 )
 from governova_compile.discovery import resolve_repo_root
-from governova_compile.writer import load_index
+from governova_compile.writer import load_active_index
 from governova_score import compute_score
 from governova_score.model import GovernovaScore
 
@@ -57,7 +57,7 @@ def build_verdict(base: str = "origin/main", root: Path | None = None) -> Guardi
     ]
     findings = scan_paths(scannable)
     score = compute_score(r)
-    coverage = enforcement_coverage(load_index(r / "compiled" / "constitution.json"))
+    coverage = enforcement_coverage(load_active_index(start=r))
     return GuardianVerdict(
         base=base,
         files_scanned=len(scannable),

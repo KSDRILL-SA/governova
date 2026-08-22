@@ -44,32 +44,32 @@ def test_readme_states_the_score_the_engine_computes() -> None:
     assert grade == score.grade, f"the badge grade says {grade}; the engine says {score.grade}"
 
 
-def test_readme_states_the_evidence_count_the_engine_computes() -> None:
-    """The sentence that explains the score has to survive the score moving.
+def test_the_readme_does_not_quote_an_unreproducible_count() -> None:
+    """The README may state the score. It may not state the evidenced count.
 
-    This is the half that rotted hardest — a badge at least looks like a number
-    somebody might check, while a count buried in prose reads as background.
+    The count moves with the environment and the headline does not. Measured on
+    one commit, three ways:
+
+        full checkout, Windows        113 of 596
+        shallow clone, same branch    114 of 596   (`S1.22` has no merge commit
+                                                    to find in a one-commit
+                                                    history, so it flips clean)
+        CI, Linux, shallow            112 of 596   (unexplained; see `D-29`)
+
+    The headline is 80 (B) in all three, because a two-standard swing moves the
+    coverage factor by 0.2 and the weighted total by 0.04.
+
+    So the badge is quotable and the count is not. Writing the count on the front
+    page means the front page is wrong for somebody, and a governance product
+    cannot publish a number that depends on how the reader cloned it.
+
+    The fix for `D-29` is to make the count reproducible, not to quote it more
+    carefully — and when that lands, this test is where the decision to publish
+    it again gets recorded.
     """
-    coverage = next(
-        factor for factor in compute_score(ROOT).factors
-        if factor.key == "constitutional_coverage"
-    )
-    # The sentence wraps, and it wraps inside a blockquote, so the separator
-    # between the two halves can be `\n> `. Matching only spaces made this test
-    # fail on prose it was supposed to be reading.
-    evidenced = re.search(
-        r"(\d+) of (\d+)[\s>]*applicable standards are \*evidenced\*", README
-    )
-    assert evidenced, "the README no longer states an evidenced/applicable count"
-
-    stated_evidenced, stated_applicable = int(evidenced.group(1)), int(evidenced.group(2))
-    detail = coverage.detail
-    actual = re.search(r"(\d+)/(\d+) applicable standard", detail)
-    assert actual, f"the coverage factor's detail changed shape: {detail!r}"
-
-    assert (stated_evidenced, stated_applicable) == (int(actual.group(1)), int(actual.group(2))), (
-        f"the README says {stated_evidenced} of {stated_applicable} evidenced; the engine "
-        f"reports {actual.group(1)} of {actual.group(2)}. Run `governova govscore`."
+    assert "of 596" not in README, (
+        "the README quotes an evidenced/applicable count, which is not reproducible "
+        "across environments — see D-29"
     )
 
 

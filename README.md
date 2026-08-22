@@ -13,10 +13,14 @@
 > **On that score.** Governova scores itself with the engine it ships, over all five
 > factors at full weight, and currently scores **80 (B)** — below its own Certified
 > bar of 85. It was 100 while three of the five factors were unassessed;
-> instrumenting them lowered it. The gap is constitutional coverage: 113 of 596
-> applicable standards are *evidenced*, and undemonstrated compliance is
+> instrumenting them lowered it. The gap is constitutional coverage: under a fifth
+> of applicable standards are *evidenced*, and undemonstrated compliance is
 > deliberately uncounted. A governance product that grades itself generously is the
 > one number nobody should trust.
+>
+> For the exact count, run `governova govscore` — it is deliberately not quoted
+> here, because it is not reproducible between a full checkout and a CI shallow
+> clone (`D-29`). The headline is.
 >
 > That number is checked by a test, not maintained by hand — see
 > `test_readme_states_the_score_the_engine_computes`. A stale badge on a governance

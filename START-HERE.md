@@ -8,7 +8,7 @@ It is written to be self-contained. A fresh session knows nothing about this rep
 ---
 
 You are taking over **Governova** — a constitutional governance platform, live on PyPI as
-`governova` (`0.2.0` published, `0.2.1` prepared and awaiting a tag — see the handoff §7).
+`governova` (`0.2.0` published, `0.2.1` prepared and awaiting a tag — see the handoff §8).
 **Confirm the published version against PyPI rather than this file**; it said `0.1.0` for two
 releases, and a stale claim here is how a session starts by believing something untrue.
 
@@ -22,7 +22,7 @@ REPO: `C:\Users\Public\GITHUB\governova`   BRANCH: `main`, clean, tree clean
 ## READ THESE FIRST, IN THIS ORDER
 
 1. **`planning/handoff-2026-08-22.md` IN FULL.** §1 is the finding that reframes the project:
-   the published wheel did not work properly once installed. **§7 is your work order.**
+   the published wheel did not work properly once installed. **§8 is your work order.**
    Earlier handoffs (`2026-07-30` … `2026-08-03`) are history, not instructions.
 2. `planning/phase-3-brownfield.md` — Stages 0–2 are done and annotated. Stages 3–4 are gated.
 3. `governance/decisions/ADR-005-platform-architecture.md` — the four workstreams and their
@@ -72,7 +72,7 @@ been wrong before. `uv run pytest scripts/tests -q`, `governova govscore`, `gove
 **The score is held down by exactly one thing.** Four of its five factors score 100 or 85.
 Constitutional coverage scores **19/100**. Certified (≥85) needs that factor at 44, which is
 262 evidenced standards against today's 113 — roughly 150 more rules. That is real work and it
-is **not launch-blocking**; see the handoff §5 for why it is also the shape of a trap.
+is **not launch-blocking**; see the handoff §6 for why it is also the shape of a trap.
 
 **`1 violated` is correct and was earned.** A probe that had never returned a verdict in its
 life was repaired, and it surfaced a real violation that had been invisible rather than
@@ -82,7 +82,7 @@ absent. Do not "fix" that number by breaking the probe again.
 
 ## YOUR WORK, IN ORDER
 
-Full detail is `planning/handoff-2026-08-22.md` §7. In brief:
+Full detail is `planning/handoff-2026-08-22.md` §8. In brief:
 
     1. release 0.2.1   prepared on main; tag and push             L4 to tag
     2. Xikimm xa Mali  govern a codebase Governova did not write  L3
@@ -101,7 +101,7 @@ a week of rule-writing. Expect that and treat it as the exercise, not an interru
 repository is entirely green — that is the expected state, not a problem with your setup.
 
 **What is deliberately not on this list:** writing more rules. Certified needs ~150 more and
-they are not launch-blocking. See the handoff §5 before spending a session on them.
+they are not launch-blocking. See the handoff §6 before spending a session on them.
 
 If you are blocked on all the L4 items, say so plainly and stop rather than inventing work.
 Do not tag a release, ratify a standard, or amend an ADR on your own authority.

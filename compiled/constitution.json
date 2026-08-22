@@ -1,8 +1,9 @@
 {
-  "schema_version": "1.2.0",
-  "compiled_at": "2026-08-21T12:15:41.009953Z",
-  "source_commit_sha": "ec5d800",
-  "checksum": "sha256:0035a1499bb4e4d762f744d67ad57bda3ed19945cf5470ad4de2a81c888ae17a",
+  "schema_version": "1.3.0",
+  "compiled_at": "2026-08-22T00:38:30.625415Z",
+  "source_commit_sha": "640e7a9",
+  "checksum": "sha256:6f0acd6345e2dd951f3778b7b654edea51ba69594087651c9e5ce3a8a1cd448e",
+  "corpus": "full",
   "framework": [
     {
       "id": "format-specification",
@@ -26023,6 +26024,12 @@
       "name": "A score drawn from one factor is not a score, and a count is not a rate",
       "status": "ACCEPTED",
       "path": "governance/decisions/ADR-012-partial-assessment-and-violation-density.md"
+    },
+    {
+      "id": "ADR-013",
+      "name": "A rule fires for a defect, not for a licence",
+      "status": "ACCEPTED",
+      "path": "governance/decisions/ADR-013-rules-outrun-the-corpus.md"
     }
   ],
   "hierarchy": [

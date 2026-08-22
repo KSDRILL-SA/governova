@@ -114,6 +114,12 @@ def _write_core_index(index: CompiledIndex, out_dir: Path) -> Path | None:
         )
 
     subset = core_index(index, manifest)
+    # `ADR-013` §(c). Two files with the same schema version, the same commit and
+    # different law were indistinguishable, so every metric read off one of them
+    # carried a denominator nobody could attribute. Stamped before the checksum
+    # so the marker is covered by it: an index that claims to be core and is not
+    # would otherwise verify.
+    subset.corpus = "core"
     subset.checksum = compute_checksum(subset)
     path = out_dir / CORE_INDEX_NAME
     path.write_text(

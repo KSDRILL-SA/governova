@@ -224,6 +224,26 @@ model LedgerEntry {
   idempotency_key String
   occurred_at     DateTime        @db.Timestamptz(6)
   detail          String          @default("")
+  /// **A stored derived value, and therefore a denormalisation** — `S14.8` asks
+  /// for those to be recorded rather than assumed, and this one was assumed.
+  ///
+  /// By the third-normal-form test these two columns break it: `record_hash` is
+  /// functionally determined by every other column in the row, and `prev_hash`
+  /// by the row at `(organisation_id, seq - 1)`. A textbook normalisation would
+  /// compute both on read and store neither.
+  ///
+  /// **A hash computed on read is computed from whatever the row currently
+  /// says, so it always matches.** Storing it is the entire mechanism by which
+  /// a later edit becomes detectable: verification compares the value written
+  /// then against the value the content implies now, and there is nothing to
+  /// compare if only one of them exists. `REQ-005` is the requirement this
+  /// serves — *the audit trail shall link each record to its predecessor with a
+  /// hash that detects any later edit.*
+  ///
+  /// The other denormalisation in this schema — `TeamMembership.organisation_id`
+  /// — buys an impossible-by-construction invariant. This one buys the only
+  /// thing that makes an audit trail an audit trail.
+  ///
   /// The previous entry's `record_hash`, or 64 zeroes for the first.
   prev_hash       String
   record_hash     String

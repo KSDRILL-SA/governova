@@ -64,6 +64,14 @@
       "obligation": "shall",
       "source": "ADR-005 — detection tiers; an advisory tier that blocks on a typo'd secret is a worse product",
       "acceptance": "Advisory findings are reported and the process exit status is unaffected by their presence or count."
+    },
+    {
+      "id": "REQ-009",
+      "statement": "A ledger write shall complete in a bounded number of row reads that does not grow with the number of entries already recorded for that organisation.",
+      "kind": "constraint",
+      "obligation": "shall",
+      "source": "ADR-016 Gap B — Ch09 requires physical design to be measured against user performance requirements, and there were none. Before this, record() read every entry ever written to learn two facts, which cost a ledger n(n+1)/2 row reads over its life: 100,000 writes read five billion rows, on the metering path.",
+      "acceptance": "The statements issued by a write are the bounded tail query and the indexed idempotency lookup, and never the unbounded chain read. Asserted against the statements rather than a timing, because a benchmark on an empty table proves nothing."
     }
   ]
 }

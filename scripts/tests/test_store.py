@@ -55,6 +55,7 @@ class FakeConnection:
         self.rows: list[dict[str, Any]] = rows or []
         self.executed: list[tuple[str, tuple[Any, ...]]] = []
         self.refuse: str | None = None
+        self.fetched: list[str] = []
         self.rows_after_refusal: list[dict[str, Any]] | None = None
         """What the other writer had committed, revealed only once we lose.
 
@@ -87,9 +88,26 @@ class FakeConnection:
         self.executed.append((query, args))
 
     async def fetch(self, query: str, *args: Any) -> list[dict[str, Any]]:
+        """Honours the WHERE clause, because the real one does.
+
+        This returned every row for every query at first, which meant a lookup
+        by idempotency key matched an entry written under a different one — and
+        a test that thought it was exercising the sequence-number race was
+        handed the wrong row instead. A fake that ignores the predicate is not
+        a cheaper database, it is a different one.
+        """
+        self.fetched.append(query)
         if "_governova_migration" in query:
             return [r for r in self.rows if "checksum" in r]
-        return [r for r in self.rows if "record_hash" in r]
+
+        entries = sorted(
+            (r for r in self.rows if "record_hash" in r), key=lambda r: r["seq"]
+        )
+        if "idempotency_key = $2" in query:
+            return [r for r in entries if r["idempotency_key"] == args[1]]
+        if "ORDER BY seq DESC" in query:
+            return entries[-1:]
+        return entries
 
     def transaction(self) -> _Transaction:
         return _Transaction()
@@ -318,6 +336,77 @@ def test_find_raises_rather_than_returning_none() -> None:
 
     with pytest.raises(LedgerError, match="no entry for idempotency key"):
         Ledger("org-1").find("never-written")
+
+
+def test_a_write_does_not_read_the_chain() -> None:
+    """Verifies REQ-009 — a write costs a bounded number of row reads.
+
+    `record` needs two facts — the tail, and whether the key was used — and it
+    used to read every entry ever written to learn them.
+
+    That made one write cost the whole history, and a ledger `n(n+1)/2` row reads
+    over its life: 100,000 writes read five billion rows. On the metering path,
+    which is the query that runs most often in the system.
+
+    Asserted against the statements rather than a timing, because a benchmark
+    that passes on an empty table proves nothing.
+    """
+    from governova_store.ledger import _SELECT_BY_KEY, _SELECT_ENTRIES, _SELECT_TAIL
+
+    conn = FakeConnection()
+    for seq in range(1, 26):
+        conn.rows.append(
+            {
+                "seq": seq, "organisation_id": "org-1", "kind": "GRANT",
+                "amount_minor": 10_000, "idempotency_key": f"evt_{seq}",
+                "occurred_at": dt.datetime(2026, 8, 23, 12, 0, tzinfo=dt.UTC),
+                "detail": "", "prev_hash": "0" * 64, "record_hash": "a" * 64,
+            }
+        )
+    conn.fetched = []
+    _run(LedgerStore(conn).record("org-1", EntryKind.GRANT, 1, idempotency_key="new"))
+
+    assert _SELECT_ENTRIES not in conn.fetched, "the write read the whole chain"
+    assert _SELECT_TAIL in conn.fetched
+    assert _SELECT_BY_KEY in conn.fetched
+
+
+def test_the_tail_query_is_bounded() -> None:
+    """`S5.14` — pagination on all list queries. The tail is one row by
+    construction, and the index that serves it already exists as
+    `@@unique([organisation_id, seq])`."""
+    from governova_store.ledger import _SELECT_TAIL
+
+    assert "LIMIT 1" in _SELECT_TAIL
+    assert "ORDER BY seq DESC" in _SELECT_TAIL
+
+
+def test_verification_still_reads_everything() -> None:
+    """`load` is the audit path and must stay unbounded — a chain cannot be
+    verified from part of itself. The fix narrows the write path, not this one."""
+    from governova_store.ledger import _SELECT_ENTRIES
+
+    assert "LIMIT" not in _SELECT_ENTRIES.upper()
+
+
+def test_the_balance_path_does_not_join() -> None:
+    """`Organisation` is the one side of three one-to-many relationships, and
+    since Stage 1 one of them is the billing table.
+
+    Joining two of them multiplies rows: an organisation with 10 members and 7
+    ledger entries returns 70, and `SUM(amount_minor)` over that is ten times the
+    real balance — a wrong invoice, from a query that succeeds.
+
+    The protection is that the read path has no join at all: it filters by
+    `organisation_id` and the balance is derived in Python from the entries. That
+    is an *absence*, which is the easiest thing in a codebase to undo without
+    noticing, so it is asserted rather than trusted.
+    """
+    from governova_store.ledger import _SELECT_ENTRIES
+
+    assert "JOIN" not in _SELECT_ENTRIES.upper()
+    assert 'FROM "LedgerEntry"' in _SELECT_ENTRIES
+    assert "organisation_id = $1" in _SELECT_ENTRIES
 
 
 def test_the_insert_names_columns_the_migration_creates() -> None:

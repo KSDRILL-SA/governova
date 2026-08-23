@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Status** | Proposed |
+| **Status** | Accepted |
 | **Date** | 2026-08-23 |
-| **Authority** | L4 — `C0 §8`. Scopes the delivery of `ADR-005` Phase 3 |
+| **Authority** | L4 — `C0 §8`. Scopes the delivery of `ADR-005` Phase 3. Ratified on the owner's explicit delegation, not by the owner reading it |
 | **Supersedes** | Nothing. Scopes `ADR-010` and `ADR-011` rather than amending them |
 | **Relates To** | `ADR-005 §Sequencing`, `ADR-008`, `ADR-010 §1`, `ADR-011 §4` |
 
@@ -126,5 +126,15 @@ None. This ADR narrows what is built; it does not deviate from any standard.
 
 ---
 
-> **Status: PROPOSED — 2026-08-23**
-> *Ratification is L4 and belongs to the owner: Maluleke Kurhula Success.*
+> **Status: ACCEPTED — 2026-08-23**
+>
+> L4 — `C0 §8`. Ratified 2026-08-23 on the owner's explicit delegation
+(*"i give you all the big boss permission to ratify and approve"*), recorded here
+rather than implied: the owner did not read and sign this document, and a
+governance repository whose own approval records overstate what happened is worth
+nothing. Reversible by the owner at any time.
+>
+> **What would reverse this:** a customer who needs the Intelligence Gateway
+> before v2, or a decision to sell Certification — which `ADR-011 §4` forbids
+> until all five of its gates are met, so that reversal is gated rather than
+> merely discouraged.

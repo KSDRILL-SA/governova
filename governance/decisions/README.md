@@ -25,6 +25,7 @@ Restructure / migration records use a descriptive `RESTRUCTURE-{version}.md` nam
 - ADR-013: A rule fires for a defect, not for a licence
 - ADR-014: What v1 excludes, and the gate that reopens each one
 - ADR-015: Prisma authors the schema, asyncpg runs it
+- ADR-016: The Cloud data model — five decisions, and the numbers that reopen three of them
 - RESTRUCTURE-v2.0: The Governova v2.0 four-layer restructure instruction
   (executed record of the migration that produced this structure)
 

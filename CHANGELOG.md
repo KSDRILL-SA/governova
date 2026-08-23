@@ -16,7 +16,17 @@ Numbers in parentheses are pull requests in
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- **The release gate refuses to publish a version the changelog still calls
+  `unreleased`.** The date is the one field that cannot be written truthfully in
+  advance — preparation writes `unreleased` because at that moment it is, the tag
+  goes out separately, and nobody goes back. It happened on both releases cut
+  since this file existed: `0.2.1` was still marked `unreleased` a day after
+  shipping, and `0.2.2` was dated only because someone went looking for the same
+  mistake an hour after publishing. The check now runs in `verify`, before
+  anything is built, and the tests exercise the script extracted from the
+  workflow rather than a copy of it.
 
 ---
 

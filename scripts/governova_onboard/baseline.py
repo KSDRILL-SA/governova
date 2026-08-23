@@ -41,6 +41,7 @@ nobody agreed to.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -306,26 +307,45 @@ def _heatmap(
     return tuple(rows)
 
 
-def assess(root: Path, index: CompiledIndex) -> Baseline:
+def assess(
+    root: Path, index: CompiledIndex, *, progress: Callable[[str], None] | None = None
+) -> Baseline:
     """Run every deterministic tier against `root` and assemble the baseline.
 
     `index` is passed in rather than resolved here so the caller controls which
     constitution governs — for a foreign repository that is the bundled copy, and
     for a repository already carrying one it is theirs.
+
+    `progress` is called with the name of each phase as it starts. Measured at
+    **9m15s on 711 TypeScript files** with nothing printed until the report
+    rendered, which on a first run — against a tool the reader has no reason to
+    trust yet — is indistinguishable from a hang. `onboard` is deliberately
+    positioned as the first command a new adopter types, so it is the worst place
+    in the product to look broken.
+
+    A callback rather than printing from here: this module computes, and which
+    stream a phase name lands on is the caller's business.
     """
     from governova_checks import RULES
     from governova_score.compute import compute_score
 
+    say = progress or (lambda _: None)
+
+    say("detecting stack, language and tooling")
     detection = detect(root)
     profile = proposed_profile(detection)
 
+    say("collecting source files")
     files = list(iter_source_files(root))
     # The proposed profile declares no domain — no scan can settle one — so the
     # sector findings are separated here and counted nowhere. `_heatmap` already
     # excludes undeclared domains from the applicable set; this makes the
     # findings table agree with it.
+    say(f"scanning {len(files)} source file(s) against the reliable tier")
     scanned = for_declared_domains(scan_paths(files), profile.domains)
     findings = scanned.findings
+
+    say("running structural probes")
     probes = run_probes(root)
 
     violated_by_rule = {f.standard for f in findings}
@@ -340,11 +360,19 @@ def assess(root: Path, index: CompiledIndex) -> Baseline:
     probe_clean = {p.standard for p in probes if p.verdict is Verdict.SATISFIED}
     evidenced = rule_clean | probe_clean
 
+    # `compute_score` scans the repository a second time through its own
+    # violation-rate factor. That is the single largest cost in this function
+    # and it is not fixed here; it is named so the phase label does not
+    # pretend the wait is something else.
+    say("computing the Governova Score (rescans the repository)")
+    score = compute_score(root)
+
+    say("assembling the baseline")
     return Baseline(
         root=root,
         detection=detection,
         profile=profile,
-        score=compute_score(root),
+        score=score,
         gaps=_heatmap(index, profile, evidenced=evidenced, violated=violated),
         groups=_group_findings(root, findings),
         sector=_group_findings(root, scanned.withheld),

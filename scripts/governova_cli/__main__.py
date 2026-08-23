@@ -98,6 +98,86 @@ def _all_standards(index: CompiledIndex) -> list[Any]:
     return [s for c in index.constitutions for s in c.standards]
 
 
+def installed_version() -> str:
+    """The version of the installed distribution, or a marker when it is not one.
+
+    Read from package metadata rather than a constant, so it cannot drift from
+    what `pip install` actually put on disk — which is the whole reason a reader
+    asks. A source checkout that was never installed has no metadata, and saying
+    so is more useful than inventing a number.
+    """
+    from importlib.metadata import PackageNotFoundError, version
+
+    try:
+        return version("governova")
+    except PackageNotFoundError:  # pragma: no cover - only outside an install
+        return "unknown (not installed as a distribution)"
+
+
+def _version_callback(value: bool) -> None:
+    if value:
+        console.print(installed_version())
+        raise typer.Exit
+
+
+@app.callback()
+def main(
+    version: Annotated[
+        bool,
+        typer.Option(
+            "--version",
+            callback=_version_callback,
+            is_eager=True,
+            help="Show the installed version and exit.",
+        ),
+    ] = False,
+) -> None:
+    """Governova — constitutional governance for AI-assisted development.
+
+    `--version` is the first thing anyone types after `pip install`, and the
+    first thing a bug report needs. It did not exist, so the installed version
+    was obtainable only from the wheel's metadata.
+    """
+
+
+@app.command(
+    "enforce",
+    context_settings={
+        "allow_extra_args": True,
+        "ignore_unknown_options": True,
+        # No help option of its own, so `--help` reaches the delegate and prints
+        # the real command's options. A wrapper that answered `--help` itself
+        # would be a second place for the option list to live, and the first
+        # place to go stale.
+        "help_option_names": [],
+    },
+    help="Scan changed (or given) source files and gate on constitutional violations.",
+)
+def enforce(ctx: typer.Context) -> None:
+    """The merge gate, reachable under the name people actually type.
+
+    Enforcement ships as its own console script, `governova-enforce`. That is the
+    right shape for CI, where the entrypoint is named in a workflow file — but it
+    is not what a person types. Every piece of documentation, including the work
+    order that sent Governova at its first external repository, opened with
+    `governova enforce .`, and the answer was `No such command 'enforce'`. The
+    command list runs to thirty entries and enforcement was in none of them, so a
+    reader who followed the instructions had no path back except the wheel's
+    entry-points metadata.
+
+    Delegation rather than duplication: the real command keeps its options in one
+    place, and `governova enforce --help` prints them.
+
+    The import sits inside the function deliberately. The enforcement stack costs
+    ~1.5s to import and `governova --help` costs ~2.7s in total, so registering it
+    at module scope would have made the most frequently typed command in the
+    product half again slower to serve a command that had not been asked for.
+    """
+    from governova_enforce.__main__ import app as enforce_app
+
+    enforce_app(args=ctx.args, prog_name="governova enforce")
+
+
 @app.command()
 def stats(
     repo_root: Annotated[Path | None, typer.Option("--repo-root")] = None,
@@ -1387,7 +1467,17 @@ def onboard(
         console.print(f"[bold red]error:[/] {exc}")
         raise typer.Exit(code=2) from exc
     index = load_index(index_path)
-    baseline = assess(root, index)
+    # A live phase line, because this command has been measured at 9m15s on 711
+    # files with nothing printed until the report rendered. On a first run that
+    # is indistinguishable from a hang, and this is the first command a new
+    # adopter types.
+    #
+    # It renders on stdout, and `--json` stays parseable because `rich` draws a
+    # `status` only when the stream is a terminal — a redirect gets nothing.
+    # Verified rather than assumed: writing a progress line onto a machine
+    # contract is the defect this release already fixed once in `--format json`.
+    with console.status("[dim]onboarding…[/]", spinner="dots") as status:
+        baseline = assess(root, index, progress=lambda phase: status.update(f"[dim]{phase}…[/]"))
 
     if as_json:
         console.print_json(to_json(baseline, top=None))

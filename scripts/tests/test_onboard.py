@@ -359,3 +359,30 @@ def test_baseline_probe_results_are_carried_untouched(tmp_path: Path, index) -> 
     assert baseline.probes
     assert any(p.verdict is Verdict.UNKNOWN for p in baseline.probes)
     assert all(isinstance(p, ProbeResult) for p in baseline.probes)
+
+
+# ── first-run friction ───────────────────────────────────────────────────────
+
+
+def test_assess_reports_each_phase_as_it_starts(tmp_path: Path, index) -> None:
+    """Measured at 9m15s on 711 files with nothing printed until the report.
+
+    On a first run, against a tool the reader has no reason to trust yet, a
+    silent wait that long is indistinguishable from a hang — and `onboard` is
+    deliberately the first command a new adopter types.
+    """
+    root = _repo(tmp_path, {"a.ts": "const sum = a + b;\n"})
+    seen: list[str] = []
+    assess(root, index, progress=seen.append)
+
+    assert seen, "no phase was reported"
+    # The scan and the score are the two long ones; a progress line that skipped
+    # them would be reassurance rather than information.
+    joined = " | ".join(seen)
+    assert "scanning" in joined
+    assert "Score" in joined
+
+
+def test_assess_still_runs_without_a_progress_callback(tmp_path: Path, index) -> None:
+    root = _repo(tmp_path, {"a.ts": "const sum = a + b;\n"})
+    assert assess(root, index) is not None

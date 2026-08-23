@@ -193,3 +193,58 @@ def test_roadmap_is_read_only(tmp_path):
     before = {p.name for p in tmp_path.rglob("*")}
     runner.invoke(app, ["roadmap", str(tmp_path)])
     assert {p.name for p in tmp_path.rglob("*")} == before
+
+
+# ── the first commands an adopter types ──────────────────────────────────────
+
+
+def test_version_is_reported():
+    """The first thing anyone types after `pip install`, and the first thing a
+    bug report needs. It did not exist: `No such option: --version`."""
+    result = runner.invoke(app, ["--version"])
+    assert result.exit_code == 0
+    assert result.stdout.strip()
+    assert "No such option" not in result.stdout
+
+
+def test_the_version_is_read_from_the_installed_distribution():
+    """Read from package metadata, not a constant, so it cannot drift from what
+    `pip install` actually put on disk — which is why the reader is asking."""
+    from importlib.metadata import version
+
+    from governova_cli.__main__ import installed_version
+
+    assert installed_version() == version("governova")
+
+
+def test_enforce_is_reachable_as_a_subcommand(tmp_path):
+    """Enforcement ships as its own console script, which is right for CI and is
+    not what a person types. Every document opened with `governova enforce .`,
+    and the answer was `No such command 'enforce'`."""
+    bad = tmp_path / "bad.ts"
+    bad.write_text("localStorage.setItem('access_token', t);\n", encoding="utf-8")
+    result = runner.invoke(app, ["enforce", str(bad), "--no-default-ignore"])
+    assert result.exit_code == 1
+    assert "AP-S3.14a" in result.stdout
+
+
+def test_the_enforce_alias_delegates_rather_than_duplicating():
+    """`governova enforce --help` prints the real command's options, so the two
+    surfaces cannot drift apart."""
+    result = runner.invoke(app, ["enforce", "--help"])
+    assert result.exit_code == 0
+    for option in ("--changed", "--base", "--mode", "--format", "--domain"):
+        assert option in result.stdout, option
+
+
+def test_the_enforce_alias_does_not_slow_the_help():
+    """The enforcement stack costs ~1.5s to import and `governova --help` costs
+    ~2.7s, so registering it at module scope would have made the most frequently
+    typed command in the product half again slower for a command nobody asked
+    for. The import belongs inside the function."""
+    import inspect
+
+    from governova_cli.__main__ import enforce
+
+    source = inspect.getsource(enforce)
+    assert "from governova_enforce" in source, "the delegation import must be lazy"

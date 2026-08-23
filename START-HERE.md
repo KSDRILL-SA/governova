@@ -8,7 +8,8 @@ It is written to be self-contained. A fresh session knows nothing about this rep
 ---
 
 You are taking over **Governova** — a constitutional governance platform, live on PyPI as
-`governova` (`0.2.0` published, `0.2.1` prepared and awaiting a tag — see the handoff §8).
+`governova` (`0.2.1` published 2026-08-22; six further fixes committed and awaiting a push —
+see the handoff §4 and §7).
 **Confirm the published version against PyPI rather than this file**; it said `0.1.0` for two
 releases, and a stale claim here is how a session starts by believing something untrue.
 
@@ -21,9 +22,12 @@ REPO: `C:\Users\Public\GITHUB\governova`   BRANCH: `main`, clean, tree clean
 
 ## READ THESE FIRST, IN THIS ORDER
 
-1. **`planning/handoff-2026-08-22.md` IN FULL.** §1 is the finding that reframes the project:
-   the published wheel did not work properly once installed. **§8 is your work order.**
-   Earlier handoffs (`2026-07-30` … `2026-08-03`) are history, not instructions.
+1. **`planning/handoff-2026-08-23.md` IN FULL.** §3 is the finding that reframes the
+   project: the merge gate failed an adopter's build on law they had never adopted.
+   **§7 is your work order, and Step 1 needs a human.**
+   `planning/handoff-2026-08-22.md` is the session before it and is still worth reading —
+   its §1 is why the published wheel did not work once installed. Earlier handoffs
+   (`2026-07-30` … `2026-08-03`) are history, not instructions.
 2. `planning/phase-3-brownfield.md` — Stages 0–2 are done and annotated. Stages 3–4 are gated.
 3. `governance/decisions/ADR-005-platform-architecture.md` — the four workstreams and their
    locked sequencing. This is what "complete Governova" means.
@@ -41,38 +45,43 @@ already believed was true and discovering it was not.
 `uv` may not be on PATH: `C:\Users\kurhu\AppData\Local\Python\pythoncore-3.14-64\Scripts`
 
     uv sync --all-packages --all-extras
-    uv run pytest scripts/tests -q          # 1300 on main, ~7-10 min
+    uv run pytest scripts/tests -q          # 1340, ~10 min. `--timeout` is NOT installed.
     uv run ruff check scripts/              # NEVER `ruff format` — not enforced in CI
-    cd scripts && uv run mypy               # MUST run from scripts/. Strict, 98 files.
+    cd scripts && uv run mypy               # MUST run from scripts/. Strict, 99 files.
 
 PowerShell is primary. **Git Bash stdout is cp1252** and mangles `—`, `·`, `✓`, `✗` in
 captured output — the files are UTF-8, the terminal is not. `Select-Object -First N` on a
 piped native command gives exit 255; that is a broken-pipe artifact, not a failure.
 
-The full test suite takes 7–10 minutes. Run it in the background and do other work — do
-not poll it; you are notified when it finishes.
+The full test suite takes ~10 minutes. Run it in the background and do other work — do
+not poll it; you are notified when it finishes. Its output is block-buffered when
+redirected, so a tail of the log shows nothing new for minutes at a time. That is the
+pipe, not a hang.
 
 ---
 
-## STATE, AS MEASURED ON `ec2291d`
+## STATE, AS MEASURED ON `ad03f3b`
 
-    Tests                    1300 passed · 1 skipped
-    validate                 standards=670 errors=0
-    Enforcement coverage     72 rules · 41 probes
+    Tests                    1339 passed · 1 skipped
+    validate                 standards=670 errors=0 warnings=287 · integrity OK
+    Enforcement coverage     77 rules (23 blocking · 54 advisory) · 41 probes · 9.3%
     Constitutional coverage  19.0%  (113 of 596 applicable standards evidenced)
     Governova Score          80/100  [B]
-    mypy                     strict, 98 files, clean
+    mypy                     strict, 99 files, clean
     Corpus                   15 constitutions · 670 standards · 789 anti-patterns
-                             schema 1.3.0 · 14 ADRs
-    Distribution             PyPI 0.2.0 published; 0.2.1 prepared, untagged
+                             4 Layer 4 domains · 19 domain standards · 14 ADRs
+    Distribution             PyPI 0.2.1 published 2026-08-22
+                             six further fixes committed locally, none pushed
 
-**Regenerate all of these before trusting them.** They were true at `ec2291d` and this file has
-been wrong before. `uv run pytest scripts/tests -q`, `governova govscore`, `governova stats`.
+**Regenerate all of these before trusting them.** This file has been wrong before, and was
+again: it read `72 rules`, which is the count of *implementation bindings* in
+`governova stats`. The rule count is `governova coverage`, and it was 77.
+`uv run pytest scripts/tests -q`, `governova govscore`, `governova stats`, `governova coverage`.
 
 **The score is held down by exactly one thing.** Four of its five factors score 100 or 85.
 Constitutional coverage scores **19/100**. Certified (≥85) needs that factor at 44, which is
 262 evidenced standards against today's 113 — roughly 150 more rules. That is real work and it
-is **not launch-blocking**; see the handoff §6 for why it is also the shape of a trap.
+is **not launch-blocking**; see the 08-22 handoff §6 for why it is also the shape of a trap.
 
 **`1 violated` is correct and was earned.** A probe that had never returned a verdict in its
 life was repaired, and it surfaced a real violation that had been invisible rather than
@@ -82,26 +91,28 @@ absent. Do not "fix" that number by breaking the probe again.
 
 ## YOUR WORK, IN ORDER
 
-Full detail is `planning/handoff-2026-08-22.md` §8. In brief:
+Full detail is `planning/handoff-2026-08-23.md` §7. In brief:
 
-    1. release 0.2.1   prepared on main; tag and push             L4 to tag
-    2. Xikimm xa Mali  govern a codebase Governova did not write  L3
-    3. D-27            wire the database; the ledger is in RAM    L3
-    4. hosting         decide, after 2 and 3                      L4
+    1. restore gh auth  the token went invalid; six branches wait  HUMAN
+    2. push and merge   six fixes, stacked, full suite green       L3
+    3. release 0.2.2    decide whether these warrant a release     L4
+    4. D-27             wire the database; the ledger is in RAM    L3
 
-**Step 1 is urgent.** The published `0.2.0` reports 50 findings from the user's
-`site-packages` and can never issue a Score — both fixed on `main`, neither released. It is
-also what you would install to do step 2.
+**Step 1 is a hard block.** `gh` returns 401 and git over HTTPS refuses; re-authenticating is
+interactive, so nothing reaches the remote until a human runs `gh auth login -h github.com`.
+Every commit, PR body and issue body is written and waiting — the scratchpad file
+`BLOCKED-ON-AUTH.md` carries the exact commands, and handoff §4 lists the branches in order.
 
-**Step 2 is the point.** Everything before it was Governova grading its own author. Every
-previous contact with a codebase this engine did not write produced a finding worth more than
-a week of rule-writing. Expect that and treat it as the exercise, not an interruption.
+**Step 2 is what makes the adopter run count.** The published `0.2.1` fails a new adopter's
+build with 201 blocking findings, 199 of them from a Layer 4 domain the project never
+declared. That is a worse first impression than either `0.2.0` defect, because it is the
+*first command* and the failure looks like the reader's fault.
 
 **The critical path runs through decisions, not code.** You can be entirely blocked while the
 repository is entirely green — that is the expected state, not a problem with your setup.
 
 **What is deliberately not on this list:** writing more rules. Certified needs ~150 more and
-they are not launch-blocking. See the handoff §6 before spending a session on them.
+they are not launch-blocking. See the 08-22 handoff §6 before spending a session on them.
 
 If you are blocked on all the L4 items, say so plainly and stop rather than inventing work.
 Do not tag a release, ratify a standard, or amend an ADR on your own authority.

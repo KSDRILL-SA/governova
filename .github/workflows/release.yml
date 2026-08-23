@@ -55,6 +55,54 @@ jobs:
           fi
           echo "tag v${tag} matches the packaged version"
 
+      # The changelog is the only place a release explains itself, and its date is
+      # the one field that cannot be written truthfully in advance: preparation
+      # says `unreleased` because at that moment it is, and the tag goes out
+      # separately. Nobody goes back.
+      #
+      # It has happened on both releases cut since the changelog existed. `0.2.1`
+      # shipped on 2026-08-22 and was still marked `unreleased` the next day;
+      # `0.2.2` was dated only because someone went looking for the same mistake
+      # an hour after publishing. Twice is a process gap rather than an oversight,
+      # so the check moves to where the date first becomes knowable.
+      #
+      # Blocking rather than warning: an undated entry is indistinguishable from
+      # an entry for a version that never shipped, and the reader most likely to
+      # be misled is the one deciding whether to upgrade.
+      - name: The changelog must say this version shipped
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          set -euo pipefail
+          uv run python - "${GITHUB_REF_NAME#v}" <<'CHECK'
+          import pathlib
+          import re
+          import sys
+
+          version = sys.argv[1]
+          text = pathlib.Path("CHANGELOG.md").read_text(encoding="utf-8")
+
+          # `## [0.2.2] - 2026-08-23`, with any dash and any spacing.
+          heading = re.search(
+              rf"^##\s+\[{re.escape(version)}\]\s*[-–—]\s*(.+?)\s*$",
+              text,
+              re.MULTILINE,
+          )
+          if heading is None:
+              print(f"::error::CHANGELOG.md has no entry for {version}")
+              raise SystemExit(1)
+
+          stated = heading.group(1)
+          if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", stated):
+              print(
+                  f"::error::CHANGELOG.md dates {version} as '{stated}'. A released "
+                  f"version needs an ISO date; 'unreleased' is what the entry says "
+                  f"while it is being prepared, and this tag is publishing it."
+              )
+              raise SystemExit(1)
+
+          print(f"CHANGELOG.md dates {version} as {stated}")
+          CHECK
+
       - name: Lint
         run: uv run ruff check scripts/
 

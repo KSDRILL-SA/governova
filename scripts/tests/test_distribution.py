@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import json
 import subprocess
+import sys
+import textwrap
 import tomllib
 from pathlib import Path
 
@@ -319,3 +321,95 @@ def test_the_type_check_still_runs_from_scripts() -> None:
     )
     assert "working-directory: scripts" in workflow
     assert "uv run mypy" in workflow
+
+
+# ── the release gate's changelog check ───────────────────────────────────────
+#
+# The date in `CHANGELOG.md` is the one field that cannot be written truthfully
+# in advance. Preparation writes `unreleased` because at that moment it is true,
+# the tag goes out separately, and nobody goes back. It happened on both releases
+# cut since the changelog existed — `0.2.1` was still marked `unreleased` a day
+# after shipping, and `0.2.2` was dated only because someone went looking for the
+# same mistake an hour after publishing.
+#
+# The check itself lives in YAML, where nothing type-checks it and no test would
+# reach it. These extract the exact script the workflow runs and exercise it,
+# because a release gate that cannot fail for its stated reason is worse than no
+# gate: it is a gate everyone believes in.
+
+
+def _release_changelog_check() -> str:
+    """The body of the release workflow's changelog step, as the shell receives it.
+
+    Read out of the workflow rather than duplicated here. A copy would pass these
+    tests forever while the workflow ran something else.
+    """
+    workflow = (
+        resolve_repo_root() / ".github" / "workflows" / "release.yml"
+    ).read_text(encoding="utf-8")
+    body = workflow.split("<<'CHECK'\n", 1)[1].split("\n          CHECK", 1)[0]
+    return textwrap.dedent(body)
+
+
+def _run_check(script: str, version: str, changelog: str, tmp_path: Path) -> int:
+    (tmp_path / "CHANGELOG.md").write_text(changelog, encoding="utf-8")
+    (tmp_path / "check.py").write_text(script, encoding="utf-8")
+    return subprocess.run(
+        [sys.executable, "check.py", version],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+    ).returncode
+
+
+_DATED = "# Changelog\n\n## [0.2.2] — 2026-08-23\n\n### Fixed\n- a thing\n"
+_UNDATED = "# Changelog\n\n## [0.2.2] — unreleased\n\n### Fixed\n- a thing\n"
+
+
+def test_the_release_gate_accepts_a_dated_entry(tmp_path: Path) -> None:
+    assert _run_check(_release_changelog_check(), "0.2.2", _DATED, tmp_path) == 0
+
+
+def test_the_release_gate_blocks_an_unreleased_entry(tmp_path: Path) -> None:
+    """The case the step exists for, and the one it must never pass."""
+    assert _run_check(_release_changelog_check(), "0.2.2", _UNDATED, tmp_path) == 1
+
+
+def test_the_release_gate_blocks_a_missing_entry(tmp_path: Path) -> None:
+    """A version the changelog never mentions is not a version anyone can read
+    about, which is the same failure by omission."""
+    assert _run_check(_release_changelog_check(), "9.9.9", _DATED, tmp_path) == 1
+
+
+def test_the_release_gate_blocks_a_date_that_is_not_a_date(tmp_path: Path) -> None:
+    """`unreleased` is the observed spelling; it is not the only one available to
+    somebody in a hurry."""
+    for placeholder in ("TBD", "pending", "soon"):
+        changelog = f"# Changelog\n\n## [0.2.2] - {placeholder}\n"
+        assert _run_check(_release_changelog_check(), "0.2.2", changelog, tmp_path) == 1, (
+            placeholder
+        )
+
+
+def test_the_release_gate_reads_the_entry_it_was_asked_about(tmp_path: Path) -> None:
+    """A changelog almost always holds an undated entry — the next version being
+    prepared. The check must not fail a release because a *later* version has no
+    date yet."""
+    changelog = (
+        "# Changelog\n\n## [Unreleased]\n\nNothing yet.\n\n"
+        "## [0.3.0] — unreleased\n\n## [0.2.2] — 2026-08-23\n"
+    )
+    assert _run_check(_release_changelog_check(), "0.2.2", changelog, tmp_path) == 0
+    assert _run_check(_release_changelog_check(), "0.3.0", changelog, tmp_path) == 1
+
+
+def test_the_release_gate_runs_before_anything_is_published() -> None:
+    """It belongs in `verify`, which `publish` needs. A check in the publishing
+    job would run after the artefacts were built and beside the upload."""
+    workflow = (
+        resolve_repo_root() / ".github" / "workflows" / "release.yml"
+    ).read_text(encoding="utf-8")
+    verify, publish = workflow.split("  publish:", 1)
+    assert "The changelog must say this version shipped" in verify
+    assert "The changelog must say this version shipped" not in publish
+    assert "needs: verify" in publish

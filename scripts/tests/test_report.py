@@ -80,12 +80,36 @@ def test_json_render():
 
 
 def test_build_report_on_repo_is_well_formed():
-    # Composition test against the real repo: 15 constitutional areas, counts add up.
+    # Composition test against the real repo: the 15 core constitutions plus the
+    # one Layer 4 domain this project declares (`D-SAAS`), and the counts add up.
     br = build_report()
-    assert len(br.areas) == 15
-    assert br.areas_green + br.areas_amber + br.areas_red == 15
+    assert len(br.areas) == 16
+    assert br.areas_green + br.areas_amber + br.areas_red == 16
     assert br.events.adrs >= 1 and br.events.runbooks >= 1
     assert 0 <= br.score.score <= 100
+
+
+def test_a_declared_domain_gets_an_area(tmp_path):
+    """The board could not show a Layer 4 finding at all.
+
+    `std_to_con` and the tally were both built from `index.constitutions`, and
+    the compiled index keeps `domains` in a separate list — so every domain
+    finding was dropped, silently, for every project. The sector standards are
+    the ones with a regulatory basis behind them, and a report structurally
+    incapable of showing such a finding is worse than one omitting the section,
+    because the omission reads as an absence of findings.
+    """
+    ids = {a.constitution_id for a in build_report().areas}
+    assert "D-SAAS" in ids, "this repository declares D-SAAS and it must appear"
+
+
+def test_an_undeclared_domain_gets_no_area():
+    """The report answers to the same law as the gate and the score: a domain the
+    project has not adopted contributes no row and no finding."""
+    ids = {a.constitution_id for a in build_report().areas}
+    assert "D-FINTECH" not in ids
+    assert "D-EDTECH" not in ids
+    assert "D-GOVTECH" not in ids
 
 
 def test_headline_states_a_partial_assessment_rather_than_a_score():

@@ -149,22 +149,22 @@ def test_no_surface_applies_undeclared_layer_4_law() -> None:
     penalising a project for breaking it, an onboarding report listing 199
     findings directly beneath a sentence saying they are not counted.
 
-    Three holdouts, for three different reasons:
+    Two holdouts, for two different reasons:
 
     * `governova_project` intersects against `applicable_standards`, which has
       filtered by declared domain since it was written, so a domain finding
       cannot reach its result.
     * `governova_bible` documents files and never reads a finding's standard.
-    * `governova_report` tallies findings into `index.constitutions`, and the
-      index keeps `domains` in a separate list — so a domain finding is dropped
-      whether or not the project declared it. That is the mirror of the defect
-      under test here, filed separately: a fintech organisation's board report
-      shows no fintech findings.
+
+    `governova_report` was a third, and is not any more. It tallied findings into
+    `index.constitutions` while the index keeps `domains` in a separate list, so
+    a domain finding was dropped whether or not the project declared it — the
+    mirror of the defect under test here, and fixed alongside it.
     """
     from governova_compile.discovery import resolve_repo_root
 
     scripts = Path(resolve_repo_root()) / "scripts"
-    exempt = {"governova_project", "governova_checks", "governova_bible", "governova_report"}
+    exempt = {"governova_project", "governova_checks", "governova_bible"}
     offenders: list[str] = []
     for path in scripts.rglob("*.py"):
         if "tests" in path.parts or path.parts[-2] in exempt:

@@ -8,8 +8,8 @@ It is written to be self-contained. A fresh session knows nothing about this rep
 ---
 
 You are taking over **Governova** — a constitutional governance platform, live on PyPI as
-`governova` (`0.2.1` published 2026-08-22; nine branches awaiting a push —
-see the handoff §4 and §7).
+`governova` (`0.2.1` published 2026-08-22; nine PRs merged to `main` since, unreleased —
+see the handoff §4).
 **Confirm the published version against PyPI rather than this file**; it said `0.1.0` for two
 releases, and a stale claim here is how a session starts by believing something untrue.
 
@@ -71,7 +71,7 @@ pipe, not a hang.
     Corpus                   15 constitutions · 670 standards · 789 anti-patterns
                              4 Layer 4 domains · 19 domain standards · 14 ADRs
     Distribution             PyPI 0.2.1 published 2026-08-22
-                             nine branches / 11 commits local, none pushed
+                             9 PRs merged since; 0.2.2 not yet tagged
 
 **Regenerate all of these before trusting them.** This file has been wrong before, and was
 again: it read `72 rules`, which is the count of *implementation bindings* in
@@ -93,20 +93,14 @@ absent. Do not "fix" that number by breaking the probe again.
 
 Full detail is `planning/handoff-2026-08-23.md` §7. In brief:
 
-    1. restore gh auth  the token went invalid; nine branches wait  HUMAN
-    2. push and merge   nine branches, stacked, full suite green   L3
-    3. release 0.2.2    decide whether these warrant a release     L4
-    4. D-27             wire the database; the ledger is in RAM    L3
+    1. release 0.2.2    decide whether the nine merged PRs warrant it   L4
+    2. Xkimi profile    accept one, which re-arms 182 true findings      L3
+    3. D-27             wire the database; the ledger is in RAM          L3
 
-**Step 1 is a hard block.** `gh` returns 401 and git over HTTPS refuses; re-authenticating is
-interactive, so nothing reaches the remote until a human runs `gh auth login -h github.com`.
-Every commit, PR body and issue body is written and waiting — the scratchpad file
-`BLOCKED-ON-AUTH.md` carries the exact commands, and handoff §4 lists the branches in order.
-
-**Step 2 is what makes the adopter run count.** The published `0.2.1` fails a new adopter's
-build with 201 blocking findings, 199 of them from a Layer 4 domain the project never
-declared. That is a worse first impression than either `0.2.0` defect, because it is the
-*first command* and the failure looks like the reader's fault.
+**Step 1 is the live one.** The published `0.2.1` fails a new adopter's build with 201
+blocking findings, 199 of them from a Layer 4 domain the project never declared. That is a
+worse first impression than either `0.2.0` defect, because it is the *first command* and the
+failure looks like the reader's fault. It is fixed on `main` and not released.
 
 **The critical path runs through decisions, not code.** You can be entirely blocked while the
 repository is entirely green — that is the expected state, not a problem with your setup.

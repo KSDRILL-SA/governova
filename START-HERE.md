@@ -8,8 +8,7 @@ It is written to be self-contained. A fresh session knows nothing about this rep
 ---
 
 You are taking over **Governova** — a constitutional governance platform, live on PyPI as
-`governova` (**`0.2.2` published 2026-08-23** — ten merged PRs, `main` and PyPI in step;
-see the handoff §1).
+`governova` (**`0.2.3` published 2026-08-23** — `main` and PyPI in step; see the handoff §1).
 **Confirm the published version against PyPI rather than this file**; it said `0.1.0` for two
 releases, and a stale claim here is how a session starts by believing something untrue.
 
@@ -60,7 +59,7 @@ pipe, not a hang.
 
 ---
 
-## STATE, AS MEASURED ON `ed7b3fe` (= `v0.2.2`)
+## STATE, AS MEASURED ON `24d99ae` (= `v0.2.3`)
 
     Tests                    1347 passed · 1 skipped
     validate                 standards=670 errors=0 warnings=287 · integrity OK
@@ -70,7 +69,8 @@ pipe, not a hang.
     mypy                     strict, 99 files, clean
     Corpus                   15 constitutions · 670 standards · 789 anti-patterns
                              4 Layer 4 domains · 19 domain standards · 14 ADRs
-    Distribution             PyPI 0.2.2 published 2026-08-23 — main is released
+    Distribution             PyPI 0.2.3 published 2026-08-23 — main is released
+    Governed externally      4 repositories, gate on every PR
 
 **Regenerate all of these before trusting them.** This file has been wrong before, and was
 again: it read `72 rules`, which is the count of *implementation bindings* in
@@ -92,17 +92,20 @@ absent. Do not "fix" that number by breaking the probe again.
 
 Full detail is `planning/handoff-2026-08-23.md` §7. In brief:
 
-    1. Xkimi profile    accept one, which re-arms 182 true findings      L3
-    2. D-27             wire the database; the ledger is in RAM          L3
-    3. a foreign repo   point 0.2.2 at a stack nobody here wrote         L3
+    1. v2-deferral ADR  record what v1 excludes, and why               L3 proposes
+    2. Stage 1          migrations + client; the ledger is in RAM        L3
+    3. Xkimi profile    declare D-FINTECH; 182 findings, mostly true     L3
 
-**Nothing is release-blocked.** `0.2.2` shipped on 2026-08-23 and a clean `pip install` of it
-answers correctly on an external repository — verified, not assumed. `main` and PyPI are in
-step, so the next session starts from a released baseline rather than a backlog.
+**Nothing is release-blocked.** `0.2.3` shipped on 2026-08-23 and `main` and PyPI are in step,
+so the next session starts from a released baseline rather than a backlog.
 
-**Step 3 is where the next real finding is.** `0.2.2` has been measured against exactly one
-external repository, and that one is a Next.js fintech monorepo whose author also wrote the
-engine. Every session so far found its best defect at a boundary it had not yet crossed.
+**The engine no longer has to be pointed at anything by hand.** `governova-enforce --changed`
+runs on every pull request in four external repositories across three GitHub owners. That is
+where the next finding will come from, and it now arrives without anybody remembering to look.
+
+**The approved v1 scope is narrower than "everything".** Persistence, billing, the Angular
+console and the marketing site. The Intelligence Gateway, the four stub surfaces and
+Certification are v2 — deferred deliberately, and step 1 is writing that down.
 
 **The critical path runs through decisions, not code.** You can be entirely blocked while the
 repository is entirely green — that is the expected state, not a problem with your setup.

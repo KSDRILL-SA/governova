@@ -217,6 +217,61 @@ def test_a_translated_error_response_does_not_fire():
     assert [f for f in scan_text(compliant) if f.standard == "S2.18"] == []
 
 
+def test_a_curated_domain_error_does_not_fire():
+    """The two findings this rule produced on a real adopter, both wrong.
+
+    `AppError` and `DataRequestValidationError` are declared types whose messages
+    are written to be read by an API consumer. A bare `return` in front of
+    `.message` was signal enough for the old pattern, so both were flagged.
+    """
+    for line in (
+        "    return apiError(err.code, err.message, err.status)",
+        "      return apiError('VAL_005', err.message, 400)",
+    ):
+        assert [f for f in scan_text(line) if f.standard == "S2.18"] == [], line
+
+
+def test_the_branch_the_standard_was_written_for_still_fires():
+    """The unnarrowed handler — the one that can carry a driver message or a
+    stack — is what S2.18 exists for, and it was never the flagged one."""
+    for line in (
+        "res.status(500).json({ error: err.message })",
+        "return NextResponse.json({ error: err.stack })",
+        "reply.send({ error: err.message })",
+        "return { detail: err.stack }",
+    ):
+        assert [f for f in scan_text(line) if f.standard == "S2.18"] != [], line
+
+
+def test_a_stack_trace_is_never_client_facing_however_it_is_returned():
+    """`.stack` keeps the loose `return` context; `.message` does not. The two
+    are not equally decidable from one line, and the rule now says so."""
+    assert [f for f in scan_text("return { detail: err.stack }") if f.standard == "S2.18"]
+    assert [
+        f for f in scan_text("return buildError(err.message)") if f.standard == "S2.18"
+    ] == []
+
+
+def test_the_response_sender_does_not_backtrack_on_a_long_line():
+    """This rule runs inside other people's CI as a blocking gate. `AP-D-FINTECH.3a`
+    records an 8.7-second line in this codebase, which was a denial of service
+    rather than a slow test.
+
+    Measured just under `MAX_LINE_LENGTH`, because anything above it is skipped
+    before a pattern ever runs — a longer string would make this test pass by
+    never reaching the regex.
+    """
+    import time
+
+    from governova_checks.rules import MAX_LINE_LENGTH
+
+    line = "res.json({ x: " + "a" * (MAX_LINE_LENGTH - 40) + " })"
+    assert len(line) < MAX_LINE_LENGTH
+    start = time.perf_counter()
+    scan_text(line)
+    assert time.perf_counter() - start < 2.0
+
+
 def test_every_rule_binds_a_real_anti_pattern():
     # Verifies REQ-006 — no rule may bind an anti-pattern outside the corpus.
     # The governance guarantee: no rule may reference an anti-pattern that does

@@ -129,9 +129,21 @@ def test_a_data_directory_is_the_data_layer_whatever_it_is_called() -> None:
 def test_a_front_end_store_is_not_a_data_layer() -> None:
     """`store` is deliberately absent from DATA_LAYER: it is where Redux and
     Pinia live, and a store reaching the database is precisely the violation."""
-    assert "AP-S1.104a" in _fired(
-        "session.query(User).all()", file="src/store/cart.ts"
-    )
+    for path in ("src/store/cart.ts", "src/stores/cart.ts"):
+        assert "AP-S1.104a" in _fired("session.query(User).all()", file=path), path
+
+
+def test_a_package_whose_name_ends_in_store_is_a_data_layer() -> None:
+    """The suffix is what separates a persistence package from a front-end store,
+    and this repository produced both cases within one day: `governova_store`
+    was reported by its own self-scan while `src/store/` must keep being.
+    """
+    for path in (
+        "scripts/governova_store/migrations.py",
+        "app/user_store/reader.py",
+        "src/event_stores/append.py",
+    ):
+        assert "AP-S1.104a" not in _fired("rows = await conn.execute(sql)", file=path), path
 
 
 # ─── AP-S1.104a — data access outside the repository layer ───────────────────

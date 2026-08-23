@@ -91,6 +91,12 @@ cloud = [
     "uvicorn>=0.32",
     "pyjwt>=2.9",
     "cryptography>=43.0",
+    # Stage 1 persistence. `ADR-015`: Prisma authors the schema and the
+    # migrations, `asyncpg` executes the queries — so the runtime carries a
+    # maintained driver rather than a generated client and a Node query engine.
+    # It binds `$1`-style parameters through the wire protocol and cannot
+    # interpolate, which makes `S5.21` a property of the driver.
+    "asyncpg>=0.30",
 ]
 # The identity *client* — `governova login`, `logout`, `whoami`. Separate from
 # `cloud` because a client and a service are different things: someone logging
@@ -163,6 +169,7 @@ packages = [
     "governova_gateway",
     "governova_settings",
     "governova_hosted",
+    "governova_store",
 ]
 
 [tool.mypy]
@@ -212,4 +219,5 @@ files = [
     "governova_gateway",
     "governova_settings",
     "governova_hosted",
+    "governova_store",
 ]

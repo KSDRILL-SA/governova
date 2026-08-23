@@ -150,6 +150,13 @@ DATA_LAYER = re.compile(
     r"db|database|datastore|sql|queries|"
     r"migrations?|seeds?|fixtures?|prisma|alembic)/|"
     r"(?:^|/)[^/]*(?:repository|repositories|dao)[^/]*\.[a-z]+$|"
+    # A directory whose name *ends* in `_store` is a persistence package —
+    # `governova_store`, `user_store`, `event_store`. Bare `store/` is
+    # deliberately still excluded above: that is where Redux and Pinia live, and
+    # a front-end store reaching the database is the violation this rule exists
+    # to report. The suffix is what separates the two, and this repository
+    # produced both cases within one day.
+    r"(?:^|/)[^/]{0,64}_stores?/|"
     r"(?:^|/)(?:tests?|__tests__|spec|e2e)/|"
     r"[._-](?:test|spec)\.[a-z]+$|(?:^|/)test_[^/]*\.py$|(?:^|/)conftest\.py$"
 )

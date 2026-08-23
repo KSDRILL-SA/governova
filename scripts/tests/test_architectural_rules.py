@@ -80,6 +80,60 @@ def test_a_component_test_is_not_a_presentation_violation() -> None:
     assert "AP-S1.103a" not in fired
 
 
+def test_a_python_backend_package_is_not_the_presentation_layer() -> None:
+    """`app/` means the App Router in Next.js and the whole backend in FastAPI.
+
+    Measured on a FastAPI repository the engine had never seen: ten blocking
+    findings, every one in `app/db/` — the layer that is supposed to hold
+    `session.execute(`. One flagged file opens by explaining that it exists so
+    "parameterisation is the only door in". Correct code, blocked, with no edit
+    available that satisfies the tool.
+    """
+    for path in (
+        "apps/api/app/db/sql.py",
+        "apps/api/app/db/context.py",
+        "apps/api/app/db/integrity.py",
+        "app/db/partitions.py",
+        "app/core/config.py",
+        "app/main.py",
+    ):
+        assert "AP-S1.103a" not in _fired("rows = session.execute(sql)", file=path), path
+
+
+def test_the_next_js_app_router_is_still_the_presentation_layer() -> None:
+    """The recall this must not cost. `app/dashboard/page.tsx` is a page because
+    it is called `page`, which is a stronger signal than the directory name that
+    was carrying it before."""
+    code = "const rows = await db.execute('SELECT 1');"
+    for path in (
+        "app/dashboard/page.tsx",
+        "app/(admin)/users/page.js",
+        "app/layout.tsx",
+        "app/products/[id]/loading.tsx",
+    ):
+        assert "AP-S1.103a" in _fired(code, file=path), path
+
+
+def test_a_data_directory_is_the_data_layer_whatever_it_is_called() -> None:
+    """`db` is the commonest name a data layer has and was the one missing."""
+    for path in (
+        "src/db/session.py",
+        "src/database/queries.py",
+        "src/datastore/reader.go",
+        "src/sql/reports.py",
+        "src/queries/orders.ts",
+    ):
+        assert "AP-S1.104a" not in _fired("session.query(User).all()", file=path), path
+
+
+def test_a_front_end_store_is_not_a_data_layer() -> None:
+    """`store` is deliberately absent from DATA_LAYER: it is where Redux and
+    Pinia live, and a store reaching the database is precisely the violation."""
+    assert "AP-S1.104a" in _fired(
+        "session.query(User).all()", file="src/store/cart.ts"
+    )
+
+
 # ─── AP-S1.104a — data access outside the repository layer ───────────────────
 
 

@@ -112,14 +112,42 @@ class Finding:
 # against a lower-cased, forward-slashed path.
 
 # Presentation layer: components, pages, views, and single-file component formats.
+#
+# **`app/` is not on this list, and removing it is the point.** The directory
+# means the presentation layer in Next.js — the App Router — and it means the
+# *entire backend package* in the FastAPI and Flask conventions, which is
+# `app/main.py`, `app/core/`, `app/db/`, `app/modules/`. One name, two opposite
+# architectural claims, and the bare form asserted the wrong one for every Python
+# backend using the standard layout.
+#
+# Measured on a FastAPI repository the engine had never seen: **ten blocking
+# findings, every one of them in `app/db/`** — the layer that is *supposed* to
+# hold `session.execute(`. One of the flagged files opens by explaining that it
+# exists so "parameterisation is the only door in". Correct code, blocked, with
+# no edit available that satisfies the tool.
+#
+# Next.js is still reached, and by a stronger signal than the directory name: the
+# App Router's reserved filenames. `app/dashboard/page.tsx` is a page because it
+# is called `page`, not because it sits under `app/`. Every quantifier is bounded
+# — this runs on every scanned path.
 UI_LAYER = re.compile(
-    r"(?:^|/)(?:components?|pages?|views?|screens?|widgets?|app)/|\.(?:vue|svelte|jsx|tsx)$"
+    r"(?:^|/)(?:components?|pages?|views?|screens?|widgets?)/|"
+    r"(?:^|/)app/(?:[^/]{1,64}/){0,12}"
+    r"(?:page|layout|template|error|loading|not-found|default)\.[jt]sx?$|"
+    r"\.(?:vue|svelte|jsx|tsx)$"
 )
 
 # The only place raw data access is permitted (S1.104), plus the places where a
 # raw statement is legitimately expected: migrations, seeds, and tests.
+#
+# `db` is the commonest name a data layer has and was the one name missing, so a
+# `app/db/sql.py` matched neither the exclusion that would have saved it nor any
+# of the aliases beside it. `store` is deliberately absent: a front-end `store/`
+# is where Redux and Pinia live, and a store reaching the database is exactly the
+# violation S1.103 exists to report.
 DATA_LAYER = re.compile(
     r"(?:^|/)(?:repositor(?:y|ies)|dao|daos|data[-_]?access|persistence|"
+    r"db|database|datastore|sql|queries|"
     r"migrations?|seeds?|fixtures?|prisma|alembic)/|"
     r"(?:^|/)[^/]*(?:repository|repositories|dao)[^/]*\.[a-z]+$|"
     r"(?:^|/)(?:tests?|__tests__|spec|e2e)/|"

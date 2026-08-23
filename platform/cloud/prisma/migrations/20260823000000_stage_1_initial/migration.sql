@@ -21,6 +21,25 @@
 -- And the composite foreign keys on TeamMembership make a team in one
 -- organisation holding a membership from another *impossible* rather than merely
 -- checked. `S14.8` records the denormalised column that buys that.
+--
+-- Every timestamp is TIMESTAMPTZ(6), and both halves of that are load-bearing.
+-- Prisma's `DateTime` maps to `TIMESTAMP(3)` by default, which was what this
+-- file said first and what the first run against a real PostgreSQL rejected:
+--
+--   no time zone      the column stores a wall-clock reading rather than an
+--                     instant, and comes back naive. `canonical_timestamp`
+--                     refuses a naive value, correctly — the column was wrong.
+--
+--   millisecond       `TIMESTAMP(3)` truncates the microseconds the ledger's
+--   precision         hash is computed over. `...123456` stored as `...123`
+--                     reads back `...123000`, which is a different string and a
+--                     different hash. `verify()` would report a broken chain on
+--                     data nobody touched.
+--
+-- `ADR-015` predicted the second one in writing before the column shipped
+-- anyway. It was regenerated rather than altered because this migration had
+-- never run outside a throwaway CI schema — after it runs anywhere real, this
+-- becomes an ALTER that rewrites tamper-evidence.
 
 -- CreateEnum
 CREATE TYPE "OperatingMode" AS ENUM ('PERSONAL', 'TEAM', 'ENTERPRISE');
@@ -36,9 +55,9 @@ CREATE TABLE "Account" (
     "id" TEXT NOT NULL,
     "subject" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-    "deleted_at" TIMESTAMP(3),
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
+    "deleted_at" TIMESTAMPTZ(6),
 
     CONSTRAINT "Account_pkey" PRIMARY KEY ("id")
 );
@@ -50,9 +69,9 @@ CREATE TABLE "Organisation" (
     "name" TEXT NOT NULL,
     "mode" "OperatingMode" NOT NULL DEFAULT 'PERSONAL',
     "seats_purchased" INTEGER NOT NULL DEFAULT 1,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-    "deleted_at" TIMESTAMP(3),
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
+    "deleted_at" TIMESTAMPTZ(6),
 
     CONSTRAINT "Organisation_pkey" PRIMARY KEY ("id")
 );
@@ -63,10 +82,10 @@ CREATE TABLE "Membership" (
     "organisation_id" TEXT NOT NULL,
     "account_id" TEXT NOT NULL,
     "role" "MemberRole" NOT NULL DEFAULT 'MEMBER',
-    "seat_assigned_at" TIMESTAMP(3),
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-    "deleted_at" TIMESTAMP(3),
+    "seat_assigned_at" TIMESTAMPTZ(6),
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
+    "deleted_at" TIMESTAMPTZ(6),
 
     CONSTRAINT "Membership_pkey" PRIMARY KEY ("id")
 );
@@ -76,9 +95,9 @@ CREATE TABLE "Team" (
     "id" TEXT NOT NULL,
     "organisation_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-    "deleted_at" TIMESTAMP(3),
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
+    "deleted_at" TIMESTAMPTZ(6),
 
     CONSTRAINT "Team_pkey" PRIMARY KEY ("id")
 );
@@ -89,9 +108,9 @@ CREATE TABLE "TeamMembership" (
     "organisation_id" TEXT NOT NULL,
     "team_id" TEXT NOT NULL,
     "membership_id" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-    "deleted_at" TIMESTAMP(3),
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
+    "deleted_at" TIMESTAMPTZ(6),
 
     CONSTRAINT "TeamMembership_pkey" PRIMARY KEY ("id")
 );
@@ -104,11 +123,11 @@ CREATE TABLE "LedgerEntry" (
     "kind" "LedgerEntryKind" NOT NULL,
     "amount_minor" BIGINT NOT NULL,
     "idempotency_key" TEXT NOT NULL,
-    "occurred_at" TIMESTAMP(3) NOT NULL,
+    "occurred_at" TIMESTAMPTZ(6) NOT NULL,
     "detail" TEXT NOT NULL DEFAULT '',
     "prev_hash" TEXT NOT NULL,
     "record_hash" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "LedgerEntry_pkey" PRIMARY KEY ("id")
 );

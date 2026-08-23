@@ -129,6 +129,25 @@ def test_the_migration_carries_the_two_constraints_the_ledger_rests_on() -> None
     assert "LedgerEntry_organisation_id_seq_key" in sql
 
 
+def test_every_timestamp_column_carries_a_zone_and_microseconds() -> None:
+    """Prisma's `DateTime` maps to `TIMESTAMP(3)`, and both halves of that break
+    the ledger.
+
+    No zone means the column stores a wall-clock reading rather than an instant,
+    and returns it naive — which `canonical_timestamp` refuses. Millisecond
+    precision truncates the microseconds the hash is computed over, so a stored
+    entry reads back with a different string and a different hash, and `verify()`
+    reports a broken chain on data nobody touched.
+
+    `ADR-015` predicted the second one in writing and the column shipped anyway.
+    The first run against a real PostgreSQL is what caught it.
+    """
+    sql = _committed()[0].sql
+    body = sql.split("-- CreateTable", 1)[1]
+    assert "TIMESTAMP(3)" not in body
+    assert "TIMESTAMPTZ(6)" in body
+
+
 def test_the_migration_makes_a_cross_tenant_team_membership_impossible() -> None:
     """The composite foreign keys, which are the reason `organisation_id` is
     denormalised onto `TeamMembership` at all (`S14.8`)."""

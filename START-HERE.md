@@ -8,7 +8,7 @@ It is written to be self-contained. A fresh session knows nothing about this rep
 ---
 
 You are taking over **Governova** — a constitutional governance platform, live on PyPI as
-`governova` (`0.2.1` published 2026-08-22; nine further commits awaiting a push —
+`governova` (`0.2.1` published 2026-08-22; nine branches awaiting a push —
 see the handoff §4 and §7).
 **Confirm the published version against PyPI rather than this file**; it said `0.1.0` for two
 releases, and a stale claim here is how a session starts by believing something untrue.
@@ -71,7 +71,7 @@ pipe, not a hang.
     Corpus                   15 constitutions · 670 standards · 789 anti-patterns
                              4 Layer 4 domains · 19 domain standards · 14 ADRs
     Distribution             PyPI 0.2.1 published 2026-08-22
-                             nine further commits local, none pushed
+                             nine branches / 11 commits local, none pushed
 
 **Regenerate all of these before trusting them.** This file has been wrong before, and was
 again: it read `72 rules`, which is the count of *implementation bindings* in
@@ -94,7 +94,7 @@ absent. Do not "fix" that number by breaking the probe again.
 Full detail is `planning/handoff-2026-08-23.md` §7. In brief:
 
     1. restore gh auth  the token went invalid; nine branches wait  HUMAN
-    2. push and merge   nine commits, stacked, full suite green    L3
+    2. push and merge   nine branches, stacked, full suite green   L3
     3. release 0.2.2    decide whether these warrant a release     L4
     4. D-27             wire the database; the ledger is in RAM    L3
 

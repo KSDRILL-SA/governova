@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 
 from governova_cli.__main__ import app
 from typer.testing import CliRunner
@@ -228,13 +229,29 @@ def test_enforce_is_reachable_as_a_subcommand(tmp_path):
     assert "AP-S3.14a" in result.stdout
 
 
+def _plain(text: str) -> str:
+    """Rendered text with styling removed.
+
+    Typer builds its own console for `--help`, and that console emits colour
+    wherever the environment asks for it — which CI does and a captured local
+    run does not. Its option highlighter styles the dashes separately from the
+    name, so `--changed` arrives as `[..m--[0m[..mchanged[0m`
+    and is not a substring of the raw output at all.
+
+    This test passed locally and failed in CI for exactly that reason. The
+    assertion was about styling; the claim is about content.
+    """
+    return re.sub(r"\[[0-9;]*m", "", text)
+
+
 def test_the_enforce_alias_delegates_rather_than_duplicating():
     """`governova enforce --help` prints the real command's options, so the two
     surfaces cannot drift apart."""
     result = runner.invoke(app, ["enforce", "--help"])
     assert result.exit_code == 0
+    rendered = _plain(result.stdout)
     for option in ("--changed", "--base", "--mode", "--format", "--domain"):
-        assert option in result.stdout, option
+        assert option in rendered, option
 
 
 def test_the_enforce_alias_does_not_slow_the_help():

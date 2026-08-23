@@ -8,8 +8,8 @@ It is written to be self-contained. A fresh session knows nothing about this rep
 ---
 
 You are taking over **Governova** — a constitutional governance platform, live on PyPI as
-`governova` (`0.2.1` published 2026-08-22; nine PRs merged to `main` since, unreleased —
-see the handoff §4).
+`governova` (**`0.2.2` published 2026-08-23** — ten merged PRs, `main` and PyPI in step;
+see the handoff §1).
 **Confirm the published version against PyPI rather than this file**; it said `0.1.0` for two
 releases, and a stale claim here is how a session starts by believing something untrue.
 
@@ -60,7 +60,7 @@ pipe, not a hang.
 
 ---
 
-## STATE, AS MEASURED ON `f9716a4`
+## STATE, AS MEASURED ON `ed7b3fe` (= `v0.2.2`)
 
     Tests                    1347 passed · 1 skipped
     validate                 standards=670 errors=0 warnings=287 · integrity OK
@@ -70,8 +70,7 @@ pipe, not a hang.
     mypy                     strict, 99 files, clean
     Corpus                   15 constitutions · 670 standards · 789 anti-patterns
                              4 Layer 4 domains · 19 domain standards · 14 ADRs
-    Distribution             PyPI 0.2.1 published 2026-08-22
-                             9 PRs merged since; 0.2.2 not yet tagged
+    Distribution             PyPI 0.2.2 published 2026-08-23 — main is released
 
 **Regenerate all of these before trusting them.** This file has been wrong before, and was
 again: it read `72 rules`, which is the count of *implementation bindings* in
@@ -93,14 +92,17 @@ absent. Do not "fix" that number by breaking the probe again.
 
 Full detail is `planning/handoff-2026-08-23.md` §7. In brief:
 
-    1. release 0.2.2    decide whether the nine merged PRs warrant it   L4
-    2. Xkimi profile    accept one, which re-arms 182 true findings      L3
-    3. D-27             wire the database; the ledger is in RAM          L3
+    1. Xkimi profile    accept one, which re-arms 182 true findings      L3
+    2. D-27             wire the database; the ledger is in RAM          L3
+    3. a foreign repo   point 0.2.2 at a stack nobody here wrote         L3
 
-**Step 1 is the live one.** The published `0.2.1` fails a new adopter's build with 201
-blocking findings, 199 of them from a Layer 4 domain the project never declared. That is a
-worse first impression than either `0.2.0` defect, because it is the *first command* and the
-failure looks like the reader's fault. It is fixed on `main` and not released.
+**Nothing is release-blocked.** `0.2.2` shipped on 2026-08-23 and a clean `pip install` of it
+answers correctly on an external repository — verified, not assumed. `main` and PyPI are in
+step, so the next session starts from a released baseline rather than a backlog.
+
+**Step 3 is where the next real finding is.** `0.2.2` has been measured against exactly one
+external repository, and that one is a Next.js fintech monorepo whose author also wrote the
+engine. Every session so far found its best defect at a boundary it had not yet crossed.
 
 **The critical path runs through decisions, not code.** You can be entirely blocked while the
 repository is entirely green — that is the expected state, not a problem with your setup.

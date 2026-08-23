@@ -20,7 +20,7 @@ Nothing yet.
 
 ---
 
-## [0.2.2] — unreleased
+## [0.2.2] — 2026-08-23
 
 **The first release shaped by a repository Governova did not write.** `0.2.1` was installed
 from PyPI into a clean virtualenv and pointed at an external Next.js monorepo. The first

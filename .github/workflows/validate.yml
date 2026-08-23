@@ -10,6 +10,37 @@ jobs:
   validate:
     name: Compile & validate constitution
     runs-on: ubuntu-latest
+
+    # Stage 1's persistence is the one part of this repository that cannot be
+    # checked without a server. `test_store.py` covers the reasoning — migration
+    # ordering, checksum refusal, the two concurrency branches — against a fake
+    # connection, and deliberately refuses to claim the rest: that the committed
+    # SQL is valid PostgreSQL, that the constraints exist once it has run, and
+    # that an entry's hash survives a round trip through `timestamptz`.
+    #
+    # Those assertions skip locally with the reason stated rather than passing,
+    # because a check that cannot determine an answer returns `unknown` and never
+    # `satisfied`. This service is what turns them from skipped to answered.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: governova_test
+          POSTGRES_DB: governova_test
+        ports:
+          - 5432:5432
+        # Without this the job races the server: the first connection arrives
+        # before PostgreSQL is accepting them, and the failure reads like a
+        # broken test rather than a slow container.
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      GOVERNOVA_TEST_DATABASE_URL: postgresql://postgres:governova_test@localhost:5432/governova_test
+
     steps:
       - uses: actions/checkout@v7
 

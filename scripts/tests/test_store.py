@@ -66,6 +66,19 @@ class FakeConnection:
         """
 
     async def execute(self, query: str, *args: Any) -> None:
+        if "INSERT INTO \"LedgerEntry\"" in query:
+            # As strict as the driver where it matters. `asyncpg` binds by Python
+            # type and rejects a `str` for a `timestamptz` before the statement's
+            # cast is reached — and this fake accepted one, so the whole unit
+            # suite passed against a statement that could never have executed.
+            # A fake looser than the thing it stands in for is a test that cannot
+            # fail for its stated reason.
+            occurred_at = args[5]
+            if not isinstance(occurred_at, dt.datetime):
+                raise TypeError(
+                    f"asyncpg binds $6 as timestamptz and requires a datetime; "
+                    f"got {type(occurred_at).__name__}"
+                )
         if self.refuse and "INSERT INTO \"LedgerEntry\"" in query:
             constraint, self.refuse = self.refuse, None
             if self.rows_after_refusal is not None:
@@ -114,6 +127,25 @@ def test_the_migration_carries_the_two_constraints_the_ledger_rests_on() -> None
     sql = _committed()[0].sql
     assert "LedgerEntry_organisation_id_idempotency_key_key" in sql
     assert "LedgerEntry_organisation_id_seq_key" in sql
+
+
+def test_every_timestamp_column_carries_a_zone_and_microseconds() -> None:
+    """Prisma's `DateTime` maps to `TIMESTAMP(3)`, and both halves of that break
+    the ledger.
+
+    No zone means the column stores a wall-clock reading rather than an instant,
+    and returns it naive — which `canonical_timestamp` refuses. Millisecond
+    precision truncates the microseconds the hash is computed over, so a stored
+    entry reads back with a different string and a different hash, and `verify()`
+    reports a broken chain on data nobody touched.
+
+    `ADR-015` predicted the second one in writing and the column shipped anyway.
+    The first run against a real PostgreSQL is what caught it.
+    """
+    sql = _committed()[0].sql
+    body = sql.split("-- CreateTable", 1)[1]
+    assert "TIMESTAMP(3)" not in body
+    assert "TIMESTAMPTZ(6)" in body
 
 
 def test_the_migration_makes_a_cross_tenant_team_membership_impossible() -> None:

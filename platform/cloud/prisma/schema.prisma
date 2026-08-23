@@ -53,13 +53,12 @@ enum MemberRole {
 /// between this database and Stage 0, and the reason nothing here stores a
 /// credential.
 model Account {
-  id         String    @id @default(uuid())
-  subject    String    @unique
-  email      String    @unique
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
-
+  id          String       @id @default(uuid())
+  subject     String       @unique
+  email       String       @unique
+  created_at  DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime     @updatedAt @db.Timestamptz(6)
+  deleted_at  DateTime?    @db.Timestamptz(6)
   memberships Membership[]
 
   @@index([deleted_at])
@@ -74,13 +73,12 @@ model Organisation {
   name            String
   mode            OperatingMode @default(PERSONAL)
   seats_purchased Int           @default(1)
-  created_at      DateTime      @default(now())
-  updated_at      DateTime      @updatedAt
-  deleted_at      DateTime?
-
-  memberships Membership[]
-  teams       Team[]
-  ledger      LedgerEntry[]
+  created_at      DateTime      @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime      @updatedAt @db.Timestamptz(6)
+  deleted_at      DateTime?     @db.Timestamptz(6)
+  memberships     Membership[]
+  teams           Team[]
+  ledger          LedgerEntry[]
 
   @@index([deleted_at])
 }
@@ -92,19 +90,18 @@ model Organisation {
 /// It also has attributes — a role, and whether a seat is occupied — which is
 /// the second reason a join table cannot be implicit here.
 model Membership {
-  id               String     @id @default(uuid())
+  id               String       @id @default(uuid())
   organisation_id  String
   account_id       String
-  role             MemberRole @default(MEMBER)
+  role             MemberRole   @default(MEMBER)
   /// Null means a member who occupies no seat. Seats are counted from this
   /// column, so an unoccupied membership costs nothing.
-  seat_assigned_at DateTime?
-  created_at       DateTime   @default(now())
-  updated_at       DateTime   @updatedAt
-  deleted_at       DateTime?
-
-  organisation Organisation @relation(fields: [organisation_id], references: [id])
-  account      Account      @relation(fields: [account_id], references: [id])
+  seat_assigned_at DateTime?    @db.Timestamptz(6)
+  created_at       DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime     @updatedAt @db.Timestamptz(6)
+  deleted_at       DateTime?    @db.Timestamptz(6)
+  organisation     Organisation @relation(fields: [organisation_id], references: [id])
+  account          Account      @relation(fields: [account_id], references: [id])
 
   team_memberships TeamMembership[]
 
@@ -125,15 +122,14 @@ model Membership {
 
 /// A group inside one organisation.
 model Team {
-  id              String    @id @default(uuid())
+  id              String           @id @default(uuid())
   organisation_id String
   name            String
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
-  deleted_at      DateTime?
-
-  organisation Organisation     @relation(fields: [organisation_id], references: [id])
-  members      TeamMembership[]
+  created_at      DateTime         @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime         @updatedAt @db.Timestamptz(6)
+  deleted_at      DateTime?        @db.Timestamptz(6)
+  organisation    Organisation     @relation(fields: [organisation_id], references: [id])
+  members         TeamMembership[]
 
   @@unique([organisation_id, name])
   /// The other target of `TeamMembership`'s composite foreign key — see there.
@@ -165,18 +161,17 @@ model Team {
 /// those is a normal thing to do to a production database. The cost is one
 /// column and two composite unique constraints on the referenced tables.
 model TeamMembership {
-  id              String    @id @default(uuid())
+  id              String     @id @default(uuid())
   /// Denormalised from `team.organisation_id` / `membership.organisation_id`,
   /// which the composite foreign keys below force to agree with each other.
   organisation_id String
   team_id         String
   membership_id   String
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
-  deleted_at      DateTime?
-
-  team       Team       @relation(fields: [organisation_id, team_id], references: [organisation_id, id])
-  membership Membership @relation(fields: [organisation_id, membership_id], references: [organisation_id, id])
+  created_at      DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime   @updatedAt @db.Timestamptz(6)
+  deleted_at      DateTime?  @db.Timestamptz(6)
+  team            Team       @relation(fields: [organisation_id, team_id], references: [organisation_id, id])
+  membership      Membership @relation(fields: [organisation_id, membership_id], references: [organisation_id, id])
 
   @@unique([team_id, membership_id])
   @@index([organisation_id])
@@ -227,12 +222,12 @@ model LedgerEntry {
   /// it was constructed. Direction comes from `kind` (`ADR-011`, `AP-S5.28a`).
   amount_minor    BigInt
   idempotency_key String
-  occurred_at     DateTime
+  occurred_at     DateTime        @db.Timestamptz(6)
   detail          String          @default("")
   /// The previous entry's `record_hash`, or 64 zeroes for the first.
   prev_hash       String
   record_hash     String
-  created_at      DateTime        @default(now())
+  created_at      DateTime        @default(now()) @db.Timestamptz(6)
 
   organisation Organisation @relation(fields: [organisation_id], references: [id])
 

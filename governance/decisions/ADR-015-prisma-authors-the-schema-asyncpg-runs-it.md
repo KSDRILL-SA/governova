@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Status** | Proposed |
+| **Status** | Accepted |
 | **Date** | 2026-08-23 |
-| **Authority** | L4 — `C0 §8`. Implements `ADR-010`'s inherited "PostgreSQL via Prisma" |
+| **Authority** | L4 — `C0 §8`. Implements `ADR-010`'s inherited "PostgreSQL via Prisma". Ratified on the owner's explicit delegation, not by the owner reading it |
 | **Supersedes** | Nothing. Decides a question `ADR-010` left implicit |
 | **Relates To** | `S5.9`, `S5.21`, `S5.30`, `S8.84`, `S8.85`, `ADR-010 §2`, `#255` |
 
@@ -139,5 +139,22 @@ Concretely:
 
 ---
 
-> **Status: PROPOSED — 2026-08-23**
-> *Ratification is L4 and belongs to the owner: Maluleke Kurhula Success.*
+> **Status: ACCEPTED — 2026-08-23**
+>
+> L4 — `C0 §8`. Ratified 2026-08-23 on the owner's explicit delegation
+(*"i give you all the big boss permission to ratify and approve"*), recorded here
+rather than implied: the owner did not read and sign this document, and a
+governance repository whose own approval records overstate what happened is worth
+nothing. Reversible by the owner at any time.
+>
+> **Evidence acquired since this was written**, and it strengthens the decision
+> rather than merely restating it: `asyncpg` now runs the committed migration
+> against `postgres:16-alpine` on every pull request, and five assertions that
+> only a server can answer pass there — including the ledger's hash surviving a
+> round trip through `timestamptz`. `prisma-client-py` has had no release since
+> 2024-08-16 in that time.
+>
+> **What would reverse this:** `prisma-client-py` returning to active
+> maintenance, or the repository layer outgrowing one module — at which point
+> SQLAlchemy Core over the Prisma-authored schema becomes the better trade, as
+> the alternatives table already records.

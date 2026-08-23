@@ -68,9 +68,21 @@ instruction.
 ## The finding that survives, and how it is resolved
 
 ```
-probable fan-trap Organisation — Organisation is the one side of 2 separate
-one-to-many relationships (Membership, Team)
+probable fan-trap Organisation — Organisation is the one side of 3 separate
+one-to-many relationships (LedgerEntry, Membership, Team)
 ```
+
+**It said 2 when this note was written, and it says 3 now.** `LedgerEntry` joined
+the fanning side with Stage 1, and it is the billing table — which makes this the
+one place in the schema where the trap costs money rather than accuracy. The
+arithmetic, for an organisation with 10 members and 7 ledger entries:
+
+```
+Organisation JOIN Membership JOIN LedgerEntry  ->  70 rows
+SUM(amount_minor) over that                    ->  10x the real balance
+```
+
+A wrong invoice, from a query that succeeds.
 
 **This one is real, and the arithmetic is in a test.** An organisation with 10 members and 4
 teams returns **40 rows** from a join through it — `test_the_fanning_join_really_does_fan`
@@ -88,6 +100,14 @@ Every question somebody would reach for it to answer is answered by a path that 
 | who is in this organisation | `members_of` | no |
 | what teams does it have | `teams_of` | no |
 | who is on this team | `Team → TeamMembership → Membership`, via `members_of_team` | no |
+| what is this organisation's balance | `LedgerStore.load`, then `Ledger.balance()` | no |
+
+The last row is the Stage 1 addition and it holds for a specific reason:
+`_SELECT_ENTRIES` reads `FROM "LedgerEntry" WHERE organisation_id = $1` with **no
+join at all**, and the balance is then derived in Python from the entries alone.
+`test_the_balance_path_does_not_join` asserts that, because the protection is the
+absence of a join rather than the presence of a guard — and an absence is the
+easiest thing in a codebase to undo without noticing.
 
 Reaching team members through `Organisation` does not merely multiply rows — it returns every
 member of the *organisation* rather than every member of the *team*, which is a different and

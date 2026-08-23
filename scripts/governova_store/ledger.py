@@ -40,6 +40,30 @@ SELECT seq, organisation_id, kind, amount_minor, idempotency_key,
  ORDER BY seq
 """
 
+# The tail, and nothing else. `record` needs `seq` and `record_hash` to build the
+# next link, and reading the whole chain to learn them made every write cost the
+# entire history — quadratic over a ledger's life, on the metering path, which is
+# the query that runs most often in the system. Served by the existing
+# `@@unique([organisation_id, seq])`, so the index is already there.
+_SELECT_TAIL = """
+SELECT seq, record_hash
+  FROM "LedgerEntry"
+ WHERE organisation_id = $1
+ ORDER BY seq DESC
+ LIMIT 1
+"""
+
+# Has this key been used. An indexed lookup on
+# `@@unique([organisation_id, idempotency_key])` — the same constraint that
+# refuses the duplicate insert, asked in advance so the common case does not have
+# to go through an exception.
+_SELECT_BY_KEY = """
+SELECT seq, organisation_id, kind, amount_minor, idempotency_key,
+       occurred_at, detail, prev_hash, record_hash
+  FROM "LedgerEntry"
+ WHERE organisation_id = $1 AND idempotency_key = $2
+"""
+
 _INSERT_ENTRY = """
 INSERT INTO "LedgerEntry"
        (id, organisation_id, seq, kind, amount_minor, idempotency_key,
@@ -51,6 +75,10 @@ VALUES (gen_random_uuid()::text, $1, $2, $3::"LedgerEntryKind", $4, $5, $6::time
 # Bounded because an unbounded retry against a contended chain is a livelock, and
 # a caller that is told "busy" can back off; a caller that never returns cannot.
 _MAX_APPEND_ATTEMPTS = 5
+
+# A stand-in instant for the synthetic tail entry, which exists only to carry a
+# sequence number and a hash. Canonical so it survives `__post_init__`.
+_EPOCH = "1970-01-01T00:00:00.000000+00:00"
 
 
 class _Connection(Protocol):
@@ -67,7 +95,14 @@ class LedgerStore:
         self._conn = conn
 
     async def load(self, organisation_id: str) -> Ledger:
-        """Rebuild the ledger from stored rows.
+        """Rebuild the **whole** ledger from stored rows.
+
+        This reads every entry, deliberately and unavoidably: it exists so
+        `verify()` can walk the chain, and a chain cannot be verified from part
+        of itself. It is an audit operation, not a write path.
+
+        **`record` must not call this**, and did — which made every write read the
+        entire history and cost a ledger `n(n+1)/2` row reads over its life.
 
         Through `replay`, which is the constructor that validates the chain and
         rejects a stored duplicate key. Reading rows into a `Ledger` any other
@@ -89,13 +124,28 @@ class LedgerStore:
     ) -> Written:
         """Append one movement, or return the one this key already wrote.
 
+        Implements REQ-009 — the reads here are bounded and do not grow with the
+        number of entries already recorded.
+
         Read-compute-write against a database that will refuse a duplicate. The
         loop exists for the sequence-number race and nothing else; the
         idempotency race is settled on the first attempt because losing it means
         the work is already done.
         """
         for _ in range(_MAX_APPEND_ATTEMPTS):
-            ledger = await self.load(organisation_id)
+            # Two facts, not the history. The domain still decides everything —
+            # the hash, the direction, the amount — it just is not handed rows it
+            # does not read.
+            existing = await self._by_key(organisation_id, idempotency_key)
+            if existing is not None:
+                return Written(existing, created=False)
+
+            tail = await self._tail(organisation_id)
+            # A one-entry ledger reproduces the tail's link exactly, which is all
+            # `next_link` reads. Passing the tail rather than the chain keeps the
+            # sequence and hash decisions inside the domain object where they
+            # belong, without paying for rows nobody looks at.
+            ledger = Ledger(organisation_id, [tail] if tail is not None else [])
             written = ledger.record(
                 kind,
                 amount,
@@ -103,20 +153,20 @@ class LedgerStore:
                 occurred_at=occurred_at,
                 detail=detail,
             )
-            if written.replayed:
-                # This process had already written it. No insert to attempt.
-                return written
 
             try:
                 await self._insert(written.entry)
             except Exception as exc:
                 violation = _violation(exc)
                 if violation == "idempotency_key":
-                    # Another writer won. The charge exists; say so rather than
-                    # raising, because the caller is a retried webhook whose
-                    # correct behaviour is to acknowledge.
-                    existing = await self.load(organisation_id)
-                    return Written(existing.find(idempotency_key), created=False)
+                    # Another writer won between our lookup and our insert. The
+                    # charge exists; say so rather than raising, because the
+                    # caller is a retried webhook whose correct behaviour is to
+                    # acknowledge. One indexed read, not the chain.
+                    winner = await self._by_key(organisation_id, idempotency_key)
+                    if winner is None:
+                        raise
+                    return Written(winner, created=False)
                 if violation == "seq":
                     # Another writer extended the chain first. Rebuild against
                     # what they wrote and try again.
@@ -130,6 +180,33 @@ class LedgerStore:
             f"sequence number. This is contention, not corruption; the caller should "
             f"back off and retry rather than treat it as a failed charge."
         )
+
+    async def _tail(self, organisation_id: str) -> LedgerEntry | None:
+        """The last entry, or None for an empty ledger.
+
+        Only `seq` and `record_hash` are read from the row; the rest of the
+        returned entry is filler that `next_link` never looks at. It is built as
+        a real `LedgerEntry` rather than a tuple so the domain keeps deciding what
+        a link is.
+        """
+        rows = await self._conn.fetch(_SELECT_TAIL, organisation_id)
+        if not rows:
+            return None
+        row = rows[0]
+        return LedgerEntry(
+            seq=row["seq"],
+            organisation_id=organisation_id,
+            kind=EntryKind.GRANT,
+            amount_minor=0,
+            idempotency_key=f"__tail_{row['seq']}",
+            occurred_at=_EPOCH,
+            record_hash=row["record_hash"],
+        )
+
+    async def _by_key(self, organisation_id: str, key: str) -> LedgerEntry | None:
+        """The entry written under `key`, or None. One indexed lookup."""
+        rows = await self._conn.fetch(_SELECT_BY_KEY, organisation_id, key)
+        return _entry_from_row(rows[0]) if rows else None
 
     async def _insert(self, entry: LedgerEntry) -> None:
         await self._conn.execute(

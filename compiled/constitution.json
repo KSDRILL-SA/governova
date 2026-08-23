@@ -1,8 +1,8 @@
 {
   "schema_version": "1.3.0",
-  "compiled_at": "2026-08-23T10:16:03.861547Z",
-  "source_commit_sha": "992a389",
-  "checksum": "sha256:fda08ac7d8134866414b7723b8c2c954dd0feaf2202150f8275159f8067053ee",
+  "compiled_at": "2026-08-23T17:38:25.877221Z",
+  "source_commit_sha": "1206c73",
+  "checksum": "sha256:784c2513b6edb058dda049f4436cf31890ce7901e5e2f757bbf7b97f6962f10b",
   "corpus": "full",
   "framework": [
     {
@@ -26034,14 +26034,20 @@
     {
       "id": "ADR-014",
       "name": "What v1 excludes, and the gate that reopens each one",
-      "status": "PROPOSED",
+      "status": "ACCEPTED",
       "path": "governance/decisions/ADR-014-what-v1-excludes.md"
     },
     {
       "id": "ADR-015",
       "name": "Prisma authors the schema, asyncpg runs it",
-      "status": "PROPOSED",
+      "status": "ACCEPTED",
       "path": "governance/decisions/ADR-015-prisma-authors-the-schema-asyncpg-runs-it.md"
+    },
+    {
+      "id": "ADR-016",
+      "name": "The Cloud data model: five decisions, and the numbers that reopen three of them",
+      "status": "ACCEPTED",
+      "path": "governance/decisions/ADR-016-the-cloud-data-model.md"
     }
   ],
   "hierarchy": [

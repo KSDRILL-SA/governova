@@ -23,6 +23,8 @@ from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
+from governova_checks import SKIP_DIRS, walk_files
+
 from governova_requirements.model import (
     KINDS,
     OBLIGATIONS,
@@ -65,10 +67,12 @@ _TEST_PATH = re.compile(r"(^|/)(tests?|spec|__tests__|e2e)(/|$)|(^|/)[^/]*(test|
 _SOURCE_SUFFIXES = frozenset(
     {".py", ".ts", ".tsx", ".js", ".jsx", ".java", ".go", ".rb", ".cs", ".kt", ".rs", ".php"}
 )
-_SKIP_DIRS = frozenset(
-    {".git", ".venv", "venv", "node_modules", "__pycache__", "dist", "build", ".mypy_cache",
-     ".pytest_cache", ".ruff_cache", "site-packages", ".tox"}
-)
+# The shared list, not a third copy of it. This module kept its own, which had
+# drifted to a strict subset plus `site-packages` — so a requirement citation
+# inside `.next/`, `coverage/` or `htmlcov/` counted as authored here while the
+# scanner correctly ignored it. `site-packages` moved to the shared list rather
+# than staying local, because every surface wants it (S1.106).
+_SKIP_DIRS = SKIP_DIRS
 # A file large enough to be generated rather than written. Scanning it costs time and
 # yields citations nobody authored.
 _MAX_FILE_BYTES = 1_000_000
@@ -180,7 +184,7 @@ def registered_readers() -> tuple[str, ...]:
 
 
 def _iter_files(root: Path) -> Iterable[Path]:
-    for path in root.rglob("*"):
+    for path in walk_files(root):
         if not path.is_file() or path.suffix.lower() not in _SOURCE_SUFFIXES:
             continue
         if any(part in _SKIP_DIRS for part in path.parts):

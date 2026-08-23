@@ -29,12 +29,12 @@ from typing import Annotated
 import typer
 from governova_checks import (
     DEFAULT_IGNORES,
-    SKIP_DIRS,
     Finding,
     changed_files,
     for_declared_domains,
     is_ignored,
     scan_paths,
+    walk_files,
 )
 from governova_checks.gather import is_generated
 from governova_compile.discovery import resolve_target_root
@@ -346,22 +346,12 @@ def _walk_directory(directory: Path) -> list[Path]:
     """Files under `directory`, skipping the directories nothing authored.
 
     Pruned during the walk rather than filtered afterwards, so a large
-    `node_modules` is never enumerated in the first place.
+    `node_modules` is never enumerated in the first place. That pruning now lives
+    in `walk_files`, which is where four other copies of it converged — this
+    function is the one that had it right, and keeping a private version would
+    have made it the fifth.
     """
-    found: list[Path] = []
-    for path in directory.rglob("*"):
-        if not path.is_file():
-            continue
-        try:
-            parts = path.relative_to(directory).parts[:-1]
-        except ValueError:  # pragma: no cover - rglob results are always relative
-            parts = path.parts[:-1]
-        if any(part in SKIP_DIRS for part in parts):
-            continue
-        if is_generated(path.name):
-            continue
-        found.append(path)
-    return found
+    return [p for p in walk_files(directory) if not is_generated(p.name)]
 
 
 def _not_ignored(candidates: list[Path], root: Path, ignores: tuple[str, ...]) -> list[Path]:

@@ -61,6 +61,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
 
+from governova_checks import walk_files
 from governova_compile.schema import CompiledIndex, Priority
 
 from governova_onboard.baseline import Baseline, FindingGroup
@@ -235,8 +236,11 @@ def find_characterisation_tests(root: Path, relative_files: tuple[str, ...]) -> 
         return ()
 
     found: list[str] = []
-    for candidate in root.rglob("*"):
-        if candidate.name in wanted and candidate.is_file():
+    # Pruned, so a dependency's test file cannot be offered as this project's
+    # characterisation test. `node_modules` is full of files named exactly like
+    # the ones this is looking for.
+    for candidate in walk_files(root):
+        if candidate.name in wanted:
             try:
                 found.append(candidate.relative_to(root).as_posix())
             except ValueError:  # pragma: no cover — rglob stays under root

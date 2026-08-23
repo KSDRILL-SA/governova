@@ -468,3 +468,37 @@ def test_prisma_marks_the_many_end_as_the_many_end():
     one_end = relation.target if relation.source_to_many else relation.source
     assert many_end == "Invoice"
     assert one_end == "Customer"
+
+
+def test_find_schema_files_does_not_read_dependencies(tmp_path):
+    """This walk stat'd 210,567 entries across two calls on a repository with
+    `node_modules` on disk — 93 of the 97 seconds the requirements tier took, and
+    most of why `governova onboard` needed nine minutes there.
+
+    The skip list here had drifted into a fourth copy of `SKIP_DIRS`. Only
+    `migrations` is this module's own decision.
+    """
+    from governova_schema import find_schema_files
+
+    (tmp_path / "db").mkdir()
+    (tmp_path / "db" / "schema.prisma").write_text("model A { id Int @id }\n", encoding="utf-8")
+    dep = tmp_path / "node_modules" / "orm" / "db"
+    dep.mkdir(parents=True)
+    (dep / "vendor.prisma").write_text("model B { id Int @id }\n", encoding="utf-8")
+
+    assert [p.name for p in find_schema_files(tmp_path)] == ["schema.prisma"]
+
+
+def test_migrations_are_still_skipped(tmp_path):
+    """A migration is a historical statement. Reporting that a table created
+    three releases ago lacked a key it has since gained is noise about the past,
+    and that judgement is about schemas rather than about which directories
+    nobody authored — so it survives the consolidation."""
+    from governova_schema import find_schema_files
+
+    m = tmp_path / "migrations"
+    m.mkdir()
+    (m / "0001_init.sql").write_text("CREATE TABLE a (id INT);\n", encoding="utf-8")
+    (tmp_path / "schema.sql").write_text("CREATE TABLE b (id INT PRIMARY KEY);\n", encoding="utf-8")
+
+    assert [p.name for p in find_schema_files(tmp_path)] == ["schema.sql"]

@@ -25,6 +25,7 @@ from governova_checks.gather import (
     changed_files,
     is_ignored,
     iter_source_files,
+    walk_files,
 )
 from governova_checks.rules import (
     RULES,
@@ -63,4 +64,5 @@ __all__ = [
     "scan_text",
     "unresolved_bindings",
     "validate_rules",
+    "walk_files",
 ]

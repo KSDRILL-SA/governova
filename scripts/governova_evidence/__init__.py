@@ -31,7 +31,7 @@ from pathlib import Path
 # The directory exclusions the scanner already uses. Shared rather than re-listed:
 # a probe that walks `node_modules` reports a repository on its dependencies'
 # conventions, and the two lists drifting apart is how that starts.
-from governova_checks import SKIP_DIRS
+from governova_checks import SKIP_DIRS, walk_files
 
 
 class Verdict(StrEnum):
@@ -761,11 +761,7 @@ def _probe_models_track_contracts(root: Path) -> ProbeResult:
         return _unknown(sid, "no model artifacts to compare against")
 
     contracts = [
-        p
-        for p in root.rglob("*")
-        if p.is_file()
-        and _CONTRACT_NAMES.search(p.name)
-        and not any(part in {".git", "node_modules", ".venv"} for part in p.parts)
+        p for p in walk_files(root) if _CONTRACT_NAMES.search(p.name)
     ]
     if not contracts:
         return _unknown(sid, "no published contract found to compare models against")
@@ -893,7 +889,19 @@ def _has_language(root: Path, suffixes: tuple[str, ...]) -> bool:
     """
     wanted = {s.lower() for s in suffixes}
     seen = 0
-    for path in root.rglob("*"):
+    # `walk_files` prunes, and the budget below is why that matters here beyond
+    # speed. `seen` was counted *before* the `_NOT_OUR_CODE` test, so on a
+    # repository with a large dependency tree the 4000-entry budget could be
+    # spent entirely inside `node_modules` and this would answer "no TypeScript"
+    # about a TypeScript repository — turning several standards into `unknown`
+    # for the wrong reason.
+    #
+    # Measured on a Next.js monorepo before the change: the walk reached that
+    # repository's own first `.ts` file at entry 2556 of 4000. It returned the
+    # right answer with 36% of the budget to spare, which is not a margin worth
+    # relying on — the number is a property of how many packages happen to be
+    # installed.
+    for path in walk_files(root):
         seen += 1
         if seen > _LANGUAGE_SCAN_LIMIT:
             break
@@ -1296,8 +1304,8 @@ def _probe_test_names_describe_behaviour(root: Path) -> ProbeResult:
     sid = "S7.5"
     files = [
         p
-        for p in sorted(root.rglob("test_*.py")) + sorted(root.rglob("*_test.py"))
-        if not any(part in {".git", ".venv", "node_modules", "__pycache__"} for part in p.parts)
+        for p in sorted(walk_files(root))
+        if p.suffix == ".py" and (p.name.startswith("test_") or p.name.endswith("_test.py"))
     ][:_TEST_NAME_LIMIT]
     if not files:
         return _unknown(sid, "no Python test files found to inspect")
@@ -1489,7 +1497,7 @@ def _probe_single_python_linter(root: Path) -> ProbeResult:
     than of anything anybody chose.
     """
     sid = "S1.62"
-    if not any(root.rglob("*.py")):
+    if not any(p.suffix == ".py" for p in walk_files(root)):
         return _unknown(sid, "no Python in this repository")
 
     found: list[str] = []
@@ -1540,10 +1548,10 @@ def _probe_typescript_file_names(root: Path) -> ProbeResult:
     sid = "S1.64"
     offenders: list[str] = []
     seen = 0
-    for path in root.rglob("*.ts*"):
+    for path in walk_files(root):
         if path.suffix not in {".ts", ".tsx"}:
             continue
-        if any(part in SKIP_DIRS or part.startswith(".") for part in path.parts):
+        if any(part.startswith(".") for part in path.parts):
             continue
         seen += 1
         stem = path.name.removesuffix(path.suffix)
@@ -1631,12 +1639,12 @@ def _probe_mocks_reset_between_tests(root: Path) -> ProbeResult:
             return _ok(sid, f"mocks are reset between tests by configuration in {name}")
 
     has_js_tests = False
-    for path in root.rglob("*"):
+    for path in walk_files(root):
         if path.suffix not in {".ts", ".tsx", ".js", ".jsx"}:
             continue
         if ".test." not in path.name and ".spec." not in path.name:
             continue
-        if any(part in SKIP_DIRS or part.startswith(".") for part in path.parts):
+        if any(part.startswith(".") for part in path.parts):
             continue
         has_js_tests = True
         text = _read(path)

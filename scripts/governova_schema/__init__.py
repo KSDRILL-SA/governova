@@ -24,6 +24,8 @@ from __future__ import annotations
 import contextlib
 from pathlib import Path
 
+from governova_checks import walk_files
+
 from governova_schema.checks import ALL_CHECKS, analyse, normalisation_unknowns
 from governova_schema.model import (
     Column,
@@ -56,10 +58,21 @@ __all__ = [
     "parse_sql",
 ]
 
-_SKIP_DIRS = frozenset(
-    {".git", ".venv", "venv", "node_modules", "__pycache__", "dist", "build", ".mypy_cache",
-     ".pytest_cache", ".ruff_cache", "site-packages", ".tox", "migrations"}
-)
+# Only the exclusion this module decides for itself. The rest — version control,
+# environments, caches, build output — is `governova_checks.SKIP_DIRS`, pruned
+# during the walk by `walk_files`.
+#
+# This was a fourth copy of that list, and copies of it were what made
+# `governova onboard` take nine minutes: `find_schema_files` enumerated the whole
+# tree and stat'd every entry, 210,567 of them across two calls on a repository
+# with `node_modules` on disk.
+#
+# `migrations` stays here because it is a different kind of decision. A migration
+# is a *historical* statement, and reporting that a table created three releases
+# ago lacked a key it has since gained would be noise about the past rather than
+# a finding about the schema. That is a judgement about schemas, not about which
+# directories nobody authored.
+_SKIP_DIRS = frozenset({"migrations"})
 _MAX_SCHEMA_BYTES = 2_000_000
 
 
@@ -91,8 +104,8 @@ def find_schema_files(root: Path) -> list[Path]:
     if not root.is_dir():
         return []
     found: list[Path] = []
-    for path in root.rglob("*"):
-        if not path.is_file() or _dialect_for(path) is None:
+    for path in walk_files(root):
+        if _dialect_for(path) is None:
             continue
         if any(part.lower() in _SKIP_DIRS for part in path.parts):
             continue

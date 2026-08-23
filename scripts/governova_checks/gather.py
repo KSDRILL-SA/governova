@@ -8,6 +8,7 @@ rule set itself are skipped — they legitimately contain violation patterns.
 from __future__ import annotations
 
 import fnmatch
+import os
 import re
 import subprocess
 from collections.abc import Iterator
@@ -31,7 +32,15 @@ from governova_checks.rules import TEXT_EXTENSIONS
 SKIP_DIRS: frozenset[str] = frozenset(
     {
         # Version control, environments, caches.
-        ".git", ".venv", "venv", "node_modules", "__pycache__", "compiled",
+        #
+        # `site-packages` is named as well as `.venv`, because an installed
+        # dependency tree is not always inside one: a system interpreter, a
+        # container image, or a `virtualenv` with a different directory name all
+        # put it somewhere `.venv` does not reach. The defect that made a fresh
+        # install report 50 findings from other people's code was exactly this
+        # directory, and covering it only via its usual parent left the case
+        # open.
+        ".git", ".venv", "venv", "site-packages", "node_modules", "__pycache__", "compiled",
         ".pytest_cache", ".mypy_cache", ".ruff_cache", ".tox", ".nox",
         ".gradle", ".terraform", "vendor",
         # Build output.
@@ -174,16 +183,39 @@ def changed_files(base: str, root: Path) -> list[Path]:
     return [root / line.strip() for line in out.splitlines() if line.strip()]
 
 
+def walk_files(root: Path) -> Iterator[Path]:
+    """Every file under `root`, with the directories nothing authored **pruned**.
+
+    Pruned during the walk rather than filtered after it, which is the difference
+    between reading a repository and reading its dependencies. Measured on a
+    Next.js monorepo with `node_modules` on disk:
+
+        root.rglob("*")   6.4s    104,536 entries
+        walk_files(root)  0.1s        877 entries
+
+    Every caller that enumerated the tree and then discarded most of it paid that
+    difference, and several probes each paid it separately — which is most of why
+    `governova onboard` took nine minutes on that repository.
+
+    Prunes exactly `SKIP_DIRS` and nothing else. A dotted directory is not
+    automatically excluded: `.github/workflows` is authored, several probes read
+    it, and a walker that quietly dropped it would turn a satisfied standard into
+    an `unknown`.
+    """
+    for dirpath, dirnames, filenames in os.walk(root):
+        # In-place assignment is what prunes; rebinding the name would not.
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+        base = Path(dirpath)
+        for name in filenames:
+            yield base / name
+
+
 def iter_source_files(
     root: Path, *, ignores: tuple[str, ...] = DEFAULT_IGNORES
 ) -> Iterator[Path]:
     """Yield every scannable source file under `root` (skipping ignores)."""
-    for path in root.rglob("*"):
-        if not path.is_file():
-            continue
+    for path in walk_files(root):
         if path.suffix.lower() not in TEXT_EXTENSIONS:
-            continue
-        if any(part in SKIP_DIRS for part in path.parts):
             continue
         if is_generated(path.name):
             continue

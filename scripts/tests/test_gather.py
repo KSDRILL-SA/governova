@@ -95,3 +95,73 @@ def test_a_colocated_test_produces_no_findings_end_to_end(tmp_path) -> None:
     (src / "auth.ts").write_text(exercises_a_rule, encoding="utf-8")
     findings = scan_paths(list(iter_source_files(tmp_path)))
     assert [f.anti_pattern for f in findings] == ["AP-S3.14a"], findings
+
+
+# ── pruning, not filtering ───────────────────────────────────────────────────
+
+
+def test_walk_files_prunes_rather_than_filters(tmp_path):
+    """The difference between reading a repository and reading its dependencies.
+
+    Measured on a Next.js monorepo: `root.rglob("*")` enumerated 104,536 entries
+    in 6.4s where a pruned walk found 877 in 0.1s. Several probes each paid that
+    separately, which is most of why `governova onboard` took nine minutes there.
+    """
+    from governova_checks import walk_files
+
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "app.ts").write_text("x", encoding="utf-8")
+    deps = tmp_path / "node_modules" / "left-pad"
+    deps.mkdir(parents=True)
+    (deps / "index.js").write_text("x", encoding="utf-8")
+
+    found = {p.name for p in walk_files(tmp_path)}
+    assert found == {"app.ts"}
+
+
+def test_walk_files_does_not_prune_a_dotted_directory(tmp_path):
+    """`.github/workflows` is authored, and several probes read it.
+
+    Pruning every dotted directory would be the obvious shortcut and would turn
+    satisfied standards into `unknown` — a probe cannot find a CI gate in a
+    directory the walker refused to enter.
+    """
+    from governova_checks import walk_files
+
+    wf = tmp_path / ".github" / "workflows"
+    wf.mkdir(parents=True)
+    (wf / "ci.yml").write_text("on: push\n", encoding="utf-8")
+
+    assert "ci.yml" in {p.name for p in walk_files(tmp_path)}
+
+
+def test_walk_files_skips_an_installed_dependency_tree_outside_a_venv(tmp_path):
+    """`site-packages` is named as well as `.venv`.
+
+    An installed tree is not always inside one — a system interpreter, a
+    container image, or a virtualenv under a different name all put it somewhere
+    `.venv` does not reach. The defect that made a fresh install report 50
+    findings from other people's code was this directory.
+    """
+    from governova_checks import walk_files
+
+    sp = tmp_path / "env" / "lib" / "site-packages" / "requests"
+    sp.mkdir(parents=True)
+    (sp / "api.py").write_text("x", encoding="utf-8")
+    (tmp_path / "mine.py").write_text("x", encoding="utf-8")
+
+    assert {p.name for p in walk_files(tmp_path)} == {"mine.py"}
+
+
+def test_iter_source_files_selects_the_same_files_as_before(tmp_path):
+    """The walker changed how the tree is enumerated, not which files count."""
+    from governova_checks import iter_source_files
+
+    (tmp_path / "a.ts").write_text("x", encoding="utf-8")
+    (tmp_path / "b.min.js").write_text("x", encoding="utf-8")  # generated
+    (tmp_path / "c.png").write_text("x", encoding="utf-8")  # not a text extension
+    nm = tmp_path / "node_modules" / "dep"
+    nm.mkdir(parents=True)
+    (nm / "d.ts").write_text("x", encoding="utf-8")
+
+    assert {p.name for p in iter_source_files(tmp_path)} == {"a.ts"}

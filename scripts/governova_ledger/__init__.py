@@ -125,6 +125,44 @@ def to_credits(minor: int) -> Decimal:
     return Decimal(minor) / CREDIT_SCALE
 
 
+def canonical_timestamp(value: dt.datetime | str) -> str:
+    """One spelling of an instant, so the hash survives a round trip.
+
+    UTC, microsecond precision, `+00:00`. Three properties, each load-bearing:
+
+    * **UTC**, because `timestamptz` converts on the way in and would hand back
+      a different string than the one that was hashed.
+    * **Microsecond precision always**, because a column declared with reduced
+      precision truncates, and a truncated string hashes differently. Writing the
+      zeroes out means the value survives a narrower column than it expects.
+    * **`+00:00` rather than `Z`**, because `datetime.isoformat` produces the
+      former and a reader who normalises to the latter reintroduces the problem.
+
+    A value that cannot be read as an instant raises rather than being replaced
+    with one, since the alternative is inventing a time and hashing it.
+    """
+    if isinstance(value, str):
+        try:
+            parsed = dt.datetime.fromisoformat(value)
+        except ValueError as exc:
+            raise LedgerError(
+                f"occurred_at must be an ISO-8601 instant; got {value!r}. It is "
+                "inside the hashed payload, so a value that cannot be read back "
+                "identically cannot be stored at all."
+            ) from exc
+    else:
+        parsed = value
+    # A naive datetime has no instant — assuming UTC would be a guess, and this
+    # value is hashed.
+    if parsed.tzinfo is None:
+        raise LedgerError(
+            f"occurred_at must carry a timezone; got the naive {parsed.isoformat()!r}. "
+            "Which instant it means depends on where the process happens to be "
+            "running, and that is not something to record in a ledger."
+        )
+    return parsed.astimezone(dt.UTC).isoformat(timespec="microseconds")
+
+
 @dataclasses.dataclass(frozen=True)
 class LedgerEntry:
     """One immutable movement.
@@ -154,6 +192,26 @@ class LedgerEntry:
         exotic — `replay` does it on every row read back from the database, and
         so will any importer, fixture or migration.
         """
+        # `occurred_at` is inside the hashed payload and the Stage 1 column is
+        # `timestamptz`, which normalises to UTC on the way in. So the string
+        # that comes back is not always the string that was hashed, and the
+        # difference is a *false tamper alarm* — a broken chain reported on data
+        # nobody touched, in the one system whose entire purpose is
+        # tamper-evidence.
+        #
+        # Measured before this line existed, with the company's own clock:
+        #
+        #   hashed                2026-08-23T12:00:00+02:00
+        #   what the db returns   2026-08-23T10:00:00+00:00
+        #
+        # Same instant, different string, different hash. It failed quietly in
+        # the direction most likely to be missed: `occurred_at=None` produces
+        # UTC and round-trips exactly, so every test passed.
+        #
+        # Canonicalised here rather than in `record`, because this is the one
+        # path every construction takes — `record`, `replay` from stored rows,
+        # fixtures, importers and migrations.
+        object.__setattr__(self, "occurred_at", canonical_timestamp(self.occurred_at))
         if self.amount_minor < 0:
             raise LedgerError(
                 "amounts are unsigned; the direction comes from the kind. A "
@@ -298,7 +356,11 @@ class Ledger:
             kind=kind,
             amount_minor=minor,
             idempotency_key=idempotency_key,
-            occurred_at=(occurred_at or dt.datetime.now(dt.UTC)).isoformat(),
+            # `__post_init__` is what guarantees the canonical form — remove it
+            # and `test_a_stored_row_is_canonicalised_on_the_way_back_in` fails,
+            # while removing this line changes nothing. It is here so the call
+            # site reads as what it means rather than relying on a side effect.
+            occurred_at=canonical_timestamp(occurred_at or dt.datetime.now(dt.UTC)),
             detail=detail,
             prev_hash=prev_hash,
         )

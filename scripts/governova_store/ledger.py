@@ -139,7 +139,22 @@ class LedgerStore:
             str(entry.kind).upper(),
             entry.amount_minor,
             entry.idempotency_key,
-            entry.occurred_at,
+            # A `datetime`, not the canonical string. `asyncpg` binds parameters
+            # by Python type through the wire protocol and rejects a `str` for a
+            # `timestamptz` before the `::timestamptz` cast in the statement is
+            # ever reached — the cast applies to the value the server receives,
+            # and the driver never gets that far.
+            #
+            # Parsing back is safe precisely because the string is canonical:
+            # UTC, microsecond precision, `+00:00`. The instant survives, the
+            # server returns it unchanged, and `__post_init__` produces the same
+            # string again on the way back — which is what keeps the hash intact.
+            #
+            # Found by the first run against a real PostgreSQL. The fake
+            # connection had accepted a string, so every unit test passed while
+            # the statement could never have executed. `FakeConnection` now
+            # refuses one too.
+            dt.datetime.fromisoformat(entry.occurred_at),
             entry.detail,
             entry.prev_hash,
             entry.record_hash,

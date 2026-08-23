@@ -66,6 +66,19 @@ class FakeConnection:
         """
 
     async def execute(self, query: str, *args: Any) -> None:
+        if "INSERT INTO \"LedgerEntry\"" in query:
+            # As strict as the driver where it matters. `asyncpg` binds by Python
+            # type and rejects a `str` for a `timestamptz` before the statement's
+            # cast is reached — and this fake accepted one, so the whole unit
+            # suite passed against a statement that could never have executed.
+            # A fake looser than the thing it stands in for is a test that cannot
+            # fail for its stated reason.
+            occurred_at = args[5]
+            if not isinstance(occurred_at, dt.datetime):
+                raise TypeError(
+                    f"asyncpg binds $6 as timestamptz and requires a datetime; "
+                    f"got {type(occurred_at).__name__}"
+                )
         if self.refuse and "INSERT INTO \"LedgerEntry\"" in query:
             constraint, self.refuse = self.refuse, None
             if self.rows_after_refusal is not None:

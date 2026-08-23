@@ -10,6 +10,7 @@ Two, three and four are asserted here. The first landed with the schema.
 
 from __future__ import annotations
 
+import dataclasses
 import datetime as dt
 from decimal import Decimal
 
@@ -458,3 +459,91 @@ def test_the_amount_column_is_an_integer_not_a_decimal_or_a_float() -> None:
     assert "amount_minor    BigInt" in declarations
     assert "Float" not in declarations
     assert "Decimal" not in declarations
+
+
+# ── the hash has to survive being stored ─────────────────────────────────────
+#
+# `occurred_at` is a string inside the hashed payload, and the Stage 1 column is
+# `timestamptz`, which normalises to UTC on the way in. Before these, an entry
+# recorded with the company's own clock hashed one string and read back another:
+#
+#   hashed                2026-08-23T12:00:00+02:00
+#   what the db returns   2026-08-23T10:00:00+00:00
+#
+# Same instant. Different string. Different hash. `verify()` would have reported
+# a broken chain on data nobody touched — a false tamper alarm in the one system
+# whose entire purpose is tamper-evidence.
+
+
+_SAST = dt.timezone(dt.timedelta(hours=2))
+
+
+def _as_the_database_returns_it(entry) -> str:
+    """What `timestamptz` hands back: the same instant, normalised to UTC."""
+    return dt.datetime.fromisoformat(entry.occurred_at).astimezone(dt.UTC).isoformat(
+        timespec="microseconds"
+    )
+
+
+def test_a_local_time_is_stored_as_the_instant_it_means():
+    ledger = _ledger()
+    written = ledger.record(
+        EntryKind.GRANT,
+        100,
+        idempotency_key="k1",
+        occurred_at=dt.datetime(2026, 8, 23, 12, 0, tzinfo=_SAST),
+    )
+    assert written.entry.occurred_at == "2026-08-23T10:00:00.000000+00:00"
+
+
+def test_the_hash_survives_the_round_trip_the_database_performs():
+    """The defect, reduced to one assertion. This failed before canonicalisation
+    and passes for every timezone a caller might use."""
+    for tz in (dt.UTC, _SAST, dt.timezone(dt.timedelta(hours=-5))):
+        ledger = _ledger()
+        written = ledger.record(
+            EntryKind.GRANT,
+            100,
+            idempotency_key="k1",
+            occurred_at=dt.datetime(2026, 8, 23, 12, 0, tzinfo=tz),
+        )
+        returned = _as_the_database_returns_it(written.entry)
+        assert returned == written.entry.occurred_at, tz
+        rebuilt = dataclasses.replace(written.entry, occurred_at=returned)
+        assert rebuilt.compute_hash() == written.entry.record_hash, tz
+
+
+def test_microseconds_are_always_written_out():
+    """A column declared with reduced precision truncates, and a truncated string
+    hashes differently. Writing the zeroes means the value survives a narrower
+    column than it expects."""
+    ledger = _ledger()
+    written = ledger.record(
+        EntryKind.GRANT, 100, idempotency_key="k1",
+        occurred_at=dt.datetime(2026, 8, 23, 10, 0, 0, tzinfo=dt.UTC),
+    )
+    assert written.entry.occurred_at.endswith(".000000+00:00")
+
+
+def test_a_naive_datetime_is_refused_rather_than_guessed():
+    """Which instant it means depends on where the process happens to be
+    running, and that is not something to record in a ledger."""
+    with pytest.raises(LedgerError, match="timezone"):
+        _ledger().record(
+            EntryKind.GRANT, 1, idempotency_key="k1",
+            occurred_at=dt.datetime(2026, 8, 23, 12, 0),
+        )
+
+
+def test_a_stored_row_is_canonicalised_on_the_way_back_in():
+    """`replay` constructs entries directly from database rows, so the guarantee
+    has to hold on that path too — it is the path that reads what was stored."""
+    entry = LedgerEntry(
+        seq=1,
+        organisation_id="org-1",
+        kind=EntryKind.GRANT,
+        amount_minor=1_000_000,
+        idempotency_key="k1",
+        occurred_at="2026-08-23T12:00:00+02:00",
+    )
+    assert entry.occurred_at == "2026-08-23T10:00:00.000000+00:00"

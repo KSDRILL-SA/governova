@@ -24,6 +24,7 @@ Restructure / migration records use a descriptive `RESTRUCTURE-{version}.md` nam
 - ADR-012: A score drawn from one factor is not a score, and a count is not a rate
 - ADR-013: A rule fires for a defect, not for a licence
 - ADR-014: What v1 excludes, and the gate that reopens each one
+- ADR-015: Prisma authors the schema, asyncpg runs it
 - RESTRUCTURE-v2.0: The Governova v2.0 four-layer restructure instruction
   (executed record of the migration that produced this structure)
 

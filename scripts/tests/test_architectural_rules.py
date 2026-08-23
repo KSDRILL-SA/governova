@@ -167,6 +167,63 @@ def test_money_float_in_a_test_fixture_is_not_flagged() -> None:
     )
 
 
+def test_integer_minor_units_are_not_a_money_violation() -> None:
+    """The rule blocked the remedy its own standard prescribes.
+
+    Measured on a real DebiCheck submission path, where cents were carried as
+    integers — money done correctly — and the gate failed the build for it. A
+    developer who read the finding, applied D-FINTECH.1 and re-ran got the same
+    finding back, so compliance was unreachable through the tool's own advice.
+    """
+    for line in (
+        "  totalCents: number",
+        "  collectionAmountCents: number",
+        "  maximumCollectionAmountCents: number",
+        "  total_cents: number",
+        "  amountMinor: number",
+    ):
+        assert "AP-D-FINTECH.1a" not in _fired(line, file="src/netcash.ts"), line
+
+
+def test_a_counter_is_not_money_however_it_is_spelled() -> None:
+    """`totalPages` in a pagination type is not a rand, and neither is a count
+    of months sitting beside `currentStreak` and `longestStreak`."""
+    for line in (
+        "  totalPages: number",
+        "  initialTotalPages: number",
+        "  totalItems: number",
+        "  totalCount: number",
+        "  totalPaidMonths: number",
+        "  totalOnTimeMonths: number",
+        "  paymentDays: number",
+    ):
+        assert "AP-D-FINTECH.1a" not in _fired(line, file="src/api-response.ts"), line
+
+
+def test_the_suffix_guard_does_not_silence_real_money() -> None:
+    """The guard reads the rest of the identifier, not any later word on the
+    line — so a money field keeps firing even where a counter word is nearby."""
+    for line in (
+        "  amount: number",
+        "  amountDue: number",
+        "  amountPaid: number",
+        "  totalPaid: number",
+        "  totalOverdue: number",
+        "  monthlyAmount: number",
+        "  priceMonthly: number",
+        "  amount: number  // alongside totalPages: number",
+    ):
+        assert "AP-D-FINTECH.1a" in _fired(line, file="src/ledger.ts"), line
+
+
+def test_a_bare_total_still_fires() -> None:
+    """Deliberate, and recorded rather than assumed. `total: number` is genuinely
+    ambiguous — one instance in the measured codebase was a pagination field and
+    the rest were money — so it stays with the majority reading. This test is
+    where a decision to change that gets made."""
+    assert "AP-D-FINTECH.1a" in _fired("  total: number", file="src/invoice.ts")
+
+
 # ─── AP-D-FINTECH.3a — balance mutated in place ──────────────────────────────
 
 

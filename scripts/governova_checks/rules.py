@@ -171,6 +171,31 @@ _RAW_DATA_ACCESS = (
 # narrow so that ordinary numeric code is never implicated.
 _MONEY = r"(?:price|amount|balance|total|subtotal|cost|fee|salary|payment|refund|money|currency)"
 
+# Suffixes that turn a money-shaped name into something that is not a money
+# violation. Applied immediately after `_MONEY`, so they describe the rest of the
+# identifier rather than any later word on the line.
+#
+# Two separate mistakes, found on the first external fintech codebase Governova
+# read, where this rule produced 199 of 201 blocking findings:
+#
+#   * `cents` / `minor` — integer minor units, which is the representation
+#     D-FINTECH.1 *prescribes*. `totalCents` and `collectionAmountCents` in a
+#     DebiCheck submission path were blocked for being money done correctly. A
+#     developer who read the finding, applied the standard's own remedy and
+#     re-ran the gate got the same finding back, which makes compliance
+#     unreachable through the tool's own advice — worse than an ordinary false
+#     positive, because it teaches the reader that the gate cannot be satisfied.
+#
+#   * `pages` / `items` / `count` / `months` / `days` — counters. `totalPages`
+#     and `totalItems` in a pagination type, `totalPaidMonths` beside
+#     `currentStreak` and `longestStreak`. A page count is not a rand.
+#
+# A bare `total` deliberately still fires. It is genuinely ambiguous — one
+# instance in that codebase was a pagination field and the rest were money — and
+# no suffix separates them, so it stays with the majority reading rather than
+# being settled by a guess.
+_NOT_MONEY = r"(?!\w*(?:cents?|minor|pages?|items?|count|months?|days?)\b)"
+
 # Where configuration is *supposed* to read the environment. S1.68 and S2.67 both
 # require the environment to be read once, at startup, into a validated settings
 # object — so a raw read is a violation everywhere except here.
@@ -607,9 +632,9 @@ RULES: list[Rule] = [
         "AP-D-FINTECH.1a",
         "D-FINTECH.1",
         re.compile(
-            rf"(?:\b(?:parse)?[Ff]loat\s*\(\s*\w*{_MONEY}|"
-            rf"\b\w*{_MONEY}\w*\s*:\s*(?:float|number)\b|"
-            rf"\bNumber\s*\(\s*\w*{_MONEY})",
+            rf"(?:\b(?:parse)?[Ff]loat\s*\(\s*\w*{_MONEY}{_NOT_MONEY}|"
+            rf"\b\w*{_MONEY}{_NOT_MONEY}\w*\s*:\s*(?:float|number)\b|"
+            rf"\bNumber\s*\(\s*\w*{_MONEY}{_NOT_MONEY})",
             re.I,
         ),
         "Monetary value coerced through a floating-point type. D-FINTECH.1: money is an exact decimal, never a float.",

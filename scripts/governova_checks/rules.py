@@ -196,6 +196,15 @@ _MONEY = r"(?:price|amount|balance|total|subtotal|cost|fee|salary|payment|refund
 # being settled by a guess.
 _NOT_MONEY = r"(?!\w*(?:cents?|minor|pages?|items?|count|months?|days?)\b)"
 
+# A framework method that puts a value on the wire, including the chained form
+# `res.status(500).json(...)`. Every quantifier is bounded: this rule runs inside
+# other people's CI as a blocking gate, and an unbounded run over a minified
+# bundle is a denial of service rather than a slow test (see `AP-D-FINTECH.3a`).
+_RESPONSE_SENDER = r"(?:res|reply|response)\.(?:\w{1,32}\([^)\n]{0,60}\)\.)?(?:send|json)"
+
+# The conventional names for a caught error.
+_ERR = r"(?:e|err|error|ex)"
+
 # Where configuration is *supposed* to read the environment. S1.68 and S2.67 both
 # require the environment to be read once, at startup, into a validated settings
 # object — so a raw read is a violation everywhere except here.
@@ -319,10 +328,41 @@ RULES: list[Rule] = [
         # and described it as a raw database error returned to the client, with no
         # database anywhere near the line. A first report that misdescribes its one
         # true finding is how a reader learns to discount the rest.
+        #
+        # The pattern below splits by *which property* leaves the handler,
+        # because the two are not equally decidable from one line.
+        #
+        # `.stack` and `.getMessage()` are never client-facing values, however
+        # they are returned — a bare `return` is signal enough.
+        #
+        # `.message` is not. A curated domain error carries a message written to
+        # be read by an API consumer, and the previous pattern accepted a bare
+        # `return` in front of it, so it flagged this:
+        #
+        #     if (err instanceof AppError) {
+        #       return apiError(err.code, err.message, err.status)   // <- flagged
+        #     }
+        #     logger.error('Unhandled error in API route', { err })
+        #     return apiError('SYS_500', 'An unexpected error occurred', 500)
+        #
+        # Both flagged lines on that adopter were narrowed by `instanceof` to a
+        # project-declared error type. The branch handling `unknown` — the one
+        # this standard exists for — already returned a fixed string and was not
+        # flagged. The rule reported the two safe branches and had nothing to say
+        # about the dangerous one.
+        #
+        # A line scanner cannot see the enclosing `instanceof` guard, so `.message`
+        # now requires a framework response sender instead. The cost is a false
+        # negative wherever a project wraps its responses in its own helper. That
+        # is the right side to be wrong on for a **blocking** rule: a gate that
+        # fires on correct code is one that gets switched off, and then the
+        # finding that was true goes with it.
         "AP-S2.18b",
         "S2.18",
         re.compile(
-            r"\b(?:res\.(?:send|json)|return)\b[^;\n]*\b(?:e|err|error|ex)\.(?:stack|message|getMessage\(\))",
+            rf"\b(?:return|{_RESPONSE_SENDER})\b[^;\n]{{0,120}}\b{_ERR}\.(?:stack|getMessage\(\))"
+            rf"|\b{_RESPONSE_SENDER}\b[^;\n]{{0,120}}\b{_ERR}\.message"
+            rf"|\b(?:Next)?Response\.json\s*\([^;\n]{{0,120}}\b{_ERR}\.message",
         ),
         "Internal error detail returned to the client. S2.18: never expose stack traces or internal messages.",
         "high",

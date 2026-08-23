@@ -99,21 +99,37 @@ def _declared_domains(root: Path, override: list[str] | None) -> list[str]:
     return list(profile.domains) if profile else []
 
 
-def _notice(message: str, fmt: Fmt) -> None:
+def _notice(message: str, fmt: Fmt, *, styled: str | None = None) -> None:
     """Say something that is not a finding, in whichever channel the format has.
 
     `github` gets an annotation so it surfaces in the checks UI rather than only
     in a log nobody opens until something has already gone wrong. `json` gets
-    stderr, because stdout is a machine contract.
+    **stderr**, because its stdout is a machine contract: the array and nothing
+    else, so `--format json | jq` works.
+
+    Every human line in this module goes through here. They previously did not,
+    and were guarded by `fmt is not Fmt.github` instead — a condition that reads
+    correctly and is wrong, because it asks which format has its own protocol
+    rather than which format is being parsed. The summary and the verdict landed
+    on either side of the array, and `json.loads` failed at char 4.
+
+    Routing rather than deleting is deliberate. A human watching a `--format json`
+    run still wants the counts; a redirect still wants a clean payload. stderr
+    gives both, and dropping the lines would have been the smaller diff and the
+    worse product.
     """
     if not message:
         return
     if fmt is Fmt.github:
+        # An annotation carries no markup, so the plain wording is what ships.
         print(f"::notice::{message}")
-    elif fmt is Fmt.json:
-        err_console.print(f"[dim]{message}[/]")
-    else:
-        console.print(f"[dim]{message}[/]")
+        return
+    if fmt is Fmt.json:
+        # Plain, like the annotation: this is a machine run being narrated, and
+        # rich's fallback renders an unstyled glyph as its escape sequence.
+        err_console.print(message, highlight=False)
+        return
+    console.print(styled or f"[dim]{message}[/]")
 
 
 def _level(finding: Finding, mode: Mode) -> str:
@@ -424,20 +440,36 @@ def main(
     _notice(applicable.note, fmt)
 
     if not findings:
-        if fmt is not Fmt.github:
-            console.print(
+        # The machine contract holds on the clean path too: an empty result set
+        # is still a result set, and a consumer that parsed a run with findings
+        # then crashed on the run that fixed them would have the defect back.
+        #
+        # Scoped to `json` rather than emitting unconditionally, because `_emit`
+        # also overwrites GITHUB_STEP_SUMMARY — and a clean run has never written
+        # there, so widening that would let it clobber another step's summary.
+        if fmt is Fmt.json:
+            _emit(findings, fmt, mode, root)
+        _notice(
+            f"constitutional enforcement passed ({len(scannable)} file(s) scanned)",
+            fmt,
+            styled=(
                 f"[bold green]✓[/] constitutional enforcement passed "
                 f"[dim]({len(scannable)} file(s) scanned)[/]"
-            )
+            ),
+        )
         if semantic:
             _run_semantic(scannable, fmt, root)
         return
 
-    if fmt is not Fmt.github:
-        console.print(
+    _notice(
+        f"{len(findings)} finding(s) "
+        f"({len(blocking)} blocking, {len(findings) - len(blocking)} advisory)",
+        fmt,
+        styled=(
             f"[bold]{len(findings)} finding(s)[/] "
             f"[dim]({len(blocking)} blocking, {len(findings) - len(blocking)} advisory)[/]"
-        )
+        ),
+    )
     _emit(findings, fmt, mode, root)
 
     if semantic:
@@ -446,11 +478,13 @@ def main(
     # Block mode fails only on high-confidence (blocking) findings; medium-confidence
     # findings are advisory and never fail the build.
     if blocking:
-        if fmt is not Fmt.github:
-            console.print(f"[bold red]constitutional enforcement FAILED[/] ({len(blocking)} blocking)")
+        _notice(
+            f"constitutional enforcement FAILED ({len(blocking)} blocking)",
+            fmt,
+            styled=f"[bold red]constitutional enforcement FAILED[/] ({len(blocking)} blocking)",
+        )
         raise typer.Exit(code=1)
-    if fmt is not Fmt.github:
-        console.print("[bold green]✓[/] no blocking violations")
+    _notice("no blocking violations", fmt, styled="[bold green]✓[/] no blocking violations")
 
 
 if __name__ == "__main__":

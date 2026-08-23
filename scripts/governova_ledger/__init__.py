@@ -290,6 +290,32 @@ class Ledger:
     def entries(self) -> list[LedgerEntry]:
         return list(self._entries)
 
+    def find(self, idempotency_key: str) -> LedgerEntry:
+        """The entry written under `idempotency_key`.
+
+        Exists for the storage layer's losing writer: two processes handle the
+        same retried webhook, the database refuses the second insert, and that
+        process needs the entry the winner wrote in order to answer its caller
+        with `created=False`. Reaching into `_keys` from outside would work and
+        would make the index public by accident.
+
+        Raises rather than returning `None`, because every caller reaching this
+        point has just been told by the database that the key exists. Absence
+        would mean the row was deleted between the violation and this read —
+        which cannot happen to an append-only table, and if it ever does, a
+        `KeyError` naming the key is a far better outcome than a `None` flowing
+        into a receipt.
+        """
+        try:
+            return self._keys[idempotency_key]
+        except KeyError:
+            raise LedgerError(
+                f"no entry for idempotency key {idempotency_key!r} in organisation "
+                f"{self.organisation_id!r}. The database reported this key as already "
+                "used, so the row it refers to should be readable — an append-only "
+                "table cannot lose one."
+            ) from None
+
     def record(
         self,
         kind: EntryKind,

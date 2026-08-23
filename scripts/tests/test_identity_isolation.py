@@ -30,7 +30,7 @@ from pathlib import Path
 import pytest
 
 # Everything the Cloud brings in. None of it may be reachable from engine code.
-CLOUD_ONLY = ("fastapi", "uvicorn", "jwt", "cryptography", "starlette", "keyring")
+CLOUD_ONLY = ("fastapi", "uvicorn", "jwt", "cryptography", "starlette", "keyring", "asyncpg")
 
 # Governova's own Cloud packages. Named as a set rather than one at a time,
 # because the check below started as `"governova_identity" in text` and would
@@ -42,7 +42,12 @@ CLOUD_ONLY = ("fastapi", "uvicorn", "jwt", "cryptography", "starlette", "keyring
 # `test_every_cloud_package_on_disk_is_covered_by_that_check` put it there: it
 # pulls in `keyring` and was never covered by the by-name check, which is exactly
 # the blind spot that check exists to close.
-CLOUD_PACKAGES = ("governova_identity", "governova_hosted", "governova_auth")
+CLOUD_PACKAGES = (
+    "governova_identity",
+    "governova_hosted",
+    "governova_auth",
+    "governova_store",
+)
 
 # The one reference an engine module is allowed to make, and the test that makes
 # it safe. `governova login`, `logout` and `whoami` need the client, so the CLI

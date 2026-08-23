@@ -8,7 +8,7 @@ It is written to be self-contained. A fresh session knows nothing about this rep
 ---
 
 You are taking over **Governova** — a constitutional governance platform, live on PyPI as
-`governova` (`0.2.1` published 2026-08-22; six further fixes committed and awaiting a push —
+`governova` (`0.2.1` published 2026-08-22; nine further commits awaiting a push —
 see the handoff §4 and §7).
 **Confirm the published version against PyPI rather than this file**; it said `0.1.0` for two
 releases, and a stale claim here is how a session starts by believing something untrue.
@@ -45,7 +45,7 @@ already believed was true and discovering it was not.
 `uv` may not be on PATH: `C:\Users\kurhu\AppData\Local\Python\pythoncore-3.14-64\Scripts`
 
     uv sync --all-packages --all-extras
-    uv run pytest scripts/tests -q          # 1340, ~10 min. `--timeout` is NOT installed.
+    uv run pytest scripts/tests -q          # 1348, ~7 min. `--timeout` is NOT installed.
     uv run ruff check scripts/              # NEVER `ruff format` — not enforced in CI
     cd scripts && uv run mypy               # MUST run from scripts/. Strict, 99 files.
 
@@ -53,16 +53,16 @@ PowerShell is primary. **Git Bash stdout is cp1252** and mangles `—`, `·`, `�
 captured output — the files are UTF-8, the terminal is not. `Select-Object -First N` on a
 piped native command gives exit 255; that is a broken-pipe artifact, not a failure.
 
-The full test suite takes ~10 minutes. Run it in the background and do other work — do
+The full test suite takes ~7 minutes. Run it in the background and do other work — do
 not poll it; you are notified when it finishes. Its output is block-buffered when
 redirected, so a tail of the log shows nothing new for minutes at a time. That is the
 pipe, not a hang.
 
 ---
 
-## STATE, AS MEASURED ON `ad03f3b`
+## STATE, AS MEASURED ON `f9716a4`
 
-    Tests                    1339 passed · 1 skipped
+    Tests                    1347 passed · 1 skipped
     validate                 standards=670 errors=0 warnings=287 · integrity OK
     Enforcement coverage     77 rules (23 blocking · 54 advisory) · 41 probes · 9.3%
     Constitutional coverage  19.0%  (113 of 596 applicable standards evidenced)
@@ -71,7 +71,7 @@ pipe, not a hang.
     Corpus                   15 constitutions · 670 standards · 789 anti-patterns
                              4 Layer 4 domains · 19 domain standards · 14 ADRs
     Distribution             PyPI 0.2.1 published 2026-08-22
-                             six further fixes committed locally, none pushed
+                             nine further commits local, none pushed
 
 **Regenerate all of these before trusting them.** This file has been wrong before, and was
 again: it read `72 rules`, which is the count of *implementation bindings* in
@@ -93,8 +93,8 @@ absent. Do not "fix" that number by breaking the probe again.
 
 Full detail is `planning/handoff-2026-08-23.md` §7. In brief:
 
-    1. restore gh auth  the token went invalid; six branches wait  HUMAN
-    2. push and merge   six fixes, stacked, full suite green       L3
+    1. restore gh auth  the token went invalid; nine branches wait  HUMAN
+    2. push and merge   nine commits, stacked, full suite green    L3
     3. release 0.2.2    decide whether these warrant a release     L4
     4. D-27             wire the database; the ledger is in RAM    L3
 

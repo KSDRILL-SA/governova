@@ -197,15 +197,32 @@ def walk_files(root: Path) -> Iterator[Path]:
     difference, and several probes each paid it separately — which is most of why
     `governova onboard` took nine minutes on that repository.
 
-    Prunes exactly `SKIP_DIRS` and nothing else. A dotted directory is not
-    automatically excluded: `.github/workflows` is authored, several probes read
-    it, and a walker that quietly dropped it would turn a satisfied standard into
-    an `unknown`.
+    Prunes `SKIP_DIRS` by name, and **any directory that is a virtualenv by
+    shape**. A dotted directory is not otherwise excluded: `.github/workflows` is
+    authored, several probes read it, and a walker that quietly dropped it would
+    turn a satisfied standard into an `unknown`.
+
+    The shape test exists because the name list cannot be finished. `SKIP_DIRS`
+    holds `.venv`, `venv` and `site-packages`; a repository measured with the
+    published `0.2.2` carried **two** environments, `.venv` and `.venv-min`, and
+    the second was read as source. Its one blocking finding was a 2 KB minified
+    JupyterLab bundle vendored inside it — a file the reader cannot open, cannot
+    edit and did not write, which is the exact failure `0.2.1` was released to
+    end.
+
+    `.venv311`, `venv-dev`, `env`, `.direnv` and every other spelling would have
+    followed. A virtualenv is not a name, it is a directory containing
+    `pyvenv.cfg`, and that is one `stat` per directory on a tree that has already
+    been pruned.
     """
     for dirpath, dirnames, filenames in os.walk(root):
-        # In-place assignment is what prunes; rebinding the name would not.
-        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
         base = Path(dirpath)
+        # In-place assignment is what prunes; rebinding the name would not.
+        dirnames[:] = [
+            d
+            for d in dirnames
+            if d not in SKIP_DIRS and not (base / d / "pyvenv.cfg").is_file()
+        ]
         for name in filenames:
             yield base / name
 

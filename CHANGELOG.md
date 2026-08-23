@@ -20,7 +20,86 @@ Nothing yet.
 
 ---
 
-## [0.2.1] — unreleased
+## [0.2.2] — unreleased
+
+**The first release shaped by a repository Governova did not write.** `0.2.1` was installed
+from PyPI into a clean virtualenv and pointed at an external Next.js monorepo. The first
+command failed for a reason that had nothing to do with the code it was reading, and neither
+did the second.
+
+Measured on that repository, same commit, before and after:
+
+| | Findings | Blocking | Verdict |
+|---|---|---|---|
+| `0.2.1` | 388 | **201** | FAILED |
+| `0.2.2` | 187 | **0** | passed |
+
+The 187 that remain are advisories about the reader's own code.
+
+### Fixed
+
+- **The merge gate enforced a sector's law against projects that never adopted it.**
+  `governova onboard` states that an undeclared Layer 4 domain's standards are not counted;
+  `governova-enforce` then failed the build with **201 blocking findings, 199 of them
+  `AP-D-FINTECH.1a`** — from the domain the proposed profile had just declined to declare.
+  `applicable_standards` had filtered by declared domain since it was written and the scanner
+  never did, so the assessment model and the merge gate answered to different bodies of law.
+  The adopter genuinely is fintech, so the findings were true; they were true by luck. Core
+  standards still bind every system, Layer 4 binds the sector that adopted it, and withheld
+  findings are counted and named rather than dropped in silence. (#325, #332)
+
+- **`--format json` could not be parsed.** The array arrived on stdout wrapped in a summary
+  line and a verdict line, so `json.loads` raised at char 4 and every consumer failed on the
+  first line. Human output now routes by channel: annotations for `github`, stderr for `json`,
+  stdout for `text`. A clean run emits `[]` rather than nothing. (#326, #333)
+
+- **The money rule blocked integer cents — the representation it prescribes.**
+  `AP-D-FINTECH.1a` fired on `totalCents`, `collectionAmountCents` and
+  `maximumCollectionAmountCents` in a payment submission path: money done exactly as
+  `D-FINTECH.1` requires. A developer who read the finding, applied the standard's own remedy
+  and re-ran got the same finding back. It also fired on counters — `totalPages`, `totalItems`,
+  `totalPaidMonths`. (#327, #334)
+
+- **`S2.18` flagged the two safe branches and missed the one it was written for.** A bare
+  `return` in front of `err.message` was signal enough, so two `instanceof`-narrowed returns of
+  a project-declared error type were reported while the `unknown` branch — the one that can
+  carry a driver message or a stack — was not. `.stack` keeps the loose context; `.message` now
+  requires a framework response sender. (#328, #335)
+
+- **The board report could not show a Layer 4 finding at all.** Findings were tallied into
+  `index.constitutions` while the index keeps `domains` in a separate list, so a sector finding
+  was dropped whether or not the project declared it. The sector standards are the ones with a
+  regulatory basis behind them, and the board report is the surface written for the audience
+  least able to notice an omission. (#330, #339)
+
+- **stderr could not carry the characters the engine prints.** `governova_console` configured
+  stdout only. Once `--format json` routed its human output to stderr, the withheld-domain note
+  printed a replacement glyph mid-sentence. (#336)
+
+### Added
+
+- **`governova enforce`** as a subcommand. Enforcement shipped only as its own console script,
+  which is right for CI and is not what a person types — every document opened with
+  `governova enforce .` and the answer was `No such command 'enforce'`. It delegates, so the
+  options live in one place. (#329, #337)
+- **`governova --version`**, read from package metadata rather than a constant. (#329, #337)
+- **`--domain`** on the enforcer, to adopt a sector without committing a profile first. (#332)
+- Live phase reporting during `governova onboard`. (#337)
+
+### Changed
+
+- **`governova onboard` runs in 40 seconds instead of 9m15s**, and produces a byte-identical
+  report. The tree was enumerated in full and filtered afterwards by four separate copies of
+  the same skip list — `root.rglob("*")` returning 104,536 entries where a pruned walk finds
+  877. `walk_files` prunes during the walk and is now the only copy. `site-packages` joins the
+  shared list, because an installed dependency tree is not always inside a `.venv`. (#331, #340)
+- Two correctness findings fell out of that work: a language probe could answer "no TypeScript"
+  about a TypeScript repository once its scan budget was spent inside `node_modules`, and the
+  roadmap could offer a dependency's test file as the reader's own characterisation test. (#340)
+
+---
+
+## [0.2.1] — 2026-08-22
 
 **A patch release, and the reason for it is worth stating plainly: `0.2.0` did not work
 properly once installed.** Both defects were invisible from a source checkout and appeared the
@@ -199,6 +278,8 @@ System Bible) generated from the index.
 
 11 constitutions · 618 standards · 446 anti-patterns · index schema 1.1.0.
 
-[Unreleased]: https://github.com/KSDRILL-SA/governova/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/KSDRILL-SA/governova/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/KSDRILL-SA/governova/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/KSDRILL-SA/governova/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/KSDRILL-SA/governova/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/KSDRILL-SA/governova/releases/tag/v0.1.0

@@ -4,11 +4,16 @@ Turns the constitution into a merge gate. Scans a pull request's changed source
 files with the reliable-tier detection core and, in block mode, fails the build so
 a violation cannot be merged.
 
+Core standards bind every system. **Layer 4 domain standards bind the sector that
+adopted them**, declared in `governance/project.toml` or with `--domain`; findings
+from an undeclared domain are withheld and counted, never applied in silence.
+
 Examples:
     governova-enforce src/app.ts                       # scan specific files
     governova-enforce --changed --base origin/main     # scan a PR's changed files
     governova-enforce --changed --mode advisory        # report, never block
     governova-enforce --changed --format github        # GitHub Actions annotations
+    governova-enforce . --domain D-FINTECH             # adopt a sector without a profile
 """
 
 from __future__ import annotations
@@ -27,6 +32,7 @@ from governova_checks import (
     SKIP_DIRS,
     Finding,
     changed_files,
+    for_declared_domains,
     is_ignored,
     scan_paths,
 )
@@ -34,6 +40,7 @@ from governova_checks.gather import is_generated
 from governova_compile.discovery import resolve_target_root
 from governova_compile.writer import load_active_index
 from governova_console import configure_stdout
+from governova_project import load_profile
 from governova_semantic import Outcome, ReviewResult
 from governova_semantic import from_env as semantic_from_env
 from governova_semantic import review_result as semantic_review_result
@@ -76,6 +83,37 @@ def _changed_files(base: str, root: Path) -> list[Path]:
     except (subprocess.SubprocessError, OSError) as exc:
         err_console.print(f"[bold red]error:[/] could not compute changed files vs '{base}': {exc}")
         raise typer.Exit(code=2) from exc
+
+
+def _declared_domains(root: Path, override: list[str] | None) -> list[str]:
+    """The Layer 4 domains this project has adopted.
+
+    `--domain` wins over the profile so a pipeline can adopt a sector without
+    committing a profile first — the flag is the fast path, `governance/project.toml`
+    is the durable one. An absent profile and a profile declaring no domain are the
+    same state, and it is the state every new adopter starts in.
+    """
+    if override:
+        return [d.upper() for d in override]
+    profile = load_profile(root)
+    return list(profile.domains) if profile else []
+
+
+def _notice(message: str, fmt: Fmt) -> None:
+    """Say something that is not a finding, in whichever channel the format has.
+
+    `github` gets an annotation so it surfaces in the checks UI rather than only
+    in a log nobody opens until something has already gone wrong. `json` gets
+    stderr, because stdout is a machine contract.
+    """
+    if not message:
+        return
+    if fmt is Fmt.github:
+        print(f"::notice::{message}")
+    elif fmt is Fmt.json:
+        err_console.print(f"[dim]{message}[/]")
+    else:
+        console.print(f"[dim]{message}[/]")
 
 
 def _level(finding: Finding, mode: Mode) -> str:
@@ -348,6 +386,16 @@ def main(
     no_default_ignore: Annotated[
         bool, typer.Option("--no-default-ignore", help="Disable the built-in tests/fixtures ignores.")
     ] = False,
+    domain: Annotated[
+        list[str] | None,
+        typer.Option(
+            "--domain",
+            help=(
+                "Layer 4 domain(s) this project is governed by, e.g. D-FINTECH. "
+                "Overrides governance/project.toml. Undeclared domains are not enforced."
+            ),
+        ),
+    ] = None,
     semantic: Annotated[
         bool,
         typer.Option(
@@ -365,8 +413,15 @@ def main(
     candidates = _candidate_files(paths, base, root)
     scannable = _not_ignored(candidates, root, ignores)
 
-    findings = scan_paths(scannable)
+    # Layer 4 law binds a project that has adopted the sector, and no other.
+    # Filtered here, before anything is counted, emitted or exited on, so the
+    # gate and the assessment model answer to the same body of law.
+    applicable = for_declared_domains(scan_paths(scannable), _declared_domains(root, domain))
+    findings = applicable.findings
     blocking = [f for f in findings if mode is Mode.block and f.blocking]
+    # Never a silent subtraction. A gate that quietly stops checking something is
+    # the same defect in the opposite direction.
+    _notice(applicable.note, fmt)
 
     if not findings:
         if fmt is not Fmt.github:

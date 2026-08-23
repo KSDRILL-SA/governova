@@ -9,8 +9,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from governova_checks import iter_source_files, scan_paths
+from governova_checks import for_declared_domains, iter_source_files, scan_paths
 from governova_compile.discovery import resolve_repo_root
+from governova_project import load_profile
 
 from governova_score.model import TITLES, WEIGHTS, Factor, GovernovaScore, finalize
 
@@ -42,19 +43,38 @@ def _violation_rate(root: Path) -> Factor:
     reading of `violation_rate` still means what it meant.
     """
     files = list(iter_source_files(root))
-    findings = scan_paths(files)
+    # Layer 4 findings count only for a project that declared the sector. The
+    # coverage factor has always excluded undeclared domains from its
+    # denominator; counting their violations here would penalise a project for
+    # breaking law the same model says does not bind it.
+    profile = load_profile(root)
+    applicable = for_declared_domains(
+        scan_paths(files), profile.domains if profile else None
+    )
+    findings = applicable.findings
     blocking = sum(1 for f in findings if f.blocking)
     advisory = len(findings) - blocking
     score = max(0.0, 100.0 - _BLOCKING_PENALTY * blocking - _ADVISORY_PENALTY * advisory)
 
     if not findings:
-        return _factor("violation_rate", score, f"clean across {len(files)} source file(s)")
+        clean = f"clean across {len(files)} source file(s)"
+        if applicable.withheld:
+            clean += (
+                f"; {len(applicable.withheld)} withheld "
+                f"({', '.join(applicable.withheld_domains)} not declared)"
+            )
+        return _factor("violation_rate", score, clean)
 
     density = len(findings) / len(files) if files else 0.0
     detail = (
         f"{blocking} blocking, {advisory} advisory across {len(files)} source file(s) "
         f"— {density:.2f} per file"
     )
+    if applicable.withheld:
+        detail += (
+            f"; {len(applicable.withheld)} withheld "
+            f"({', '.join(applicable.withheld_domains)} not declared)"
+        )
     return _factor("violation_rate", score, detail)
 
 

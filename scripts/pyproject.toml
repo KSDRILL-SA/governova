@@ -1,6 +1,6 @@
 [project]
 name = "governova"
-version = "0.2.1"
+version = "0.2.2"
 description = "Constitutional governance for AI-assisted development — enforce engineering standards as a merge gate"
 readme = "README.md"
 requires-python = ">=3.12"

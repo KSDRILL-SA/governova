@@ -1089,3 +1089,59 @@ def test_a_line_past_the_cap_costs_nothing_to_reject():
 
     over_the_cap = "# type: ignore " + ("#" * (MAX_LINE_LENGTH * 4))
     assert scan_text(over_the_cap, file="a.py") == []
+
+
+# ── generated output, recognised by shape rather than by name ────────────────
+
+
+def test_a_hashed_bundle_is_recognised_as_generated():
+    """`is_generated` asks the same question of the file name, and names are the
+    weaker signal: webpack's default output is a content hash, so
+    `875.6483eb89fd8d09e0.js` matches none of `.min.js`, `.bundle.js` or
+    `.chunk.js`.
+
+    The file that exposed this was 2,132 bytes on a single line — under
+    `MAX_LINE_LENGTH`, so every rule ran against it and one matched.
+    """
+    from governova_checks import is_minified
+
+    bundle = "!function(e){" + "a=1;" * 600 + "}();"
+    assert len(bundle) > 2000 and "\n" not in bundle
+    assert is_minified(bundle)
+
+
+def test_ordinary_source_is_never_called_generated():
+    """The negative case, and the one that matters: this repository's own source
+    averages ~45 characters a line against a threshold of 500."""
+    from governova_checks import is_minified
+    from governova_compile.discovery import resolve_repo_root
+
+    for rel in (
+        "scripts/governova_checks/rules.py",
+        "scripts/governova_checks/gather.py",
+        "README.md",
+    ):
+        text = (resolve_repo_root() / rel).read_text(encoding="utf-8")
+        assert not is_minified(text), rel
+
+
+def test_a_short_file_with_one_long_line_is_left_alone():
+    """Below the size floor a single long line is likelier a paragraph than a
+    bundle, and there is little to lose either way."""
+    from governova_checks import is_minified
+
+    assert not is_minified("x" * 900)
+
+
+def test_a_generated_file_produces_no_findings(tmp_path):
+    """The whole point. A finding against a bundle cites a file the reader cannot
+    open, cannot edit and did not write."""
+    violation = "localStorage.setItem('access_token', t);"
+    bundle = tmp_path / "875.6483eb89fd8d09e0.js"
+    bundle.write_text(violation + ";x=1;" * 500, encoding="utf-8")
+    assert scan_file(bundle) == []
+
+    # The same line in a file a person wrote is still reported.
+    authored = tmp_path / "auth.js"
+    authored.write_text(violation + "\n", encoding="utf-8")
+    assert [f.anti_pattern for f in scan_file(authored)] == ["AP-S3.14a"]

@@ -165,3 +165,37 @@ def test_iter_source_files_selects_the_same_files_as_before(tmp_path):
     (nm / "d.ts").write_text("x", encoding="utf-8")
 
     assert {p.name for p in iter_source_files(tmp_path)} == {"a.ts"}
+
+
+def test_a_virtualenv_is_pruned_whatever_it_is_called(tmp_path):
+    """`SKIP_DIRS` holds `.venv`, `venv` and `site-packages`, and the list cannot
+    be finished — `.venv311`, `venv-dev`, `env` and `.direnv` all follow.
+
+    Measured with the published 0.2.2 on a repository carrying two environments,
+    `.venv` and `.venv-min`: the first was skipped, the second read as source,
+    and its one blocking finding was a vendored bundle the reader cannot edit.
+
+    A virtualenv is not a name. It is a directory containing `pyvenv.cfg`.
+    """
+    from governova_checks import walk_files
+
+    for name in (".venv-min", ".venv311", "venv-dev", "env", "whatever"):
+        env = tmp_path / name
+        env.mkdir()
+        (env / "pyvenv.cfg").write_text("home = /usr\n", encoding="utf-8")
+        (env / "vendored.py").write_text("x = 1\n", encoding="utf-8")
+    (tmp_path / "mine.py").write_text("x = 1\n", encoding="utf-8")
+
+    assert {p.name for p in walk_files(tmp_path)} == {"mine.py"}
+
+
+def test_a_directory_that_merely_looks_like_an_env_is_still_read(tmp_path):
+    """The test is `pyvenv.cfg`, not the name. A source directory called `env/`
+    holding configuration is authored code and must survive."""
+    from governova_checks import walk_files
+
+    src = tmp_path / "env"
+    src.mkdir()
+    (src / "settings.py").write_text("DEBUG = False\n", encoding="utf-8")
+
+    assert {p.name for p in walk_files(tmp_path)} == {"settings.py"}

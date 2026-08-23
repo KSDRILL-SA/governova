@@ -1337,11 +1337,50 @@ def scan_text(code: str, *, file: str | None = None) -> list[Finding]:
     return findings
 
 
+# A file this dense on average is output, not something a person typed. Ordinary
+# source in this repository averages 45 characters a line; the minified bundle
+# that produced the finding below averaged 2,132. The threshold sits an order of
+# magnitude above the first and four times below the second, which is as much
+# room as a heuristic ever gets.
+MINIFIED_MEAN_LINE = 500
+
+# Below this, a single long line is more likely a paragraph than a bundle, and
+# there is little to lose either way.
+MINIFIED_MIN_BYTES = 1000
+
+
+def is_minified(text: str) -> bool:
+    """Whether this content is generated output rather than authored source.
+
+    `is_generated` asks the same question of the file *name*, and names are the
+    weaker signal: webpack's default output is a content hash, so
+    `875.6483eb89fd8d09e0.js` matches none of `.min.js`, `.bundle.js` or
+    `.chunk.js`. The giveaway is the shape.
+
+    `MAX_LINE_LENGTH` already skips individual lines longer than 4,000
+    characters, which is why bundles usually produce nothing. The file that
+    exposed this gap was 2,132 bytes on one line — under that ceiling, so every
+    rule ran against it, and one matched.
+    """
+    if len(text) < MINIFIED_MIN_BYTES:
+        return False
+    lines = text.splitlines()
+    if not lines:
+        return False
+    return len(text) / len(lines) > MINIFIED_MEAN_LINE
+
+
 def scan_file(path: Path) -> list[Finding]:
-    """Scan one file. Silently skips unreadable/binary files."""
+    """Scan one file. Silently skips unreadable/binary files and generated output."""
     try:
         text = path.read_text(encoding="utf-8")
     except (UnicodeDecodeError, OSError):
+        return []
+    # Checked here rather than in `iter_source_files`, because the shape test
+    # needs the content and this is where the content already is. A finding
+    # against a bundle cites a file the reader cannot edit, which is the fastest
+    # way to teach an adopter to switch the gate off.
+    if is_minified(text):
         return []
     return scan_text(text, file=str(path).replace("\\", "/"))
 

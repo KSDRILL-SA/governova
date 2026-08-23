@@ -16,17 +16,63 @@ Numbers in parentheses are pull requests in
 
 ## [Unreleased]
 
+Nothing yet.
+
+---
+
+## [0.2.3] — 2026-08-23
+
+**The release that came from pointing `0.2.2` at four repositories it had not written.**
+Three of them are ordinary applications — a FastAPI backend, a Node site, a Python tool — and
+between them they produced two defects in a day, both of which blocked a build over code that
+was correct.
+
+Measured across those four repositories, `0.2.2` against this release:
+
+| Repository | `0.2.2` | `0.2.3` |
+|---|---|---|
+| FastAPI backend | 40 findings, **11 blocking** | 20 findings, 1 blocking |
+| Python tool, 45k files | 117 findings, **1 blocking** | **passes** |
+| Node site | passes | passes |
+| Next.js monorepo | passes | passes |
+
+The one blocking finding that remains is true: a hardcoded fallback connection string carrying
+an embedded password.
+
+### Fixed
+
+- **`app/` named two opposite layers, and the backend one lost.** `UI_LAYER` listed `app` as a
+  presentation directory. That is true in Next.js, where `app/` is the App Router, and false in
+  FastAPI and Flask, where `app/` is the *entire backend package*. Ten blocking findings landed
+  in `app/db/` — the layer that is supposed to hold `session.execute(`. `DATA_LAYER` would have
+  excluded them and could not: it knew `repositories`, `dao`, `prisma` and `alembic`, and not
+  `db`, the commonest name of all. Next.js is now reached by the App Router's reserved
+  filenames, which is a stronger signal than the directory name. (#344, #346)
+
+- **A second virtualenv was scanned as source.** A repository carrying both `.venv` and
+  `.venv-min` had one skipped and the other read, and the vendored JupyterLab bundle inside it
+  blocked the build. `SKIP_DIRS` matches literal names and the list cannot be finished —
+  `.venv311`, `venv-dev`, `env` all follow. A virtualenv is now recognised by shape: a directory
+  containing `pyvenv.cfg`. (#345, #347)
+
+- **A minified bundle was read as source because its name gave nothing away.** `is_generated`
+  matches `.min.js`, `.bundle.js` and `.chunk.js`; webpack's default output is a content hash,
+  so `875.6483eb89fd8d09e0.js` matched none of them. Shape decides it now — that file averaged
+  2,132 characters a line where this repository's own source averages 45. (#345, #347)
+
 ### Added
 
-- **The release gate refuses to publish a version the changelog still calls
-  `unreleased`.** The date is the one field that cannot be written truthfully in
-  advance — preparation writes `unreleased` because at that moment it is, the tag
-  goes out separately, and nobody goes back. It happened on both releases cut
-  since this file existed: `0.2.1` was still marked `unreleased` a day after
-  shipping, and `0.2.2` was dated only because someone went looking for the same
-  mistake an hour after publishing. The check now runs in `verify`, before
-  anything is built, and the tests exercise the script extracted from the
-  workflow rather than a copy of it.
+- **The release gate refuses to publish a version the changelog still calls `unreleased`.** The
+  date is the one field that cannot be written truthfully in advance: preparation writes
+  `unreleased` because at that moment it is, the tag goes out separately, and nobody goes back.
+  It happened on *both* releases cut since this file existed. The check runs in `verify`, before
+  anything is built, and its tests exercise the script extracted from the workflow rather than a
+  copy of it. (#343)
+
+### Changed
+
+- `is_minified` counts newlines rather than building a line list `scan_text` immediately
+  rebuilds. It runs on every scanned file. (#347)
 
 ---
 
@@ -288,7 +334,8 @@ System Bible) generated from the index.
 
 11 constitutions · 618 standards · 446 anti-patterns · index schema 1.1.0.
 
-[Unreleased]: https://github.com/KSDRILL-SA/governova/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/KSDRILL-SA/governova/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/KSDRILL-SA/governova/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/KSDRILL-SA/governova/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/KSDRILL-SA/governova/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/KSDRILL-SA/governova/compare/v0.1.0...v0.2.0

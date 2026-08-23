@@ -326,7 +326,7 @@ wheels = [
 
 [[package]]
 name = "governova"
-version = "0.2.2"
+version = "0.2.3"
 source = { editable = "scripts" }
 dependencies = [
     { name = "markdown-it-py" },

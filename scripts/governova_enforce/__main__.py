@@ -40,6 +40,7 @@ from governova_checks.gather import is_generated
 from governova_compile.discovery import resolve_target_root
 from governova_compile.writer import load_active_index
 from governova_console import configure_stdout
+from governova_console import err_console as _err_console
 from governova_project import load_profile
 from governova_semantic import Outcome, ReviewResult
 from governova_semantic import from_env as semantic_from_env
@@ -48,7 +49,7 @@ from rich.console import Console
 
 configure_stdout()
 console = Console()
-err_console = Console(stderr=True)
+err_console = _err_console()
 
 app = typer.Typer(
     add_completion=False,

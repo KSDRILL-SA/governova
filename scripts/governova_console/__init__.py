@@ -23,14 +23,20 @@ from __future__ import annotations
 
 import contextlib
 import sys
+from typing import TextIO
 
 from rich.console import Console
 
-__all__ = ["configure_stdout", "console"]
+__all__ = [
+    "configure_stderr",
+    "configure_stdout",
+    "console",
+    "err_console",
+]
 
 
-def configure_stdout() -> None:
-    """Make stdout able to carry the characters this engine prints.
+def _make_safe(stream: TextIO) -> None:
+    """Make one stream able to carry the characters this engine prints.
 
     `errors="replace"` is the belt to UTF-8's braces: where reconfiguration succeeds but
     the terminal still cannot render a character, it degrades to a replacement glyph
@@ -38,21 +44,49 @@ def configure_stdout() -> None:
 
     A redirected, wrapped, or already-detached stream may not support reconfiguration at
     all, so the method is looked up rather than assumed — which also avoids a type
-    suppression, since `sys.stdout` is declared as the `TextIO` protocol and only the
+    suppression, since the streams are declared as the `TextIO` protocol and only the
     concrete `TextIOWrapper` carries `reconfigure`. `S1.57` asks for the type to be fixed
     rather than silenced, and an explicit capability check is the fix.
 
     The remaining guard covers a stream that *has* the method and still refuses — being
     unable to *improve* the encoding must never be the thing that breaks the command.
     """
-    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    reconfigure = getattr(stream, "reconfigure", None)
     if reconfigure is None:
         return
     with contextlib.suppress(Exception):
         reconfigure(encoding="utf-8", errors="replace")
 
 
+def configure_stdout() -> None:
+    """Make stdout able to carry the characters this engine prints."""
+    _make_safe(sys.stdout)
+
+
+def configure_stderr() -> None:
+    """The same for stderr, which now carries prose of its own.
+
+    stderr used to carry only error lines, which were ASCII, so the gap did not
+    show. `governova-enforce --format json` changed that: its stdout became a
+    machine contract, and every human line — summaries, verdicts, the note saying
+    which Layer 4 domain went unenforced — moved to stderr, em dashes included.
+    The first run of it printed the note with a replacement glyph mid-sentence.
+    """
+    _make_safe(sys.stderr)
+
+
 def console() -> Console:
     """A `rich` console on a stdout that has been made safe first."""
     configure_stdout()
     return Console()
+
+
+def err_console() -> Console:
+    """A `rich` console on a stderr that has been made safe first.
+
+    Exists for the same reason `console` does — six entrypoints once built their
+    own, and the seventh forgot. One stream should not be reconfigured in a
+    module that happens to notice it needs it.
+    """
+    configure_stderr()
+    return Console(stderr=True)

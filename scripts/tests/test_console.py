@@ -14,7 +14,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from governova_console import configure_stdout, console
+from governova_console import configure_stderr, configure_stdout, console, err_console
 
 REPO = Path(__file__).resolve().parents[2]
 
@@ -89,3 +89,49 @@ def _clean_env() -> dict[str, str]:
     env = dict(os.environ)
     env.pop("PYTHONIOENCODING", None)
     return env
+
+
+def test_err_console_is_usable_after_configuration():
+    assert err_console() is not None
+
+
+def test_configure_stderr_survives_a_stream_that_cannot_be_reconfigured():
+    original = sys.stderr
+    sys.stderr = io.StringIO()  # no `.reconfigure`
+    try:
+        configure_stderr()  # must not raise
+    finally:
+        sys.stderr = original
+
+
+def test_a_glyph_reaches_a_narrow_stderr_without_raising():
+    """stderr carries prose now, and prose has em dashes in it.
+
+    It used to carry only error lines, which were ASCII, so the gap did not show.
+    `governova-enforce --format json` changed that: stdout became a machine
+    contract and every human line moved to stderr — including the note naming
+    which Layer 4 domain went unenforced, which printed with a replacement glyph
+    mid-sentence the first time it ran.
+
+    Subprocess for the same reason as the stdout case: the encoding has to be
+    wrong before the interpreter starts, or the fix is being tested against
+    itself.
+    """
+    script = (
+        "from governova_console import err_console\n"
+        "err_console().print('182 finding(s) withheld \u2014 Layer 4 not declared')\n"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", script],
+        cwd=REPO / "scripts",
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        env={**_clean_env(), "PYTHONIOENCODING": "cp1252"},
+        timeout=60,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "UnicodeEncodeError" not in result.stderr
+    assert "�" not in result.stderr, f"em dash was mangled: {result.stderr!r}"
+    assert "—" in result.stderr

@@ -44,7 +44,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from governova_checks import Finding, iter_source_files, scan_paths
+from governova_checks import (
+    Finding,
+    for_declared_domains,
+    iter_source_files,
+    scan_paths,
+)
 from governova_compile.schema import CompiledIndex
 from governova_evidence import ProbeResult, Verdict, run_probes
 from governova_project import Profile, applicable_standards
@@ -132,6 +137,17 @@ class Baseline:
     provisional: tuple[str, ...]
     """Reasons the numbers below are provisional — every one of them a profile
     field a human still has to settle. Empty means the profile was accepted."""
+    sector: tuple[FindingGroup, ...] = ()
+    """Findings from Layer 4 domains the proposed profile has not declared.
+
+    Held apart rather than mixed in, because onboarding says in the same breath
+    that sector standards are not counted — and then listed 199 of them at the
+    top of the findings table on the first external repository it ever read.
+    Separated, they stop contradicting that sentence and start doing something
+    useful: a repository tripping the fintech rules is evidence about which
+    sector it serves, which is precisely the field the tool has just said no
+    scan can settle.
+    """
 
     @property
     def applicable(self) -> int:
@@ -304,7 +320,12 @@ def assess(root: Path, index: CompiledIndex) -> Baseline:
     profile = proposed_profile(detection)
 
     files = list(iter_source_files(root))
-    findings = scan_paths(files)
+    # The proposed profile declares no domain — no scan can settle one — so the
+    # sector findings are separated here and counted nowhere. `_heatmap` already
+    # excludes undeclared domains from the applicable set; this makes the
+    # findings table agree with it.
+    scanned = for_declared_domains(scan_paths(files), profile.domains)
+    findings = scanned.findings
     probes = run_probes(root)
 
     violated_by_rule = {f.standard for f in findings}
@@ -326,6 +347,7 @@ def assess(root: Path, index: CompiledIndex) -> Baseline:
         score=compute_score(root),
         gaps=_heatmap(index, profile, evidenced=evidenced, violated=violated),
         groups=_group_findings(root, findings),
+        sector=_group_findings(root, scanned.withheld),
         probes=tuple(probes),
         source_files=len(files),
         provisional=_provisional_reasons(detection),

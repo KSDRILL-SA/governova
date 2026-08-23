@@ -1283,7 +1283,12 @@ def _print_baseline_score(baseline: Any) -> None:
 
 def _print_baseline_findings(baseline: Any, *, top: int, show_probes: bool) -> None:
     """Findings, structural findings, and the caveats attached to both."""
-    from governova_onboard.render import findings_table, probe_table, structural_table
+    from governova_onboard.render import (
+        findings_table,
+        probe_table,
+        sector_table,
+        structural_table,
+    )
 
     if baseline.groups:
         shown = min(top, len(baseline.groups))
@@ -1292,6 +1297,25 @@ def _print_baseline_findings(baseline: Any, *, top: int, show_probes: bool) -> N
             f"blocking first"
         )
         console.print(findings_table(baseline, top=top))
+
+    # Sector findings, if any, are shown apart and counted nowhere — the report
+    # has already said that an undeclared domain's standards are not counted,
+    # and listing them among the findings contradicted it. Shown rather than
+    # dropped because a repository tripping the fintech rules is evidence about
+    # which domain it should declare, and that is the field the report has just
+    # explained no scan can settle.
+    if getattr(baseline, "sector", ()):
+        domains = sorted({g.standard.split(".", 1)[0] for g in baseline.sector})
+        total = sum(g.count for g in baseline.sector)
+        console.print(
+            f"\n[bold]Sector findings[/] — {total} finding(s) under "
+            f"{', '.join(domains)}, [dim]not counted anywhere in this report[/]"
+        )
+        console.print(sector_table(baseline, top=top))
+        console.print(
+            f"[dim]Declare the domain in governance/project.toml to be governed by it: "
+            f'domains = ["{domains[0]}"][/]'
+        )
 
     # Probe violations count toward the heatmap's `violated` column, so they are
     # printed whenever there are any. Omitting them left the report showing a

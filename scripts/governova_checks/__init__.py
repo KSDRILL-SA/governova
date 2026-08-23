@@ -7,6 +7,11 @@ is pure stdlib; `coverage` governs the rule set against the compiled constitutio
 
 from __future__ import annotations
 
+from governova_checks.applicability import (
+    Applicable,
+    domain_of,
+    for_declared_domains,
+)
 from governova_checks.coverage import (
     domain_anti_patterns,
     enforcement_coverage,
@@ -39,6 +44,7 @@ __all__ = [
     "RULES",
     "SKIP_DIRS",
     "TEXT_EXTENSIONS",
+    "Applicable",
     "Confidence",
     "Finding",
     "Rule",
@@ -46,7 +52,9 @@ __all__ = [
     "check_text",
     "covered_anti_patterns",
     "domain_anti_patterns",
+    "domain_of",
     "enforcement_coverage",
+    "for_declared_domains",
     "index_anti_patterns",
     "is_ignored",
     "iter_source_files",

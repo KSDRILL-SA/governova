@@ -16,11 +16,13 @@ from governova_checks import (
     Finding,
     changed_files,
     enforcement_coverage,
+    for_declared_domains,
     is_ignored,
     scan_paths,
 )
 from governova_compile.discovery import resolve_repo_root
 from governova_compile.writer import load_active_index
+from governova_project import load_profile
 from governova_score import compute_score
 from governova_score.model import GovernovaScore
 
@@ -33,6 +35,8 @@ class GuardianVerdict:
     score: GovernovaScore
     coverage: dict[str, Any]
     generated_on: str = ""
+    withheld_note: str = ""
+    """What Layer 4 law was not enforced, and why. Empty when nothing was withheld."""
 
     @property
     def blocking(self) -> list[Finding]:
@@ -55,7 +59,13 @@ def build_verdict(base: str = "origin/main", root: Path | None = None) -> Guardi
         for p in changed_files(base, r)
         if p.is_file() and not is_ignored(_rel(p, r), DEFAULT_IGNORES)
     ]
-    findings = scan_paths(scannable)
+    # The Guardian is a merge gate like `governova-enforce`, and answers to the
+    # same body of law: core standards always, Layer 4 only where declared.
+    profile = load_profile(r)
+    applicable = for_declared_domains(
+        scan_paths(scannable), profile.domains if profile else None
+    )
+    findings = applicable.findings
     score = compute_score(r)
     coverage = enforcement_coverage(load_active_index(start=r))
     return GuardianVerdict(
@@ -64,6 +74,7 @@ def build_verdict(base: str = "origin/main", root: Path | None = None) -> Guardi
         findings=findings,
         score=score,
         coverage=coverage,
+        withheld_note=applicable.note,
     )
 
 
@@ -105,6 +116,10 @@ def to_markdown(v: GuardianVerdict) -> str:
         f"| **Enforcement coverage** | {v.coverage.get('coverage_pct')}% "
         f"({v.coverage.get('enforceable_anti_patterns')}/{v.coverage.get('total_anti_patterns')} anti-patterns) |",
     ]
+    if v.withheld_note:
+        # Stated on the panel, not only in the code. A reviewer reading a PASS
+        # is entitled to know which body of law was not consulted to produce it.
+        lines.append(f"| **Not enforced** | {v.withheld_note} |")
     if v.findings:
         lines += ["", "### Findings on this PR", ""]
         for f in (*v.blocking, *v.advisory):

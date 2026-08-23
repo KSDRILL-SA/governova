@@ -113,6 +113,27 @@ def findings_table(baseline: Baseline, *, top: int = DEFAULT_TOP) -> Table:
     return table
 
 
+def sector_table(baseline: Baseline, *, top: int = DEFAULT_TOP) -> Table:
+    """Layer 4 findings from a domain the profile has not declared.
+
+    Same shape as `findings_table`, deliberately: these are the same kind of
+    finding, and the only difference is that nothing in this report counts them.
+    """
+    table = Table(
+        "", "Anti-pattern", "Standard", "Count", "Files", "Where",
+        box=None, pad_edge=False,
+    )
+    for group in baseline.sector[:top]:
+        shown = list(group.files[:EXAMPLE_FILES])
+        if group.reach > EXAMPLE_FILES:
+            shown.append(f"+{group.reach - EXAMPLE_FILES} more")
+        table.add_row(
+            "[dim]not counted[/]", group.anti_pattern, group.standard, str(group.count),
+            str(group.reach), f"[dim]{', '.join(shown) if shown else '—'}[/]",
+        )
+    return table
+
+
 def structural_table(baseline: Baseline) -> Table:
     """Probe violations — the findings that are facts about the repository."""
     table = Table("", "Standard", "Evidence", box=None, pad_edge=False)
@@ -284,6 +305,20 @@ def to_json(baseline: Baseline, *, top: int | None = None) -> str:
             }
             for g in groups
         ],
+        # Separate key, never merged into `findings`. A consumer that counted
+        # both together would reproduce the contradiction this separation exists
+        # to remove.
+        "sector_findings": [
+            {
+                "anti_pattern": g.anti_pattern,
+                "standard": g.standard,
+                "message": g.message,
+                "confidence": g.confidence,
+                "count": g.count,
+                "files": list(g.files),
+            }
+            for g in (baseline.sector if top is None else baseline.sector[:top])
+        ],
         "structural_violations": [
             {"standard": p.standard, "evidence": p.evidence} for p in baseline.violated_probes
         ],
@@ -304,6 +339,7 @@ __all__ = [
     "roadmap_table",
     "roadmap_to_json",
     "score_table",
+    "sector_table",
     "structural_table",
     "to_json",
 ]

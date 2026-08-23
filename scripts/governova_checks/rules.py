@@ -1364,10 +1364,12 @@ def is_minified(text: str) -> bool:
     """
     if len(text) < MINIFIED_MIN_BYTES:
         return False
-    lines = text.splitlines()
-    if not lines:
-        return False
-    return len(text) / len(lines) > MINIFIED_MEAN_LINE
+    # `count` rather than `splitlines`, because this runs on every scanned file
+    # and `scan_text` is about to build that list anyway. A trailing newline
+    # would overcount by one line, which rounds the wrong way — toward calling a
+    # bundle authored — so it is not worth correcting.
+    lines = text.count("\n") + 1
+    return len(text) / lines > MINIFIED_MEAN_LINE
 
 
 def scan_file(path: Path) -> list[Finding]:
